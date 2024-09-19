@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 import requests
-from mapping_portfolio_optimization import *
+from mapping_portfolio_downloads import *
 from mapping_tickers import *
 
 class DownloadData():
