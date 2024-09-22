@@ -11,10 +11,13 @@ theme_style = {
         'diff_red_linecolor':       'darkred',
         'diff_green_fillcolor':     'rgba(50, 205, 50, 0.75)',  # limegreen
         'diff_red_fillcolor':       'rgba(255, 0, 0, 0.7)',    # red
-        'rsi_30_linecolor':         'saddlebrown',
-        'rsi_30_fillcolor':         'rgba(255, 255, 200, 0.3)',
-        'rsi_70_linecolor':         'firebrick',
-        'rsi_70_fillcolor':         'rgba(255, 192, 203, 0.4)',
+        'rsi_linecolor':            'gold',
+        'kline_linecolor':          'gold',
+        'dline_linecolor':          'mediumorchid',
+        'oversold_linecolor':       'saddlebrown',
+        'oversold_fillcolor':       'rgba(255, 225, 150, 0.3)',
+        'overbought_linecolor':     'firebrick',
+        'overbought_fillcolor':     'rgba(255, 192, 203, 0.4)',
         'x_gridcolor':              '#283442',
         'y_gridcolor':              '#283442',
         'x_linecolor':              '#506784',
@@ -210,10 +213,13 @@ theme_style = {
         'diff_green_fillcolor':     'rgba(0, 155, 0, 0.85)',     # green
         # 'diff_red_fillcolor':       'rgba(255, 0, 0, 0.75)',     # red
         'diff_red_fillcolor':       'rgba(178, 34, 34, 0.85)',     # firebrick
-        'rsi_30_linecolor':         'rgb(125, 75, 25)',
-        'rsi_30_fillcolor':         'rgba(255, 225, 100, 0.3)',
-        'rsi_70_linecolor':         'rgb(138, 34, 54)',
-        'rsi_70_fillcolor':         'rgba(225, 142, 153, 0.3)',
+        'rsi_linecolor':            'goldenrod',
+        'kline_linecolor':          'goldenrod',
+        'dline_linecolor':          'darkorchid',
+        'oversold_linecolor':       'rgb(125, 75, 25)',
+        'oversold_fillcolor':       'rgba(205, 165, 75, 0.3)',
+        'overbought_linecolor':     'rgb(138, 34, 54)',
+        'overbought_fillcolor':     'rgba(225, 142, 153, 0.3)',
         'x_gridcolor':              'grey',
         'y_gridcolor':              'grey',
         'x_linecolor':              'black',

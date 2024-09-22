@@ -10,6 +10,7 @@ import matplotlib.ticker as plticker
 import matplotlib.patches as patches
 from matplotlib.colors import TwoSlopeNorm
 import seaborn as sns
+from operator import itemgetter
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from mapping_tickers import *
@@ -104,6 +105,7 @@ class AnalyzePrices():
         macd_data,
         df_tk,
         n_ticks_max = 48,
+        n_yticks_max = 16,
         plot_width = 1450,
         plot_height = 750,
         title_font_size = 32,
@@ -133,6 +135,12 @@ class AnalyzePrices():
         macd_negative.iloc[np.where(macd_negative >= 0)] = np.nan
 
         title_macd = f'{tk_macd} Moving Average Convergence Divergence (EMA 12-26)'
+
+        price_types = ['adjusted close', 'adj close', 'close', 'open', 'high', 'low']
+        if price_type in price_types:
+            price_name = 'Adjusted Close' if price_type == 'adj close' else price_type.title()
+        else:
+            price_name = 'Adjusted Close'
 
         style = theme_style[theme]
 
@@ -177,7 +185,7 @@ class AnalyzePrices():
                     x = macd.index.astype(str),
                     y = df_tk,
                     line = dict(color = style['basecolor']),
-                    name = price_type.title()
+                    name = price_name
                 ),
                 secondary_y = True    
             )
@@ -213,6 +221,7 @@ class AnalyzePrices():
         fig_macd.update_yaxes(
             title_text = f'MACD',
             range = (y_macd_min, y_macd_max),
+            nticks = n_yticks_max,
             secondary_y = False,
             gridcolor = style['x_gridcolor'],
             ticks = 'outside',
@@ -222,7 +231,7 @@ class AnalyzePrices():
         )
         if overlay_price:
             fig_macd.update_yaxes(
-                title_text = f'{price_type.title()}',
+                title_text = price_name,
                 secondary_y = True,
                 ticks = 'outside',
                 ticklen = 8,
@@ -243,6 +252,166 @@ class AnalyzePrices():
         )
 
         return fig_macd
+
+
+    ##### PLOT RSI HLINES PLOTLY #####
+
+    def plot_rsi_hlines_plotly(
+        self,
+        df_rsi,
+        tk,
+        n_ticks_max = 48,
+        plot_width = 1450,
+        plot_height = 750,
+        title_font_size = 32,
+        theme = 'dark',
+        overlay_price = False,
+        df_price = None,
+        price_type = 'adjusted close'
+    ):
+        """
+        df_rsi:     RSI dataframe/series
+        tk:         ticker for which ro plot RSI
+        price_type: normally 'adjusted close' or 'close', whatever the RSI is based on
+        df_price:   dataframe/series of prices to overlay (if overlay_price is True)
+
+        """
+
+        style = theme_style[theme]
+
+        title_rsi = f'{tk} Relative Strength Index (%)'
+        price_types = ['adjusted close', 'adj close', 'close', 'open', 'high', 'low']
+
+        if price_type in price_types:
+            price_name = 'Adjusted Close' if price_type == 'adj close' else price_type.title()
+        else:
+            price_name = 'Adjusted Close'
+
+        if overlay_price:
+            fig_rsi = make_subplots(specs=[[{'secondary_y': True}]])
+        else:
+            fig_rsi = make_subplots(rows = 1, cols = 1)
+
+        x_min = df_rsi.index.min()
+        x_max = df_rsi.index.max()
+
+        df_rsi_hlines = pd.DataFrame({'30': 30, '70': 70, '100': 100}, index=df_rsi.index)
+
+        # For some reason, the price overlay trace shows first in the legend if it's added last
+        if overlay_price:
+            fig_rsi.add_trace(
+                go.Scatter(
+                    x = df_rsi.index,
+                    y = df_price,
+                    line = dict(color = style['basecolor']),
+                    name = price_name
+                ),
+                secondary_y = True
+            )
+        fig_rsi.add_trace(
+            go.Scatter(
+                x = df_rsi_hlines.index,
+                y = df_rsi_hlines['30'],
+                line = dict(color = style['rsi_30_linecolor']),
+                line_width = 2,
+                fill = 'tozeroy',
+                fillcolor = style['rsi_30_fillcolor'],
+                name = 'Oversold < 30%'
+            ),
+            secondary_y = False
+        )
+        fig_rsi.add_trace(
+            go.Scatter(
+                x = df_rsi_hlines.index,
+                y = df_rsi_hlines['100'],
+                line = dict(color='black'),
+                line_width = 0,
+                showlegend = False
+            ),
+            secondary_y = False
+        )
+        fig_rsi.add_trace(
+            go.Scatter(
+                x = df_rsi_hlines.index,
+                y = df_rsi_hlines['70'],
+                line = dict(color = style['rsi_70_linecolor']),
+                line_width = 2,
+                fill = 'tonexty',  # fill to previous scatter trace
+                fillcolor = style['rsi_70_fillcolor'],
+                name = 'Overbought > 70%'
+            ),
+            secondary_y = False
+        )
+        fig_rsi.add_trace(
+            go.Scatter(
+                x = df_rsi.index,
+                y = df_rsi[tk],
+                line = dict(color=style['rsi_linecolor']),
+                line_width = 2,        
+                name = 'RSI (%)'
+            ),
+            secondary_y = False
+        )
+
+        # Add plot border
+        fig_rsi.add_shape(
+            type = 'rect',
+            xref = 'x',  # use 'x' because of seconday axis - 'paper' does not work correctly
+            yref = 'paper',
+            x0 = x_min,
+            x1 = x_max,
+            y0 = 0,
+            y1 = 1,
+            line_color = style['x_linecolor'],
+            line_width = 0.3
+        )
+
+        # Update layout and axes
+        fig_rsi.update_layout(
+            width = plot_width,
+            height = plot_height,
+            xaxis_rangeslider_visible = False,
+            template = style['template'],
+            yaxis_title = f'RSI (%)',
+            title = dict(
+                text = title_rsi,
+                font_size = title_font_size,
+                y = 0.95,
+                x = 0.45,
+                xanchor = 'center',
+                yanchor = 'top'
+            )
+        )
+        fig_rsi.update_xaxes(
+            type = 'category',
+            nticks = n_ticks_max,
+            tickangle = -90,
+            ticks = 'outside',
+            ticklen = 8,
+            ticklabelshift = 5,  # not working
+            ticklabelstandoff = 10,  # not working
+        )
+        fig_rsi.update_yaxes(
+            secondary_y = False,
+            range = (0, 100),
+            nticks = 11,
+            ticks = 'outside',
+            ticklen = 8,
+            ticklabelshift = 5,  # not working
+            ticklabelstandoff = 10,  # not working
+        )
+        if overlay_price:
+            fig_rsi.update_yaxes(
+                title_text = price_name,
+                secondary_y = True,
+                ticks = 'outside',
+                ticklen = 8,
+                ticklabelshift = 5,  # not working
+                ticklabelstandoff = 10,  # not working
+                showgrid = False
+            )
+
+        return fig_rsi
 
 
     ##### LONGEST DRAWDOWN #####
@@ -591,6 +760,7 @@ class AnalyzePrices():
         x_min,
         x_max,
         n_ticks_max,
+        n_yticks_max = 16,
         top_by = 'depth',
         show_trough_to_recovery = False,
         plot_width = 1450,
@@ -764,6 +934,7 @@ class AnalyzePrices():
             range = (y_min, y_max),
             showgrid = True,
             gridcolor = style['y_gridcolor'],
+            nticks = n_yticks_max,
             ticks = 'outside',
             ticklen = 8,
             ticklabelshift = 5,  # not working
@@ -771,6 +942,7 @@ class AnalyzePrices():
         )
 
         return fig
+        # MUST RETURN A DICTIONARY so overlays can be added
 
 
     ##### RSI #####
@@ -820,6 +992,7 @@ class AnalyzePrices():
         df_rsi,
         tk_rsi,
         n_ticks_max = 48,
+        n_yticks_max = 16,
         plot_width = 1450,
         plot_height = 750,
         title_font_size = 32,
@@ -918,7 +1091,7 @@ class AnalyzePrices():
         fig_rsi.update_yaxes(
             range = (0, 100),
             gridcolor = style['y_gridcolor'],
-            nticks = 11,
+            nticks = n_yticks_max,
             ticks = 'outside',
             ticklen = 8,
             ticklabelshift = 5,  # not working
@@ -963,14 +1136,20 @@ class AnalyzePrices():
             'showlegend': True
         }]
 
+        k = 0
+        # k = 0 if each band_width is an integer within the accuray of eps    
         for i in range(n_bands + 1)[1:]:
-
             band_width = i * n_std
-            k = 0 if abs(float(int(band_width)) - band_width) < eps else 1
-            # k = 0: ma_offset is an integer within the accuray of eps
+            if abs(float(int(band_width)) - band_width) > eps:
+                k = 1
+                break
+
+        for i in range(n_bands + 1)[1:]:
+        
+            band_width = i * n_std
 
             upper_band = df_sma + band_width * df_std
-            upper_name = f'({window}, {band_width:.{k}f}) Bollinger Bands'
+            upper_name = f'({window}, {band_width:.{k}f}) Upper Bollinger'
             bollinger_list.append({
                 'data': upper_band,
                 'name': upper_name,
@@ -979,13 +1158,15 @@ class AnalyzePrices():
             })
 
             lower_band = df_sma - band_width * df_std        
-            lower_name = f'({window}, {band_width:.{k}f}) Lower Band'
+            lower_name = f'({window}, {band_width:.{k}f}) Lower Bollinger'
             bollinger_list.append({
                 'data': lower_band,
                 'name': lower_name,
                 'idx_offset': -i,
-                'showlegend': False
+                'showlegend': True
             })
+
+        bollinger_list = sorted(bollinger_list, key = itemgetter('idx_offset'), reverse = True)
 
         return bollinger_list
 
@@ -1035,14 +1216,20 @@ class AnalyzePrices():
             'showlegend': True
         }]
 
+        k = 0
+        # k = 0 if each ma_offset is an integer within the accuray of eps
         for i in range(n_bands + 1)[1:]:
-
             ma_offset = i * prc_offset
-            k = 0 if abs(float(int(ma_offset)) - ma_offset) < eps else 1
-            # k = 0: ma_offset is an integer within the accuray of eps
+            if abs(float(int(ma_offset)) - ma_offset) > eps:
+                k = 1
+                break
 
+        for i in range(n_bands + 1)[1:]:
+        
+            ma_offset = i * prc_offset
+            
             upper_band = base_ma * (1 + ma_offset / 100)
-            upper_name = f'({window}, {ma_offset:.{k}f}%) Envelopes'
+            upper_name = f'({window}, {ma_offset:.{k}f}%) Upper Envelope'
             ma_envelope_list.append({
                 'data': upper_band,
                 'name': upper_name,
@@ -1056,8 +1243,10 @@ class AnalyzePrices():
                 'data': lower_band,
                 'name': lower_name,
                 'idx_offset': -i,
-                'showlegend': False
+                'showlegend': True
             })
+
+        ma_envelope_list = sorted(ma_envelope_list, key = itemgetter('idx_offset'), reverse = True)
 
         return ma_envelope_list
 
@@ -1135,6 +1324,8 @@ class AnalyzePrices():
         fig_data,
         df_price,
         ma_list,
+        x_min = None,
+        x_max = None,
         theme = 'dark',
         color_theme = 'gold'
     ):
@@ -1146,6 +1337,9 @@ class AnalyzePrices():
                  - ma_window, in days
                  - showlegend: include in plot legend or not
         """
+
+        x_min = self.start_date if x_min is None else x_min
+        x_max = self.end_date if x_max is None else x_max
 
         n_ma = len(ma_list)
 
@@ -1160,7 +1354,7 @@ class AnalyzePrices():
             ma_window = ma['ma_window']
 
             ma_data = self.moving_average(
-                df_price,
+                df_price[x_min: x_max],
                 ma_type,
                 ma_window
             )
@@ -1200,12 +1394,17 @@ class AnalyzePrices():
         self,
         fig_data,
         bollinger_list,
+        x_min = None,
+        x_max = None,
         theme = 'dark',
         color_theme = 'gold'
     ):
         """
         df_price: df_close or df_adj_close, depending on the underlying figure in fig_data
         """
+
+        x_min = self.start_date if x_min is None else x_min
+        x_max = self.end_date if x_max is None else x_max
 
         n_boll = int((len(bollinger_list) + 1) / 2)
 
@@ -1217,7 +1416,7 @@ class AnalyzePrices():
         for boll in bollinger_list:
 
             bollinger_overlays.append({
-                'data': boll['data'],
+                'data': boll['data'][x_min: x_max],
                 'name': boll['name'],
                 'color_idx': overlay_color_idx[abs(boll['idx_offset'])],
                 'showlegend': boll['showlegend']
@@ -1248,12 +1447,17 @@ class AnalyzePrices():
         self,
         fig_data,
         ma_envelope_list,
+        x_min = None,
+        x_max = None,
         theme = 'dark',
         color_theme = 'gold'
     ):
         """
         df_price: df_close or df_adj_close, depending on the underlying figure in fig_data
         """
+
+        x_min = self.start_date if x_min is None else x_min
+        x_max = self.end_date if x_max is None else x_max
 
         n_env = int((len(ma_envelope_list) + 1) / 2)
 
@@ -1265,7 +1469,7 @@ class AnalyzePrices():
         for env in ma_envelope_list:
 
             ma_envelope_overlays.append({
-                'data': env['data'],
+                'data': env['data'][x_min: x_max],
                 'name': env['name'],
                 'color_idx': overlay_color_idx[abs(env['idx_offset'])],
                 'showlegend': env['showlegend']
@@ -1332,6 +1536,7 @@ class AnalyzePrices():
         df_price,
         tk,
         n_ticks_max = 48,
+        n_yticks_max = 16,
         plot_width = 1450,
         plot_height = 750,
         title_font_size = 32,
@@ -1407,6 +1612,7 @@ class AnalyzePrices():
         fig.update_yaxes(
             range = (y_min, y_max),
             gridcolor = style['y_gridcolor'],
+            nticks = n_yticks_max,            
             ticks = 'outside',
             ticklen = 8
         )
@@ -1428,6 +1634,7 @@ class AnalyzePrices():
         tk,
         candle_type = 'hollow',
         n_ticks_max = 48,
+        n_yticks_max = 16,
         plot_width = 1450,
         plot_height = 750,
         title_font_size = 32,
@@ -1611,6 +1818,7 @@ class AnalyzePrices():
         fig.update_yaxes(
             range = (y_min, y_max),
             gridcolor = style['y_gridcolor'],
+            nticks = n_yticks_max,
             ticks = 'outside',
             ticklen = 8
         )
@@ -1622,6 +1830,276 @@ class AnalyzePrices():
         }
 
         return candles_data
+
+
+    ##### ADD PRICE OVERLAY PLOTLY #####
+
+    def add_price_overlays(
+        self,
+        fig_data,
+        price_list,
+        x_min = None,
+        x_max = None,
+        theme = 'dark',
+        color_theme = 'gold'
+    ):
+        """
+        fig_data:
+            A dictionary containing the underlying figure data
+        price_list: 
+            list of dictionaries with keys
+             - 'name': 'Adjusted Close', 'Close', 'Open', 'High', and 'Low'
+             - 'show': True / False - include in plot or not
+        x_min, x_max:
+            minimum and maximum dates in the datetime format
+        """
+
+        x_min = self.start_date if x_min is None else x_min
+        x_max = self.end_date if x_max is None else x_max
+
+        # Count lines that will be overlaid ('show' is True)
+        # n_price = sum(x.get('show') for x in price_list)
+
+        selected_prices = [x for x in price_list if x['show']]
+        n_price = len(selected_prices)
+
+        style = theme_style[theme]
+        overlay_color_idx = style['overlay_color_selection'][color_theme][n_price]
+
+        current_names = [trace['name'] for trace in fig_data['fig']['data']]
+
+        price_overlays = []
+
+        for i, price in enumerate(selected_prices):
+
+            price_name = price['name']
+
+            if price_name not in current_names:
+
+                price_data = price['data'][x_min: x_max]
+                color_idx = overlay_color_idx[i]
+
+                price_overlays.append({
+                    'data': price_data,
+                    'name': price_name,
+                    'color_idx': color_idx
+                })
+
+        color_map = {}
+
+        for overlay in price_overlays:
+            fig_data = self.add_overlay(
+                fig_data,
+                overlay['data'],
+                overlay['name'],
+                overlay['color_idx'],
+                theme = theme,
+                color_theme = color_theme
+            )        
+            color_map.update({overlay['name']: overlay['color_idx']})
+
+        fig_data.update({'color_map': color_map})
+
+        return fig_data
+
+
+    ##### PLOT DIFFERENTIAL PLOTLY #####
+
+    def plot_diff_plotly(
+        self,
+        tk,
+        diff_data,
+        price_type_map,
+        reverse_diff = False,
+        add_signal = True,
+        n_ticks_max = 48,
+        n_yticks_max = 16,
+        plot_width = 1450,
+        plot_height = 750,
+        title_font_size = 32,
+        theme = 'dark'
+    ):
+        """
+        price_type_map = {
+            'Adj Close': adj_close_tk,
+            'Adjusted Close': adj_close_tk,
+            'Close': close_tk,
+            'Open': open_tk,
+            'High': high_tk,
+            'Low': low_tk
+        }
+        reverse_diff:
+            if True, the (p2 - p1) difference will be used instead of (p1 - p2)
+        add_signal:
+            if True, a signal will be added that is a moving average of the calculated difference
+        """
+
+        base = diff_data['p_base']
+        p_base_name = base.title()
+        p_base = price_type_map[p_base_name]
+
+        p1_type = diff_data['p1_type']
+        p2_type = diff_data['p2_type']
+        p1_window = diff_data['p1_window']
+        p2_window = diff_data['p2_window']
+        signal_type = diff_data['signal_type']
+        signal_window = diff_data['signal_window']
+
+        price_types = ['adjusted close', 'adj close', 'close', 'open', 'high', 'low']
+        ma_types = ['sma', 'ema', 'dema', 'tema']
+
+        if p1_type in price_types:
+            p1_name = 'Adjusted Close' if p1_name == 'adj close' else p1_type.title()
+            try:
+                p1 = price_type_map[p1_name]
+            except:
+                p1 = price_type_map['Adj Close']
+        elif p1_type in ma_types:
+            p1 = self.moving_average(p_base, p1_type, p1_window)
+            p1_name = f'{p1_type.upper()} {p1_window}'
+
+        if p2_type in price_types:
+            p2_name = 'Adjusted Close' if p2_name == 'adj close' else p2_type.title()
+            try:
+                p2 = price_type_map[p2_name]
+            except:
+                p2 = price_type_map['Adj Close']
+        elif p2_type in ma_types:
+            p2 = self.moving_average(p_base, p2_type, p2_window)
+            p2_name = f'{p2_type.upper()} {p2_window}'
+
+        if not reverse_diff:
+            diff = p1 - p2
+            diff_title = f'{tk} {p_base_name} {p1_name} - {p2_name} Differential'
+            diff_positive_name = f'{p1_name} > {p2_name}'
+            diff_negative_name = f'{p1_name} < {p2_name}'
+        else:
+            diff = p2 - p1
+            diff_title = f'{tk} {p_base_name} {p2_name} - {p1_name} Differential'
+            diff_positive_name = f'{p2_name} > {p1_name}'
+        diff_negative_name = f'{p2_name} < {p1_name}'
+
+        diff_signal = self.moving_average(diff, signal_type, signal_window)
+        signal_name = f'Diff {signal_type.upper()} {signal_window} Signal'
+
+        x_min = str(diff.index.min().date())
+        x_max = str(diff.index.max().date())
+    
+        min_diff = min(diff)
+        max_diff = max(diff)
+
+        y_diff_min, y_diff_max = set_axis_limits(min_diff, max_diff)
+
+        diff_positive = diff.copy()
+        diff_negative = diff.copy()
+
+        prev_v = diff.iloc[0]
+        diff_positive.iloc[0] = prev_v if prev_v >= 0 else np.nan
+        diff_negative.iloc[0] = prev_v if prev_v < 0 else np.nan
+
+        for idx in diff.index[1:]:
+
+            curr_v = diff.loc[idx]
+
+            if np.sign(curr_v) != np.sign(prev_v):
+                # Set both diff copies to 0 if the value is changing sign
+                diff_positive[idx] = 0
+                diff_negative[idx] = 0
+            else:
+                # Set both diff copies to current value or NaN
+                diff_positive[idx] = curr_v if curr_v >= 0 else np.nan
+                diff_negative[idx] = curr_v if curr_v < 0 else np.nan
+
+            prev_v = curr_v
+
+        style = theme_style[theme]
+
+        fig_diff = make_subplots(rows = 1, cols = 1)
+
+        fig_diff.add_trace(
+            go.Scatter(
+                x = diff_positive.index.astype(str),
+                y = diff_positive,
+                line_color = style['diff_green_linecolor'],
+                line_width = 2,
+                fill = 'tozeroy',
+                fillcolor = style['diff_green_fillcolor'],
+                name = diff_positive_name
+            )
+        )
+        fig_diff.add_trace(
+            go.Scatter(
+                x = diff_negative.index.astype(str),
+                y = diff_negative,
+                line_color = 'darkred',
+                line_width = 2,
+                fill = 'tozeroy',
+                fillcolor = style['diff_red_fillcolor'],
+                name = diff_negative_name
+            )
+        )
+        if add_signal:
+            fig_diff.add_trace(
+                go.Scatter(
+                    x = diff_signal.index.astype(str),
+                    y = diff_signal,
+                    line_color = style['signal_color'],
+                    line_width = 2,
+                    name = signal_name
+                )
+            )
+
+        # Add plot border
+        fig_diff.add_shape(
+            type = 'rect',
+            xref = 'x',  # use 'x' because of seconday axis - 'paper' does not work correctly
+            yref = 'paper',
+            x0 = x_min,
+            x1 = x_max,
+            y0 = 0,
+            y1 = 1,
+            line_color = style['x_linecolor'],
+            line_width = 0.3
+        )
+        # Update layout and axes
+        fig_diff.update_layout(
+            width = plot_width,
+            height = plot_height,
+            xaxis_rangeslider_visible = False,
+            template = style['template'],
+            title = dict(
+                text = diff_title,
+                font_size = title_font_size,
+                y = 0.95,
+                x = 0.45,
+                xanchor = 'center',
+                yanchor = 'top'
+            )
+        )
+        fig_diff.update_yaxes(
+            title_text = f'{p_base_name} Differential',
+            range = (y_diff_min, y_diff_max),
+            secondary_y = False,
+            nticks = n_yticks_max,
+            gridcolor = style['x_gridcolor'],
+            ticks = 'outside',
+            ticklen = 8,
+            ticklabelshift = 5,  # not working
+            ticklabelstandoff = 10,  # not working
+        )
+        fig_diff.update_xaxes(
+            type = 'category',
+            nticks = n_ticks_max,
+            tickangle = -90,
+            gridcolor = style['y_gridcolor'],
+            ticks = 'outside',
+            ticklen = 8,
+            ticklabelshift = 5,  # not working
+            ticklabelstandoff = 10,  # not working
+            showgrid = True
+        )
+
+        return fig_diff
 
 
     ##### PLOT HISTORICAL MATPLOTLIB #####
