@@ -12,12 +12,13 @@ The **portfolio_analytics** repository contains the Python code designed to perf
 > - statistical summary at the portfolio level
 > - drawdown analysis with tabular summaries and an interactive plot of top drawdowns for each ticker
 > - interactive line graphs and candlestick plots with traditional and hollow candles
-> - moving average convergence-divergence (MACD) plot with signal overlay and an optional price overlay for each ticker
-> - relative strength index (RSI) plot with overlays
+> - moving average convergence divergence (MACD) plot with signal overlay and an optional price overlay for each ticker
+> - relative strength index (RSI) plot with overbought and oversold overlays and an optional price overlay for each ticker
+> - stochastic oscillator %K-%D plot with overbought and oversold overlays and an optional price overlay for each ticker
 > - up to six custom selected moving average overlays on top of an existing graph
 > - up to three pairs of customized Bollinger band overlays on top of an existing graph
 > - up to three pairs of customized moving average envelope overlays on top of an existing graph
-> - price differential plot for two custom selected moving averages with an optional signal line
+> - price differential plot for two custom selected moving averages or price types with an optional signal line
 
 **3. Analyze returns**
 > - summary of statistical properties of asset return distributions
@@ -25,17 +26,17 @@ The **portfolio_analytics** repository contains the Python code designed to perf
 > - principal component analysis with scatter plots for top components and eigenvector overlays
 
 **4. Analyze performance**
-> - summaries of a variety of performance metrics both for each asset and for the portfolio with selected weights:
+> - summaries of performance metrics both for each asset and for the asset-weighted portfolio:
 >   - Sharpe ratio
 >   - Sortino ratio
 >   - probabilistic Sharpe ratio
->   - Sharpe ratio
 >   - Treynor's ratio
 >   - Jensen's alpha
 >   - information ratio
 >   - omega ratio
 >   - up and down market capture ratios
 >   - Amihud liquidity measure
+>   - utility function
 >   - Calmar ratio
 >   - Sterling ratio
 >   - Martin ratio
