@@ -65,7 +65,7 @@ If you are more used to the traditional candlestick and find the hollow candle p
 > Interactive: yes<BR>
 
 ### 4. Traditional Candles With Moving Average Overlays
-In case you prefer a light plot background, you can switch at any time between the dark and light themes. You can also pick and switch between any of 10 pre-defined overlay color themes and/or invert the sequence of colors in them, if desired. In this traditional candlestick plot, a ribbon of six Simple Moving Average (SMA) overlays have been added with windows increasing in 5-day increments. You can custom-define the window size and the type of each moving average overlay ('simple', 'exponential', 'double exponential', triple exponential' or 'weighted'). 
+In case you prefer a light plot background, you can switch at any time between the dark and light themes. You can also pick and switch between any of 10 pre-defined overlay color themes and/or invert the sequence of colors in them, if desired. In this traditional candlestick plot, a ribbon of six Close-based Simple Moving Average (SMA) overlays have been added with windows increasing in 5-day increments. You can custom-define the window size and the type of each moving average overlay ('simple', 'exponential', 'double exponential', triple exponential' or 'weighted'). 
 > ![](img/04_CandlesTraditional5dSMAOverlaysLavender_Light.png)
 
 > Plotting package: plotly<BR>
@@ -74,7 +74,7 @@ In case you prefer a light plot background, you can switch at any time between t
 > Interactive: yes<BR>
 
 ### 5. Traditional Candles With Moving Average, Bollinger Band and Moving Average Envelope Overlays
-In this plot, traditional candles have been overlaid with a pair of standard (20, 2) Bollinger bands and then with a pair of (20, 10%) envelopes, both over a 20-day Simple Moving Average (SMA). You can add up to three pairs of Bollinger overlays and up to three pairs of envelopes on one plot, toggling them off/on as desired. Note that, if at any point you attempt to add a line that already exists in the plot, the new duplicate line will be omitted. That is why, although both the set of Bollinger and the set of envelope overlays contain the SMA base line, only the one added first - as can be deduced from its position in the legend - is plotted.
+In this plot, traditional candles have been overlaid with a pair of standard (20, 2) Bollinger bands and then with a pair of (20, 10%) envelopes, both over a 20-day Close-based Simple Moving Average (SMA). You can add up to three pairs of Bollinger overlays and up to three pairs of envelopes on one plot, toggling them off/on as desired. Note that, if at any point you attempt to add a line that already exists in the plot, the new duplicate line will be omitted. That is why, although both the set of Bollinger and the set of envelope overlays contain the SMA base line, only the one added first - as can be deduced from its position in the legend - is plotted.
 > ![](img/05_CandlesTraditional20-1Bollinger20-10EnvelopeOverlays.png)
 
 > Plotting package: plotly<BR>
@@ -84,13 +84,24 @@ In this plot, traditional candles have been overlaid with a pair of standard (20
 > Interactive: yes<BR>
 
 ### 6. Adjusted Close With Two Moving Averages and Corresponding Envelope Overlays
-Imagine the richness of investment signals coming from all the overlay line intersections like in this graph... If you can interpret them, that is! :smiley:
+Imagine the richness of signals coming from all the line intersections like in this graph... If you can interpret them, that is! :smiley:
 
-In this plot, traditional candles have been overlaid with a pair of standard (20, 2) Bollinger bands and then with a pair of (20, 10%) envelopes, both over a 20-day Simple Moving Average (SMA). You can add up to three pairs of Bollinger overlays and up to three pairs of envelopes on one plot, toggling them off/on as desired. Note that, if at any point you attempt to add a line that already exists in the plot, the new duplicate line will be omitted. That is why, although both the set of Bollinger and the set of envelope overlays contain the SMA base line, only the one added first - as can be deduced from its position in the legend - is plotted.
+Kidding aside, there is almost no limit to how many overlays you can add to a single plot - the maximum of six lines per a single overlay set comes from the limit of colors/shades in each color theme, but you can add multiple sets on top of one another using different color themes! Remember that these plots are interactive, so you can always choose which lines are displayed by toggling them off/on from the legend. 
+
+In this graph, the Adjusted Close daily prices have been overlaid with three pairs of envelopes in 2.5% increments over a 50-day SMA and then with three pairs of envelopes in the same increments over a 10-day SMA. Both sets of overlays are based on Adjusted Close, since that is the base price curve here, but you could have also chosen to plot Close, Open, High, Low, or all of them, if you wished so.
 > ![](img/06_EnvelopesGold50Magenta10.png)
 
 > Plotting package: plotly<BR>
 > Theme: dark<BR>
-> Bollinger overlay color map: sapphire<BR>
-> Envelope overlay color map: turquoise<BR>
+> First envelope overlay color map: gold<BR>
+> Second envelope overlay color map: magenta<BR>
+> Interactive: yes<BR>
+
+### 7. Moving Average Differential Plot With a Signal Overlay
+If the mutual behaviour of any two price or moving average curves raises your special interest, you can plot their difference in a similar way the moving average convergence divergence (MACD) is constructed (see 11. below). If it makes sense in a particular case, you can also add a custom-defined signal line that is a moving average of that very difference - again, similar to the MACD 9-day SMA signal. In this example, the 20-day Simple (SMA) and Exponential (EMA) Moving Averages are compared, with an arbitrary signal of 10-day SMA added. But it could also be a comparison between an EMA and a Weighted Moving Average (WMA) with an EMA signal; or a comparison between two moving averages of different window sizes; or between Open and Close prices, similar to a traditional candlestick plot, to name just a few.
+> ![](img/07_SMA20-EMA20_Differential_Light.png)
+
+> Plotting package: plotly<BR>
+> Theme: light<BR>
+> Signal overlay color map: gold<BR>
 > Interactive: yes<BR>
