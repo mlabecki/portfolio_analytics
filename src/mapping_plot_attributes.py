@@ -12,8 +12,8 @@ theme_style = {
         'diff_green_fillcolor':     'rgba(50, 205, 50, 0.75)',  # limegreen
         'diff_red_fillcolor':       'rgba(255, 0, 0, 0.7)',    # red
         'rsi_linecolor':            'gold',
-        'kline_linecolor':          'gold',
-        'dline_linecolor':          'mediumorchid',
+        'kline_linecolor':          'orange',
+        'dline_linecolor':          'darkorchid',
         'oversold_linecolor':       'saddlebrown',
         'oversold_fillcolor':       'rgba(255, 225, 150, 0.3)',
         'overbought_linecolor':     'firebrick',
@@ -209,13 +209,11 @@ theme_style = {
         'signal_color':             'orange',
         'diff_green_linecolor':     'darkgreen',
         'diff_red_linecolor':       'darkred',
-        #'diff_green_fillcolor':     'rgba(50, 205, 50, 0.75)',  # limegreen
         'diff_green_fillcolor':     'rgba(0, 155, 0, 0.85)',     # green
-        # 'diff_red_fillcolor':       'rgba(255, 0, 0, 0.75)',     # red
         'diff_red_fillcolor':       'rgba(178, 34, 34, 0.85)',     # firebrick
         'rsi_linecolor':            'goldenrod',
-        'kline_linecolor':          'goldenrod',
-        'dline_linecolor':          'darkorchid',
+        'kline_linecolor':          'darkorange',
+        'dline_linecolor':          'purple',
         'oversold_linecolor':       'rgb(125, 75, 25)',
         'oversold_fillcolor':       'rgba(205, 165, 75, 0.3)',
         'overbought_linecolor':     'rgb(138, 34, 54)',

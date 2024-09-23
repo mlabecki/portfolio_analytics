@@ -35,6 +35,26 @@ class AnalyzePrices():
         self.tickers = tickers
 
 
+    ##### WEIGHTED MEAN #####
+
+    def weighted_mean(
+            self,
+            values
+    ):
+        """
+        values: a list, tuple or series of numerical values
+        """
+        if isinstance(values, (list, tuple)):
+            values = pd.Series(values)
+
+        n = len(values)
+        weight_sum = n * (n + 1) / 2
+        weights = range(n + 1)[1:]
+        wm = values @ weights / weight_sum
+
+        return wm
+
+
     ##### MOVING AVERAGE #####
 
     def moving_average(
@@ -45,9 +65,16 @@ class AnalyzePrices():
         min_periods = 1
     ):
         """
-        df_tk:      a series of price values, taken as a column of df_close or df_adj_close for ticker tk
-        ma_type:    simple ('sma'), exponential ('ema'), double exponential ('dema'), triple exponential ('tema')
-        window:     length in days
+        df_tk:      
+            a series of price values, taken as a column of df_close or df_adj_close for ticker tk
+        ma_type:    
+            simple ('sma'),
+            exponential ('ema'),
+            double exponential ('dema'),
+            triple exponential ('tema'),
+            weighted ('wma')
+        window:
+            length in days
         Returns ma
         """
 
@@ -61,6 +88,10 @@ class AnalyzePrices():
                 ma = ma.ewm(span = window).mean()
                 if ma_type == 'tema':
                     ma = ma.ewm(span = window).mean()
+
+        elif ma_type == 'wma':
+            ma = df_tk.rolling(window = window, min_periods = min_periods).apply(lambda x: self.weighted_mean(x))
+
         else:  # 'sma' or anything else
             ma = df_tk.rolling(window = window, min_periods = min_periods).mean()
 
@@ -1333,7 +1364,7 @@ class AnalyzePrices():
         df_price: df_close or df_adj_close, depending on the underlying figure
         ma_list: list of ma overlay dictionaries, containing
                  - ma_idx ma index (1, 2,...)
-                 - ma_type: 'sma' (default), 'ema', 'dema', or 'tema'
+                 - ma_type: 'sma' (default), 'ema', 'dema', 'tema' or 'wma'
                  - ma_window, in days
                  - showlegend: include in plot legend or not
         """
@@ -1946,7 +1977,7 @@ class AnalyzePrices():
         signal_window = diff_data['signal_window']
 
         price_types = ['adjusted close', 'adj close', 'close', 'open', 'high', 'low']
-        ma_types = ['sma', 'ema', 'dema', 'tema']
+        ma_types = ['sma', 'ema', 'dema', 'tema', 'wma']
 
         if p1_type in price_types:
             p1_name = 'Adjusted Close' if p1_name == 'adj close' else p1_type.title()
