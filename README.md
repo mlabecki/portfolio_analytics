@@ -3,12 +3,12 @@ The main purpose of this project was to create an interactive dashboard offering
 
 The **portfolio_analytics** repository contains the Python code designed to perform four major groups of tasks:
 
-**1. Download data**
+**a. Download data**
 > - web scrape comprehensive lists of top assets in various categories
 > - download ticker information from Yahoo!Finance
 > - download historical ticker data from Yahoo!Finance
 
-**2. Analyze prices**
+**b. Analyze prices**
 > - statistical summary at the portfolio level
 > - drawdown analysis with tabular summaries and an interactive plot of top drawdowns for each ticker
 > - interactive line graphs and candlestick plots with traditional and hollow candles
@@ -20,12 +20,12 @@ The **portfolio_analytics** repository contains the Python code designed to perf
 > - up to three pairs of customized moving average envelope overlays on top of an existing graph
 > - price differential plot for two custom selected moving averages or price types with an optional signal line
 
-**3. Analyze returns**
+**c. Analyze returns**
 > - summary of statistical properties of asset return distributions
 > - heat map plots of various asset correlation metrics
 > - principal component analysis with scatter plots for top components and eigenvector overlays
 
-**4. Analyze performance**
+**d. Analyze performance**
 > - summaries of performance metrics both for each asset and for the asset-weighted portfolio:
 >   - Sharpe ratio
 >   - Sortino ratio
@@ -40,3 +40,57 @@ The **portfolio_analytics** repository contains the Python code designed to perf
 >   - Calmar ratio
 >   - Sterling ratio
 >   - Martin ratio
+
+Implementation of tasks pertaining to the last two groups above is still ongoing. Below are some screenshots illustrating the functional capabilities of the current code and of the intended dashboard.
+
+### 1. Statistical Properties of Asset Returns
+The summary was prepared for one year of historical log return distributions of the Magnificent Seven stocks. Jarque-Bera test p-values > 0.05 would typically indicate that the given distribution can be considered normal.
+> ![](img/01_StatsSummaryReturnsMagnificent7.png)
+
+### 2. Asset Correlation Heat Map
+The heat map plots the Kendall correlation of log returns for the Dow Jones Industrial Average stocks based on one year of historical data. Other correlation metrics that can be plotted in the same way include Pearson correlation, Spearman correlation, the adjusted correlation metric and the cumulative return distance. The last two were proposed by [<ins>Dolphin et al</ins>](https://arxiv.org/pdf/2107.03926) and may, as the authors argue, be more suitable measures of similarity between assets than the traditional correlation metrics. 
+> ![](img/02_KendallCorrelationPlot_DJIA.png)
+
+> Plotting package: matplotlib, seaborn<BR>
+> Color map: seismic (built-in)<BR>
+> Interactive: no<BR>
+
+### 3. Hollow Candles With Price Overlays
+If you are more used to the traditional candlestick and find the hollow candle plot a bit confusing, the legend explains the meaning of each candle type, plus the Open and Close prices are plotted as overlays (High and Low can also be added, if desired). These overlays can be toggled off/on anytime by clicking on the corresponding line in the legend.
+> ![](img/03_CandlesHollowOpenClose.png)
+
+> Plotting package: plotly<BR>
+> Theme: dark<BR>
+> Overlay color theme: sapphire<BR>
+> Interactive: yes<BR>
+
+### 4. Traditional Candles With Moving Average Overlays
+In case you prefer a light plot background, you can switch at any time between the dark and light themes. You can also pick and switch between any of 10 pre-defined overlay color themes and/or invert the sequence of colors in them, if desired. In this traditional candlestick plot, a ribbon of six Simple Moving Average (SMA) overlays have been added with windows increasing in 5-day increments. You can custom-define the window size and the type of each moving average overlay ('simple', 'exponential', 'double exponential', triple exponential' or 'weighted'). 
+> ![](img/04_CandlesTraditional5dSMAOverlaysLavender_Light.png)
+
+> Plotting package: plotly<BR>
+> Theme: light<BR>
+> Overlay color map: lavender<BR>
+> Interactive: yes<BR>
+
+### 5. Traditional Candles With Moving Average, Bollinger Band and Moving Average Envelope Overlays
+In this plot, traditional candles have been overlaid with a pair of standard (20, 2) Bollinger bands and then with a pair of (20, 10%) envelopes, both over a 20-day Simple Moving Average (SMA). You can add up to three pairs of Bollinger overlays and up to three pairs of envelopes on one plot, toggling them off/on as desired. Note that, if at any point you attempt to add a line that already exists in the plot, the new duplicate line will be omitted. That is why, although both the set of Bollinger and the set of envelope overlays contain the SMA base line, only the one added first - as can be deduced from its position in the legend - is plotted.
+> ![](img/05_CandlesTraditional20-1Bollinger20-10EnvelopeOverlays.png)
+
+> Plotting package: plotly<BR>
+> Theme: dark<BR>
+> Bollinger overlay color map: sapphire<BR>
+> Envelope overlay color map: turquoise<BR>
+> Interactive: yes<BR>
+
+### 6. Adjusted Close With Two Moving Averages and Corresponding Envelope Overlays
+Imagine the richness of investment signals coming from all the overlay line intersections like in this graph... If you can interpret them, that is! []:smiley:]
+
+In this plot, traditional candles have been overlaid with a pair of standard (20, 2) Bollinger bands and then with a pair of (20, 10%) envelopes, both over a 20-day Simple Moving Average (SMA). You can add up to three pairs of Bollinger overlays and up to three pairs of envelopes on one plot, toggling them off/on as desired. Note that, if at any point you attempt to add a line that already exists in the plot, the new duplicate line will be omitted. That is why, although both the set of Bollinger and the set of envelope overlays contain the SMA base line, only the one added first - as can be deduced from its position in the legend - is plotted.
+> ![](img/06_EnvelopesGold50Magenta10.png)
+
+> Plotting package: plotly<BR>
+> Theme: dark<BR>
+> Bollinger overlay color map: sapphire<BR>
+> Envelope overlay color map: turquoise<BR>
+> Interactive: yes<BR>
