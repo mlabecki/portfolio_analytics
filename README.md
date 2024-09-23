@@ -84,7 +84,7 @@ In this plot, traditional candles have been overlaid with a pair of standard (20
 > Interactive: yes<BR>
 
 ### 6. Adjusted Close With Two Moving Averages and Corresponding Envelope Overlays
-Imagine the richness of investment signals coming from all the overlay line intersections like in this graph... If you can interpret them, that is! []:smiley:]
+Imagine the richness of investment signals coming from all the overlay line intersections like in this graph... If you can interpret them, that is! :smiley:
 
 In this plot, traditional candles have been overlaid with a pair of standard (20, 2) Bollinger bands and then with a pair of (20, 10%) envelopes, both over a 20-day Simple Moving Average (SMA). You can add up to three pairs of Bollinger overlays and up to three pairs of envelopes on one plot, toggling them off/on as desired. Note that, if at any point you attempt to add a line that already exists in the plot, the new duplicate line will be omitted. That is why, although both the set of Bollinger and the set of envelope overlays contain the SMA base line, only the one added first - as can be deduced from its position in the legend - is plotted.
 > ![](img/06_EnvelopesGold50Magenta10.png)
