@@ -41,7 +41,7 @@ The main purpose of this project was to create an interactive dashboard offering
 
 Detailed implementation of the last two groups of tasks is still in progress. 
 
-Below are some screenshots illustrating the functional capabilities of the current code and of the intended dashboard.
+Below are some screenshots illustrating the functional capabilities of the current code and of the intended dashboard. Click on any of them to enlarge.
 
 ### 1. Statistical Properties of Portfolio Asset Returns
 The summary was prepared for one year of historical log return distributions of the Magnificent Seven stocks. Jarque-Bera test p-values > 0.05 would typically indicate that the given distribution can be considered normal.
@@ -55,8 +55,8 @@ The heat map plots the Kendall correlation of log returns for the Dow Jones Indu
 > Color map: seismic (built-in)<BR>
 > Interactive: no<BR>
 
-### 3. Hollow Candles With Price Overlays
-If you are more used to the traditional candlestick and find the hollow candle plot a bit confusing, the legend explains the meaning of each candle type, plus the Open and Close prices are plotted as overlays (High and Low can also be added, if desired). These overlays can be toggled off/on anytime by clicking on the corresponding line in the legend.
+### 3. Hollow Candlestick With Price Overlays
+If you are more used to the traditional candles and find the hollow candlestick a bit confusing, the legend explains the meaning of each candle type. For additional convenience, the Open and Close prices are plotted as overlays (High and Low can also be added, if desired), which can be toggled off/on anytime by clicking on the corresponding line in the legend.
 > ![](img/03_CandlesHollowOpenClose.png)
 
 > Plotting package: plotly<BR>
@@ -64,16 +64,16 @@ If you are more used to the traditional candlestick and find the hollow candle p
 > Overlay color theme: sapphire<BR>
 > Interactive: yes<BR>
 
-### 4. Traditional Candles With Moving Average Overlays
+### 4. Traditional Candlestick With Moving Average Overlays
 In case you prefer a light plot background, you can switch at any time between the dark and light themes. You can also pick and switch between any of 10 pre-defined overlay color themes and/or invert the sequence of colors in them, if desired. In this traditional candlestick plot, a ribbon of six Close-based Simple Moving Average (SMA) overlays have been added with windows increasing in 5-day increments. You can custom-define the window size and the type of each moving average overlay ('simple', 'exponential', 'double exponential', triple exponential' or 'weighted'). 
 > ![](img/04_CandlesTraditional5dSMAOverlaysLavender_Light.png)
 
 > Plotting package: plotly<BR>
 > Theme: light<BR>
-> Overlay color map: lavender<BR>
+> Overlay color map: lavender inverted<BR>
 > Interactive: yes<BR>
 
-### 5. Traditional Candles With Moving Average, Bollinger Band and Moving Average Envelope Overlays
+### 5. Traditional Candlestick With Moving Average, Bollinger Band and Moving Average Envelope Overlays
 In this plot, traditional candles have been overlaid with a pair of standard (20, 2) Bollinger bands and then with a pair of (20, 10%) envelopes, both over a 20-day Close-based SMA. You can add up to three pairs of Bollinger overlays and up to three pairs of envelopes on one plot, toggling them off/on as desired. Note that, if at any point you attempt to add a line that already exists in the plot, the new duplicate line will be omitted. That is why, although both the set of Bollinger and the set of envelope overlays contain the SMA base line, only the one added first - as can be noted from its position in the legend - is plotted.
 > ![](img/05_CandlesTraditional20-1Bollinger20-10EnvelopeOverlays.png)
 
@@ -86,9 +86,9 @@ In this plot, traditional candles have been overlaid with a pair of standard (20
 ### 6. Adjusted Close With Two Moving Averages and Corresponding Envelope Overlays
 Imagine the richness of signals coming from all the line intersections in a graph like this... If you can interpret them, that is! :smiley:
 
-Kidding aside, there is almost no limit to how many overlays you can add to a single plot - the maximum of six lines per a single overlay set comes from the limit of colors/shades in each color theme, but you can add multiple sets on top of one another using different color themes. Remember that these plots are interactive, so you can always choose which lines are displayed by toggling them off/on from the legend. 
+Kidding aside, there is almost no limit to how many overlays you can add to a single plot - the maximum of six lines per single overlay set comes from the limit of colors/shades in each color theme, but you can add multiple sets on top of one another using different color themes. Remember that these plots are interactive, so you can always choose which lines are displayed by toggling them off/on from the legend. 
 
-In this graph, the Adjusted Close daily prices have been overlaid with three pairs of envelopes in 2.5% increments over a 50-day SMA and then with three pairs of envelopes in the same increments over a 10-day SMA. Both sets of overlays are based on Adjusted Close, since that is the base price curve here, but you could have also chosen to plot Close, Open, High, Low, or all of them, if you wished so.
+In this graph, the Adjusted Close daily prices have been overlaid with three pairs of envelopes in 2.5% increments over a 50-day SMA and then with three pairs of envelopes in the same increments over a 10-day SMA. Both sets of overlays are based on Adjusted Close, since that is the base price curve here, but you could have also chosen to plot Close, Open, High or Low instead - or even all of them as overlays, if you wished so.
 > ![](img/06_EnvelopesGold50Magenta10.png)
 
 > Plotting package: plotly<BR>
@@ -98,7 +98,7 @@ In this graph, the Adjusted Close daily prices have been overlaid with three pai
 > Interactive: yes<BR>
 
 ### 7. Moving Average Differential Plot With Signal Overlay
-If the mutual behaviour of any two price or moving average curves raises your special interest, you can plot their difference in a similar way the moving average convergence divergence (MACD) is constructed (see 11. below). If it makes sense in a particular case, you can also add a custom-defined signal line that is a moving average of that very difference - again, similar to the MACD 9-day SMA signal. In this example, the 20-day Simple (SMA) and Exponential (EMA) Moving Averages are compared, with an arbitrary signal of 10-day SMA added. But it could also be a comparison between an EMA and a Weighted Moving Average (WMA) with an EMA signal; or a comparison between two moving averages of different window sizes; or between Open and Close prices, similar to a traditional candlestick plot - to name just a few.
+If the behaviour of any two price or moving average curves catches your special attention, you can plot their difference in a similar way the moving average convergence divergence (MACD) is constructed (see 11. below). If you feel it makes sense, you can also add a custom-defined signal line that is a moving average of that very difference - again, similar to the MACD 9-day SMA signal. In this example, the 20-day Simple (SMA) and Exponential (EMA) Moving Averages are compared, with an arbitrary (albeit possibly meaningless in this case) signal of a 10-day SMA added. It could also be a comparison between an EMA and a Weighted Moving Average (WMA) with an EMA signal; or a comparison between two moving averages of different window sizes; or between Open and Close prices, similar to a traditional candlestick plot - just to name a few.
 > ![](img/07_SMA20-EMA20_Differential_Light.png)
 
 > Plotting package: plotly<BR>
@@ -115,7 +115,7 @@ The top drawdowns for each asset of interest can be identified based on either t
 > ![](img/09_SixLongestDrawdowns_AAPL.png)
 
 ### 10. Individual Asset Drawdown Plot
-This example uses the same AAPL data as above, except the top six drawdowns are selected based on their % depth. The drawdowns are based, and are overlaid, on the Adjusted Close prices (although Close or any other price could also be used). For better clarity, only the peak-to-trough portion of each drawdown is shown, and the lengths listed in the legend refer to that phase only; however, the option of displaying the full peak-to-recovery length is also available. The color intensity of each drawdown plotted is proportional to its depth. 
+This example uses the same AAPL data as above, except the top six drawdowns are selected based on their % depth. The drawdowns are based, and are overlaid, on the Adjusted Close prices (although Close or any other price could also be used). For better clarity, only the peak-to-trough portion of each drawdown is shown, and the lengths in days listed in the legend refer to that phase only; however, the option of displaying the full peak-to-recovery length is also available. The color intensity of each drawdown plotted is proportional to its depth. 
 > ![](img/10_SixDeepestDrawdowns_AAPL.png)
 
 > Plotting package: plotly<BR>
