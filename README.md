@@ -74,7 +74,7 @@ In case you prefer a light plot background, you can switch at any time between t
 > Interactive: yes<BR>
 
 ### 5. Traditional Candlestick With Moving Average, Bollinger Band and Moving Average Envelope Overlays
-In this plot, traditional candles have been overlaid with a pair of standard (20, 2) Bollinger bands and then with a pair of (20, 10%) envelopes, both over a 20-day Close-based SMA. You can add up to three pairs of Bollinger overlays and up to three pairs of envelopes on one plot, toggling them off/on as desired. Note that, if at any point you attempt to add a line that already exists in the plot, the new duplicate line will be omitted. That is why, although both the set of Bollinger and the set of envelope overlays contain the SMA base line, only the one added first - as can be noted from its position in the legend - is plotted.
+In this plot, traditional candles have been overlaid with a pair of standard (20, 2) Bollinger bands and then with a pair of (20, 10%) envelopes, both over a 20-day Close-based SMA. You can add up to three pairs of Bollinger overlays and up to three pairs of envelopes on one plot, toggling them off/on as desired. Note that, if at any point you attempt to add a line that already exists in the plot, the new duplicate line will be omitted. That is why, although both the set of Bollinger and the set of envelope overlays contain the 20-day SMA base line, only the one added first - as can be noted from its position in the legend - is plotted.
 > ![](img/05_CandlesTraditional20-1Bollinger20-10EnvelopeOverlays.png)
 
 > Plotting package: plotly<BR>
@@ -88,7 +88,7 @@ Imagine the richness of signals coming from all the line intersections in a grap
 
 Kidding aside, there is almost no limit to how many overlays you can add to a single plot - the maximum of six lines per single overlay set comes from the limit of colors/shades in each color theme, but you can add multiple sets on top of one another using different color themes. Remember that these plots are interactive, so you can always choose which lines are displayed by toggling them off/on from the legend. 
 
-In this graph, the Adjusted Close daily prices have been overlaid with three pairs of envelopes in 2.5% increments over a 50-day SMA and then with three pairs of envelopes in the same increments over a 10-day SMA. Both sets of overlays are based on Adjusted Close, since that is the base price curve here, but you could have also chosen to plot Close, Open, High or Low instead - or even all of them as overlays, if you wished so.
+In this graph, the Adjusted Close daily prices have been overlaid with three pairs of envelopes in 2.5% increments over a 50-day SMA and then with three pairs of envelopes in the same increments over a 10-day SMA. Both sets of overlays are based on Adjusted Close, since that is the base price curve here, but you could have also chosen to use Close, Open, High or Low as the base instead - or even plot all of them as overlays, if you wished so.
 > ![](img/06_EnvelopesGold50Magenta10.png)
 
 > Plotting package: plotly<BR>
@@ -98,7 +98,7 @@ In this graph, the Adjusted Close daily prices have been overlaid with three pai
 > Interactive: yes<BR>
 
 ### 7. Moving Average Differential Plot With Signal Overlay
-If the behaviour of any two price or moving average curves catches your special attention, you can plot their difference in a similar way the moving average convergence divergence (MACD) is constructed (see 11. below). If you feel it makes sense, you can also add a custom-defined signal line that is a moving average of that very difference - again, similar to the MACD 9-day SMA signal. In this example, the 20-day Simple (SMA) and Exponential (EMA) Moving Averages are compared, with an arbitrary (albeit possibly meaningless in this case) signal of a 10-day SMA added. It could also be a comparison between an EMA and a Weighted Moving Average (WMA) with an EMA signal; or a comparison between two moving averages of different window sizes; or between Open and Close prices, similar to a traditional candlestick plot - just to name a few.
+If the behaviour of any two price or moving average curves happens to catch your special attention, you can plot their difference in a similar way the moving average convergence divergence (MACD) is constructed (see 11. below). If you feel it makes sense, you can also add a custom-defined signal line that is a moving average of that very difference - again, similar to the MACD 9-day SMA signal. In this example, the 20-day Simple (SMA) and Exponential (EMA) Moving Averages are compared, with an arbitrary signal of a 10-day SMA added. Likewise, you could also use this type of plot to compare an EMA against a Weighted Moving Average (WMA) with an EMA signal; orto compare two moving averages of different window sizes; or to compare Open and Close prices, similar to a traditional candlestick plot - just to name a few examples.
 > ![](img/07_SMA20-EMA20_Differential_Light.png)
 
 > Plotting package: plotly<BR>
