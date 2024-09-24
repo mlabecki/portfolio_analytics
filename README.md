@@ -1,5 +1,7 @@
 # portfolio_analytics
-The main purpose of this project was to create an interactive dashboard offering the user the opportunity to perform technical analysis on a portfolio of custom selected assets. These historical insights would then serve the broader goal of being able to build an optimal portfolio that is expected to perform successfully based on the desired investment objectives. The project is ongoing, although a vast amount of functionality has already been developed, with the Python code designed to perform four major groups of tasks:
+The main purpose of this project has been to create an interactive dashboard offering the user an opportunity to perform technical analysis of a portfolio of custom selected assets. These historical insights would then serve the broader goal of being able to build an optimal portfolio that is expected to perform successfully based on the desired investment objectives. 
+
+The project is ongoing, although a vast amount of functionality has already been developed. The idea has been to be able to perform these four major groups of tasks:
 
 **a. Download data**
 > - web scrape comprehensive lists of top assets in various categories
@@ -8,11 +10,11 @@ The main purpose of this project was to create an interactive dashboard offering
 
 **b. Analyze prices**
 > - statistical summary at the portfolio level
-> - drawdown analysis with tabular summaries and an interactive plot of top drawdowns for each ticker
+> - drawdown analysis with tabular summaries and an interactive plot of top drawdowns
 > - interactive line graphs and candlestick plots with traditional and hollow candles
-> - moving average convergence divergence (MACD) plot with signal overlay and an optional price overlay for each ticker
-> - relative strength index (RSI) plot with overbought and oversold overlays and an optional price overlay for each ticker
-> - stochastic oscillator %K-%D plot with overbought and oversold overlays and an optional price overlay for each ticker
+> - moving average convergence divergence (MACD) plot with signal overlay and an optional price overlay
+> - relative strength index (RSI) plot with overbought and oversold overlays and an optional price overlay
+> - stochastic oscillator %K-%D plot with overbought and oversold overlays and an optional price overlay
 > - up to six custom selected moving average overlays on top of an existing graph
 > - up to three pairs of customized Bollinger band overlays on top of an existing graph
 > - up to three pairs of customized moving average envelope overlays on top of an existing graph
@@ -25,19 +27,19 @@ The main purpose of this project was to create an interactive dashboard offering
 
 **d. Analyze performance**
 > - summaries of performance metrics both for each asset and for the asset-weighted portfolio:
->   - Sharpe ratio
->   - Sortino ratio
->   - probabilistic Sharpe ratio
->   - Treynor's ratio
->   - Jensen's alpha
->   - information ratio
->   - omega ratio
->   - up and down market capture ratios
->   - Amihud liquidity measure
->   - utility function
->   - Calmar ratio
->   - Sterling ratio
->   - Martin ratio
+>   - Sharpe Ratio
+>   - Sortino Ratio
+>   - Probabilistic Sharpe Ratio
+>   - Treynor's Ratio
+>   - Jensen's Alpha
+>   - Information Ratio
+>   - Omega Ratio
+>   - Up and Down Market Capture Ratios
+>   - Amihud Liquidity Measure
+>   - Utility Function
+>   - Calmar Ratio
+>   - Sterling Ratio
+>   - Martin Ratio
 
 Detailed implementation of the last two groups of tasks is still in progress. 
 
@@ -98,7 +100,7 @@ In this graph, the Adjusted Close daily prices have been overlaid with three pai
 > Interactive: yes<BR>
 
 ### 7. Moving Average Differential Plot With Signal Overlay
-If the behaviour of any two price or moving average curves happens to catch your special attention, you can plot their difference in a similar way the moving average convergence divergence (MACD) is constructed (see 11. below). If you feel it makes sense, you can also add a custom-defined signal line that is a moving average of that very difference - again, similar to the MACD 9-day SMA signal. In this example, the 20-day Simple (SMA) and Exponential (EMA) Moving Averages are compared, with an arbitrary signal of a 10-day SMA added. Likewise, you could also use this type of plot to compare an EMA against a Weighted Moving Average (WMA) with an EMA signal; orto compare two moving averages of different window sizes; or to compare Open and Close prices, similar to a traditional candlestick plot - just to name a few examples.
+If the behaviour of any two price or moving average curves happens to catch your special attention, you can plot their difference in a similar way the moving average convergence divergence (MACD) is constructed (see 11. below). If you feel it makes sense, you can also add a custom-defined signal line that is a moving average of that very difference - again, similar to the MACD 9-day SMA signal. In this example, the 20-day Simple (SMA) and Exponential (EMA) Moving Averages are compared, with an arbitrary signal of a 10-day SMA added. Likewise, you could also use this type of plot to compare an EMA against a Weighted Moving Average (WMA) with an EMA signal; or to compare two moving averages of different window sizes; or to compare Open and Close prices, similar to a traditional candlestick plot - just to name a few possibilities.
 > ![](img/07_SMA20-EMA20_Differential_Light.png)
 
 > Plotting package: plotly<BR>
