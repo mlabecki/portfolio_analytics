@@ -35,11 +35,59 @@ class AnalyzePrices():
         self.tickers = tickers
 
 
+    ##### WELLES WILDER MOVING AVERAGE #####
+
+    def wilder_moving_average(
+        self,
+        df_tk,
+        n
+    ):
+        """
+        J. Welles Wilder's EMA 
+        https://stackoverflow.com/questions/40256338/calculating-average-true-range-atr-on-ohlc-data-with-python
+
+        """
+        wwma = df_tk.ewm(alpha = 1 / n, adjust = False).mean()
+        
+        return wwma
+
+
+    ##### AVERAGE TRUE RATE #####
+
+    def average_true_rate(
+        self,
+        close_tk,
+        high_tk,
+        low_tk,
+        n = 14
+    ):
+        """
+        https://stackoverflow.com/questions/40256338/calculating-average-true-range-atr-on-ohlc-data-with-python
+
+        """
+        tr_cols = ['tr0', 'tr1', 'tr2']
+        df_tr = pd.DataFrame(columns = tr_cols, index = close_tk.index)
+
+        df_tr['tr0'] = abs(high_tk - low_tk)
+        df_tr['tr1'] = abs(high_tk - close_tk.shift())
+        df_tr['tr2'] = abs(low_tk - close_tk.shift())
+        tr = df_tr[tr_cols].max(axis = 1)
+
+        atr = self.wilder_moving_average(tr, n)
+        atrp = atr / close_tk * 100
+        atr_data = {
+            'atr': atr,
+            'atrp': atrp
+        }
+
+        return atr_data
+
+
     ##### WEIGHTED MEAN #####
 
     def weighted_mean(
-            self,
-            values
+        self,
+        values
     ):
         """
         values: a list, tuple or series of numerical values
@@ -97,6 +145,251 @@ class AnalyzePrices():
 
         return ma
 
+
+    ##### STOCHASTIC OSCILLATOR #####
+
+    def stochastic_oscillator(
+        self,
+        close_tk,
+        high_tk,
+        low_tk,
+        fast_k_period = 14,
+        smoothing_period = 3,
+        sma_d_period = 3,
+        stochastic_type = 'Slow'
+    ):
+        """
+        stochastic_type: 'Fast', 'Slow', 'Full'
+        NOTES:
+        1) fast_k_period is also know as the look--back period
+        2) smoothing_period is the period used in slow %K and full %K
+        3) sma_d_period is the %D averaging period used in fast, slow and full stochastics
+        4) if sma_d_period == smoothing_period, then the slow and full stochastics become equivalent
+
+        """
+        fast_low = low_tk.rolling(window = fast_k_period, min_periods = 1).min()
+        fast_high = high_tk.rolling(window = fast_k_period, min_periods = 1).max()
+        fast_k_line = 100 * (close_tk - fast_low) / (fast_high - fast_low)
+
+        if stochastic_type.lower() == 'fast':
+
+            k_line = fast_k_line.copy()    
+            d_line = k_line.rolling(window = sma_d_period, min_periods = 1).mean()
+            stochastic_label = f'({fast_k_period}, {sma_d_period})'
+            stochastic_type = 'Fast'
+
+        elif (stochastic_type.lower() == 'full') | (sma_d_period != smoothing_period):
+
+            k_line = fast_k_line.rolling(window = smoothing_period, min_periods = 1).mean()
+            d_line = k_line.rolling(window = sma_d_period, min_periods = 1).mean()
+            stochastic_label = f'({fast_k_period}, {smoothing_period}, {sma_d_period})'
+            stochastic_type = 'Full'
+
+        else:
+            # This includes the case of 
+            # (stochastic_type == 'slow') | (sma_d_period == smoothing_period)
+            # and any other stochastic_type specified.
+
+            k_line = fast_k_line.rolling(window = smoothing_period, min_periods = 1).mean()
+            d_line = k_line.rolling(window = sma_d_period, min_periods = 1).mean()
+            stochastic_label = f'({fast_k_period}, {sma_d_period})'
+            stochastic_type = 'Slow'
+
+        k_line.index = k_line.index.astype(str)
+        d_line.index = d_line.index.astype(str)
+
+        stochastic_data = {
+            'k_line': k_line,
+            'd_line': d_line,
+            'label': stochastic_label,
+            'type': stochastic_type
+        }
+
+        return stochastic_data
+
+
+    ##### PLOT STOCHASTIC PLOTLY #####
+
+    def plot_stochastic_plotly(
+        elf,
+        stochastic_data,
+        tk,
+        oversold_threshold = 20,
+        overbought_threshold = 80,
+        n_ticks_max = 48,
+        plot_width = 1450,
+        plot_height = 750,
+        title_font_size = 32,
+        theme = 'dark',
+        overlay_price = False,
+        prices = None
+    ):
+        """
+        stochastic_data: output from stochastic_oscillator()
+        tk: ticker for which to plot the stochastic %K and %D lines
+        prices: close_tk (if overlay_price is True)
+
+        """
+
+        k_line = stochastic_data['k_line']
+        d_line = stochastic_data['d_line']
+        stochastic_label = stochastic_data['label']
+        stochastic_type = stochastic_data['type']
+
+        style = theme_style[theme]
+
+        title_stochastic = f'{tk} {stochastic_label} {stochastic_type} Stochastic Oscillator (%)'
+
+        if overlay_price:
+            price_name = 'Close'
+            prices.index = prices.index.astype(str)
+            fig_stochastic = make_subplots(specs=[[{'secondary_y': True}]])
+        else:
+            fig_stochastic = make_subplots(rows = 1, cols = 1)
+
+        x_min = k_line.index.min()
+        x_max = k_line.index.max()
+
+        stochastic_hlines = pd.DataFrame(
+            {
+                'oversold': oversold_threshold,
+                'overbought': overbought_threshold,
+                '100': 100
+            },
+            index = k_line.index
+        )
+
+        # For some reason, the price overlay trace shows first in the legend if it's added last
+        if overlay_price:
+            fig_stochastic.add_trace(
+                go.Scatter(
+                    x = prices.index,
+                    y = prices,
+                    # y = close_tk,
+                    line_color = style['basecolor'],
+                    name = price_name
+                ),
+                secondary_y = True
+            )
+        fig_stochastic.add_trace(
+            go.Scatter(
+                x = stochastic_hlines.index,
+                y = stochastic_hlines['oversold'],
+                line_color = style['oversold_linecolor'],
+                line_width = 2,
+                fill = 'tozeroy',
+                fillcolor = style['oversold_fillcolor'],
+                name = f'Oversold < {oversold_threshold}%'
+            ),
+            secondary_y = False
+        )
+        fig_stochastic.add_trace(
+            go.Scatter(
+                x = stochastic_hlines.index,
+                y = stochastic_hlines['100'],
+                line_color = 'black',
+                line_width = 0,
+                showlegend = False
+            ),
+            secondary_y = False
+        )
+        fig_stochastic.add_trace(
+            go.Scatter(
+                x = stochastic_hlines.index,
+                y = stochastic_hlines['overbought'],
+                line_color = style['overbought_linecolor'],
+                line_width = 2,
+                fill = 'tonexty',  # fill to previous scatter trace
+                fillcolor = style['overbought_fillcolor'],
+                name = f'Overbought > {overbought_threshold}%'
+            ),
+            secondary_y = False
+        )
+        fig_stochastic.add_trace(
+            go.Scatter(
+                x = d_line.index,
+                y = d_line,
+                line_color = style['dline_linecolor'],
+                line_width = 2,        
+                name = f'{stochastic_type} %D Line'
+            ),
+            secondary_y = False
+        )
+        fig_stochastic.add_trace(
+            go.Scatter(
+                x = k_line.index,
+                y = k_line,
+                line_color = style['kline_linecolor'],
+                line_width = 2,        
+                name = f'{stochastic_type} %K Line'
+            ),
+            secondary_y = False
+        )
+
+        # Add plot border
+        fig_stochastic.add_shape(
+            type = 'rect',
+            xref = 'x',  # use 'x' because of seconday axis - 'paper' does not work correctly
+            yref = 'paper',
+            x0 = x_min,
+            x1 = x_max,
+            y0 = 0,
+            y1 = 1,
+            line_color = style['x_linecolor'],
+            line_width = 0.3
+        )
+
+        # Update layout and axes
+        fig_stochastic.update_layout(
+            width = plot_width,
+            height = plot_height,
+            xaxis_rangeslider_visible = False,
+            template = style['template'],
+            yaxis_title = f'Stochastic Oscillator (%)',
+            title = dict(
+                text = title_stochastic,
+                font_size = title_font_size,
+                y = 0.95,
+                x = 0.45,
+                xanchor = 'center',
+                yanchor = 'top'
+            )
+        )
+        fig_stochastic.update_xaxes(
+            type = 'category',
+            gridcolor = style['x_gridcolor'],
+            showgrid = True,
+            nticks = n_ticks_max,
+            tickangle = -90,
+            ticks = 'outside',
+            ticklen = 8,
+            ticklabelshift = 5,  # not working
+            ticklabelstandoff = 10  # not working
+        )
+        fig_stochastic.update_yaxes(
+            secondary_y = False,
+            range = (0, 100),
+            gridcolor = style['y_gridcolor'],
+            showgrid = True,
+            nticks = 11,
+            ticks = 'outside',
+            ticklen = 8,
+            ticklabelshift = 5,  # not working
+            ticklabelstandoff = 10  # not working
+        )
+        if overlay_price:
+            fig_stochastic.update_yaxes(
+                title_text = price_name,
+                secondary_y = True,
+                ticks = 'outside',
+                ticklen = 8,
+                ticklabelshift = 5,  # not working
+                ticklabelstandoff = 10,  # not working
+                showgrid = False
+            )
+
+        return fig_stochastic
+    
 
     ##### MOVING AVERAGE CONVERGENCE DIVERGENCE #####
 

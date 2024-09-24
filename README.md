@@ -18,7 +18,7 @@ The project is ongoing, although a vast amount of functionality has already been
 > - up to six custom selected moving average overlays on top of an existing graph
 > - up to three pairs of customized Bollinger band overlays on top of an existing graph
 > - up to three pairs of customized moving average envelope overlays on top of an existing graph
-> - price differential plot for two custom selected moving averages or price types with an optional signal line
+> - price oscillator plot for two custom selected moving averages or price types with an optional signal line
 
 **c. Analyze returns**
 > - summary of statistical properties of asset return distributions
@@ -67,7 +67,7 @@ If you are more used to the traditional candles and find the hollow candlestick 
 > Interactive: yes<BR>
 
 ### 4. Traditional Candlestick With Moving Average Overlays
-In case you prefer a light plot background, you can switch at any time between the dark and light themes. You can also pick and switch between any of 10 pre-defined overlay color themes and/or invert the sequence of colors in them, if desired. In this traditional candlestick plot, a ribbon of six Close-based Simple Moving Average (SMA) overlays have been added with windows increasing in 5-day increments. You can custom-define the window size and the type of each moving average overlay ('simple', 'exponential', 'double exponential', triple exponential' or 'weighted'). 
+In case you prefer a light plot background, you can switch at any time between the dark and light themes. You can also pick and switch between any of the 10 pre-defined overlay color themes and/or invert the sequence of colors, if desired. In this traditional candlestick plot, a ribbon of six Close-based Simple Moving Average (SMA) overlays have been added with windows increasing in 5-day increments. You can custom-define the window size and the type of each moving average overlay ('simple', 'exponential', 'double exponential', triple exponential' or 'weighted'). 
 > ![](img/04_CandlesTraditional5dSMAOverlaysLavender_Light.png)
 
 > Plotting package: plotly<BR>
@@ -76,7 +76,7 @@ In case you prefer a light plot background, you can switch at any time between t
 > Interactive: yes<BR>
 
 ### 5. Traditional Candlestick With Moving Average, Bollinger Band and Moving Average Envelope Overlays
-In this plot, traditional candles have been overlaid with a pair of standard (20, 2) Bollinger bands and then with a pair of (20, 10%) envelopes, both over a 20-day Close-based SMA. You can add up to three pairs of Bollinger overlays and up to three pairs of envelopes on one plot, toggling them off/on as desired. Note that, if at any point you attempt to add a line that already exists in the plot, the new duplicate line will be omitted. That is why, although both the set of Bollinger and the set of envelope overlays contain the 20-day SMA base line, only the one added first - as can be noted from its position in the legend - is plotted.
+In this plot, traditional candles have been overlaid with a pair of standard (20, 2) Bollinger bands and then with a pair of (20, 10%) envelopes, both over a 20-day Close-based SMA. You can add up to three pairs of Bollinger overlays and up to three pairs of envelopes on one plot, toggling them off/on as desired. Note that, if at any point you attempt to add a line that already exists in the plot, the new duplicate line will be omitted. That is why, although both the set of Bollinger overlays and the set of envelope overlays contain the 20-day SMA base line, only the one added first - as can be noted from its position in the legend - is plotted.
 > ![](img/05_CandlesTraditional20-1Bollinger20-10EnvelopeOverlays.png)
 
 > Plotting package: plotly<BR>
@@ -86,7 +86,7 @@ In this plot, traditional candles have been overlaid with a pair of standard (20
 > Interactive: yes<BR>
 
 ### 6. Adjusted Close With Two Moving Averages and Corresponding Envelope Overlays
-Imagine the richness of signals coming from all the line intersections in a graph like this... If you can interpret them, that is! :smiley:
+Imagine the richness of signals coming from all the line crossovers in a graph like this...! :smiley:
 
 Kidding aside, there is almost no limit to how many overlays you can add to a single plot - the maximum of six lines per single overlay set comes from the limit of colors/shades in each color theme, but you can add multiple sets on top of one another using different color themes. Remember that these plots are interactive, so you can always choose which lines are displayed by toggling them off/on from the legend. 
 
@@ -99,9 +99,9 @@ In this graph, the Adjusted Close daily prices have been overlaid with three pai
 > Second envelope overlay color map: magenta<BR>
 > Interactive: yes<BR>
 
-### 7. Moving Average Differential Plot With Signal Overlay
-If the behaviour of any two price or moving average curves happens to catch your special attention, you can plot their difference in a similar way the moving average convergence divergence (MACD) is constructed (see 11. below). If you feel it makes sense, you can also add a custom-defined signal line that is a moving average of that very difference - again, similar to the MACD 9-day SMA signal. In this example, the 20-day Simple (SMA) and Exponential (EMA) Moving Averages are compared, with an arbitrary signal of a 10-day SMA added. Likewise, you could also use this type of plot to compare an EMA against a Weighted Moving Average (WMA) with an EMA signal; or to compare two moving averages of different window sizes; or to compare Open and Close prices, similar to a traditional candlestick plot - just to name a few possibilities.
-> ![](img/07_SMA20-EMA20_Differential_Light.png)
+### 7. Moving Average Oscillator Plot With Signal Overlay
+If the behaviour of any two price or moving average curves happens to catch your special attention, you can plot their difference in a similar way the moving average convergence divergence (MACD) is constructed (see 11. below). This type of difference is typically referred to as a price oscillator. You can then add a custom-defined signal line that is a moving average of that oscillator - again, similar to the MACD 9-day SMA signal. In this example, the oscillator is constructed as a difference between the 20-day Simple (SMA) and Exponential (EMA) Moving Averages, with an arbitrary signal of a 10-day SMA added. Likewise, you could also use this type of plot to compare an EMA against a Weighted Moving Average (WMA) with an EMA signal; or to compare two moving averages of different window sizes; or to compare Open and Close prices, similar to a traditional candlestick plot - just to name a few possibilities.
+> ![](img/07_SMA20-EMA20_Oscillator_Light.png)
 
 > Plotting package: plotly<BR>
 > Theme: light<BR>
@@ -126,9 +126,9 @@ This example uses the same AAPL data as above, except the top six drawdowns are 
 > Interactive: yes<BR>
 
 ### 11. Individual Asset MACD Plot With Signal and Price Overlays
-The moving average convergence divergence (MACD) is one of the most popular technical indicators, defined as the difference between a 12-day EMA and a 26-day EMA. As is normally the case with shorter-vs-longer window moving averages, a positive MACD would be a potential signal to buy, while a negative MACD - a possible signal to sell. This strategy is refined by the addition of the 9-day EMA signal line, indicating a likely upcoming change in the price trend when the signal crosses the MACD.  
+The moving average convergence divergence (MACD) is one of the most popular technical indicators, defined as the difference between a 12-day EMA and a 26-day EMA. As is normally the case with shorter-vs-longer window moving averages, a positive MACD would be a potential signal to buy, while a negative MACD - a possible signal to sell. This strategy is refined by the addition of the 9-day EMA signal line, indicating a likely upcoming change in the price trend whenever the signal crosses the MACD.  
 
-The MACD bar chart presented here is overlaid with the original Adjusted Close price as labelled on the secondary (right-hand-side) y-axis. By design, you cannot alter the standard window sizes of the MACD EMAs; however, it is possible to explore the effect of the change in the signal window. Note that you can gain the full flexibility of devising your own version of MACD when you choose to use the moving average differential plot mentioned at 7. above, if you so desire.
+The MACD bar chart presented here is overlaid with the original Adjusted Close price as labelled on the secondary (right-hand-side) y-axis. By design, you cannot alter the standard window sizes of the MACD EMAs; however, it is possible to explore the effect of the change in the signal window. Note that you can have the full flexibility of devising your own price oscillator similar to MACD along with a custom-designed signal - as mentioned above in example 7.
 > ![](img/11_MACD_Price.png)
 
 > Plotting package: plotly<BR>
@@ -146,8 +146,8 @@ The Relative Strength Index (RSI) measures the speed and change of price movemen
 > Interactive: yes<BR>
 
 ### 13. Individual Asset Stochastic Plot With Overbought/Oversold and Price Overlays
-Aside from MACD and RSI, many investors favour the Stochastic Oscillator as a technical buy-sell indicator. 
-> ![](img/13_StochasticOscillatorPriceOverlay_Dark.png)
+In addition to MACD and RSI, many investors favour the Stochastic Oscillator as an effective technical buy-sell indicator. It measures the level of the Close relative to the range of (highest High - lowest Low) over a given period. Unlike the RSI, it is capable of predicting longer trends - thereby refining the overbought and oversold signals, thanks the interactions between its two components, the %K and %D lines. Presented in this graph is an example of the full Stochastic Oscillator that uses three adjustable parameters: the 14-day look-back period, the 3-day %K smoothing period, and the 5-day %D averaging period. 
+> ![](img/13_StochasticOscillatorFull(14,3,5)_PriceOverlay_Dark.png)
 
 > Plotting package: plotly<BR>
 > Theme: dark<BR>
