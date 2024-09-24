@@ -124,9 +124,9 @@ This example uses the same AAPL data as above, except the top six drawdowns are 
 > Interactive: yes<BR>
 
 ### 11. Individual Asset MACD Plot With Signal and Price Overlays
-The moving average convergence divergence (MACD) is one of the most popular technical indicators, defined as the difference between a 12-day EMA and a 26-day EMA. As is normally the case with shorter-vs-longer window moving averages, a positive MACD would be a potential signal to buy, while a negative MACD - a possible signal to sell. This strategy is refined by the addition of the 9-day EMA signal line, indicating a likely change in the price trend when the signal crosses the MACD.  
+The moving average convergence divergence (MACD) is one of the most popular technical indicators, defined as the difference between a 12-day EMA and a 26-day EMA. As is normally the case with shorter-vs-longer window moving averages, a positive MACD would be a potential signal to buy, while a negative MACD - a possible signal to sell. This strategy is refined by the addition of the 9-day EMA signal line, indicating a likely upcoming change in the price trend when the signal crosses the MACD.  
 
-The MACD bar chart presented here is overlaid with the original Adjusted Close price as labelled on the secondary (right-hand-side) y-axis. By design, you cannot alter the standard window sizes of the MACD EMAs; however, it is possible to explore the effect of the change in the signal window. Note that you can gain the full flexibility of devising your own version of MACD when you choose to use the moving average differential plot mentioned at 7. above, if so desired.
+The MACD bar chart presented here is overlaid with the original Adjusted Close price as labelled on the secondary (right-hand-side) y-axis. By design, you cannot alter the standard window sizes of the MACD EMAs; however, it is possible to explore the effect of the change in the signal window. Note that you can gain the full flexibility of devising your own version of MACD when you choose to use the moving average differential plot mentioned at 7. above, if you so desire.
 > ![](img/11_MACD_Price.png)
 
 > Plotting package: plotly<BR>
@@ -135,6 +135,7 @@ The MACD bar chart presented here is overlaid with the original Adjusted Close p
 > Interactive: yes<BR>
 
 ### 12. Individual Asset RSI Plot With Overbought/Oversold and Price Overlays
+The Relative Strength Index (RSI) measures the speed and change of price movements, oscillating between 0 and 100%. RSI values above 70% indicates overbought conditions, while RSI values below 30% indicate oversold conditions, which can be seen by investors as signals to sell or buy, respectively. The default RSI window is 14 days (or time periods, in general), but you can change here it to any other value for exploration purposes. 
 > ![](img/12_RSI_PriceOverlay.png)
 
 > Plotting package: plotly<BR>
@@ -143,6 +144,7 @@ The MACD bar chart presented here is overlaid with the original Adjusted Close p
 > Interactive: yes<BR>
 
 ### 13. Individual Asset Stochastic Plot With Overbought/Oversold and Price Overlays
+Aside from MACD and RSI, many investors favour the Stochastic Oscillator as a technical buy-sell indicator. 
 > ![](img/13_StochasticOscillatorPriceOverlay_Dark.png)
 
 > Plotting package: plotly<BR>
