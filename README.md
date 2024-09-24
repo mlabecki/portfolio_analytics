@@ -58,7 +58,7 @@ The heat map plots the Kendall correlation of log returns for the Dow Jones Indu
 > Interactive: no<BR>
 
 ### 3. Hollow Candlestick With Price Overlays
-If you are more used to the traditional candles and find the hollow candlestick a bit confusing, the legend explains the meaning of each candle type. For additional convenience, the Open and Close prices are plotted as overlays (High and Low can also be added, if desired), which can be toggled off/on anytime by clicking on the corresponding line in the legend.
+If you are more used to the traditional candles and find a hollow candelabrum a bit confusing, the legend explains the meaning of each candle type. For additional convenience, the Open and Close prices are plotted as overlays (High and Low can also be added, if desired), which can be toggled off/on anytime by clicking on the corresponding line in the legend.
 > ![](img/03_CandlesHollowOpenClose.png)
 
 > Plotting package: plotly<BR>
@@ -101,7 +101,7 @@ In this graph, the Adjusted Close daily prices have been overlaid with three pai
 
 ### 7. Moving Average Oscillator Plot With Signal Overlay
 If the behaviour of any two price or moving average curves happens to catch your special attention, you can plot their difference in a similar way the moving average convergence divergence (MACD) is constructed (see 11. below). This type of difference is typically referred to as a price oscillator. You can then add a custom-defined signal line that is a moving average of that oscillator - again, similar to the MACD 9-day SMA signal. In this example, the oscillator is constructed as a difference between the 20-day Simple (SMA) and Exponential (EMA) Moving Averages, with an arbitrary signal of a 10-day SMA added. Likewise, you could also use this type of plot to compare an EMA against a Weighted Moving Average (WMA) with an EMA signal; or to compare two moving averages of different window sizes; or to compare Open and Close prices, similar to a traditional candlestick plot - just to name a few possibilities.
-> ![](img/07_SMA20-EMA20_Oscillator_Light.png)
+> ![](img/07_SMA20-EMA20_Close_Oscillator_Light.png)
 
 > Plotting package: plotly<BR>
 > Theme: light<BR>
@@ -129,7 +129,7 @@ This example uses the same AAPL data as above, except the top six drawdowns are 
 The moving average convergence divergence (MACD) is one of the most popular technical indicators, defined as the difference between a 12-day EMA and a 26-day EMA. As is normally the case with shorter-vs-longer window moving averages, a positive MACD would be a potential signal to buy, while a negative MACD - a possible signal to sell. This strategy is refined by the addition of the 9-day EMA signal line, indicating a likely upcoming change in the price trend whenever the signal crosses the MACD.  
 
 The MACD bar chart presented here is overlaid with the original Adjusted Close price as labelled on the secondary (right-hand-side) y-axis. By design, you cannot alter the standard window sizes of the MACD EMAs; however, it is possible to explore the effect of the change in the signal window. Note that you can have the full flexibility of devising your own price oscillator similar to MACD along with a custom-designed signal - as mentioned above in example 7.
-> ![](img/11_MACD_Price.png)
+> ![](img/11_MACD_Close_Price.png)
 
 > Plotting package: plotly<BR>
 > Theme: dark<BR>
@@ -138,7 +138,7 @@ The MACD bar chart presented here is overlaid with the original Adjusted Close p
 
 ### 12. Individual Asset RSI Plot With Overbought/Oversold and Price Overlays
 The Relative Strength Index (RSI) measures the speed and change of price movements, oscillating between 0 and 100%. RSI values above 70% indicates overbought conditions, while RSI values below 30% indicate oversold conditions, which can be seen by investors as signals to sell or buy, respectively. The default RSI window is 14 days (or time periods, in general), but you can change here it to any other value for exploration purposes. 
-> ![](img/12_RSI_PriceOverlay.png)
+> ![](img/12_RSI_Close_PriceOverlay.png)
 
 > Plotting package: plotly<BR>
 > Theme: dark<BR>
@@ -155,8 +155,3 @@ In addition to MACD and RSI, many investors favour the Stochastic Oscillator as 
 > Slow signal overlay color map: orchid<BR>
 > Interactive: yes<BR>
 
-### 14. PCA Scatter Plot With Eigenvector Overlays
-> ![](img/14_PCA3-4_ScatterEigenvectors.png)
-
-> Plotting package: matplotlib<BR>
-> Interactive: no<BR>
