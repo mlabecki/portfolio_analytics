@@ -97,7 +97,7 @@ In this graph, the Adjusted Close daily prices have been overlaid with three pai
 > Second envelope overlay color map: magenta<BR>
 > Interactive: yes<BR>
 
-### 7. Moving Average Differential Plot With a Signal Overlay
+### 7. Moving Average Differential Plot With Signal Overlay
 If the mutual behaviour of any two price or moving average curves raises your special interest, you can plot their difference in a similar way the moving average convergence divergence (MACD) is constructed (see 11. below). If it makes sense in a particular case, you can also add a custom-defined signal line that is a moving average of that very difference - again, similar to the MACD 9-day SMA signal. In this example, the 20-day Simple (SMA) and Exponential (EMA) Moving Averages are compared, with an arbitrary signal of 10-day SMA added. But it could also be a comparison between an EMA and a Weighted Moving Average (WMA) with an EMA signal; or a comparison between two moving averages of different window sizes; or between Open and Close prices, similar to a traditional candlestick plot - to name just a few.
 > ![](img/07_SMA20-EMA20_Differential_Light.png)
 
@@ -110,11 +110,11 @@ If the mutual behaviour of any two price or moving average curves raises your sp
 Drawdown analysis is an important part of asset risk assessment for many investors. Two critical aspects of a drawdown, determining the resulting monetary loss, are its depth (peak-to-trough % price decline) and its length (period of time required for an investment to recover). The table below summarizes the drawdowns for a Magnificent Seven portfolio of stocks over one year of historical prices. The table includes a related Ulcer Index, defined as the square root of the mean squared deviation from the maximum price over a specific period of time, which can be the whole historical period or a rolling 14-day. The Ulcer Index is used to calculate Martin Ratio, a performance metric similar to Sharpe Ratio, where it replaces standard deviation in the denominator.
 > ![](img/08_DrawdownSummary_Magnificent7.png)
 
-### 9. Summary of Individual Asset Top Drawdowns
+### 9. Summary of Individual Asset Drawdowns
 The top drawdowns for each asset of interest can be identified based on either the % depth or length. The table below lists top six drawdowns for one year of historical AAPL prices, sorted by length. This summary has been inspired by an example given in [<ins>W&uuml;rtz et al, p. 35</ins>](https://www.rmetrics.org/downloads/9783906041018-fPortfolio.pdf), and the drawdown computation methodology has been tested on the original data used by the authors.
 > ![](img/09_SixLongestDrawdowns_AAPL.png)
 
-### 10. Plot of Individual Asset Top Drawdowns
+### 10. Individual Asset Drawdown Plot
 This example uses the same AAPL data as above, except the top six drawdowns are selected based on their % depth. The drawdowns are based, and are overlaid, on the Adjusted Close prices (although Close or any other price could also be used). For better clarity, only the peak-to-trough portion of each drawdown is shown, and the lengths listed in the legend refer to that phase only; however, the option of displaying the full peak-to-recovery length is also available. The color intensity of each drawdown plotted is proportional to its depth. 
 > ![](img/10_SixDeepestDrawdowns_AAPL.png)
 
@@ -122,3 +122,37 @@ This example uses the same AAPL data as above, except the top six drawdowns are 
 > Theme: dark<BR>
 > Overlay color map: red with intensity scaled proportionally to drawdown depth<BR>
 > Interactive: yes<BR>
+
+### 11. Individual Asset MACD Plot With Signal and Price Overlays
+The moving average convergence divergence (MACD) is one of the most popular technical indicators, defined as the difference between a 12-day EMA and a 26-day EMA. As is normally the case with shorter-vs-longer window moving averages, a positive MACD would be a potential signal to buy, while a negative MACD - a possible signal to sell. This strategy is refined by the addition of the 9-day EMA signal line, indicating a likely change in the price trend when the signal crosses the MACD.  
+
+The MACD bar chart presented here is overlaid with the original Adjusted Close price as labelled on the secondary (right-hand-side) y-axis. By design, you cannot alter the standard window sizes of the MACD EMAs; however, it is possible to explore the effect of the change in the signal window. Note that you can gain the full flexibility of devising your own version of MACD when you choose to use the moving average differential plot mentioned at 7. above, if so desired.
+> ![](img/11_MACD_Price.png)
+
+> Plotting package: plotly<BR>
+> Theme: dark<BR>
+> Signal overlay color map: gold<BR>
+> Interactive: yes<BR>
+
+### 12. Individual Asset RSI Plot With Overbought/Oversold and Price Overlays
+> ![](img/12_RSI_PriceOverlay.png)
+
+> Plotting package: plotly<BR>
+> Theme: dark<BR>
+> Signal overlay color map: gold<BR>
+> Interactive: yes<BR>
+
+### 13. Individual Asset Stochastic Plot With Overbought/Oversold and Price Overlays
+> ![](img/13_StochasticOscillatorPriceOverlay_Dark.png)
+
+> Plotting package: plotly<BR>
+> Theme: dark<BR>
+> Fast signal overlay color map: gold<BR>
+> Slow signal overlay color map: orchid<BR>
+> Interactive: yes<BR>
+
+### 14. PCA Scatter Plot With Eigenvector Overlays
+> ![](img/14_PCA3-4_ScatterEigenvectors.png)
+
+> Plotting package: matplotlib<BR>
+> Interactive: no<BR>
