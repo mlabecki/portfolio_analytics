@@ -128,7 +128,7 @@ This example uses the same AAPL data as above, except the top six drawdowns are 
 ### 11. Individual Asset MACD Plot With Signal and Price Overlays
 The moving average convergence divergence (MACD) is one of the most popular technical indicators, defined as the difference between a 12-day EMA and a 26-day EMA. As is normally the case with shorter-vs-longer window moving averages, a positive MACD would be a potential signal to buy, while a negative MACD - a possible signal to sell. This strategy is refined by the addition of the 9-day EMA signal line, indicating a likely upcoming change in the price trend whenever the signal crosses the MACD.  
 
-The MACD bar chart presented here is overlaid with the original Adjusted Close price as labelled on the secondary (right-hand-side) y-axis. By design, you cannot alter the standard window sizes of the MACD EMAs; however, it is possible to explore the effect of the change in the signal window. Note that you can have the full flexibility of devising your own price oscillator similar to MACD along with a custom-designed signal - as mentioned above in example 7.
+The MACD bar chart presented here is overlaid with the original Close price as labelled on the secondary (right-hand-side) y-axis. By design, you cannot alter the standard window sizes of the MACD EMAs; however, it is possible to explore the effect of the change in the signal window. Note that you can have the full flexibility of devising your own price oscillator similar to MACD along with a custom-designed signal - as mentioned above in example 7.
 > ![](img/11_MACD_Close_Price.png)
 
 > Plotting package: plotly<BR>
@@ -146,7 +146,7 @@ The Relative Strength Index (RSI) measures the speed and change of price movemen
 > Interactive: yes<BR>
 
 ### 13. Individual Asset Stochastic Plot With Overbought/Oversold and Price Overlays
-In addition to MACD and RSI, many investors favour the Stochastic Oscillator as a technical buy-sell indicator, which - unlike the RSI - is capable of refining the buy-sell signals coming from the overbought/oversold threshold line crossings thanks to the interactions between its two components, the %K and %D lines. Presented in this graph is an example of the full Stochastic Oscillator that uses three adjustable parameters: the 14-day look-back period, the 3-day %K smoothing period, and the 5-day %D averaging period. In the standard formulation, there is fast and a slow version of the Stochastic Oscillator, both of which have the %D averaging period set to 3.
+In addition to MACD and RSI, many investors favour the Stochastic Oscillator as a technical buy-sell indicator, which - unlike the RSI - is capable of refining the buy-sell signals coming from the overbought/oversold threshold line crossings thanks to the interactions between its two components, the %K and %D lines. Presented in this graph is an example of the full Stochastic Oscillator that uses three adjustable parameters: the 14-day look-back period, the 3-day %K smoothing period, and the 5-day %D averaging period. In its standard formulation, the Stochastic Oscillator has a fast and a slow version, with the %D averaging period set to 3 in both of them.
 > ![](img/13_StochasticOscillatorFull(14,3,5)_PriceOverlay_Dark.png)
 
 > Plotting package: plotly<BR>
