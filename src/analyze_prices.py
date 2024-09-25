@@ -393,7 +393,7 @@ class AnalyzePrices():
 
     ##### MOVING AVERAGE CONVERGENCE DIVERGENCE #####
 
-    def ma_convergence_divergence(
+    def macd(
         self,
         df_tk,
         signal_window = 9      
@@ -408,12 +408,12 @@ class AnalyzePrices():
 
         ema_26 = df_tk.ewm(span = 26).mean()
         ema_12 = df_tk.ewm(span = 12).mean()
-        macd = ema_12 - ema_26
+        macd_line = ema_12 - ema_26
 
-        macd_signal = macd.ewm(span = signal_window).mean()
+        macd_signal = macd_line.ewm(span = signal_window).mean()
 
         macd_data = {
-            'MACD': macd,
+            'MACD': macd_line,
             'MACD Signal': macd_signal,
             'MACD Signal Window': signal_window
         }
@@ -435,7 +435,7 @@ class AnalyzePrices():
         title_font_size = 32,
         theme = 'dark',
         overlay_price = False,
-        price_type = 'adjusted close'
+        price_type = 'close'
     ):
         """
         MACD plot with a signal line and the original price line overlayed, if desired
@@ -591,7 +591,7 @@ class AnalyzePrices():
         theme = 'dark',
         overlay_price = False,
         df_price = None,
-        price_type = 'adjusted close'
+        price_type = 'close'
     ):
         """
         df_rsi:     RSI dataframe/series

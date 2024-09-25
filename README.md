@@ -146,7 +146,7 @@ The Relative Strength Index (RSI) measures the speed and change of price movemen
 > Interactive: yes<BR>
 
 ### 13. Individual Asset Stochastic Plot With Overbought/Oversold and Price Overlays
-In addition to MACD and RSI, many investors favour the Stochastic Oscillator as an effective technical buy-sell indicator. It measures the level of the Close relative to the range of (highest High - lowest Low) over a given period. Unlike the RSI, it is capable of predicting longer trends - thereby refining the overbought and oversold signals, thanks the interactions between its two components, the %K and %D lines. Presented in this graph is an example of the full Stochastic Oscillator that uses three adjustable parameters: the 14-day look-back period, the 3-day %K smoothing period, and the 5-day %D averaging period. 
+In addition to MACD and RSI, many investors favour the Stochastic Oscillator as a technical buy-sell indicator, which - unlike the RSI - is capable of refining the buy-sell signals coming from the overbought/oversold threshold line crossings thanks to the interactions between its two components, the %K and %D lines. Presented in this graph is an example of the full Stochastic Oscillator that uses three adjustable parameters: the 14-day look-back period, the 3-day %K smoothing period, and the 5-day %D averaging period. In the standard formulation, there is fast and a slow version of the Stochastic Oscillator, both of which have the %D averaging period set to 3.
 > ![](img/13_StochasticOscillatorFull(14,3,5)_PriceOverlay_Dark.png)
 
 > Plotting package: plotly<BR>
