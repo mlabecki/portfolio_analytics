@@ -85,7 +85,7 @@ In this plot, traditional candles have been overlaid with a pair of standard (20
 > Envelope overlay color map: turquoise<BR>
 > Interactive: yes<BR>
 
-### 6. Adjusted Close With Two Moving Averages and Corresponding Envelope Overlays
+### 6. Price With Multiple Moving Averages and Envelope Overlays
 Imagine the richness of signals coming from all the line crossovers in a graph like this...! :smiley:
 
 Kidding aside, there is almost no limit to how many overlays you can add to a single plot - the maximum of six lines per single overlay set comes from the limit of colors/shades in each color theme, but you can add multiple sets on top of one another using different color themes. Remember that these plots are interactive, so you can always choose which lines are displayed by toggling them off/on from the legend. 
@@ -99,7 +99,7 @@ In this graph, the Adjusted Close daily prices have been overlaid with three pai
 > Second envelope overlay color map: magenta<BR>
 > Interactive: yes<BR>
 
-### 7. Moving Average Oscillator Plot With Signal Overlay
+### 7. Moving Average Oscillator With Signal Overlay
 If the behaviour of any two price or moving average curves happens to catch your special attention, you can plot their difference in a similar way the moving average convergence divergence (MACD) is constructed (see 11. below). This type of difference is typically referred to as a price oscillator. You can then add a custom-defined signal line that is a moving average of that oscillator - again, similar to the MACD 9-day SMA signal. In this example, the oscillator is constructed as a difference between the 20-day Simple (SMA) and Exponential (EMA) Moving Averages, with an arbitrary signal of a 10-day SMA added. Likewise, you could also use this type of plot to compare an EMA against a Weighted Moving Average (WMA) with an EMA signal; or to compare two moving averages of different window sizes; or to compare Open and Close prices, similar to a traditional candlestick plot - just to name a few possibilities.
 > ![](img/07_SMA20-EMA20_Close_Oscillator_Light.png)
 
@@ -116,7 +116,7 @@ Drawdown analysis is an important part of asset risk assessment for many investo
 The top drawdowns for each asset of interest can be identified based on either the % depth or length. The table below lists top six drawdowns for one year of historical AAPL prices, sorted by length. This summary has been inspired by an example given in [<ins>W&uuml;rtz et al, p. 35</ins>](https://www.rmetrics.org/downloads/9783906041018-fPortfolio.pdf), and the drawdown computation methodology has been tested on the original data used by the authors.
 > ![](img/09_SixLongestDrawdowns_AAPL.png)
 
-### 10. Individual Asset Drawdown Plot
+### 10. Plot of Individual Asset Drawdowns
 This example uses the same AAPL data as above, except the top six drawdowns are selected based on their % depth. The drawdowns are based, and are overlaid, on the Adjusted Close prices (although Close or any other price could also be used). For better clarity, only the peak-to-trough portion of each drawdown is shown, and the lengths in days listed in the legend refer to that phase only; however, the option of displaying the full peak-to-recovery length is also available. The color intensity of each drawdown plotted is proportional to its depth. 
 > ![](img/10_SixDeepestDrawdowns_AAPL.png)
 
@@ -125,7 +125,7 @@ This example uses the same AAPL data as above, except the top six drawdowns are 
 > Overlay color map: red with intensity scaled proportionally to drawdown depth<BR>
 > Interactive: yes<BR>
 
-### 11. Individual Asset MACD Plot With Signal and Price Overlays
+### 11. Individual Asset MACD With Signal and Price Overlays
 The moving average convergence divergence (MACD) is one of the most popular technical indicators, defined as the difference between a 12-day EMA and a 26-day EMA. As is normally the case with shorter-vs-longer window moving averages, a positive MACD would be a potential signal to buy, while a negative MACD - a possible signal to sell. This strategy is refined by the addition of the 9-day EMA signal line, indicating a likely upcoming change in the price trend whenever the signal crosses the MACD.  
 
 The MACD bar chart presented here is overlaid with the original Close price as labelled on the secondary (right-hand-side) y-axis. By design, you cannot alter the standard window sizes of the MACD EMAs; however, it is possible to explore the effect of the change in the signal window. Note that you can have the full flexibility of devising your own price oscillator similar to MACD along with a custom-designed signal - as mentioned above in example 7.
@@ -136,7 +136,7 @@ The MACD bar chart presented here is overlaid with the original Close price as l
 > Signal overlay color map: gold<BR>
 > Interactive: yes<BR>
 
-### 12. Individual Asset RSI Plot With Overbought/Oversold and Price Overlays
+### 12. Individual Asset RSI With Overbought/Oversold and Price Overlays
 The Relative Strength Index (RSI) measures the speed and change of price movements, oscillating between 0 and 100%. RSI values above 70% indicates overbought conditions, while RSI values below 30% indicate oversold conditions, which can be seen by investors as signals to sell or buy, respectively. The default RSI window is 14 days (or time periods, in general), but you can change here it to any other value for exploration purposes. 
 > ![](img/12_RSI_Close_PriceOverlay.png)
 
@@ -145,7 +145,7 @@ The Relative Strength Index (RSI) measures the speed and change of price movemen
 > Signal overlay color map: gold<BR>
 > Interactive: yes<BR>
 
-### 13. Individual Asset Stochastic Plot With Overbought/Oversold and Price Overlays
+### 13. Individual Asset Stochastic With Overbought/Oversold and Price Overlays
 In addition to MACD and RSI, many investors favour the Stochastic Oscillator as a technical buy-sell indicator, which - unlike the RSI - is capable of refining the buy-sell signals coming from the overbought/oversold threshold line crossings thanks to the interactions between its two components, the %K and %D lines. Presented in this graph is an example of the full Stochastic Oscillator that uses three adjustable parameters: the 14-day look-back period, the 3-day %K smoothing period, and the 5-day %D averaging period. In its standard formulation, the Stochastic Oscillator has a fast and a slow version, with the %D averaging period set to 3 in both of them.
 > ![](img/13_StochasticOscillatorFull(14,3,5)_PriceOverlay_Dark.png)
 
