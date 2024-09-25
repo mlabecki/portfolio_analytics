@@ -1,14 +1,17 @@
 # portfolio_analytics
+
+## **Overview**
+
 The main purpose of this project has been to create an interactive dashboard offering the user an opportunity to perform technical analysis of a portfolio of custom selected assets. These historical insights would then serve the broader goal of being able to build an optimal portfolio that is expected to perform successfully based on the desired investment objectives. 
 
 The project is ongoing, although a vast amount of functionality has already been developed. The idea has been to be able to perform these four major groups of tasks:
 
-**a. Download data**
+**a) Download data**
 > - web scrape comprehensive lists of top assets in various categories
 > - download ticker information from Yahoo!Finance
 > - download historical ticker data from Yahoo!Finance
 
-**b. Analyze prices**
+**b) Analyze prices**
 > - statistical summary at the portfolio level
 > - drawdown analysis with tabular summaries and an interactive plot of top drawdowns
 > - interactive line graphs and candlestick plots with traditional and hollow candles
@@ -20,13 +23,13 @@ The project is ongoing, although a vast amount of functionality has already been
 > - up to three pairs of customized moving average envelope overlays on top of an existing graph
 > - price oscillator plot for two custom selected moving averages or price types with an optional signal line
 
-**c. Analyze returns**
+**c) Analyze returns**
 > - summary of statistical properties of asset return distributions
 > - heat map plots of various asset correlation metrics
 > - principal component analysis with scatter plots for top components and eigenvector overlays
 
-**d. Analyze performance**
-> - summaries of performance metrics both for each asset and for the asset-weighted portfolio:
+**d) Analyze performance**
+> - summaries of performance metrics for each asset and for the asset-weighted portfolio:
 >   - Sharpe Ratio
 >   - Sortino Ratio
 >   - Probabilistic Sharpe Ratio
@@ -41,7 +44,9 @@ The project is ongoing, although a vast amount of functionality has already been
 >   - Sterling Ratio
 >   - Martin Ratio
 
-Detailed implementation of the last two groups of tasks is still in progress. 
+Detailed implementation of the c) and d) groups of tasks is still in progress. 
+
+## **Examples**
 
 Below are some screenshots illustrating the functional capabilities of the current code and of the intended dashboard. Click on any of them to enlarge.
 
