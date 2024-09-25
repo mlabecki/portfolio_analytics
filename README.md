@@ -48,7 +48,7 @@ Detailed implementation of the c) and d) groups of tasks is still in progress.
 
 ## **Examples**
 
-Below are some screenshots illustrating the functional capabilities of the current code and of the intended dashboard. Click on any of them to enlarge.
+Below are some screenshots illustrating the functional capabilities of the current code and of the intended dashboard. Click on any of them to enlarge. All plotly graphs are in reality interactive, i.e. they can be zoomed in/out, panned and rescaled, with the co-ordinates and label being displayed on hover.
 
 ### 1. Statistical Properties of Portfolio Asset Returns
 The summary was prepared for one year of historical log return distributions of the Magnificent Seven stocks. Jarque-Bera test p-values > 0.05 would typically indicate that the given distribution can be considered normal.
@@ -114,11 +114,13 @@ If the behaviour of any two price or moving average curves happens to catch your
 > Interactive: yes<BR>
 
 ### 8. Summary of Portfolio Asset Drawdowns
-Drawdown analysis is an important part of asset risk assessment for many investors. Two critical aspects of a drawdown, determining the resulting monetary loss, are its depth (peak-to-trough % price decline) and its length (period of time required for an investment to recover). The table below summarizes the drawdowns for a Magnificent Seven portfolio of stocks over one year of historical prices. The table includes a related Ulcer Index, defined as the square root of the mean squared deviation from the maximum price over a specific period of time, which can be the whole historical period or a rolling 14-day. The Ulcer Index is used to calculate Martin Ratio, a performance metric similar to Sharpe Ratio, where it replaces standard deviation in the denominator.
+Drawdown analysis is an important part of asset risk assessment for many investors. Two critical aspects of a drawdown, determining the resulting monetary loss, are its depth (peak-to-trough % price decline) and its length (period of time required for an investment to recover). The table below summarizes the drawdowns for a Magnificent Seven portfolio of stocks over one year of historical prices.
+
+The table includes a related Ulcer Index, defined as the square root of the mean squared deviation from the maximum price over a specific period of time, which can be the whole historical period or a rolling 14-day. The Ulcer Index is used to calculate Martin Ratio, a performance metric similar to Sharpe Ratio, where it replaces standard deviation in the denominator.
 > ![](img/08_DrawdownSummary_Magnificent7.png)
 
 ### 9. Summary of Individual Asset Drawdowns
-The top drawdowns for each asset of interest can be identified based on either the % depth or length. The table below lists top six drawdowns for one year of historical AAPL prices, sorted by length. This summary has been inspired by an example given in [<ins>W&uuml;rtz et al, p. 35</ins>](https://www.rmetrics.org/downloads/9783906041018-fPortfolio.pdf), and the drawdown computation methodology has been tested on the original data used by the authors.
+The top drawdowns for each asset of interest can be identified based on either % depth or length. The table below lists top six drawdowns for one year of historical AAPL prices, sorted by length. This summary has been inspired by an example given in [<ins>W&uuml;rtz et al, p. 35</ins>](https://www.rmetrics.org/downloads/9783906041018-fPortfolio.pdf), and the drawdown computation methodology has been tested on the original data used by the authors.
 > ![](img/09_SixLongestDrawdowns_AAPL.png)
 
 ### 10. Plot of Individual Asset Drawdowns
