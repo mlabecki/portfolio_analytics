@@ -72,7 +72,7 @@ If you are more used to the traditional candles and find a hollow candelabrum a 
 > Interactive: yes<BR>
 
 ### 4. Traditional Candlestick With Moving Average Overlays
-In case you prefer a light plot background, you can switch at any time between the dark and light themes. You can also pick and switch between any of the 10 pre-defined overlay color themes and/or invert the sequence of colors, if desired. In this traditional candlestick plot, a ribbon of six Close-based Simple Moving Average (SMA) overlays have been added with windows increasing in 5-day increments. You can custom-define the window size and the type of each moving average overlay ('simple', 'exponential', 'double exponential', triple exponential' or 'weighted'). 
+In case you prefer a light plot background, you can switch at any time between the dark and light themes. You can also pick and switch between any of the 10 pre-defined overlay color themes and/or invert the sequence of colors, if desired. In this traditional candlestick plot, a ribbon of six Close-based Simple Moving Average (SMA) overlays have been added with windows increasing in 5-day increments. You can custom-define the window size and choose one of the several moving average types. 
 > ![](img/04_CandlesTraditional5dSMAOverlaysLavender_Light.png)
 
 > Plotting package: plotly<BR>

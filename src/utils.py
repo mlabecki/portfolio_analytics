@@ -2,9 +2,14 @@ import numpy as np
 import math
 
 
-def set_axis_limits(x_min, x_max):
+def set_axis_limits(
+    x_min,
+    x_max,
+    max_n_intervals = 9
+):
     """
     Returns the lower and upper limits for an axis where x_min and x_max are the min/max values.
+    max_n_intervals: maximum number of intervals between y-ticks
     units: increments of values at axis ticks, will be scaled to correspond with the
         order of magntitude of x_max - x_min
     intervals: how many intervals of units between the lower and the upper limit do we want to have
@@ -15,8 +20,7 @@ def set_axis_limits(x_min, x_max):
     
     else:
         units = np.array([0.05, 0.1, 0.2, 0.25, 0.5])
-        intervals = np.array([4, 5, 6, 7, 8, 9])
-        max_n_intervals = max(intervals)
+        # intervals = np.array(range(4, max_n_intervals + 1))
 
         x_maxmax = max(abs(x_max), abs(x_min))
         diff = 2 * x_maxmax

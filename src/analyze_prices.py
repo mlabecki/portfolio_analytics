@@ -2098,8 +2098,7 @@ class AnalyzePrices():
                         increasing = color_dict,
                         decreasing = color_dict,
                         showlegend = showlegend,
-                        name = name,
-                        legendgroup = 'Hollow Candlesticks'
+                        name = name
                     )
                 )
 
