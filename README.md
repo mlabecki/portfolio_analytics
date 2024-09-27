@@ -54,14 +54,14 @@ Below are some screenshots illustrating the functional capabilities of the curre
 All plotly graphs are in reality interactive, i.e. 
 > - they can be zoomed in/out, panned and rescaled
 > - the co-ordinates and label of every trace (plotted object) are displayed on mouse hover
-> - the display of each trace can be switched on/off by clicking the on corresponding symbol in the legend
+> - the display of each trace can be switched on/off by clicking on the corresponding symbol in the legend
 
 ### 1. Statistical Properties of Portfolio Asset Returns
 The summary was prepared for one year of historical log return distributions of the Magnificent Seven stocks. Jarque-Bera test p-values > 0.05 would typically indicate that the given distribution can be considered normal.
 > ![](img/01_StatsSummaryReturnsMagnificent7.png)
 
 ### 2. Asset Correlation Heat Map
-The heat map plots the Kendall correlation of log returns for the Dow Jones Industrial Average stocks based on one year of historical data. Other correlation metrics that can be plotted in the same way include Pearson correlation, Spearman correlation, the adjusted correlation metric and the cumulative return distance. The last two were proposed by [<ins>Dolphin et al</ins>](https://arxiv.org/pdf/2107.03926) and may, as the authors argue, be more suitable measures of similarity between assets than the traditional correlation metrics. 
+This heat map plots the Kendall correlation of log returns for the Dow Jones Industrial Average stocks based on one year of historical data. Other correlation metrics that can be plotted in the same way include Pearson correlation, Spearman correlation, the adjusted correlation metric and the cumulative return distance. The last two were proposed by [<ins>Dolphin et al</ins>](https://arxiv.org/pdf/2107.03926) and may, as the authors argue, be more suitable measures of similarity between assets than the traditional correlation metrics. 
 > ![](img/02_KendallCorrelationPlot_DJIA.png)
 
 > Plotting package: matplotlib, seaborn<BR>
@@ -69,7 +69,7 @@ The heat map plots the Kendall correlation of log returns for the Dow Jones Indu
 > Interactive: no<BR>
 
 ### 3. PCA Scatter Plot With Eigenvector 
-The Principal Component Analysis can give you additional insights into your portfolio's assets similarity. Plotted here is a simple example how this can be visualized. The scatter plot is the third vs. the fourth principal component, and the arrows illustrate the directions and magnitudes of the relevant eigenvectors, corresponding to the original portfolio assets.
+The Principal Component Analysis can give you additional insights into your portfolio's assets similarity. Plotted here is a simple example how this can be visualized. The scatter plot compares the fourth vs. the third principal component, and the arrows illustrate the directions and magnitudes of the relevant eigenvectors, corresponding to the original portfolio assets.
 > ![](img/03_PCA3-4_ScatterEigenvectors.png)
 
 > Plotting package: matplotlib<BR>
@@ -159,7 +159,7 @@ The MACD bar chart presented here is overlaid with the original Close price as l
 > Interactive: yes<BR>
 
 ### 13. Individual Asset RSI With Overbought/Oversold and Price Overlays
-The Relative Strength Index (RSI) measures the speed and change of price movements, oscillating between 0 and 100%. RSI values above 70% indicates overbought conditions, while RSI values below 30% indicate oversold conditions, which can be seen by investors as signals to sell or buy, respectively. The default RSI window is 14 days (or time periods, in general), but you can change here it to any other value for exploration purposes. 
+The Relative Strength Index (RSI) measures the speed and change of price movements, oscillating between 0 and 100%. RSI values above 70% indicates overbought conditions, while RSI values below 30% indicate oversold conditions, which can be seen by investors as signals to sell or buy, respectively. The default RSI window is 14 days (or time periods, in general), but you can change here it to any other value for exploration purposes. The optional Close price overlay is shown, as well.
 > ![](img/13_RSI_Close_PriceOverlay.png)
 
 > Plotting package: plotly<BR>
@@ -170,7 +170,7 @@ The Relative Strength Index (RSI) measures the speed and change of price movemen
 ### 14. Individual Asset Stochastic With Overbought/Oversold and Price Overlays
 In addition to MACD and RSI, many investors favour the Stochastic Oscillator as a technical buy-sell indicator. Unlike the RSI, the Stochastic is capable of refining the buy-sell signals coming from the overbought/oversold threshold line crossings thanks to the interactions between its two components, the %K and %D lines. 
 
-Presented in this graph is an example of the full Stochastic Oscillator that uses three adjustable parameters: the 14-day look-back period, the 3-day %K smoothing period, and the 5-day %D averaging period. In its standard formulation, the Stochastic Oscillator has a fast and a slow version, with the %D averaging period set to 3 in both of them.
+Presented in this graph is an example of the full Stochastic Oscillator that uses three adjustable parameters: the 14-day look-back period, the 3-day %K smoothing period, and the 5-day %D averaging period. In its standard formulation, the Stochastic Oscillator has a fast and a slow version, with the %D averaging period set to 3 in both of them. The optional Close price overlay is shown, as well.
 > ![](img/14_StochasticOscillatorFull(14,3,5)_PriceOverlay_Dark.png)
 
 > Plotting package: plotly<BR>
