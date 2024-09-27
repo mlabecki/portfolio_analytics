@@ -69,14 +69,14 @@ The heat map plots the Kendall correlation of log returns for the Dow Jones Indu
 > Interactive: no<BR>
 
 ### 3. PCA Scatter Plot With Eigenvector 
-The Principal Component Analysis can give you additional insights into your portfolio's assets similarity. Plotted here is a simple example how this can be visualized. The scatter plot is the third vs. the fourth principal component, and the arrows illustrate the directions and magnitudes of the corresponding eigenvectors.
+The Principal Component Analysis can give you additional insights into your portfolio's assets similarity. Plotted here is a simple example how this can be visualized. The scatter plot is the third vs. the fourth principal component, and the arrows illustrate the directions and magnitudes of the relevant eigenvectors, corresponding to the original portfolio assets.
 > ![](img/03_PCA3-4_ScatterEigenvectors.png)
 
 > Plotting package: matplotlib<BR>
 > Interactive: no<BR>
 
 ### 4. Hollow Candlestick With Price Overlays
-If you are more used to the traditional candles and find a hollow candelabrum a bit confusing, the legend explains the meaning of each candle type. For additional convenience, the Open and Close prices are plotted as overlays (High and Low can also be added, if desired), which can be toggled off/on anytime by clicking on the corresponding line in the legend.
+If you are more used to the traditional candles and find a hollow candelabrum a bit confusing, the legend in this graph explains the meaning of each candle type. For additional convenience, the Open and Close prices are plotted as overlays (High and Low can also be added, if desired), which can be toggled off/on anytime by clicking on the corresponding line in the legend.
 > ![](img/04_CandlesHollowOpenClose.png)
 
 > Plotting package: plotly<BR>
@@ -85,7 +85,7 @@ If you are more used to the traditional candles and find a hollow candelabrum a 
 > Interactive: yes<BR>
 
 ### 5. Traditional Candlestick With Moving Average Overlays
-In case you prefer a light plot background, you can switch at any time between the dark and light themes. You can also pick and switch between any of the 10 pre-defined overlay color themes and/or invert the sequence of colors, if desired. In this traditional candlestick plot, a ribbon of six Close-based Simple Moving Average (SMA) overlays have been added with windows increasing in 5-day increments. You can custom-define the window size and choose one of the several moving average types. 
+In case you prefer a light plot background, you can switch at any time between the dark and light themes. You can also pick and switch between any of the 10 pre-defined overlay color themes and/or invert the sequence of colors, if desired. In this traditional candlestick plot, a ribbon of six Close-based Simple Moving Average (SMA) overlays have been added with windows increasing in 5-day increments. You can custom-define the window size and choose one of several moving average types. 
 > ![](img/05_CandlesTraditional5dSMAOverlaysLavender_Light.png)
 
 > Plotting package: plotly<BR>
@@ -106,7 +106,7 @@ In this plot, traditional candles have been overlaid with a pair of standard (20
 ### 7. Price With Multiple Moving Averages and Envelope Overlays
 Imagine the richness of signals coming from all the line crossovers in a graph like this... If you can interpret them properly, that is! :smiley:
 
-Kidding aside, there is almost no limit to how many overlays you can add to a single plot - the maximum of six lines per single overlay set comes from the limit of colors/shades in each color theme, but you can add multiple sets on top of one another using different color themes. Remember that these plots are interactive, so you can always choose which lines are displayed by toggling them off/on from the legend. 
+Kidding aside, there is almost no limit to how many overlays you can add to a single plot. Remember that these plots are interactive, so you can always choose which lines are displayed by toggling them off/on from the legend. 
 
 In this graph, the Adjusted Close daily prices have been overlaid with three pairs of envelopes in 2.5% increments over a 50-day SMA and then with three pairs of envelopes in the same increments over a 10-day SMA. Both sets of overlays are based on Adjusted Close, since that is the base price curve here, but you could have also chosen to use Close, Open, High or Low as the base instead - or even plot all of them as overlays, if you wished so.
 > ![](img/07_EnvelopesGold50Magenta10.png)
@@ -118,7 +118,9 @@ In this graph, the Adjusted Close daily prices have been overlaid with three pai
 > Interactive: yes<BR>
 
 ### 8. Moving Average Oscillator With Signal Overlay
-If the behaviour of any two price or moving average curves happens to catch your special attention, you can plot their difference in a similar way the moving average convergence divergence (MACD) is constructed (see 11. below). This type of difference is typically referred to as a price oscillator. You can then add a custom-defined signal line that is a moving average of that oscillator - again, similar to the MACD 9-day SMA signal. In this example, the oscillator is constructed as a difference between the 20-day Simple (SMA) and Exponential (EMA) Moving Averages, with an arbitrary signal of a 10-day SMA added. Likewise, you could also use this type of plot to compare an EMA against a Weighted Moving Average (WMA) with an EMA signal; or to compare two moving averages of different window sizes; or to compare Open and Close prices, similar to a traditional candlestick plot - just to name a few possibilities.
+If any price or moving average curves happen to catch your particular attention, you can plot their difference in a similar way the moving average convergence divergence (MACD) is constructed (see 11. below). This type of difference is typically referred to as a price oscillator. If desired, you can then add a custom-defined signal line that is a moving average of that oscillator - again, similar to the MACD 9-day SMA signal. 
+
+In this example, the oscillator is constructed as a difference between the 20-day Simple (SMA) and Exponential (EMA) Moving Averages, with an arbitrary signal of a 10-day SMA added. Likewise, you could also use this type of plot to compare an EMA against a Weighted Moving Average (WMA) with an EMA signal; or to compare two moving averages of different window sizes; or to compare Open and Close prices, similar to a traditional candlestick plot - just to name a few possibilities.
 > ![](img/08_SMA20-EMA20_Close_Oscillator_Light.png)
 
 > Plotting package: plotly<BR>
@@ -166,7 +168,9 @@ The Relative Strength Index (RSI) measures the speed and change of price movemen
 > Interactive: yes<BR>
 
 ### 14. Individual Asset Stochastic With Overbought/Oversold and Price Overlays
-In addition to MACD and RSI, many investors favour the Stochastic Oscillator as a technical buy-sell indicator, which - unlike the RSI - is capable of refining the buy-sell signals coming from the overbought/oversold threshold line crossings thanks to the interactions between its two components, the %K and %D lines. Presented in this graph is an example of the full Stochastic Oscillator that uses three adjustable parameters: the 14-day look-back period, the 3-day %K smoothing period, and the 5-day %D averaging period. In its standard formulation, the Stochastic Oscillator has a fast and a slow version, with the %D averaging period set to 3 in both of them.
+In addition to MACD and RSI, many investors favour the Stochastic Oscillator as a technical buy-sell indicator. Unlike the RSI, the Stochastic is capable of refining the buy-sell signals coming from the overbought/oversold threshold line crossings thanks to the interactions between its two components, the %K and %D lines. 
+
+Presented in this graph is an example of the full Stochastic Oscillator that uses three adjustable parameters: the 14-day look-back period, the 3-day %K smoothing period, and the 5-day %D averaging period. In its standard formulation, the Stochastic Oscillator has a fast and a slow version, with the %D averaging period set to 3 in both of them.
 > ![](img/14_StochasticOscillatorFull(14,3,5)_PriceOverlay_Dark.png)
 
 > Plotting package: plotly<BR>
