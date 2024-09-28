@@ -1191,7 +1191,6 @@ class AnalyzePrices():
                     line_width = 2,
                     line_color = 'brown',                    
                     fill = 'toself',
-                    opacity = alpha_deepest,
                     fillcolor = fillcolor,
                     name = name
                 )
