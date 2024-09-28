@@ -1,11 +1,16 @@
+legendgroup_map = {
+    'upper': 1,  # row 1 in subplots
+    'lower': 2   # row 2 in subplots
+}
+
 theme_style = {
 
     'dark': {
 
         'template':                 'plotly_dark',
         'basecolor':                'deepskyblue',
-        'green_color':              'limegreen',        # rgb(50, 205, 50)
-        'red_color':                'red',              # rgb(255, 0, 0)
+        'green_color':              'rgba(50, 205, 50, 1)',  # limegreen
+        'red_color':                'rgba(255, 0, 0, 1)',    # red
         'signal_color':             'gold',
         'diff_green_linecolor':     'green',
         'diff_red_linecolor':       'darkred',
@@ -204,8 +209,8 @@ theme_style = {
 
         'template':                 'plotly',
         'basecolor':                '#1f77b4',
-        'green_color':              'green',            # rgb(0, 255, 0)
-        'red_color':                'firebrick',        # rgb(178, 34, 34)
+        'green_color':              'rgba(0, 255, 0, 1)',    # green
+        'red_color':                'rgba(178, 34, 34, 1)',  # firebrick
         'signal_color':             'orange',
         'diff_green_linecolor':     'darkgreen',
         'diff_red_linecolor':       'darkred',

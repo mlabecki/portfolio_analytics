@@ -449,8 +449,8 @@ class AnalyzePrices():
         x_min = str(macd.index.min().date())
         x_max = str(macd.index.max().date())
     
-        min_macd = min(macd)
-        max_macd = max(macd)
+        min_macd = min(min(macd), min(macd_signal))
+        max_macd = max(max(macd), max(macd_signal))
         y_macd_min, y_macd_max = set_axis_limits(min_macd, max_macd)
 
         macd_positive = macd.copy()
@@ -1112,7 +1112,7 @@ class AnalyzePrices():
 
         # Alpha = opacity. Since opacity of 1 covers the gridlines, alpha_max is reduced here.
         if theme == 'dark':
-            alpha_min, alpha_max = 0.1, 0.5  # max intensity covers the grid
+            alpha_min, alpha_max = 0.15, 0.6  # max intensity covers the grid
         else:
             alpha_min, alpha_max = 0.1, 0.8  # max intensity covers the grid
 
@@ -1181,25 +1181,18 @@ class AnalyzePrices():
                 alpha_deepest = top_cmap[length]
                 name = f'{length}d, {depth:.1f}%'
 
-            fig.add_vline(
-                x1,
-                line_color = 'brown',
-                layer = 'below'
-            )
-            fig.add_vline(
-                x2,
-                line_color = 'brown',
-                layer = 'below'
-            )
+            fillcolor = top_by_color.replace('1)', f'{alpha_deepest})')
+            
             fig.add_trace(
                 go.Scatter(
                     x = [x1, x2, x2, x1, x1],
                     y = [y_min, y_min, y_max, y_max, y_min],
                     mode = 'lines',
-                    line_width = 0,
+                    line_width = 2,
+                    line_color = 'brown',                    
                     fill = 'toself',
-                    fillcolor = top_by_color,
                     opacity = alpha_deepest,
+                    fillcolor = fillcolor,
                     name = name
                 )
             )
@@ -1233,11 +1226,13 @@ class AnalyzePrices():
             height = plot_height,
             xaxis_rangeslider_visible = False,
             template = template,
+            legend_groupclick = 'toggleitem',            
             yaxis_title = f'Price',
+            margin_t = 60,
             title = dict(
                 text = title_drawdowns,
                 font_size = title_font_size,
-                y = 0.95,
+                y = 0.975,
                 x = 0.45,
                 xanchor = 'center',
                 yanchor = 'top'
@@ -1584,6 +1579,7 @@ class AnalyzePrices():
         name,
         color_idx,
         showlegend = True,
+        legendgroup = 'upper',
         theme = 'dark',
         color_theme = 'gold'
     ):
@@ -1594,9 +1590,12 @@ class AnalyzePrices():
         y_max_fig: y_max on the existing fig
         color_idx: an integer (0, ...) indicating the color from those available in theme_style
         showlegend: whether or not to show line in legend (e.g. we only need one Bollinger band in legend)
+        legendgroup: 'upper' is top graph in subplots (row 1), 'lower' is the stacked lower graph (row 2)
 
         Returns the updated fig_data dictionary
         """
+
+        subplot_row = legendgroup_map[legendgroup]
 
         style = theme_style[theme]
         overlay_colors = style['overlay_color_theme'][color_theme]
@@ -1621,15 +1620,18 @@ class AnalyzePrices():
                 y = df,
                 line = dict(color = overlay_colors[color_idx]),
                 name = name,
-                showlegend = showlegend
-            )
+                showlegend = showlegend,
+                legendgroup = legendgroup
+            ),
+            row = subplot_row, col = 1
         )
 
         fig.update_yaxes(
             range = (new_y_min, new_y_max),
             gridcolor = style['y_gridcolor'],
             ticks = 'outside',
-            ticklen = 8
+            ticklen = 8,
+            row = subplot_row, col = 1
         )
 
         fig_data = {
@@ -1650,11 +1652,14 @@ class AnalyzePrices():
         ma_list,
         x_min = None,
         x_max = None,
+        legendgroup = 'upper',
         theme = 'dark',
         color_theme = 'gold'
     ):
         """
         df_price: df_close or df_adj_close, depending on the underlying figure
+        legendgroup:
+            'upper' is top graph in subplots (row 1), 'lower' is the stacked lower graph (row 2)        
         ma_list: list of ma overlay dictionaries, containing
                  - ma_idx ma index (1, 2,...)
                  - ma_type: 'sma' (default), 'ema', 'dema', 'tema' or 'wma'
@@ -1702,6 +1707,7 @@ class AnalyzePrices():
                 overlay['name'],
                 overlay['color_idx'],
                 overlay['showlegend'],
+                legendgroup = legendgroup,
                 theme = theme,
                 color_theme = color_theme
             )        
@@ -1894,6 +1900,7 @@ class AnalyzePrices():
                 y = df_tk,
                 line = dict(color = style['basecolor']),
                 showlegend = True,
+                legendgroup = 'upper',
                 name = price_type.title()
             )
         )
@@ -1915,6 +1922,7 @@ class AnalyzePrices():
             height = plot_height,
             xaxis_rangeslider_visible = False,
             template = style['template'],
+            legend_groupclick = 'toggleitem',            
             yaxis_title = f'{price_type.title()}',
             title = dict(
                 text = f'{tk} {price_type.title()}',
@@ -2029,7 +2037,8 @@ class AnalyzePrices():
                         name = name,
                         increasing = color_dict,
                         decreasing = color_dict,
-                        showlegend = showlegend
+                        showlegend = showlegend,
+                        legendgroup = 'upper'
                     )
                 )
 
@@ -2050,7 +2059,7 @@ class AnalyzePrices():
             shown_green_fill = False
             shown_green_hollow = False
 
-            for idx, row in df.iterrows():
+            for _, row in df.iterrows():
 
                 if (row['color'] == green_color) & (row['fill'] == green_color):
                     name = 'Open > Close > Prev Close'
@@ -2098,6 +2107,7 @@ class AnalyzePrices():
                         increasing = color_dict,
                         decreasing = color_dict,
                         showlegend = showlegend,
+                        legendgroup = 'upper',
                         name = name
                     )
                 )
@@ -2120,6 +2130,7 @@ class AnalyzePrices():
             height = plot_height,
             xaxis_rangeslider_visible = False,
             template = style['template'],
+            legend_groupclick = 'toggleitem',
             yaxis_title = f'Price',
             title = dict(
                 text = title,
@@ -2163,12 +2174,15 @@ class AnalyzePrices():
         price_list,
         x_min = None,
         x_max = None,
+        legendgroup = 'upper',
         theme = 'dark',
         color_theme = 'gold'
     ):
         """
         fig_data:
             A dictionary containing the underlying figure data
+        legendgroup:
+            'upper' is top graph in subplots (row 1), 'lower' is the stacked lower graph (row 2)                
         price_list: 
             list of dictionaries with keys
              - 'name': 'Adjusted Close', 'Close', 'Open', 'High', and 'Low'
@@ -2216,6 +2230,7 @@ class AnalyzePrices():
                 overlay['data'],
                 overlay['name'],
                 overlay['color_idx'],
+                legendgroup = legendgroup,
                 theme = theme,
                 color_theme = color_theme
             )        
