@@ -4,14 +4,41 @@ legendgroup_map = {
 }
 
 legend_gap = {
-    # keys are lower plot heights
-    250: {
-        'intercept': 631.6,
-        'slope': -19.0
-    },
-    300: {
-        'intercept': 637.1,
-        'slope': -19.0
+    'slope': -19,
+    'intercept': {
+        # keys are upper plot heights
+        750: {
+            # keys are lower plot heights
+            300: 637,
+            250: 631,
+            200: 625,
+            150: 618,
+            100: 611
+        },
+        600: {
+            # keys are lower plot heights
+            300: 495,
+            250: 488,
+            200: 481,
+            150: 473,
+            100: 465
+        },
+        450: {
+            # keys are lower plot heights
+            300: 355,
+            250: 348,
+            200: 341,
+            150: 332,
+            100: 320
+        },
+        300: {
+            # keys are lower plot heights
+            300: 221,
+            250: 213,
+            200: 205,
+            150: 194,
+            100: 179
+        }
     }
 }
 

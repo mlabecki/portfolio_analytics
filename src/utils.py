@@ -12,7 +12,6 @@ def set_axis_limits(
     max_n_intervals: maximum number of intervals between y-ticks
     units: increments of values at axis ticks, will be scaled to correspond with the
         order of magntitude of x_max - x_min
-    intervals: how many intervals of units between the lower and the upper limit do we want to have
     """
 
     if x_min == x_max:
