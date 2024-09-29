@@ -3,6 +3,18 @@ legendgroup_map = {
     'lower': 2   # row 2 in subplots
 }
 
+legend_gap = {
+    # keys are lower plot heights
+    250: {
+        'intercept': 631.6,
+        'slope': -19.0
+    },
+    300: {
+        'intercept': 637.1,
+        'slope': -19.0
+    }
+}
+
 theme_style = {
 
     'dark': {
