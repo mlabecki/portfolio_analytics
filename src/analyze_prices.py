@@ -393,7 +393,7 @@ class AnalyzePrices():
 
     ##### MOVING AVERAGE CONVERGENCE DIVERGENCE #####
 
-    def macd(
+    def get_macd(
         self,
         df_tk,
         signal_window = 9      

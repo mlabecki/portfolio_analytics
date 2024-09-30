@@ -3,6 +3,12 @@ legendgroup_map = {
     'lower': 2   # row 2 in subplots
 }
 
+tripledeck_legendtitle = {
+    1: 'UPPER',
+    2: 'MIDDLE',
+    3: 'LOWER'
+} 
+
 legend_gap = {
     'slope': -19,
     'intercept': {
@@ -248,7 +254,7 @@ theme_style = {
 
         'template':                 'plotly',
         'basecolor':                '#1f77b4',
-        'green_color':              'rgba(0, 255, 0, 1)',    # green
+        'green_color':              'rgba(0, 128, 0, 1)',    # green
         'red_color':                'rgba(178, 34, 34, 1)',  # firebrick
         'signal_color':             'orange',
         'diff_green_linecolor':     'darkgreen',
