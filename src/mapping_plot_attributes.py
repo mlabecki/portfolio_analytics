@@ -53,14 +53,14 @@ theme_style = {
     'dark': {
 
         'template':                 'plotly_dark',
-        'basecolor':                'deepskyblue',
+        'basecolor':                'rgba(0, 191, 255, 1)',  # deepskyblue
         'green_color':              'rgba(50, 205, 50, 1)',  # limegreen
         'red_color':                'rgba(255, 0, 0, 1)',    # red
         'signal_color':             'gold',
         'diff_green_linecolor':     'green',
         'diff_red_linecolor':       'darkred',
         'diff_green_fillcolor':     'rgba(50, 205, 50, 0.75)',  # limegreen
-        'diff_red_fillcolor':       'rgba(255, 0, 0, 0.7)',    # red
+        'diff_red_fillcolor':       'rgba(255, 0, 0, 0.7)',     # red
         'rsi_linecolor':            'gold',
         'kline_linecolor':          'orange',
         'dline_linecolor':          'darkorchid',
@@ -75,93 +75,93 @@ theme_style = {
 
         'overlay_color_theme': {
             'gold': [
-                'darkgoldenrod',
-                'goldenrod',
-                'gold',
-                'khaki',
-                'palegoldenrod',
-                'lemonchiffon'
+                'rgba(184, 134, 11, 1)',   # darkgoldenrod
+                'rgba(218, 165, 32, 1)',   # goldenrod
+                'rgba(255, 215, 0, 1)',    # gold
+                'rgba(240, 230, 140, 1)',  # khaki
+                'rgba(238, 232, 170, 1)',  # palegoldenrod
+                'rgba(255, 250, 205, 1)'   # lemonchiffon
             ],
             'turquoise': [
                 # NEEDS ADJUSTMENT - expand the color scale
-                'lightseagreen',
-                'mediumturquoise',
-                'turquoise',
-                'aquamarine',
-                'paleturquoise',
-                'lightcyan'
+                'rgba(32, 178, 170, 1)',   # lightseagreen
+                'rgba(72, 209, 204, 1)',   # mediumturquoise
+                'rgba(64, 224, 208, 1)',   # turquoise
+                'rgba(127, 255, 212, 1)',  # aquamarine
+                'rgba(175, 238, 238, 1)',  # paleturquoise
+                'rgba(224, 255, 255, 1)'   # lightcyan
             ],
             'seagreen': [
-                'rgb(36, 119, 70)',
-                'rgb(66, 134, 79)',
-                'rgb(98, 150, 98)',
-                'rgb(158, 250, 158)',
-                'rgb(182, 251, 182)',
-                'rgb(204, 253, 204)'
+                'rgba(36, 119, 70, 1)',
+                'rgba(66, 134, 79, 1)',
+                'rgba(98, 150, 98, 1)',
+                'rgba(158, 250, 158, 1)',
+                'rgba(182, 251, 182, 1)',
+                'rgba(204, 253, 204, 1)'
             ],
             # https://www.schemecolor.com/clean-blues.php
             'sapphire': [
-                'rgb(16, 84, 190)',     # sapphire
-                'rgb(41, 117, 217)',    # lightened sapphire
-                'rgb(65, 149, 244)',    # brilliant azure
-                'rgb(106, 195, 244)',   # maya blue
-                'rgb(153, 225, 249)',   # winter wizard
-                'rgb(204, 248, 254)'    # water
+                'rgba(16, 84, 190, 1)',     # sapphire
+                'rgba(41, 117, 217, 1)',    # lightened sapphire
+                'rgba(65, 149, 244, 1)',    # brilliant azure
+                'rgba(106, 195, 244, 1)',   # maya blue
+                'rgba(153, 225, 249, 1)',   # winter wizard
+                'rgba(204, 248, 254, 1)'    # water
             ],            
             # https://www.schemecolor.com/dreamy-light-coral.php
             'coral': [
-                'indianred',
-                'rgb(234, 121, 121)',   # light coral
-                'rgb(250, 161, 155)',   # light salmon pink
-                'rgb(245, 188, 184)',   # Spanish pink
-                'rgb(245, 206, 184)',   # apricot
-                'rgb(245, 226, 204)'    # apricot lightened
+                'rgba(205, 92, 92, 1)',     # indianred
+                'rgba(234, 121, 121, 1)',   # light coral
+                'rgba(250, 161, 155, 1)',   # light salmon pink
+                'rgba(245, 188, 184, 1)',   # Spanish pink
+                'rgba(245, 206, 184, 1)',   # apricot
+                'rgba(245, 226, 204, 1)'    # apricot lightened
             ],
             # https://www.schemecolor.com/deep-peach-brown.php
             'sienna': [
-                'rgb(102, 66, 40)',     # cologne earth brown
-                'rgb(156, 108, 75)',    # dirt
-                'rgb(193, 146, 107)',   # camel
-                'rgb(255, 228, 180)',   # peach
-                'rgb(210, 120, 100)',   # deep peach
-                'rgb(175, 89, 62)'      # crayola's brown
+                'rgba(102, 66, 40, 1)',     # cologne earth brown
+                'rgba(156, 108, 75, 1)',    # dirt
+                'rgba(193, 146, 107, 1)',   # camel
+                'rgba(255, 228, 180, 1)',   # peach
+                'rgba(210, 120, 100, 1)',   # deep peach
+                'rgba(175, 89, 62, 1)'      # crayola's brown
             ],
             # https://www.schemecolor.com/pastel-lavender-gradient.php
             'lavender': [
                 # NEEDS ADJUSTING
-                'rgb(115, 79, 150)',    # dark lavender
-                'rgb(190, 148, 230)',   # bright lavender
-                'rgb(204, 167, 236)',   # bright ube
-                'rgb(225, 197, 252)',   # pale lavender
-                'rgb(230, 213, 255)',   # paler lavender
-                'rgb(233, 225, 252)'    # lavender
+                'rgba(115, 79, 150, 1)',    # dark lavender
+                'rgba(190, 148, 230, 1)',   # bright lavender
+                'rgba(204, 167, 236, 1)',   # bright ube
+                'rgba(225, 197, 252, 1)',   # pale lavender
+                'rgba(230, 213, 255, 1)',   # paler lavender
+                'rgba(233, 225, 252, 1)'    # lavender
             ],
             # https://www.schemecolor.com/love-gradient.php
             'magenta': [
-                'rgb(170, 14, 87)',     # jazzbery jam
-                'rgb(209, 40, 122)',    # magenta dye
-                'rgb(249, 66, 158)',    # rose bonbon
-                'rgb(253, 100, 194)',   # lightened rose bonbon
-                'rgb(255, 130, 206)',   # double lightened rose bonbon
-                'rgb(255, 165, 220)'    # triple lightened rose bonbon                
+                'rgba(170, 14, 87, 1)',     # jazzbery jam
+                'rgba(209, 40, 122, 1)',    # magenta dye
+                'rgba(249, 66, 158, 1)',    # rose bonbon
+                'rgba(253, 100, 194, 1)',   # lightened rose bonbon
+                'rgba(255, 130, 206, 1)',   # double lightened rose bonbon
+                'rgba(255, 165, 220, 1)'    # triple lightened rose bonbon                
             ],
             'rainbow': [
-                'red',
-                'orange',
-                'yellow',
-                # 'lime',
-                'forestgreen',
-                # 'deepskyblue',
-                'dodgerblue',
-                'darkviolet'
+                'rgba(255, 0, 0, 1)',     # red
+                'rgba(255, 165, 0, 1)',   # orange
+                'rgba(255, 255, 0, 1)',   # yellow
+                # 'rgba(0, 255, 0, 1)',   # lime
+                'rgba(34, 139, 34, 1)',   # forestgreen
+                # 'rgba(0, 191, 255, 1)', # deepskyblue
+                'rgba(30, 144, 255, 1)',  # dodgerblue
+                'rgba(148, 0, 211, 1)'    # darkviolet
             ],
             'tableau': [
-                'rgb(255, 187, 120)',  # light orange
-                'rgb(197, 176, 213)',  # light purple
-                'rgb(196, 156, 148)',  # light brown
-                'rgb(199, 199, 199)',  # light grey
-                'rgb(219, 219, 141)',  # light olive
-                'rgb(158, 218, 229)'   # light cyan
+                'rgba(255, 187, 120, 1)',  # light orange
+                'rgba(197, 176, 213, 1)',  # light purple
+                'rgba(196, 156, 148, 1)',  # light brown
+                'rgba(199, 199, 199, 1)',  # light grey
+                'rgba(219, 219, 141, 1)',  # light olive
+                'rgba(158, 218, 229, 1)'   # light cyan
             ]
         },
         
@@ -253,14 +253,14 @@ theme_style = {
     'light': {
 
         'template':                 'plotly',
-        'basecolor':                '#1f77b4',
-        'green_color':              'rgba(0, 128, 0, 1)',    # green
-        'red_color':                'rgba(178, 34, 34, 1)',  # firebrick
+        'basecolor':                'rgba(31, 119, 180, 1)',  # '#1f77b4'
+        'green_color':              'rgba(0, 128, 0, 1)',     # green
+        'red_color':                'rgba(178, 34, 34, 1)',   # firebrick
         'signal_color':             'orange',
         'diff_green_linecolor':     'darkgreen',
         'diff_red_linecolor':       'darkred',
         'diff_green_fillcolor':     'rgba(0, 155, 0, 0.85)',     # green
-        'diff_red_fillcolor':       'rgba(178, 34, 34, 0.85)',     # firebrick
+        'diff_red_fillcolor':       'rgba(178, 34, 34, 0.85)',   # firebrick
         'rsi_linecolor':            'goldenrod',
         'kline_linecolor':          'darkorange',
         'dline_linecolor':          'purple',
@@ -275,94 +275,94 @@ theme_style = {
 
         'overlay_color_theme': {
             'gold': [
-                'sienna',
-                'darkgoldenrod',
-                'goldenrod',
-                'gold',
-                'khaki',
-                'palegoldenrod'
+                'rgba(160, 82, 45, 1)',    # sienna
+                'rgba(184, 134, 11, 1)',   # darkgoldenrod
+                'rgba(218, 165, 32, 1)',   # goldenrod
+                'rgba(255, 215, 0, 1)',    # gold
+                'rgba(240, 230, 140, 1)',  # khaki
+                'rgba(238, 232, 170, 1)'   # palegoldenrod
             ],
             'turquoise': [
                 # NEEDS MINOR ADJUSTMENTS: 
-                #   - slightly darken 'paleturquoise'
-                #   - slightly shift to green and/or lighten 'turquoise'
-                'teal',
-                'lightseagreen',
-                'mediumturquoise',
-                'turquoise',
-                'aquamarine',
-                'paleturquoise'
+                #   - slightly darken 'paleturquoise' - adjusted without testing
+                #   - slightly shift to green and/or lighten 'turquoise' - adjusted without testing
+                'rgba(0, 128, 128, 1)',    # teal
+                'rgba(32, 178, 170, 1)',   # lightseagreen
+                'rgba(72, 209, 204, 1)',   # mediumturquoise
+                'rgba(64, 230, 208, 1)',   # turquoise
+                'rgba(127, 255, 212, 1)',  # aquamarine
+                'rgba(170, 232, 232, 1)'   # paleturquoise
             ],
             'seagreen': [
-                'darkgreen',
-                'seagreen',
-                'mediumseagreen',
-                'darkseagreen',
-                'lightgreen',
-                'rgb(164, 244, 164)'  # lightgreen lightened
-                #'palegreen'
+                'rgba(0, 100, 0, 1)',      # darkgreen
+                'rgba(46, 139, 87, 1)',    # seagreen
+                'rgba(60, 179, 113, 1)',   # mediumseagreen
+                'rgba(143, 188, 143, 1)',  # darkseagreen
+                'rgba(144, 238, 144, 1)',  # lightgreen
+                'rgba(164, 244, 164, 1)'   # lightgreen lightened
+                # rgba(152, 251, 152, 1)'  # palegreen
             ],
             # https://www.schemecolor.com/clean-blues.php
             'sapphire': [
-                'rgb(8, 42, 95)',  # darkened sapphire
-                'rgb(12, 65, 153)',  # slightly darkened sapphire
-                'rgb(18, 88, 198)',  # sapphire
-                'rgb(65, 149, 244)',  # brilliant azure
-                'rgb(106, 195, 244)',  # maya blue
-                'rgb(153, 225, 249)'  # winter wizard
+                'rgba(8, 42, 95, 1)',      # darkened sapphire
+                'rgba(12, 65, 153, 1)',    # slightly darkened sapphire
+                'rgba(18, 88, 198, 1)',    # sapphire
+                'rgba(65, 149, 244, 1)',   # brilliant azure
+                'rgba(106, 195, 244, 1)',  # maya blue
+                'rgba(153, 225, 249, 1)'   # winter wizard
             ],
             # https://www.schemecolor.com/coral-roses.php
             'coral': [
-                'rgb(184, 92, 102)',  # twilight lavender
-                'rgb(202, 112, 121)',  # china rose
-                'rgb(240, 136, 132)',  # light coral
-                'rgb(245, 167, 152)',  # light salmon pink
-                'rgb(255, 191, 168)',  # melon
-                'rgb(245, 206, 184)'  # apricot
+                'rgba(184, 92, 102, 1)',   # twilight lavender
+                'rgba(202, 112, 121, 1)',  # china rose
+                'rgba(240, 136, 132, 1)',  # light coral
+                'rgba(245, 167, 152, 1)',  # light salmon pink
+                'rgba(255, 191, 168, 1)',  # melon
+                'rgba(245, 206, 184, 1)'   # apricot
             ],
             # https://www.schemecolor.com/deep-peach-brown.php
             'sienna': [
-                'rgb(102, 66, 40)',  # cologne earth brown
-                'rgb(156, 108, 75)',  # dirt
-                'rgb(193, 146, 107)',  # camel
-                'rgb(235, 202, 150)',  # darkened peach
-                'rgb(210, 120, 100)',  # deep peach
-                'rgb(175, 89, 62)'   # crayola's brown
+                'rgba(102, 66, 40, 1)',    # cologne earth brown
+                'rgba(156, 108, 75, 1)',   # dirt
+                'rgba(193, 146, 107, 1)',  # camel
+                'rgba(235, 202, 150, 1)',  # darkened peach
+                'rgba(210, 120, 100, 1)',  # deep peach
+                'rgba(175, 89, 62, 1)'     # crayola's brown
             ],
             # https://www.schemecolor.com/dark-lavender-monochromatic.php
             'lavender': [
                 # NEEDS ADJUSTING                
-                'rgb(98, 68, 128)',  # cyber grape
-                'rgb(113, 78, 147)', # dark lavender
-                'rgb(134, 93, 175)', # royal purple
-                'rgb(169, 109, 209)',  # rich lavender
-                'rgb(181, 126, 228)',  # floral lavender
-                'rgb(204, 167, 236)'  # bright ube 
+                'rgba(98, 68, 128, 1)',    # cyber grape
+                'rgba(113, 78, 147, 1)',   # dark lavender
+                'rgba(134, 93, 175, 1)',   # royal purple
+                'rgba(169, 109, 209, 1)',  # rich lavender
+                'rgba(181, 126, 228, 1)',  # floral lavender
+                'rgba(204, 167, 236, 1)'   # bright ube 
             ],
             # https://www.schemecolor.com/love-gradient.php
             'magenta': [
-                'rgb(170, 14, 87)', # jazzbery jam
-                'rgb(199, 30, 110)',  # darkened magenta dye
-                'rgb(219, 50, 152)',  # lightened magenta dye
-                'rgb(249, 66, 158)',  # rose bonbon
-                'rgb(253, 100, 194)',  # lightened rose bonbon
-                'rgb(255, 130, 206)'  # double lightened rose bonbon
+                'rgba(170, 14, 87, 1)',    # jazzbery jam
+                'rgba(199, 30, 110, 1)',   # darkened magenta dye
+                'rgba(219, 50, 152, 1)',   # lightened magenta dye
+                'rgba(249, 66, 158, 1)',   # rose bonbon
+                'rgba(253, 100, 194, 1)',  # lightened rose bonbon
+                'rgba(255, 130, 206, 1)'   # double lightened rose bonbon
             ],
             'rainbow': [
-                'firebrick',
-                'darkorange',
-                'gold',
-                'limegreen',
-                'royalblue',
-                'purple'
+                'rgba(178, 34, 34, 1)',    # firebrick
+                'rgba(255, 140, 0, 1)',    # darkorange
+                'rgba(255, 215, 0, 1)',    # gold
+                'rgba(50, 205, 50, 1)',    # limegreen
+                'rgba(65, 105, 225, 1)',   # royalblue
+                'rgba(128, 0, 128, 1)'     # purple
             ],
             'tableau': [
-                'rgb(255, 127, 14)',   # orange
-                'rgb(148, 103, 189)',  # purple
-                'rgb(140, 86, 75)',    # brown
-                'rgb(127, 127, 127)',  # grey
-                'rgb(188, 189, 34)',   # olive
-                'rgb(23, 190, 207)'    # cyan
+                'rgba(255, 127, 14, 1)',   # orange
+                'rgba(148, 103, 189, 1)',  # purple
+                'rgba(140, 86, 75, 1)',    # brown
+                'rgba(127, 127, 127, 1)',  # grey
+                'rgba(188, 189, 34, 1)',   # olive
+                'rgba(23, 190, 207, 1)'    # cyan
             ]
 
         },
