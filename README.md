@@ -76,7 +76,7 @@ The Principal Component Analysis can give you additional insights into your port
 > Interactive: no<BR>
 
 ### 4. Hollow Candlestick With Price Overlays
-If you are more used to the traditional candles and find a hollow candelabrum a bit confusing, the legend in this graph explains the meaning of each candle type. For additional convenience, the Open and Close prices are plotted as overlays (High and Low can also be added, if desired), which can be toggled off/on anytime by clicking on the corresponding line in the legend.
+If you are more used to the traditional candles and find hollow candelabra a bit confusing, the legend in this graph explains the meaning of each candle type. For additional convenience, the Open and Close prices are plotted as overlays (High and Low can also be added, if desired), which can be toggled off/on anytime by clicking on the corresponding line in the legend.
 > ![](img/04_CandlesHollowOpenClose.png)
 
 > Plotting package: plotly<BR>
@@ -90,7 +90,7 @@ In case you prefer a light plot background, you can switch at any time between t
 
 > Plotting package: plotly<BR>
 > Theme: light<BR>
-> Overlay color map: lavender inverted<BR>
+> Overlay color theme: lavender inverted<BR>
 > Interactive: yes<BR>
 
 ### 6. Traditional Candlestick With Moving Average, Bollinger Band and Moving Average Envelope Overlays
@@ -99,8 +99,8 @@ In this plot, traditional candles have been overlaid with a pair of standard (20
 
 > Plotting package: plotly<BR>
 > Theme: dark<BR>
-> Bollinger overlay color map: sapphire<BR>
-> Envelope overlay color map: turquoise<BR>
+> Bollinger overlay color theme: sapphire<BR>
+> Envelope overlay color theme: turquoise<BR>
 > Interactive: yes<BR>
 
 ### 7. Price With Multiple Moving Averages and Envelope Overlays
@@ -113,8 +113,8 @@ In this graph, the Adjusted Close daily prices have been overlaid with three pai
 
 > Plotting package: plotly<BR>
 > Theme: dark<BR>
-> First envelope overlay color map: gold<BR>
-> Second envelope overlay color map: magenta<BR>
+> First envelope overlay color theme: gold<BR>
+> Second envelope overlay color theme: magenta<BR>
 > Interactive: yes<BR>
 
 ### 8. Moving Average Oscillator With Signal Overlay
@@ -125,7 +125,7 @@ In this example, the oscillator is constructed as a difference between the 20-da
 
 > Plotting package: plotly<BR>
 > Theme: light<BR>
-> Signal overlay color map: gold<BR>
+> Signal overlay color: gold<BR>
 > Interactive: yes<BR>
 
 ### 9. Summary of Portfolio Asset Drawdowns
@@ -155,7 +155,7 @@ The MACD bar chart presented here is overlaid with the original Close price as l
 
 > Plotting package: plotly<BR>
 > Theme: dark<BR>
-> Signal overlay color map: gold<BR>
+> Signal overlay color: gold<BR>
 > Interactive: yes<BR>
 
 ### 13. Individual Asset RSI With Overbought/Oversold and Price Overlays
@@ -164,7 +164,7 @@ The Relative Strength Index (RSI) measures the speed and change of price movemen
 
 > Plotting package: plotly<BR>
 > Theme: dark<BR>
-> Signal overlay color map: gold<BR>
+> Signal overlay color: gold<BR>
 > Interactive: yes<BR>
 
 ### 14. Individual Asset Stochastic With Overbought/Oversold and Price Overlays
@@ -175,7 +175,7 @@ Presented in this graph is an example of the full Stochastic Oscillator that use
 
 > Plotting package: plotly<BR>
 > Theme: dark<BR>
-> Fast signal overlay color map: gold<BR>
-> Slow signal overlay color map: orchid<BR>
+> Fast line overlay color: orange<BR>
+> Slow line overlay color: darkorchid<BR>
 > Interactive: yes<BR>
 
