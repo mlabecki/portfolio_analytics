@@ -305,32 +305,28 @@ theme_style = {
 
         'overlay_color_theme': {
             'gold': [
-                'rgba(160, 82, 45, 1)',    # sienna
-                'rgba(184, 134, 11, 1)',   # darkgoldenrod
-                'rgba(218, 165, 32, 1)',   # goldenrod
-                'rgba(255, 215, 0, 1)',    # gold
-                'rgba(240, 230, 140, 1)',  # khaki
-                'rgba(238, 232, 170, 1)'   # palegoldenrod
+                'rgba(160, 92, 45, 1)',   # sienna modified
+                'rgba(180, 124, 8, 1)',   # darkgoldenrod modified
+                'rgba(210, 155, 12, 1)',  # goldenrod modified
+                'rgba(226, 190, 0, 1)',   # gold modified
+                'rgba(238, 210, 90, 1)',  # khaki modified
+                'rgba(245, 218, 140, 1)'  # palegoldenrod modified
             ],
             'turquoise': [
-                # NEEDS MINOR ADJUSTMENTS: 
-                #   - slightly darken 'paleturquoise' - adjusted without testing
-                #   - slightly shift to green and/or lighten 'turquoise' - adjusted without testing
-                'rgba(0, 128, 128, 1)',    # teal
-                'rgba(32, 178, 170, 1)',   # lightseagreen
-                'rgba(72, 209, 204, 1)',   # mediumturquoise
-                'rgba(64, 230, 208, 1)',   # turquoise
-                'rgba(127, 255, 212, 1)',  # aquamarine
-                'rgba(170, 232, 232, 1)'   # paleturquoise
+                'rgba(0, 128, 138, 1)',    # teal modified
+                'rgba(30, 172, 168, 1)',   # lightseagreen modified
+                'rgba(64, 202, 200, 1)',   # mediumturquoise modified
+                'rgba(60, 227, 205, 1)',   # turquoise modified
+                'rgba(122, 245, 207, 1)',  # aquamarine modified
+                'rgba(160, 237, 222, 1)'   # paleturquoise modified
             ],
             'seagreen': [
-                'rgba(0, 100, 0, 1)',      # darkgreen
-                'rgba(46, 139, 87, 1)',    # seagreen
-                'rgba(60, 179, 113, 1)',   # mediumseagreen
-                'rgba(143, 188, 143, 1)',  # darkseagreen
-                'rgba(144, 238, 144, 1)',  # lightgreen
-                'rgba(164, 244, 164, 1)'   # lightgreen lightened
-                # rgba(152, 251, 152, 1)'  # palegreen
+                'rgba(0, 100, 0, 1)',      # darkgreen modified
+                'rgba(46, 139, 87, 1)',    # seagreen modified
+                'rgba(60, 179, 113, 1)',   # mediumseagreen modified
+                'rgba(110, 200, 140, 1)',  # darkseagreen modified
+                'rgba(142, 228, 138, 1)',  # lightgreen modified
+                'rgba(164, 244, 164, 1)'   # lightgreen lightened modified
             ],
             # https://www.schemecolor.com/clean-blues.php
             'sapphire': [
@@ -343,31 +339,30 @@ theme_style = {
             ],
             # https://www.schemecolor.com/coral-roses.php
             'coral': [
-                'rgba(184, 92, 102, 1)',   # twilight lavender
-                'rgba(202, 112, 121, 1)',  # china rose
-                'rgba(240, 136, 132, 1)',  # light coral
-                'rgba(245, 167, 152, 1)',  # light salmon pink
-                'rgba(255, 191, 168, 1)',  # melon
-                'rgba(245, 206, 184, 1)'   # apricot
+                'rgba(184, 92, 102, 1)',   # twilight lavender modified
+                'rgba(202, 112, 121, 1)',  # china rose modified
+                'rgba(240, 136, 132, 1)',  # light coral modified
+                'rgba(245, 167, 152, 1)',  # light salmon pink modified
+                'rgba(255, 191, 168, 1)',  # melon modified
+                'rgba(245, 206, 184, 1)'   # apricot modified
             ],
             # https://www.schemecolor.com/deep-peach-brown.php
             'sienna': [
-                'rgba(102, 66, 40, 1)',    # cologne earth brown
-                'rgba(156, 108, 75, 1)',   # dirt
-                'rgba(193, 146, 107, 1)',  # camel
-                'rgba(235, 202, 150, 1)',  # darkened peach
-                'rgba(210, 120, 100, 1)',  # deep peach
-                'rgba(175, 89, 62, 1)'     # crayola's brown
+                'rgba(118, 80, 45, 1)',    # cologne earth brown modified
+                'rgba(155, 105, 70, 1)',   # dirt modified
+                'rgba(193, 146, 107, 1)',  # camel modified
+                'rgba(240, 182, 130, 1)',  # darkened peach modified
+                'rgba(210, 130, 100, 1)',  # deep peach modified
+                'rgba(175, 89, 62, 1)'     # crayola's brown modified
             ],
             # https://www.schemecolor.com/dark-lavender-monochromatic.php
             'lavender': [
-                # NEEDS ADJUSTING                
-                'rgba(98, 68, 128, 1)',    # cyber grape
-                'rgba(113, 78, 147, 1)',   # dark lavender
-                'rgba(134, 93, 175, 1)',   # royal purple
-                'rgba(169, 109, 209, 1)',  # rich lavender
-                'rgba(181, 126, 228, 1)',  # floral lavender
-                'rgba(204, 167, 236, 1)'   # bright ube 
+                'rgba(95, 60, 122, 1)',    # cyber grape modified
+                'rgba(113, 78, 147, 1)',   # dark lavender modified
+                'rgba(134, 93, 175, 1)',   # royal purple modified
+                'rgba(169, 109, 209, 1)',  # rich lavender modified
+                'rgba(181, 126, 228, 1)',  # floral lavender modified
+                'rgba(204, 167, 236, 1)'   # bright ube modified
             ],
             # https://www.schemecolor.com/love-gradient.php
             'magenta': [
@@ -402,29 +397,29 @@ theme_style = {
             'gold': {
                 1: [1],
                 2: [0, 3],
-                3: [0, 3, 5],
-                4: [0, 2, 3, 5],
-                5: [0, 2, 3, 4, 5],
+                3: [0, 2, 4],
+                4: [0, 2, 3, 4],
+                5: [0, 1, 2, 3, 4],
                 6: [0, 1, 2, 3, 4, 5]
             },
             'turquoise': {
                 1: [0],                 # 
-                2: [1, 3],              # 
-                3: [1, 3, 5],           # 
-                4: [1, 3, 4, 5],        # 
-                5: [1, 2, 3, 4, 5],     # 
+                2: [0, 2],              # 
+                3: [0, 2, 4],           # 
+                4: [0, 2, 3, 4],        # 
+                5: [0, 1, 2, 3, 4],     # 
                 6: [0, 1, 2, 3, 4, 5]   # 
             },
             'seagreen': {
                 1: [1],                 # 
                 2: [1, 3],              # 
-                3: [1, 3, 5],           # 
-                4: [1, 3, 4, 5],        # 
-                5: [1, 2, 3, 4, 5],     # 
+                3: [0, 2, 4],           # 
+                4: [0, 2, 3, 4],        # 
+                5: [0, 1, 2, 3, 4],     # 
                 6: [0, 1, 2, 3, 4, 5]   # 
             },
             'sapphire': {
-                1: [2],                 # 
+                1: [1],                 # 
                 2: [1, 3],              # 
                 3: [1, 3, 5],           # 
                 4: [1, 2, 3, 5],        # 
@@ -440,27 +435,27 @@ theme_style = {
                 6: [0, 1, 2, 3, 4, 5]   # 
             },
             'sienna': {
-                1: [1],                 #
-                2: [1, 4],              #
-                3: [1, 3, 4],           #
-                4: [1, 2, 3, 4],        #
+                1: [0],                 #
+                2: [0, 3],              #
+                3: [0, 2, 4],           #
+                4: [0, 1, 2, 4],        #
                 5: [0, 1, 2, 3, 4],     #
                 6: [0, 1, 2, 3, 4, 5]   #
             },
             'lavender': {
                 1: [1],                 # 
                 2: [1, 4],              # 
-                3: [1, 3, 5],           # 
-                4: [1, 3, 4, 5],        # 
-                5: [1, 2, 3, 4, 5],     # 
+                3: [0, 2, 4],           # 
+                4: [0, 2, 3, 4],        # 
+                5: [0, 1, 2, 3, 4],     # 
                 6: [0, 1, 2, 3, 4, 5]   # 
             },
             'magenta': {
-                1: [1],                 # 
-                2: [1, 4],              # 
-                3: [1, 3, 5],           # 
-                4: [1, 3, 4, 5],        # 
-                5: [1, 2, 3, 4, 5],     # 
+                1: [0],                 # 
+                2: [0, 3],              # 
+                3: [0, 2, 4],           # 
+                4: [0, 1, 3, 4],        # 
+                5: [0, 1, 2, 3, 4],     # 
                 6: [0, 1, 2, 3, 4, 5]   # 
             },
             'rainbow': {
