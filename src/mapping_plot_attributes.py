@@ -57,22 +57,9 @@ legend_gap = {
     # can be used to calculate the base distance between the upper and lower legends,
     # before further adjustments to obtain the final estimate of legend_tracesgroupgap
     'triple': {
-        'slope': {
-            # keys are lower plot heights
-            300: 0.9253,
-            250: 0.9293,
-            200: 0.9333,
-            150: 0.9420,
-            100: 0.9607
-        },
-        'intercept': {
-            # keys are lower plot heights
-            300: -58.8,
-            250: -67.9,
-            200: -77.0,
-            150: -90.3,
-            100: -110.6
-        }
+        'slope_upper': 1,
+        'slope_lower': 2,
+        'intercept': -177.0
     }
 }
 
