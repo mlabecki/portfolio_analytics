@@ -179,10 +179,10 @@ Presented in this graph is an example of the full Stochastic Oscillator that use
 > Slow line overlay color: darkorchid<BR>
 > Interactive: yes<BR>
 
-### 15. Traditional Candles With Price and Moving Average Envelope Overlays (Upper) and Volume (Lower)
+### 15. Hollow Candles With Price and Moving Average Envelope Overlays (Upper) and Volume (Lower)
 
 > ![](img/15_CandlesHollow_OpenClose_Envelopes_Volume_600x150.png)
 
-### 16. Hollow Candles With Bollinger Overlays (Upper), MACD Filled Line With Signal (Middle) and MACD-V Histogram (Lower)
+### 16. Traditional Candles With Bollinger Overlays (Upper), MACD Filled Line With Signal (Middle) and MACD-V Histogram (Lower)
 
 > ![](img/16_TraditionalCandles_Envelopes_MACDflood_MACDVbar_1450_Light.png)
