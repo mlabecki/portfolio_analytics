@@ -187,4 +187,4 @@ This double-deck graph is an example where the trade volume is plotted as a hist
 
 ### 16. Traditional Candles With Bollinger Overlays (Upper), MACD Filled Line With Signal (Middle) and MACD-V Histogram (Lower)
 
-> ![](img/16_TraditionalCandles_Envelopes_MACDflood_MACDVbar_1450_Light.png)
+> ![](img/16_TraditionalCandles_3Bollingers_MACDflood_MACDVbar_1450_Light.png)
