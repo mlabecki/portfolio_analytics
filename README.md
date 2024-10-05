@@ -75,7 +75,7 @@ The Principal Component Analysis can give you additional insights into your port
 > Plotting package: matplotlib<BR>
 > Interactive: no<BR>
 
-### 4. Hollow Candlestick With Price Overlays
+### 4. Hollow Candles With Price Overlays
 If you are more used to the traditional candles and find hollow candelabra a bit confusing, the legend in this graph explains the meaning of each candle type. For additional convenience, the Open and Close prices are plotted as overlays (High and Low can also be added, if desired), which can be toggled off/on anytime by clicking on the corresponding line in the legend.
 > ![](img/04_CandlesHollowOpenClose.png)
 
@@ -84,7 +84,7 @@ If you are more used to the traditional candles and find hollow candelabra a bit
 > Overlay color theme: sapphire<BR>
 > Interactive: yes<BR>
 
-### 5. Traditional Candlestick With Moving Average Overlays
+### 5. Traditional Candles With Moving Average Overlays
 In case you prefer a light plot background, you can switch at any time between the dark and light themes. You can also pick and switch between any of the 10 pre-defined overlay color themes and/or invert the sequence of colors, if desired. In this traditional candlestick plot, a ribbon of six Close-based Simple Moving Average (SMA) overlays have been added with windows increasing in 5-day increments. You can custom-define the window size and choose one of several moving average types. 
 > ![](img/05_CandlesTraditional5dSMAOverlaysLavender_Light.png)
 
@@ -93,7 +93,7 @@ In case you prefer a light plot background, you can switch at any time between t
 > Overlay color theme: lavender inverted<BR>
 > Interactive: yes<BR>
 
-### 6. Traditional Candlestick With Moving Average, Bollinger Band and Moving Average Envelope Overlays
+### 6. Traditional Candles With Moving Average, Bollinger Band and Moving Average Envelope Overlays
 In this plot, traditional candles have been overlaid with a pair of standard (20, 2) Bollinger bands and then with a pair of (20, 10%) envelopes, both over a 20-day Close-based SMA. You can add up to three pairs of Bollinger overlays and up to three pairs of envelopes on one plot, toggling them off/on as desired. Note that, if at any point you attempt to add a line that already exists in the plot, the new duplicate line will be omitted. That is why, although both the set of Bollinger overlays and the set of envelope overlays contain the 20-day SMA base line, only the one added first - as can be noted from its position in the legend - is plotted.
 > ![](img/06_CandlesTraditional20-1Bollinger20-10EnvelopeOverlays.png)
 
@@ -179,3 +179,10 @@ Presented in this graph is an example of the full Stochastic Oscillator that use
 > Slow line overlay color: darkorchid<BR>
 > Interactive: yes<BR>
 
+### 15. Traditional Candles With Price and Moving Average Envelope Overlays (Upper) and Volume (Lower)
+
+> ![](img/15_CandlesHollow_OpenClose_Envelopes_Volume_600x150.png)
+
+### 16. Hollow Candles With Bollinger Overlays (Upper), MACD Filled Line With Signal (Middle) and MACD-V Histogram (Lower)
+
+> ![](img/16_TraditionalCandles_Envelopes_MACDflood_MACDVbar_1450_Light.png)
