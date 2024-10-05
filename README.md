@@ -180,6 +180,8 @@ Presented in this graph is an example of the full Stochastic Oscillator that use
 > Interactive: yes<BR>
 
 ### 15. Hollow Candles With Price and Moving Average Envelope Overlays (Upper) and Volume (Lower)
+It is often desirable to view how another metric, with a different range of values, changes alongside the major indicators of interest. 
+This double-deck graph is an example where the trade volume is plotted as a histogram below the main graph displaying candles plus overlays.
 
 > ![](img/15_CandlesHollow_OpenClose_Envelopes_Volume_600x150.png)
 
