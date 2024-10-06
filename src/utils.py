@@ -5,7 +5,7 @@ import math
 def set_axis_limits(
     x_min,
     x_max,
-    max_n_intervals = 9
+    max_n_intervals = 15
 ):
     """
     Returns the lower and upper limits for an axis where x_min and x_max are the min/max values.

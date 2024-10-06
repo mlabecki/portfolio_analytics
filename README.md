@@ -188,3 +188,8 @@ This double-deck graph is an example where the trade volume is plotted as a hist
 ### 16. Traditional Candles With Bollinger Overlays (Upper), MACD Filled Line With Signal (Middle) and MACD-V Histogram (Lower)
 
 > ![](img/16_TraditionalCandles_3Bollingers_MACDflood_MACDVbar_1450_Light.png)
+
+### 17. Traditional Candles With EMA Overlays (Upper), Stochastic (Middle) and MACD Histogram (Lower)
+This combination of indicators - candles, EMA 200, Stochastic K- and D-lines with overbought/oversold overlays, and MACD Histogram with the EMA 9 signal - is used in one of the actual trading startegies. A sell signal is generated when the price is below EMA 200 and Stochastic is in the overbought range and MACD changes sign below the stochastic; whereas a buy signal arises when when the price is above EMA 200 and Stochastic is in the oversold range and MACD changes sign above the stochastic.
+
+> ![](img/17_TraditionalCandles_EMA200_Stochastic_MACD_450x200x200.png)
