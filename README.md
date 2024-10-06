@@ -193,19 +193,19 @@ Presented in this graph is an example of the full Stochastic Oscillator that use
 It is often desirable to view how another metric, with a different range of values, changes alongside the major indicators of interest. 
 The graph below is an example where the trade volume is plotted as a histogram below the main graph displaying candles plus overlays.
 
-> ![](img/15_CandlesHollow_OpenClose_Envelopes_Volume_600x150.png)
+> ![](img/15_CandlesHollow_OpenCloseTurquoise_Envelopes3-6Gold_Volume_600x150.png)
 
 > Plotting package: plotly<BR>
 > Theme: dark<BR>
 > Template type: double-deck<BR>
 > Upper deck plot type: green-red hollow candles<BR>
-> Upper deck price overlay color theme: sapphire<BR>
+> Upper deck price overlay color theme: turquoise<BR>
 > Upper deck envelope overlay color theme: gold<BR>
 > Lower deck volume color theme: sapphire<BR>
 > Interactive: yes<BR>
 
 ### 16. Traditional Candles With Bollinger Overlays (Upper), MACD Filled Line With Signal (Middle) and MACD-V Histogram (Lower)
-Volatility-normalized MACD, or MACD-V, has been proposed as an indicator that overcomes some limitations of the traditional MACD; for example, by being comparable across markets and across time, or by providing improved signal accuracy. The normalization metric of volatility is the Average True Range (ATR), a concept developed by J. Welles Wilder and based on the type of moving average named after him. The difference between MACD-V and its signal, also know as the MACD-V histogram, is plotted here in the lower deck of the graph below. Both the original MACD-V and signal lines can also be displayed (similarly to lower deck of 17. below) but have been omitted in order to improve the resolution of the histogram plot.
+Volatility-normalized MACD, or MACD-V, has been proposed as an indicator that overcomes some limitations of the traditional MACD; for example, by being comparable across markets and across time, or by providing improved signal accuracy. The normalization metric of volatility is the Average True Range (ATR), a concept developed by J. Welles Wilder and based on the type of moving average named after him. The difference between MACD-V and its signal, also know as the MACD-V histogram, is plotted here in the lower deck of the graph below. Both the original MACD-V and signal lines can also be displayed (similarly to lower deck of 17. below) but have been omitted here in order to improve the vertical resolution of the histogram plot.
 
 For comparison with the MACD-V histogram in the lower deck, the middle deck shows the traditional MACD as a zero-crossover green-red filled line along with its standard signal line. The upper deck presents traditional candles overlaid with Bollinger bands, which are also a volatility-related construct. 
 
