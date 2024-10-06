@@ -22,7 +22,7 @@ The project is ongoing, although a vast amount of functionality has already been
 > - up to three pairs of customized Bollinger band overlays on top of an existing graph
 > - up to three pairs of customized moving average envelope overlays on top of an existing graph
 > - price oscillator plot for two custom selected moving averages or price types with an optional signal line
-> - main plot with possible overlays stacked with a shorter lower plot of an additional signal or oscillator
+> - choice of a double- or triple-deck template allowing to combine most of the above plots in one stacked graph
 
 **c) Analyze returns**
 > - summary of statistical properties of asset return distributions
@@ -81,6 +81,7 @@ If you are more used to the traditional candles and find hollow candelabra a bit
 
 > Plotting package: plotly<BR>
 > Theme: dark<BR>
+> Plot type: green-red holllow candles<BR>
 > Overlay color theme: sapphire<BR>
 > Interactive: yes<BR>
 
@@ -90,6 +91,7 @@ In case you prefer a light plot background, you can switch at any time between t
 
 > Plotting package: plotly<BR>
 > Theme: light<BR>
+> Plot type: green-red traditional candles<BR>
 > Overlay color theme: lavender inverted<BR>
 > Interactive: yes<BR>
 
@@ -99,6 +101,7 @@ In this plot, traditional candles have been overlaid with a pair of standard (20
 
 > Plotting package: plotly<BR>
 > Theme: dark<BR>
+> Plot type: green-red traditional candles<BR>
 > Bollinger overlay color theme: sapphire<BR>
 > Envelope overlay color theme: turquoise<BR>
 > Interactive: yes<BR>
@@ -113,18 +116,20 @@ In this graph, the Adjusted Close daily prices have been overlaid with three pai
 
 > Plotting package: plotly<BR>
 > Theme: dark<BR>
+> Price line color: tableau blue<BR>
 > First envelope overlay color theme: gold<BR>
 > Second envelope overlay color theme: magenta<BR>
 > Interactive: yes<BR>
 
 ### 8. Moving Average Oscillator With Signal Overlay
-If any price or moving average curves happen to catch your particular attention, you can plot their difference in a similar way the moving average convergence divergence (MACD) is constructed (see 11. below). This type of difference is typically referred to as a price oscillator. If desired, you can then add a custom-defined signal line that is a moving average of that oscillator - again, similar to the MACD 9-day SMA signal. 
+If any price or moving average curves happen to catch your particular attention, you can plot their difference in a similar way the moving average convergence divergence (MACD) is constructed (see 12. below). This type of difference is typically referred to as a price oscillator. If desired, you can then add a custom-defined signal line that is a moving average of that oscillator - again, similar to the MACD 9-day SMA signal. 
 
 In this example, the oscillator is constructed as a difference between the 20-day Simple (SMA) and Exponential (EMA) Moving Averages, with an arbitrary signal of a 10-day SMA added. Likewise, you could also use this type of plot to compare an EMA against a Weighted Moving Average (WMA) with an EMA signal; or to compare two moving averages of different window sizes; or to compare Open and Close prices, similar to a traditional candlestick plot - just to name a few possibilities.
 > ![](img/08_SMA20-EMA20_Close_Oscillator_Light.png)
 
 > Plotting package: plotly<BR>
 > Theme: light<BR>
+> Oscillator plot type: green-red filled line<BR>
 > Signal overlay color: gold<BR>
 > Interactive: yes<BR>
 
@@ -144,6 +149,7 @@ This example uses the same AAPL data as above, except the top six drawdowns are 
 
 > Plotting package: plotly<BR>
 > Theme: dark<BR>
+> Price line color: tableau blue<BR>
 > Overlay color map: red with intensity scaled proportionally to drawdown depth<BR>
 > Interactive: yes<BR>
 
@@ -155,7 +161,9 @@ The MACD bar chart presented here is overlaid with the original Close price as l
 
 > Plotting package: plotly<BR>
 > Theme: dark<BR>
+> MACD plot type: green-red histogram<BR>
 > Signal overlay color: gold<BR>
+> Price overlay color: tableau blue<BR>
 > Interactive: yes<BR>
 
 ### 13. Individual Asset RSI With Overbought/Oversold and Price Overlays
@@ -165,6 +173,7 @@ The Relative Strength Index (RSI) measures the speed and change of price movemen
 > Plotting package: plotly<BR>
 > Theme: dark<BR>
 > Signal overlay color: gold<BR>
+> Price overlay color: tableau blue<BR>
 > Interactive: yes<BR>
 
 ### 14. Individual Asset Stochastic With Overbought/Oversold and Price Overlays
@@ -177,19 +186,54 @@ Presented in this graph is an example of the full Stochastic Oscillator that use
 > Theme: dark<BR>
 > Fast line overlay color: orange<BR>
 > Slow line overlay color: darkorchid<BR>
+> Price overlay color: tableau blue<BR>
 > Interactive: yes<BR>
 
 ### 15. Hollow Candles With Price and Moving Average Envelope Overlays (Upper) and Volume (Lower)
 It is often desirable to view how another metric, with a different range of values, changes alongside the major indicators of interest. 
-This double-deck graph is an example where the trade volume is plotted as a histogram below the main graph displaying candles plus overlays.
+The graph below is an example where the trade volume is plotted as a histogram below the main graph displaying candles plus overlays.
 
 > ![](img/15_CandlesHollow_OpenClose_Envelopes_Volume_600x150.png)
 
+> Plotting package: plotly<BR>
+> Theme: dark<BR>
+> Template type: double-deck<BR>
+> Upper deck plot type: green-red hollow candles<BR>
+> Upper deck price overlay color theme: sapphire<BR>
+> Upper deck envelope overlay color theme: gold<BR>
+> Lower deck volume color theme: sapphire<BR>
+> Interactive: yes<BR>
+
 ### 16. Traditional Candles With Bollinger Overlays (Upper), MACD Filled Line With Signal (Middle) and MACD-V Histogram (Lower)
+Volatility-normalized MACD, or MACD-V, has been proposed as an indicator that overcomes some limitations of the traditional MACD; for example, by being comparable across markets and across time, or by providing improved signal accuracy. The normalization metric of volatility is the Average True Range (ATR), a concept developed by J. Welles Wilder and based on the type of moving average named after him. The difference between MACD-V and its signal, also know as the MACD-V histogram, is plotted here in the lower deck of the graph below. Both the original MACD-V and signal lines can also be displayed (similarly to lower deck of 17. below) but have been omitted in order to improve the resolution of the histogram plot.
+
+For comparison with the MACD-V histogram in the lower deck, the middle deck shows the traditional MACD as a zero-crossover green-red filled line along with its standard signal line. The upper deck presents traditional candles overlaid with Bollinger bands, which are also a volatility-related construct. 
 
 > ![](img/16_TraditionalCandles_3Bollingers_MACDflood_MACDVbar_1450_Light.png)
 
+> Plotting package: plotly<BR>
+> Theme: light<BR>
+> Template type: triple-deck<BR>
+> Upper deck plot type: green-red traditional candles<BR>
+> Upper deck Bollinger overlay color theme: sapphire<BR>
+> Middle deck MACD plot type: green-red filled line<BR>
+> Middle deck signal overlay color: gold<BR>
+> Lower deck MACD-V plot type: green-red histogram<BR>
+> Interactive: yes<BR>
+
 ### 17. Traditional Candles With EMA Overlays (Upper), Stochastic (Middle) and MACD Histogram (Lower)
-This combination of indicators - candles, EMA 200, Stochastic K- and D-lines with overbought/oversold overlays, and MACD Histogram with the EMA 9 signal - is used in one of the actual trading startegies. A buy signal is generated when when the price is above EMA 200 and Stochastic is in the oversold range and MACD changes sign to positive; whereas a sell signal arises when the price is below EMA 200 and Stochastic is in the overbought range and MACD changes sign to negative.
+This combination of indicators - candles, EMA 200, Stochastic K- and D-lines with overbought/oversold overlays, and MACD Histogram with the EMA 9 signal - is used in one of the actual trading startegies. A buy signal is generated when the price is above EMA 200, and Stochastic is in the oversold range, and MACD changes sign to positive; whereas a sell signal arises when the price is below EMA 200, and Stochastic is in the overbought range, and MACD changes sign to negative.
 
 > ![](img/17_TraditionalCandles_EMA200_Stochastic_MACD_450x200x200.png)
+
+> Plotting package: plotly<BR>
+> Theme: dark<BR>
+> Template type: triple-deck<BR>
+> Upper deck plot type: green-red traditional candles<BR>
+> Upper deck EMA overlay color theme: sapphire<BR>
+> Middle deck stochastic fast line color: orange<BR>
+> Middle deck stochastic slow line color: darkorchid<BR>
+> Lower deck MACD plot type: green-red histogram<BR>
+> Lower deck MACD line color: tableau blue<BR>
+> Lower deck signal color: gold<BR>
+> Interactive: yes<BR>
