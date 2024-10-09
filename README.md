@@ -222,7 +222,7 @@ For comparison with the MACD-V histogram in the lower deck, the middle deck show
 > Interactive: yes<BR>
 
 ### 17. Traditional Candles With EMA Overlays (Upper), Stochastic (Middle) and MACD Histogram (Lower)
-This combination of indicators - candles, EMA 200, Stochastic K- and D-lines with overbought/oversold overlays, and MACD Histogram with the EMA 9 signal - is used in one of the actual trading startegies. A buy signal is generated when the price is above EMA 200, and Stochastic is in the oversold range, and MACD changes sign to positive; whereas a sell signal arises when the price is below EMA 200, and Stochastic is in the overbought range, and MACD changes sign to negative.
+This combination of indicators - candles, EMA 200, Stochastic K- and D-lines with overbought/oversold overlays, and MACD Histogram with the EMA 9 signal - is used in one of the actual trading startegies. A buy signal is generated when the price is above EMA 200, and Stochastic is in the oversold range, and MACD changes sign to positive. A sell signal arises when the price is below EMA 200, and Stochastic is in the overbought range, and MACD changes sign to negative.
 
 > ![](img/17_TraditionalCandles_EMA200_Stochastic_MACD_450x200x200.png)
 
