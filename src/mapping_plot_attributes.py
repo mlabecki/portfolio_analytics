@@ -1,10 +1,17 @@
-##### LEGEND MAPS #####
+##### Y-TICK NUMBER MAP #####
 
-# To be eliminated
-legendgroup_map = {
-    'upper': 1,  # row 1 in subplots
-    'lower': 2   # row 2 in subplots
+n_yticks_map  = {
+    100: 5,
+    150: 7,
+    200: 7,
+    250: 7,
+    300: 7,
+    450: 12,
+    600: 14,
+    750: 16
 }
+
+##### LEGEND MAPS #####
 
 tripledeck_legendtitle = {
     1: 'UPPER',
