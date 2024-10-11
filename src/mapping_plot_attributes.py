@@ -1,6 +1,6 @@
-##### Y-TICK NUMBER MAP #####
+##### TICK NUMBER MAPS #####
 
-n_yticks_map  = {
+n_yticks_map = {
     100: 5,
     150: 7,
     200: 7,
@@ -10,6 +10,12 @@ n_yticks_map  = {
     600: 14,
     750: 16
 }
+
+n_xticks_map = {
+    1280: 42,
+    1450: 48,
+    1600: 52
+} 
 
 ##### LEGEND MAPS #####
 

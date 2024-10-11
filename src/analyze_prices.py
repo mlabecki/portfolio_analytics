@@ -156,6 +156,7 @@ class AnalyzePrices():
         self,
         date_index,
         deck_type = 'triple',
+        secondary_y = False,
         plot_width = 1600,
         n_ticks_max = 52,
         plot_height_1 = None,
@@ -187,7 +188,6 @@ class AnalyzePrices():
         There should be a separate function to update the y axis in any deck based
         on the custom-specified number of ticks.
         Likewise to update the x axis to select a different width (1280, 1450, 1600)
-        Defaults could be: n_yticks_max = {1: 12, 2: 7, 3: 7}
 
         """
 
@@ -251,6 +251,10 @@ class AnalyzePrices():
                     'y1': 1
                 }
             }
+            specs_list = [
+                [{'secondary_y': True}]
+            ]
+
         elif deck_type == 'double': 
             y_range = {
                 1: {
@@ -262,6 +266,11 @@ class AnalyzePrices():
                     'y1': height_pct[2]
                 }
             }
+            specs_list = [
+                [{'secondary_y': True}],
+                [{'secondary_y': False}]
+            ]
+
         elif deck_type == 'triple': 
             y_range = {
                 1: {
@@ -277,18 +286,34 @@ class AnalyzePrices():
                     'y1': height_pct[3]
                 }
             }
+            specs_list = [
+                [{'secondary_y': True}],
+                [{'secondary_y': False}],
+                [{'secondary_y': False}]
+            ]
 
         title_y_pos = 1 - 0.5 * top_margin / plot_height_total
+        title_x_pos = 0.435 if secondary_y else 0.45
 
         style = theme_style[theme]
 
-        fig = make_subplots(
-            rows = n_rows,
-            cols = 1,
-            shared_xaxes = True,
-            vertical_spacing = 0,
-            row_heights = row_heights
-        )
+        if secondary_y:
+            fig = make_subplots(
+                rows = n_rows,
+                cols = 1,
+                shared_xaxes = True,
+                vertical_spacing = 0,
+                row_heights = row_heights,
+                specs = specs_list
+            )
+        else:
+            fig = make_subplots(
+                rows = n_rows,
+                cols = 1,
+                shared_xaxes = True,
+                vertical_spacing = 0,
+                row_heights = row_heights
+            )
 
         for k in range(n_rows + 1)[1:]:
 
@@ -360,12 +385,12 @@ class AnalyzePrices():
             'y_max': y_max,
             'plot_height': plot_height,
             'deck_type': deck_type,
+            'title_x_pos': title_x_pos,
             'title_y_pos': title_y_pos,
             'color_map': {}
         }
 
         return fig_data
-
 
     ##### ADJUST LEGEND POSITION #####
 
@@ -504,6 +529,7 @@ class AnalyzePrices():
 
         fig_stochastic = fig_data['fig']
         deck_type = fig_data['deck_type']
+        title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
 
         k_line = stochastic_data['k_line']
@@ -614,7 +640,7 @@ class AnalyzePrices():
                     text = title_stochastic,
                     font_size = title_font_size,
                     y = title_y_pos,
-                    x = 0.45,
+                    x = title_x_pos,
                     xanchor = 'center',
                     yanchor = 'middle'
                 )
@@ -933,6 +959,7 @@ class AnalyzePrices():
 
         fig_macd = fig_data['fig']
         deck_type = fig_data['deck_type']
+        title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
 
         if n_yticks_max is None:
@@ -1214,7 +1241,7 @@ class AnalyzePrices():
                 text = title_macd,
                 font_size = title_font_size,
                 y = title_y_pos,
-                x = 0.45,
+                x = title_x_pos,
                 xanchor = 'center',
                 yanchor = 'middle'
             )
@@ -2153,6 +2180,7 @@ class AnalyzePrices():
 
         fig_rsi = fig_data['fig']    
         deck_type = fig_data['deck_type']
+        title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
 
         style = theme_style[theme]
@@ -2244,7 +2272,7 @@ class AnalyzePrices():
                     text = title_rsi,
                     font_size = title_font_size,
                     y = title_y_pos,
-                    x = 0.45,
+                    x = title_x_pos,
                     xanchor = 'center',
                     yanchor = 'middle'
                 )
@@ -2902,6 +2930,7 @@ class AnalyzePrices():
         df_price,
         tk,
         target_deck = 1,
+        secondary_y = False,
         plot_type = 'scatter',
         n_yticks_max = None,
         price_type = 'adjusted close',
@@ -2941,6 +2970,7 @@ class AnalyzePrices():
         fig_y_min = fig_data['y_min'][target_deck]
         fig_y_max = fig_data['y_max'][target_deck]
         deck_type = fig_data['deck_type']
+        title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
 
         if n_yticks_max is None:
@@ -3020,7 +3050,8 @@ class AnalyzePrices():
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle
                 ),
-                row = target_deck, col = 1
+                row = target_deck, col = 1,
+                secondary_y = secondary_y
             )
 
         # Update layout and axes
@@ -3030,17 +3061,20 @@ class AnalyzePrices():
                     text = title,
                     font_size = title_font_size,
                     y = title_y_pos,
-                    x = 0.45,
+                    x = title_x_pos,
                     xanchor = 'center',
                     yanchor = 'middle'
                 )
             )
 
+        y_range = None if secondary_y else (y_min, y_max)
         fig.update_yaxes(
-            range = (y_min, y_max),
+            range = y_range,
             title = yaxis_title,
             showticklabels = True,
             nticks = n_yticks_max,
+            secondary_y = secondary_y,
+            showgrid = not secondary_y,
             row = target_deck, col = 1
         )
 
@@ -3050,8 +3084,6 @@ class AnalyzePrices():
                 legend_tracegroupgap = legend_tracegroupgap,
                 legend_traceorder = 'grouped'
             )
-
-        # print(f'legend_tracegroupgap = {legend_tracegroupgap}')
 
         fig_data.update({'fig': fig})
         fig_data['y_min'].update({target_deck: y_min})
@@ -3201,6 +3233,7 @@ class AnalyzePrices():
 
         fig = fig_data['fig']
         deck_type = fig_data['deck_type']
+        title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
 
         if n_yticks_max is None:
@@ -3354,7 +3387,7 @@ class AnalyzePrices():
                     text = title,
                     font_size = title_font_size,
                     y = title_y_pos,
-                    x = 0.45,
+                    x = title_x_pos,
                     xanchor = 'center',
                     yanchor = 'middle'
                 )
@@ -3730,6 +3763,7 @@ class AnalyzePrices():
 
         fig_diff = fig_data['fig']
         deck_type = fig_data['deck_type']
+        title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
 
         legendgrouptitle = {}
@@ -3951,7 +3985,7 @@ class AnalyzePrices():
                     text = diff_title,
                     font_size = title_font_size,
                     y = title_y_pos,
-                    x = 0.45,
+                    x = title_x_pos,
                     xanchor = 'center',
                     yanchor = 'middle'
                 )
