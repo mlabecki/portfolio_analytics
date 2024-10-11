@@ -389,10 +389,11 @@ class AnalyzePrices():
             'deck_type': deck_type,
             'title_x_pos': title_x_pos,
             'title_y_pos': title_y_pos,
-            'color_map': {}
+            'overlays': []
         }
 
         return fig_data
+
 
     ##### ADJUST LEGEND POSITION #####
 
@@ -2680,13 +2681,13 @@ class AnalyzePrices():
              - ma_idx ma index (1, 2,...)
              - ma_type: 'sma' (default), 'ema', 'dema', 'tema', 'wma' or 'wwma'
              - ma_window, in days
-             - showlegend: include in plot legend or not
         """
 
         x_min = self.start_date if x_min is None else x_min
         x_max = self.end_date if x_max is None else x_max
 
         deck_type = fig_data['deck_type']
+        fig_overlays = fig_data['overlays']
 
         n_ma = len(ma_list)
 
@@ -2696,6 +2697,7 @@ class AnalyzePrices():
         current_names = [trace['name'] for trace in fig_data['fig']['data'] if (trace['legendgroup'] == str(target_deck))]
 
         ma_overlays = []
+        ma_overlay_names = []
 
         for i, ma in enumerate(ma_list):
 
@@ -2703,7 +2705,7 @@ class AnalyzePrices():
             ma_window = ma['ma_window']
             ma_name = f'{ma_type.upper()} {ma_window}'
 
-            if ma_name not in current_names:  # MUST ALSO CHECK THE DECK
+            if ma_name not in current_names:
 
                 ma_data = self.moving_average(
                     df_price[x_min: x_max],
@@ -2711,25 +2713,22 @@ class AnalyzePrices():
                     ma_window
                 )
                 ma_color_idx = overlay_color_idx[i]
-                ma_showlegend = ma['showlegend']
 
                 ma_overlays.append({
                     'data': ma_data,
                     'name': ma_name,
-                    'color_idx': ma_color_idx,
-                    'showlegend': ma_showlegend
+                    'color_idx': ma_color_idx
                 })
+                ma_overlay_names.append(ma_name)
 
-        # color_map = fig_data['color_map']
         color_map = {}
 
         for overlay in ma_overlays:
-            fig_data = self.add_overlay(
+            fig_data =self.add_overlay(
                 fig_data,
                 overlay['data'],
                 overlay['name'],
                 overlay['color_idx'],
-                overlay['showlegend'],
                 target_deck = target_deck,
                 theme = theme,
                 color_theme = color_theme
@@ -2749,7 +2748,20 @@ class AnalyzePrices():
                 row = target_deck, col = 1
             )
 
-        fig_data.update({'color_map': color_map})
+        overlay_idx = len(fig_overlays) + 1
+        overlay_name = f'OV{overlay_idx}'
+        overlay_components = ma_overlay_names[0]
+        for name in ma_overlay_names[1:]:
+            overlay_components += f', {name}'
+        fig_overlays.append({
+            'name': overlay_name,
+            'deck': target_deck,
+            'color_theme': color_theme,
+            'components': overlay_components,
+            'color_map': color_map
+        })
+
+        fig_data.update({'overlays': fig_overlays})
 
         return fig_data
 
@@ -2768,13 +2780,13 @@ class AnalyzePrices():
     ):
         """
         df_price: df_close or df_adj_close, depending on the underlying figure in fig_data
-
         """
 
         x_min = self.start_date if x_min is None else x_min
         x_max = self.end_date if x_max is None else x_max
 
         deck_type = fig_data['deck_type']
+        fig_overlays = fig_data['overlays']
 
         n_boll = int((len(bollinger_list) + 1) / 2)
 
@@ -2784,6 +2796,7 @@ class AnalyzePrices():
         current_names = [tr['name'] for tr in fig_data['fig']['data'] if (tr['legendgroup'] == str(target_deck))]
 
         bollinger_overlays = []
+        bollinger_overlay_names = []
 
         for boll in bollinger_list:
 
@@ -2791,11 +2804,10 @@ class AnalyzePrices():
                 bollinger_overlays.append({
                     'data': boll['data'][x_min: x_max],
                     'name': boll['name'],
-                    'color_idx': overlay_color_idx[abs(boll['idx_offset'])],
-                    'showlegend': boll['showlegend']
+                    'color_idx': overlay_color_idx[abs(boll['idx_offset'])]
                 })
+                bollinger_overlay_names.append(boll['name'])
 
-        # color_map = fig_data['color_map']
         color_map = {}
 
         for overlay in bollinger_overlays:
@@ -2804,7 +2816,6 @@ class AnalyzePrices():
                 overlay['data'],
                 overlay['name'],
                 overlay['color_idx'],
-                overlay['showlegend'],
                 target_deck = target_deck,
                 theme = theme,
                 color_theme = color_theme
@@ -2818,7 +2829,20 @@ class AnalyzePrices():
                 legend_traceorder = 'grouped'
             )
 
-        fig_data.update({'color_map': color_map})
+        overlay_idx = len(fig_overlays) + 1
+        overlay_name = f'OV{overlay_idx}'
+        overlay_components = bollinger_overlay_names[0]
+        for name in bollinger_overlay_names[1:]:
+            overlay_components += f', {name}'
+        fig_overlays.append({
+            'name': overlay_name,
+            'deck': target_deck,
+            'color_theme': color_theme,
+            'components': overlay_components,
+            'color_map': color_map
+        })
+
+        fig_data.update({'overlays': fig_overlays})
 
         return fig_data
 
@@ -2842,6 +2866,7 @@ class AnalyzePrices():
         x_max = self.end_date if x_max is None else x_max
 
         deck_type = fig_data['deck_type']
+        fig_overlays = fig_data['overlays']
 
         n_env = int((len(ma_envelope_list) + 1) / 2)
 
@@ -2851,6 +2876,7 @@ class AnalyzePrices():
         current_names = [tr['name'] for tr in fig_data['fig']['data'] if (tr['legendgroup'] == str(target_deck))]
 
         ma_envelope_overlays = []
+        ma_envelope_overlay_names = []
 
         for env in ma_envelope_list:
 
@@ -2858,9 +2884,9 @@ class AnalyzePrices():
                 ma_envelope_overlays.append({
                    'data': env['data'][x_min: x_max],
                    'name': env['name'],
-                   'color_idx': overlay_color_idx[abs(env['idx_offset'])],
-                   'showlegend': env['showlegend']
+                   'color_idx': overlay_color_idx[abs(env['idx_offset'])]
                 })
+                ma_envelope_overlay_names.append(env['name'])
 
         color_map = {}
 
@@ -2870,7 +2896,6 @@ class AnalyzePrices():
                 overlay['data'],
                 overlay['name'],
                 overlay['color_idx'],
-                overlay['showlegend'],
                 target_deck = target_deck,
                 theme = theme,
                 color_theme = color_theme
@@ -2884,7 +2909,20 @@ class AnalyzePrices():
                 legend_traceorder = 'grouped'
             )
 
-        fig_data.update({'color_map': color_map})
+        overlay_idx = len(fig_overlays) + 1
+        overlay_name = f'OV{overlay_idx}'
+        overlay_components = ma_envelope_overlay_names[0]
+        for name in ma_envelope_overlay_names[1:]:
+            overlay_components += f', {name}'
+        fig_overlays.append({
+            'name': overlay_name,
+            'deck': target_deck,
+            'color_theme': color_theme,
+            'components': overlay_components,
+            'color_map': color_map
+        })
+
+        fig_data.update({'overlays': fig_overlays})
 
         return fig_data
 
@@ -2893,35 +2931,54 @@ class AnalyzePrices():
 
     def update_color_theme(
         self,
-        fig,
-        color_map,
+        fig_data,
         theme,
-        color_theme,
+        new_color_theme,
+        overlay_name = 'OV1',
         invert = False
     ):
         """
         fig = fig_data['fig']
-        color_map = fig_data['color_map']: an overlay color map dictionary
         theme: existing theme ('dark' or light')
         color_theme: new color theme to apply to overlays in fig
-        invert: invert the palette from lightest-darkest to darkest-lightest or vice versa?
+        invert: invert the palette from lightest-darkest to darkest-lightest or vice versa
+
         Returns updated fig
         """
 
-        style = theme_style[theme]
-        overlay_colors = style['overlay_color_theme'][color_theme]
+        fig_overlays = fig_data['overlays']
 
-        for name, color_idx in color_map.items():
+        if len(fig_overlays) == 0:
 
-            if invert:
-                color_idx = len(color_map) - color_idx - 1
+            print('There are no overlays to update the color theme')
+            exit
 
-            fig.update_traces(
-                line_color = overlay_colors[color_idx],
+        else:
+
+            overlay = [x for x in fig_data['overlays'] if x['name'] == overlay_name][0]
+            overlay_idx = fig_data['overlays'].index(overlay)
+            style = theme_style[theme]
+            overlay_colors = style['overlay_color_theme'][new_color_theme]
+            color_map = overlay['color_map']
+            print(color_map)
+
+            for name, color_idx in color_map.items():
+
                 selector = dict(name = name)
-            )
 
-        return fig
+                if invert:
+                    color_idx = len(color_map) - color_idx - 1
+
+                fig_data['fig'].update_traces(
+                    line_color = overlay_colors[color_idx],
+                    selector = selector
+                )
+
+                fig_data['overlays'][overlay_idx]['color_map'][name] = color_idx
+
+            fig_data['overlays'][overlay_idx]['color_theme'] = new_color_theme
+
+        return fig_data
 
 
     ##### ADD HISTORICAL PRICE/VOLUME #####
@@ -3658,6 +3715,7 @@ class AnalyzePrices():
         x_max = self.end_date if x_max is None else x_max
 
         deck_type = fig_data['deck_type']
+        fig_overlays = fig_data['overlays']
 
         # Count lines that will be overlaid ('show' is True)
 
@@ -3670,6 +3728,7 @@ class AnalyzePrices():
         current_names = [trace['name'] for trace in fig_data['fig']['data'] if (trace['legendgroup'] == str(target_deck))]
 
         price_overlays = []
+        price_overlay_names = []
 
         for i, price in enumerate(selected_prices):
 
@@ -3677,7 +3736,7 @@ class AnalyzePrices():
 
             if price_name not in current_names:
 
-                price_data = price['data']  # [x_min: x_max]
+                price_data = price['data']
                 color_idx = overlay_color_idx[i]
 
                 price_overlays.append({
@@ -3685,6 +3744,7 @@ class AnalyzePrices():
                     'name': price_name,
                     'color_idx': color_idx
                 })
+                price_overlay_names.append(price_name)
 
         color_map = {}
 
@@ -3713,7 +3773,20 @@ class AnalyzePrices():
                 row = target_deck, col = 1
             )
 
-        fig_data.update({'color_map': color_map})
+        overlay_idx = len(fig_overlays) + 1
+        overlay_name = f'OV{overlay_idx}'
+        overlay_components = price_overlay_names[0]
+        for name in price_overlay_names[1:]:
+            overlay_components += f', {name}'
+        fig_overlays.append({
+            'name': overlay_name,
+            'deck': target_deck,
+            'color_theme': color_theme,
+            'components': overlay_components,
+            'color_map': color_map
+        })
+
+        fig_data.update({'overlays': fig_overlays})
 
         return fig_data
 
