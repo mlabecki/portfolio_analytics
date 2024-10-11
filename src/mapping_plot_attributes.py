@@ -12,9 +12,7 @@ n_yticks_map = {
 }
 
 n_xticks_map = {
-    1280: 42,
-    1450: 48,
-    1600: 52
+    'width_slope': 31
 } 
 
 ##### LEGEND MAPS #####

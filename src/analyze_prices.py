@@ -158,7 +158,7 @@ class AnalyzePrices():
         deck_type = 'triple',
         secondary_y = False,
         plot_width = 1600,
-        n_ticks_max = 52,
+        n_ticks_max = None,
         plot_height_1 = None,
         plot_height_2 = None,
         plot_height_3 = None,
@@ -219,6 +219,8 @@ class AnalyzePrices():
                 2: plot_height_2,
                 3: plot_height_3
             })
+
+        n_ticks_max = round(plot_width / n_xticks_map['width_slope']) if n_ticks_max is None else n_ticks_max
 
         n_yticks_max_1 = n_yticks_map[plot_height_1] if n_yticks_max_1 is None else n_yticks_max_1
         n_yticks_max_2 = n_yticks_map[plot_height_2] if n_yticks_max_2 is None else n_yticks_max_2
