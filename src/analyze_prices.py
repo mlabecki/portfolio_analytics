@@ -2294,7 +2294,6 @@ class AnalyzePrices():
             fig_rsi.update_layout(
                 legend_tracegroupgap = legend_tracegroupgap,
                 legend_traceorder = 'grouped'
-                # legend_traceorder = 'grouped+reversed'
             )
 
         fig_data.update({'fig': fig_rsi})
@@ -2423,6 +2422,7 @@ class AnalyzePrices():
     ##### BOLLINGER BANDS #####
 
     def bollinger_bands(
+        self,
         prices,
         window = 20,
         n_std = 2.0,
@@ -2536,7 +2536,7 @@ class AnalyzePrices():
         }]
 
         k = 0
-        # k = 0 if each ma_offset is an integer within the accuray of eps
+        # k = 0 if each ma_offset is an integer within the accuray of eps    
         for i in range(n_bands + 1)[1:]:
             ma_offset = i * prc_offset
             if abs(float(int(ma_offset)) - ma_offset) > eps:
@@ -2544,25 +2544,23 @@ class AnalyzePrices():
                 break
 
         for i in range(n_bands + 1)[1:]:
-        
+
             ma_offset = i * prc_offset
-            
+
             upper_band = base_ma * (1 + ma_offset / 100)
             upper_name = f'({window}, {ma_offset:.{k}f}%) Upper Envelope'
             ma_envelope_list.append({
                 'data': upper_band,
                 'name': upper_name,
-                'idx_offset': i,
-                'showlegend': True
+                'idx_offset': i
             })
 
             lower_band = base_ma * (1 - ma_offset / 100)
-            lower_name = f'({window}, {ma_offset:.{k}f}% Lower Envelope'
+            lower_name = f'({window}, {ma_offset:.{k}f}%) Lower Envelope'
             ma_envelope_list.append({
                 'data': lower_band,
                 'name': lower_name,
-                'idx_offset': -i,
-                'showlegend': True
+                'idx_offset': -i
             })
 
         ma_envelope_list = sorted(ma_envelope_list, key = itemgetter('idx_offset'), reverse = True)
@@ -2721,47 +2719,52 @@ class AnalyzePrices():
                 })
                 ma_overlay_names.append(ma_name)
 
-        color_map = {}
+        if len(ma_overlays) > 0:
 
-        for overlay in ma_overlays:
-            fig_data =self.add_overlay(
-                fig_data,
-                overlay['data'],
-                overlay['name'],
-                overlay['color_idx'],
-                target_deck = target_deck,
-                theme = theme,
-                color_theme = color_theme
-            )        
-            color_map.update({overlay['name']: overlay['color_idx']})
+            color_map = {}
 
-        if deck_type in ['double', 'triple']:
-            legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
-            fig_data['fig'].update_layout(
-                legend_tracegroupgap = legend_tracegroupgap,
-                legend_traceorder = 'grouped'
-            )
+            for overlay in ma_overlays:
+                fig_data = self.add_overlay(
+                    fig_data,
+                    overlay['data'],
+                    overlay['name'],
+                    overlay['color_idx'],
+                    target_deck = target_deck,
+                    theme = theme,
+                    color_theme = color_theme
+                )        
+                color_map.update({overlay['name']: overlay['color_idx']})
 
-        if add_yaxis_title:
-            fig_data['fig'].update_yaxes(
-                title = yaxis_title,
-                row = target_deck, col = 1
-            )
+            if deck_type in ['double', 'triple']:
+                legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+                fig_data['fig'].update_layout(
+                    legend_tracegroupgap = legend_tracegroupgap,
+                    legend_traceorder = 'grouped'
+                )
 
-        overlay_idx = len(fig_overlays) + 1
-        overlay_name = f'OV{overlay_idx}'
-        overlay_components = ma_overlay_names[0]
-        for name in ma_overlay_names[1:]:
-            overlay_components += f', {name}'
-        fig_overlays.append({
-            'name': overlay_name,
-            'deck': target_deck,
-            'color_theme': color_theme,
-            'components': overlay_components,
-            'color_map': color_map
-        })
+            if add_yaxis_title:
+                fig_data['fig'].update_yaxes(
+                    title = yaxis_title,
+                    row = target_deck, col = 1
+                )
 
-        fig_data.update({'overlays': fig_overlays})
+            overlay_idx = len(fig_overlays) + 1
+            overlay_name = f'OV{overlay_idx}'
+            overlay_components = ma_overlay_names[0]
+            for name in ma_overlay_names[1:]:
+                overlay_components += f', {name}'
+            fig_overlays.append({
+                'name': overlay_name,
+                'deck': target_deck,
+                'color_theme': color_theme,
+                'components': overlay_components,
+                'color_map': color_map
+            })
+
+            fig_data.update({'overlays': fig_overlays})
+
+        else:
+            print('No new overlays added - all of the selected overlays are already plotted')
 
         return fig_data
 
@@ -2808,41 +2811,46 @@ class AnalyzePrices():
                 })
                 bollinger_overlay_names.append(boll['name'])
 
-        color_map = {}
+        if len(bollinger_overlays) > 0:
 
-        for overlay in bollinger_overlays:
-            fig_data = self.add_overlay(
-                fig_data,
-                overlay['data'],
-                overlay['name'],
-                overlay['color_idx'],
-                target_deck = target_deck,
-                theme = theme,
-                color_theme = color_theme
-            )
-            color_map.update({overlay['name']: overlay['color_idx']})
+            color_map = {}
 
-        if deck_type in ['double', 'triple']:
-            legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
-            fig_data['fig'].update_layout(
-                legend_tracegroupgap = legend_tracegroupgap,
-                legend_traceorder = 'grouped'
-            )
+            for overlay in bollinger_overlays:
+                fig_data = self.add_overlay(
+                    fig_data,
+                    overlay['data'],
+                    overlay['name'],
+                    overlay['color_idx'],
+                    target_deck = target_deck,
+                    theme = theme,
+                    color_theme = color_theme
+                )
+                color_map.update({overlay['name']: overlay['color_idx']})
 
-        overlay_idx = len(fig_overlays) + 1
-        overlay_name = f'OV{overlay_idx}'
-        overlay_components = bollinger_overlay_names[0]
-        for name in bollinger_overlay_names[1:]:
-            overlay_components += f', {name}'
-        fig_overlays.append({
-            'name': overlay_name,
-            'deck': target_deck,
-            'color_theme': color_theme,
-            'components': overlay_components,
-            'color_map': color_map
-        })
+            if deck_type in ['double', 'triple']:
+                legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+                fig_data['fig'].update_layout(
+                    legend_tracegroupgap = legend_tracegroupgap,
+                    legend_traceorder = 'grouped'
+                )
 
-        fig_data.update({'overlays': fig_overlays})
+            overlay_idx = len(fig_overlays) + 1
+            overlay_name = f'OV{overlay_idx}'
+            overlay_components = bollinger_overlay_names[0]
+            for name in bollinger_overlay_names[1:]:
+                overlay_components += f', {name}'
+            fig_overlays.append({
+                'name': overlay_name,
+                'deck': target_deck,
+                'color_theme': color_theme,
+                'components': overlay_components,
+                'color_map': color_map
+            })
+
+            fig_data.update({'overlays': fig_overlays})
+
+        else:
+            print('No new overlays added - all of the selected overlays are already plotted')
 
         return fig_data
 
@@ -2888,41 +2896,46 @@ class AnalyzePrices():
                 })
                 ma_envelope_overlay_names.append(env['name'])
 
-        color_map = {}
+        if len(ma_envelope_overlays) > 0:
 
-        for overlay in ma_envelope_overlays:
-            fig_data = self.add_overlay(
-                fig_data,
-                overlay['data'],
-                overlay['name'],
-                overlay['color_idx'],
-                target_deck = target_deck,
-                theme = theme,
-                color_theme = color_theme
-            )
-            color_map.update({overlay['name']: overlay['color_idx']})
+            color_map = {}
 
-        if deck_type in ['double', 'triple']:
-            legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
-            fig_data['fig'].update_layout(
-                legend_tracegroupgap = legend_tracegroupgap,
-                legend_traceorder = 'grouped'
-            )
+            for overlay in ma_envelope_overlays:
+                fig_data = self.add_overlay(
+                    fig_data,
+                    overlay['data'],
+                    overlay['name'],
+                    overlay['color_idx'],
+                    target_deck = target_deck,
+                    theme = theme,
+                    color_theme = color_theme
+                )
+                color_map.update({overlay['name']: overlay['color_idx']})
 
-        overlay_idx = len(fig_overlays) + 1
-        overlay_name = f'OV{overlay_idx}'
-        overlay_components = ma_envelope_overlay_names[0]
-        for name in ma_envelope_overlay_names[1:]:
-            overlay_components += f', {name}'
-        fig_overlays.append({
-            'name': overlay_name,
-            'deck': target_deck,
-            'color_theme': color_theme,
-            'components': overlay_components,
-            'color_map': color_map
-        })
+            if deck_type in ['double', 'triple']:
+                legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+                fig_data['fig'].update_layout(
+                    legend_tracegroupgap = legend_tracegroupgap,
+                    legend_traceorder = 'grouped'
+                )
 
-        fig_data.update({'overlays': fig_overlays})
+            overlay_idx = len(fig_overlays) + 1
+            overlay_name = f'OV{overlay_idx}'
+            overlay_components = ma_envelope_overlay_names[0]
+            for name in ma_envelope_overlay_names[1:]:
+                overlay_components += f', {name}'
+            fig_overlays.append({
+                'name': overlay_name,
+                'deck': target_deck,
+                'color_theme': color_theme,
+                'components': overlay_components,
+                'color_map': color_map
+            })
+
+            fig_data.update({'overlays': fig_overlays})
+
+        else:
+            print('No new overlays added - all of the selected overlays are already plotted')
 
         return fig_data
 
@@ -2960,7 +2973,6 @@ class AnalyzePrices():
             style = theme_style[theme]
             overlay_colors = style['overlay_color_theme'][new_color_theme]
             color_map = overlay['color_map']
-            print(color_map)
 
             for name, color_idx in color_map.items():
 
@@ -3469,8 +3481,6 @@ class AnalyzePrices():
                 legend_traceorder = 'grouped'
             )
 
-        print(f'Candlestick legend_tracegroupgap = {legend_tracegroupgap}')
-
         fig_data.update({'fig': fig})
         fig_data['y_min'].update({target_deck: y_min})
         fig_data['y_max'].update({target_deck: y_max})
@@ -3746,47 +3756,53 @@ class AnalyzePrices():
                 })
                 price_overlay_names.append(price_name)
 
-        color_map = {}
+        if len(price_overlays) > 0:
 
-        for overlay in price_overlays:
-            fig_data = self.add_overlay(
-                fig_data,
-                overlay['data'],
-                overlay['name'],
-                overlay['color_idx'],
-                target_deck = target_deck,
-                theme = theme,
-                color_theme = color_theme
-            )        
-            color_map.update({overlay['name']: overlay['color_idx']})
+            color_map = {}
 
-        if deck_type in ['double', 'triple']:
-            legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
-            fig_data['fig'].update_layout(
-                legend_tracegroupgap = legend_tracegroupgap,
-                legend_traceorder = 'grouped'
-            )
+            for overlay in price_overlays:
+                fig_data = self.add_overlay(
+                    fig_data,
+                    overlay['data'],
+                    overlay['name'],
+                    overlay['color_idx'],
+                    target_deck = target_deck,
+                    theme = theme,
+                    color_theme = color_theme
+                )        
+                color_map.update({overlay['name']: overlay['color_idx']})
 
-        if add_yaxis_title:
-            fig_data['fig'].update_yaxes(
-                title = yaxis_title,
-                row = target_deck, col = 1
-            )
+            if deck_type in ['double', 'triple']:
+                legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+                fig_data['fig'].update_layout(
+                    legend_tracegroupgap = legend_tracegroupgap,
+                    legend_traceorder = 'grouped'
+                )
 
-        overlay_idx = len(fig_overlays) + 1
-        overlay_name = f'OV{overlay_idx}'
-        overlay_components = price_overlay_names[0]
-        for name in price_overlay_names[1:]:
-            overlay_components += f', {name}'
-        fig_overlays.append({
-            'name': overlay_name,
-            'deck': target_deck,
-            'color_theme': color_theme,
-            'components': overlay_components,
-            'color_map': color_map
-        })
+            if add_yaxis_title:
+                fig_data['fig'].update_yaxes(
+                    title = yaxis_title,
+                    row = target_deck, col = 1
+                )
 
-        fig_data.update({'overlays': fig_overlays})
+            overlay_idx = len(fig_overlays) + 1
+            overlay_name = f'OV{overlay_idx}'
+            overlay_components = price_overlay_names[0]
+            for name in price_overlay_names[1:]:
+                overlay_components += f', {name}'
+            fig_overlays.append({
+                'name': overlay_name,
+                'deck': target_deck,
+                'color_theme': color_theme,
+                'components': overlay_components,
+                'color_map': color_map
+            })
+
+            fig_data.update({'overlays': fig_overlays})
+            print(fig_data['overlays'])
+
+        else:
+            print('No new overlays added - all of the selected overlays are already plotted')
 
         return fig_data
 
