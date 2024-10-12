@@ -398,6 +398,7 @@ class AnalyzePrices():
     ##### ADJUST LEGEND POSITION #####
 
     def adjust_legend_position(
+        self,
         fig_data,
         deck_type,
         legend_title_height = 21
@@ -1691,7 +1692,6 @@ class AnalyzePrices():
 
         df_drawdowns = df_drawdowns.astype(float) * 100
         max_index = max(df_drawdowns.index)
-        print(max_index)
 
         df_drawdowns_squared = df_drawdowns * df_drawdowns
         n = len(df_drawdowns_squared)
@@ -3064,8 +3064,6 @@ class AnalyzePrices():
 
         fillcolor = linecolor.replace(', 1)', f', {opacity})')
 
-        # print(linecolor, fillcolor)
-
         if fill_below:
             fill = 'tozeroy'
         else:
@@ -3310,8 +3308,6 @@ class AnalyzePrices():
         if n_yticks_max is None:
             deck_height = fig_data['plot_height'][target_deck]
             n_yticks_max = n_yticks_map[deck_height]
-            print(deck_height)
-            print(n_yticks_max)
 
         legendgrouptitle = {}
         if deck_type == 'triple':
@@ -3799,7 +3795,6 @@ class AnalyzePrices():
             })
 
             fig_data.update({'overlays': fig_overlays})
-            print(fig_data['overlays'])
 
         else:
             print('No new overlays added - all of the selected overlays are already plotted')
@@ -4371,7 +4366,7 @@ class AnalyzePrices():
                 new_end_date = datetime.strptime(x_max, '%Y-%m-%d') - timedelta(1)
                 x_max = str(new_end_date.date())
 
-        print(f'x_min = {x_min} (type {type(x_min)}), x_max = {x_max} (type {type(x_max)})')
+        # print(f'x_min = {x_min} (type {type(x_min)}), x_max = {x_max} (type {type(x_max)})')
 
         y_lower, y_upper = set_axis_limits(min(df_tk), max(df_tk))
         if y_min is None:
@@ -4379,7 +4374,7 @@ class AnalyzePrices():
         if y_max is None:
             y_max = y_upper
 
-        print(f'y_min = {y_min} (type {type(y_min)}), y_max = {y_max} (type {type(y_max)})')
+        # print(f'y_min = {y_min} (type {type(y_min)}), y_max = {y_max} (type {type(y_max)})')
 
         # Set tick spacing based on the total number of date points
         n_ticks_max = 48
@@ -4491,7 +4486,6 @@ class AnalyzePrices():
             y_min = y_lower
         if y_max is None:
             y_max = y_upper
-        print(y_min, y_max)
 
         # Set tick spacing based on the total number of date points
         n_ticks_max = 48
