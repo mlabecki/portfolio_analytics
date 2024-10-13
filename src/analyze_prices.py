@@ -2487,19 +2487,18 @@ class AnalyzePrices():
         lower_band_1 = [x['data'] for x in bollinger_list if x['idx_offset'] == -1][0]
 
         pct_bollinger = (prices - lower_band_1) / (upper_band_1 - lower_band_1)
+        pct_bollinger = pct_bollinger.fillna(0)        
 
-        bollinger_width = (upper_band_1 - lower_band_1) / df_sma
+        bollinger_width = 100 * (upper_band_1 - lower_band_1) / df_sma
 
         bollinger_list = sorted(bollinger_list, key = itemgetter('idx_offset'), reverse = True)
 
         bollinger_data = {
             'list': bollinger_list,
             '%B': pct_bollinger,
-            '%B short name': '%B',
-            '%B long name': f'({window}, {n_std:.{k}f}) %B',
+            '%B name': f'({window}, {n_std:.{k}f}) %B',
             'width': bollinger_width,
-            'width short name': 'Bollinger Width',
-            'width long name': f'({window}, {n_std:.{k}f}) Bollinger Width'
+            'width name': f'({window}, {n_std:.{k}f}) Bollinger Width'        
         }
 
         return bollinger_data
@@ -2870,6 +2869,131 @@ class AnalyzePrices():
         return fig_data
 
 
+    ##### ADD BOLLINGER WIDTH / %B #####
+
+    def add_bollinger_width(
+        self,
+        fig_data,
+        bollinger_data,
+        bollinger_type = 'width',
+        target_deck = 2,
+        secondary_y = False,
+        add_yaxis_title = None,
+        yaxis_title = None,
+        n_yticks_max = None,
+        theme = 'dark',
+        color_theme = 'gold'
+    ):
+        """
+        bollinger_type:
+            'width' - Bollinger Width
+            '%B'    - Bollinger %B Line
+        secondary_y is True if target_deck == 1
+        secondary_y is False if target_deck == 2 or 3
+
+        """
+
+        style = theme_style[theme]
+
+        fig = fig_data['fig']
+        fig_y_min = fig_data['y_min'][target_deck]
+        fig_y_max = fig_data['y_max'][target_deck]
+        deck_type = fig_data['deck_type']
+
+        if n_yticks_max is None:
+            deck_height = fig_data['plot_height'][target_deck]
+            n_yticks_max = n_yticks_map[deck_height]
+
+        add_yaxis_title = secondary_y if add_yaxis_title is None else add_yaxis_title
+
+        if bollinger_type == '%B':
+            b_line = bollinger_data['%B']
+            yaxis_title = '%B' if yaxis_title is None else yaxis_title
+            legend_name = bollinger_data['%B name']
+        else:
+            # bollinger_type is 'width' or anything else
+            b_line = bollinger_data['width']
+            if yaxis_title is None:
+                yaxis_title = 'Boll Width' if target_deck > 1 else 'Bollinger Width'
+            else:
+                yaxis_title
+            legend_name = bollinger_data['width name']
+
+        style = theme_style[theme]
+
+        if color_theme is None:
+            linecolor = style['basecolor']
+        else:
+            color_idx = style['overlay_color_selection'][color_theme][1][0]
+            linecolor = style['overlay_color_theme'][color_theme][color_idx]
+
+        min_y = min(b_line)
+        max_y = max(b_line)
+        y_min, y_max = set_axis_limits(min_y, max_y)
+
+        if fig_y_min is not None:
+            y_min = min(fig_y_min, y_min)
+        if fig_y_max is not None:
+            y_max = max(fig_y_max, y_max)
+
+        if target_deck > 1:
+            y_max *= 0.999
+
+        legendgrouptitle = {}
+        if deck_type == 'triple':
+            legendtitle = tripledeck_legendtitle[target_deck]
+            legendgrouptitle = dict(
+                text = legendtitle,
+                font_size = 16,
+                font_weight = 'bold'
+            )
+
+        fig.add_trace(
+            go.Scatter(
+                x = b_line.index.astype(str),
+                y = b_line,
+                line_color = linecolor,
+                name = legend_name,
+                legendgroup = f'{target_deck}',
+                legendgrouptitle = legendgrouptitle
+            ),
+            row = target_deck, col = 1,
+            secondary_y = secondary_y
+        )
+
+        # Update layout and axes
+
+        y_range = None if secondary_y else (y_min, y_max)
+        fig.update_yaxes(
+            range = y_range,
+            showticklabels = True,
+            nticks = n_yticks_max,
+            secondary_y = secondary_y,
+            showgrid = not secondary_y,
+            zeroline = not secondary_y,
+            row = target_deck, col = 1
+        )
+        if add_yaxis_title:
+            fig.update_yaxes(
+                title = yaxis_title,
+                row = target_deck, col = 1,
+                secondary_y = secondary_y
+            )
+
+        if deck_type in ['double', 'triple']:
+            legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+            fig.update_layout(
+                legend_tracegroupgap = legend_tracegroupgap,
+                legend_traceorder = 'grouped'
+            )
+
+        fig_data.update({'fig': fig})
+        fig_data['y_min'].update({target_deck: y_min})
+        fig_data['y_max'].update({target_deck: y_max})
+
+        return fig_data
+
+
     ##### ADD MOVING AVERAGE ENVELOPE OVERLAYS #####
 
     def add_ma_envelope_overlays(
@@ -2955,7 +3079,7 @@ class AnalyzePrices():
         return fig_data
 
 
-    #####
+    ##### ADD MOVING VOLATILITY / STANDARD DEVIATION #####
 
     def add_mvol(
         self,
@@ -2993,7 +3117,10 @@ class AnalyzePrices():
 
         if mvol_type == 'std':
             m_line = mvol_data['std']
-            yaxis_title = 'St Dev' if yaxis_title is None else yaxis_title
+            if yaxis_title is None:
+                yaxis_title = 'St Dev' if target_deck > 1 else 'Standard Deviation'
+            else:
+                yaxis_title
             legend_name = 'Standard Deviation'
         else:
             # mvol_type is 'vol' or anything else
