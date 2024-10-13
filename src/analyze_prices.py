@@ -2426,7 +2426,8 @@ class AnalyzePrices():
         prices,
         window = 20,
         n_std = 2.0,
-        n_bands = 1
+        n_bands = 1,
+        ddof = 0
     ):
         """
         prices:
@@ -2446,13 +2447,12 @@ class AnalyzePrices():
         n_bands = min(3, n_bands)
 
         df_sma = prices.rolling(window = window, min_periods = 1).mean()
-        df_std = prices.rolling(window = window, min_periods = 1).std(ddof=0)
+        df_std = prices.rolling(window = window, min_periods = 1).std(ddof = ddof)
 
         bollinger_list = [{
             'data': df_sma,
             'name': f'SMA {window}',
-            'idx_offset': 0,
-            'showlegend': True
+            'idx_offset': 0
         }]
 
         k = 0
@@ -2464,7 +2464,7 @@ class AnalyzePrices():
                 break
 
         for i in range(n_bands + 1)[1:]:
-        
+
             band_width = i * n_std
 
             upper_band = df_sma + band_width * df_std
@@ -2472,8 +2472,7 @@ class AnalyzePrices():
             bollinger_list.append({
                 'data': upper_band,
                 'name': upper_name,
-                'idx_offset': i,
-                'showlegend': True
+                'idx_offset': i
             })
 
             lower_band = df_sma - band_width * df_std        
@@ -2481,13 +2480,29 @@ class AnalyzePrices():
             bollinger_list.append({
                 'data': lower_band,
                 'name': lower_name,
-                'idx_offset': -i,
-                'showlegend': True
+                'idx_offset': -i
             })
+
+        upper_band_1 = [x['data'] for x in bollinger_list if x['idx_offset'] == 1][0]
+        lower_band_1 = [x['data'] for x in bollinger_list if x['idx_offset'] == -1][0]
+
+        pct_bollinger = (prices - lower_band_1) / (upper_band_1 - lower_band_1)
+
+        bollinger_width = (upper_band_1 - lower_band_1) / df_sma
 
         bollinger_list = sorted(bollinger_list, key = itemgetter('idx_offset'), reverse = True)
 
-        return bollinger_list
+        bollinger_data = {
+            'list': bollinger_list,
+            '%B': pct_bollinger,
+            '%B short name': '%B',
+            '%B long name': f'({window}, {n_std:.{k}f}) %B',
+            'width': bollinger_width,
+            'width short name': 'Bollinger Width',
+            'width long name': f'({window}, {n_std:.{k}f}) Bollinger Width'
+        }
+
+        return bollinger_data
 
 
     ##### MOVING AVERAGE ENVELOPES #####
@@ -2936,6 +2951,127 @@ class AnalyzePrices():
 
         else:
             print('No new overlays added - all of the selected overlays are already plotted')
+
+        return fig_data
+
+
+    #####
+
+    def add_mvol(
+        self,
+        fig_data,
+        mvol_data,
+        mvol_type = 'vol',
+        target_deck = 2,
+        secondary_y = False,
+        add_yaxis_title = None,
+        yaxis_title = None,
+        n_yticks_max = None,
+        theme = 'dark',
+        color_theme = 'gold'
+    ):
+        """
+        secondary_y is True if target_deck == 1
+        secondary_y is False if target_deck == 2 or 3
+        mvol_type: 
+            'vol' - moving volatility
+            'std' - moving standard deviation
+        """
+
+        style = theme_style[theme]
+
+        fig = fig_data['fig']
+        fig_y_min = fig_data['y_min'][target_deck]
+        fig_y_max = fig_data['y_max'][target_deck]
+        deck_type = fig_data['deck_type']
+
+        if n_yticks_max is None:
+            deck_height = fig_data['plot_height'][target_deck]
+            n_yticks_max = n_yticks_map[deck_height]
+
+        add_yaxis_title = secondary_y if add_yaxis_title is None else add_yaxis_title
+
+        if mvol_type == 'std':
+            m_line = mvol_data['std']
+            yaxis_title = 'St Dev' if yaxis_title is None else yaxis_title
+            legend_name = 'Standard Deviation'
+        else:
+            # mvol_type is 'vol' or anything else
+            m_line = mvol_data['vol']
+            yaxis_title = 'Volatility' if yaxis_title is None else yaxis_title
+            legend_name = 'Volatility'
+
+        style = theme_style[theme]
+
+        if color_theme is None:
+            linecolor = style['basecolor']
+        else:
+            color_idx = style['overlay_color_selection'][color_theme][1][0]
+            linecolor = style['overlay_color_theme'][color_theme][color_idx]
+
+        min_y = min(m_line)
+        max_y = max(m_line)
+        y_min, y_max = set_axis_limits(min_y, max_y)
+
+        if fig_y_min is not None:
+            y_min = min(fig_y_min, y_min)
+        if fig_y_max is not None:
+            y_max = max(fig_y_max, y_max)
+
+        if target_deck > 1:
+            y_max *= 0.999
+
+        legendgrouptitle = {}
+        if deck_type == 'triple':
+            legendtitle = tripledeck_legendtitle[target_deck]
+            legendgrouptitle = dict(
+                text = legendtitle,
+                font_size = 16,
+                font_weight = 'bold'
+            )
+
+        fig.add_trace(
+            go.Scatter(
+                x = m_line.index.astype(str),
+                y = m_line,
+                line_color = linecolor,
+                name = legend_name,
+                legendgroup = f'{target_deck}',
+                legendgrouptitle = legendgrouptitle
+            ),
+            row = target_deck, col = 1,
+            secondary_y = secondary_y
+        )
+
+        # Update layout and axes
+
+        y_range = None if secondary_y else (y_min, y_max)
+        fig.update_yaxes(
+            range = y_range,
+            showticklabels = True,
+            nticks = n_yticks_max,
+            secondary_y = secondary_y,
+            showgrid = not secondary_y,
+            zeroline = not secondary_y,
+            row = target_deck, col = 1
+        )
+        if add_yaxis_title:
+            fig.update_yaxes(
+                title = yaxis_title,
+                row = target_deck, col = 1,
+                secondary_y = secondary_y
+            )
+
+        if deck_type in ['double', 'triple']:
+            legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+            fig.update_layout(
+                legend_tracegroupgap = legend_tracegroupgap,
+                legend_traceorder = 'grouped'
+            )
+
+        fig_data.update({'fig': fig})
+        fig_data['y_min'].update({target_deck: y_min})
+        fig_data['y_max'].update({target_deck: y_max})
 
         return fig_data
 
