@@ -77,7 +77,9 @@ class AnalyzePrices():
         atrp = atr / close_tk * 100
         atr_data = {
             'atr': atr,
-            'atrp': atrp
+            'atrp': atrp,
+            'atr name': f'ATR {n}',
+            'atrp name': f'ATRP {n}'
         }
 
         return atr_data
@@ -445,6 +447,127 @@ class AnalyzePrices():
         legend_tracegroupgap = max(legend_groupgap, 0)
 
         return legend_tracegroupgap
+
+
+    ##### ADD AVERAGE TRUE RATE (PERCENTAGE) #####
+
+    def add_atr(
+        self,
+        fig_data,
+        atr_data,
+        atr_type = 'atr',
+        target_deck = 2,
+        secondary_y = False,
+        add_yaxis_title = None,
+        yaxis_title = None,
+        n_yticks_max = None,
+        theme = 'dark',
+        color_theme = 'gold'
+    ):
+        """
+        secondary_y is True if target_deck == 1
+        secondary_y is False if target_deck == 2 or 3
+        atr_type: 
+            'atr'   - Average True Rate
+            'atrp'  - Average True Rate Percentage
+        """
+
+        style = theme_style[theme]
+
+        fig = fig_data['fig']
+        fig_y_min = fig_data['y_min'][target_deck]
+        fig_y_max = fig_data['y_max'][target_deck]
+        deck_type = fig_data['deck_type']
+
+        if n_yticks_max is None:
+            deck_height = fig_data['plot_height'][target_deck]
+            n_yticks_max = n_yticks_map[deck_height]
+
+        add_yaxis_title = secondary_y if add_yaxis_title is None else add_yaxis_title
+
+        if atr_type == 'atrp':
+            atr_line = atr_data['atrp']
+            yaxis_title = 'ATRP' if yaxis_title is None else yaxis_title
+            legend_name = atr_data['atrp name']
+        else:
+            # atr_type is 'atr' or anything else
+            atr_line = atr_data['atr']
+            yaxis_title = 'ATR' if yaxis_title is None else yaxis_title
+            legend_name = atr_data['atr name']
+
+        style = theme_style[theme]
+
+        if color_theme is None:
+            linecolor = style['basecolor']
+        else:
+            color_idx = style['overlay_color_selection'][color_theme][1][0]
+            linecolor = style['overlay_color_theme'][color_theme][color_idx]
+
+        min_y = min(atr_line)
+        max_y = max(atr_line)
+        y_min, y_max = set_axis_limits(min_y, max_y)
+
+        if fig_y_min is not None:
+            y_min = min(fig_y_min, y_min)
+        if fig_y_max is not None:
+            y_max = max(fig_y_max, y_max)
+
+        if target_deck > 1:
+            y_max *= 0.999
+
+        legendgrouptitle = {}
+        if deck_type == 'triple':
+            legendtitle = tripledeck_legendtitle[target_deck]
+            legendgrouptitle = dict(
+                text = legendtitle,
+                font_size = 16,
+                font_weight = 'bold'
+            )
+
+        fig.add_trace(
+            go.Scatter(
+                x = atr_line.index.astype(str),
+                y = atr_line,
+                line_color = linecolor,
+                name = legend_name,
+                legendgroup = f'{target_deck}',
+                legendgrouptitle = legendgrouptitle
+            ),
+            row = target_deck, col = 1,
+            secondary_y = secondary_y
+        )
+
+        # Update layout and axes
+
+        y_range = None if secondary_y else (y_min, y_max)
+        fig.update_yaxes(
+            range = y_range,
+            showticklabels = True,
+            nticks = n_yticks_max,
+            secondary_y = secondary_y,
+            showgrid = not secondary_y,
+            zeroline = not secondary_y,
+            row = target_deck, col = 1
+        )
+        if add_yaxis_title:
+            fig.update_yaxes(
+                title = yaxis_title,
+                row = target_deck, col = 1,
+                secondary_y = secondary_y
+            )
+
+        if deck_type in ['double', 'triple']:
+            legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+            fig.update_layout(
+                legend_tracegroupgap = legend_tracegroupgap,
+                legend_traceorder = 'grouped'
+            )
+
+        fig_data.update({'fig': fig})
+        fig_data['y_min'].update({target_deck: y_min})
+        fig_data['y_max'].update({target_deck: y_max})
+
+        return fig_data
 
 
     ##### STOCHASTIC OSCILLATOR #####
