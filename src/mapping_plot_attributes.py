@@ -102,6 +102,14 @@ theme_style = {
         'y_linecolor':              '#506784',
 
         'overlay_color_theme': {
+            'base': [
+                'rgba(0, 191, 255, 1)',     # deepskyblue
+                'rgba(255, 0, 0, 1)',       # red
+                'rgba(50, 205, 50, 1)',     # limegreen
+                'rgba(255, 165, 0, 1)',     # orange
+                'rgba(153, 50, 204, 1)',    # darkorchid
+                'rgba(139, 69, 19, 1)'      # saddlebrown
+            ],
             'gold': [
                 'rgba(184, 134, 11, 1)',   # darkgoldenrod
                 'rgba(218, 165, 32, 1)',   # goldenrod
@@ -196,6 +204,14 @@ theme_style = {
         
         'overlay_color_selection': {
         # for each color_theme, keys = number of overlays, values = list of corresponding colors
+            'base': {
+                1: [0],
+                2: [0, 3],
+                3: [0, 3, 4],
+                4: [0, 2, 3, 4],
+                5: [0, 1, 2, 3, 4],
+                6: [0, 1, 2, 3, 4, 5]
+            },        
             'gold': {
                 1: [2],                 # goldenrod
                 2: [5, 2],              # palegoldenrod, goldenrod
@@ -293,9 +309,9 @@ theme_style = {
         'rsi_linecolor':            'goldenrod',
         'kline_linecolor':          'darkorange',
         'dline_linecolor':          'purple',
-        'oversold_linecolor':       'rgb(125, 75, 25)',
+        'oversold_linecolor':       'rgba(125, 75, 25, 1)',
         'oversold_fillcolor':       'rgba(205, 165, 75, 0.3)',
-        'overbought_linecolor':     'rgb(138, 34, 54)',
+        'overbought_linecolor':     'rgba(138, 34, 54, 1)',
         'overbought_fillcolor':     'rgba(225, 142, 153, 0.3)',
         'x_gridcolor':              'grey',
         'y_gridcolor':              'grey',
@@ -303,7 +319,15 @@ theme_style = {
         'y_linecolor':              'black',
 
         'overlay_color_theme': {
-            'gold': [
+            'base': [
+                'rgba(31, 119, 180, 1)',    # '#1f77b4', base blue
+                'rgba(178, 34, 34, 1)',     # firebrick
+                'rgba(0, 128, 0, 1)',       # green
+                'rgba(255, 140, 0, 1)',     # darkorange
+                'rgba(102, 51, 153, 1)',    # rebecca purple
+                'rgba(125, 75, 25, 1)'      # oversold line color
+            ],
+            'gold': [                
                 'rgba(160, 92, 45, 1)',   # sienna modified
                 'rgba(180, 124, 8, 1)',   # darkgoldenrod modified
                 'rgba(210, 155, 12, 1)',  # goldenrod modified
@@ -388,11 +412,18 @@ theme_style = {
                 'rgba(188, 189, 34, 1)',   # olive
                 'rgba(23, 190, 207, 1)'    # cyan
             ]
-
         },
 
         'overlay_color_selection': {
         # for each color_theme, keys = number of overlays, values = list of corresponding colors
+            'base': {
+                1: [0],
+                2: [0, 3],
+                3: [0, 3, 4],
+                4: [0, 2, 3, 4],
+                5: [0, 1, 2, 3, 4],
+                6: [0, 1, 2, 3, 4, 5]
+            },
             'gold': {
                 1: [1],
                 2: [0, 3],
