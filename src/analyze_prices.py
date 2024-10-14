@@ -478,6 +478,7 @@ class AnalyzePrices():
         fig_y_min = fig_data['y_min'][target_deck]
         fig_y_max = fig_data['y_max'][target_deck]
         deck_type = fig_data['deck_type']
+        fig_overlays = fig_data['overlays']
 
         if n_yticks_max is None:
             deck_height = fig_data['plot_height'][target_deck]
@@ -495,77 +496,104 @@ class AnalyzePrices():
             yaxis_title = 'ATR' if yaxis_title is None else yaxis_title
             legend_name = atr_data['atr name']
 
-        style = theme_style[theme]
+        current_names = [trace['name'] for trace in fig_data['fig']['data'] if (trace['legendgroup'] == str(target_deck))]
 
-        if color_theme is None:
-            linecolor = style['basecolor']
+        if legend_name in current_names:
+            print(f'{legend_name} has already been plotted in this deck')
+
         else:
+            style = theme_style[theme]
+
             color_idx = style['overlay_color_selection'][color_theme][1][0]
             linecolor = style['overlay_color_theme'][color_theme][color_idx]
 
-        min_y = min(atr_line)
-        max_y = max(atr_line)
-        y_min, y_max = set_axis_limits(min_y, max_y)
+            min_y = min(atr_line)
+            max_y = max(atr_line)
+            y_min, y_max = set_axis_limits(min_y, max_y)
 
-        if fig_y_min is not None:
-            y_min = min(fig_y_min, y_min)
-        if fig_y_max is not None:
-            y_max = max(fig_y_max, y_max)
+            if fig_y_min is not None:
+                y_min = min(fig_y_min, y_min)
+            if fig_y_max is not None:
+                y_max = max(fig_y_max, y_max)
 
-        if target_deck > 1:
-            y_max *= 0.999
+            if target_deck > 1:
+                y_max *= 0.999
 
-        legendgrouptitle = {}
-        if deck_type == 'triple':
-            legendtitle = tripledeck_legendtitle[target_deck]
-            legendgrouptitle = dict(
-                text = legendtitle,
-                font_size = 16,
-                font_weight = 'bold'
-            )
+            legendgrouptitle = {}
+            if deck_type == 'triple':
+                legendtitle = tripledeck_legendtitle[target_deck]
+                legendgrouptitle = dict(
+                    text = legendtitle,
+                    font_size = 16,
+                    font_weight = 'bold'
+                )
 
-        fig.add_trace(
-            go.Scatter(
-                x = atr_line.index.astype(str),
-                y = atr_line,
-                line_color = linecolor,
-                name = legend_name,
-                legendgroup = f'{target_deck}',
-                legendgrouptitle = legendgrouptitle
-            ),
-            row = target_deck, col = 1,
-            secondary_y = secondary_y
-        )
-
-        # Update layout and axes
-
-        y_range = None if secondary_y else (y_min, y_max)
-        fig.update_yaxes(
-            range = y_range,
-            showticklabels = True,
-            nticks = n_yticks_max,
-            secondary_y = secondary_y,
-            showgrid = not secondary_y,
-            zeroline = not secondary_y,
-            row = target_deck, col = 1
-        )
-        if add_yaxis_title:
-            fig.update_yaxes(
-                title = yaxis_title,
+            fig.add_trace(
+                go.Scatter(
+                    x = atr_line.index.astype(str),
+                    y = atr_line,
+                    line_color = linecolor,
+                    name = legend_name,
+                    legendgroup = f'{target_deck}',
+                    legendgrouptitle = legendgrouptitle
+                ),
                 row = target_deck, col = 1,
                 secondary_y = secondary_y
             )
 
-        if deck_type in ['double', 'triple']:
-            legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
-            fig.update_layout(
-                legend_tracegroupgap = legend_tracegroupgap,
-                legend_traceorder = 'grouped'
-            )
+            # Update layout and axes
 
-        fig_data.update({'fig': fig})
-        fig_data['y_min'].update({target_deck: y_min})
-        fig_data['y_max'].update({target_deck: y_max})
+            y_range = None if secondary_y else (y_min, y_max)
+            fig.update_yaxes(
+                range = y_range,
+                showticklabels = True,
+                nticks = n_yticks_max,
+                secondary_y = secondary_y,
+                showgrid = not secondary_y,
+                zeroline = not secondary_y,
+                row = target_deck, col = 1
+            )
+            if add_yaxis_title:
+                yaxes = [y for y in dir(fig['layout']) if y.startswith('yaxis')]
+                n_yaxes = len(yaxes)
+                yaxis_idx = target_deck - n_yaxes
+                current_title = fig['layout'][yaxes[yaxis_idx]]['title']['text']
+                if current_title is None:
+                    new_yaxis_title = yaxis_title
+                else:
+                    new_yaxis_title = f'{current_title}<BR>{yaxis_title}' if target_deck > 1 else current_title
+                fig.update_yaxes(
+                    title = new_yaxis_title,
+                    row = target_deck, col = 1,
+                    secondary_y = secondary_y
+                )
+
+            if deck_type in ['double', 'triple']:
+                legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+                fig.update_layout(
+                    legend_tracegroupgap = legend_tracegroupgap,
+                    legend_traceorder = 'grouped'
+                )
+
+            fig_data.update({'fig': fig})
+            fig_data['y_min'].update({target_deck: y_min})
+            fig_data['y_max'].update({target_deck: y_max})
+
+            if len(current_names) > 0:
+                # This is an overlay on an existing plot
+
+                color_map = {legend_name: color_idx}
+                overlay_idx = len(fig_overlays) + 1
+                overlay_name = f'OV{overlay_idx}'
+                overlay_components = legend_name
+                fig_overlays.append({
+                    'name': overlay_name,
+                    'deck': target_deck,
+                    'color_theme': color_theme,
+                    'components': overlay_components,
+                    'color_map': color_map
+                })
+                fig_data.update({'overlays': fig_overlays})
 
         return fig_data
 
@@ -3022,6 +3050,7 @@ class AnalyzePrices():
         fig_y_min = fig_data['y_min'][target_deck]
         fig_y_max = fig_data['y_max'][target_deck]
         deck_type = fig_data['deck_type']
+        fig_overlays = fig_data['overlays']    
 
         if n_yticks_max is None:
             deck_height = fig_data['plot_height'][target_deck]
@@ -3042,77 +3071,106 @@ class AnalyzePrices():
                 yaxis_title
             legend_name = bollinger_data['width name']
 
-        style = theme_style[theme]
 
-        if color_theme is None:
-            linecolor = style['basecolor']
+        current_names = [trace['name'] for trace in fig_data['fig']['data'] if (trace['legendgroup'] == str(target_deck))]
+
+        if legend_name in current_names:
+            print(f'{legend_name} has already been plotted in this deck')
+
         else:
+            style = theme_style[theme]
+
             color_idx = style['overlay_color_selection'][color_theme][1][0]
             linecolor = style['overlay_color_theme'][color_theme][color_idx]
 
-        min_y = min(b_line)
-        max_y = max(b_line)
-        y_min, y_max = set_axis_limits(min_y, max_y)
+            min_y = min(b_line)
+            max_y = max(b_line)
+            y_min, y_max = set_axis_limits(min_y, max_y)
 
-        if fig_y_min is not None:
-            y_min = min(fig_y_min, y_min)
-        if fig_y_max is not None:
-            y_max = max(fig_y_max, y_max)
+            if fig_y_min is not None:
+                y_min = min(fig_y_min, y_min)
+            if fig_y_max is not None:
+                y_max = max(fig_y_max, y_max)
 
-        if target_deck > 1:
-            y_max *= 0.999
+            if target_deck > 1:
+                y_max *= 0.999
 
-        legendgrouptitle = {}
-        if deck_type == 'triple':
-            legendtitle = tripledeck_legendtitle[target_deck]
-            legendgrouptitle = dict(
-                text = legendtitle,
-                font_size = 16,
-                font_weight = 'bold'
-            )
+            legendgrouptitle = {}
+            if deck_type == 'triple':
+                legendtitle = tripledeck_legendtitle[target_deck]
+                legendgrouptitle = dict(
+                    text = legendtitle,
+                    font_size = 16,
+                    font_weight = 'bold'
+                )
 
-        fig.add_trace(
-            go.Scatter(
-                x = b_line.index.astype(str),
-                y = b_line,
-                line_color = linecolor,
-                name = legend_name,
-                legendgroup = f'{target_deck}',
-                legendgrouptitle = legendgrouptitle
-            ),
-            row = target_deck, col = 1,
-            secondary_y = secondary_y
-        )
-
-        # Update layout and axes
-
-        y_range = None if secondary_y else (y_min, y_max)
-        fig.update_yaxes(
-            range = y_range,
-            showticklabels = True,
-            nticks = n_yticks_max,
-            secondary_y = secondary_y,
-            showgrid = not secondary_y,
-            zeroline = not secondary_y,
-            row = target_deck, col = 1
-        )
-        if add_yaxis_title:
-            fig.update_yaxes(
-                title = yaxis_title,
+            fig.add_trace(
+                go.Scatter(
+                    x = b_line.index.astype(str),
+                    y = b_line,
+                    line_color = linecolor,
+                    name = legend_name,
+                    legendgroup = f'{target_deck}',
+                    legendgrouptitle = legendgrouptitle
+                ),
                 row = target_deck, col = 1,
                 secondary_y = secondary_y
             )
 
-        if deck_type in ['double', 'triple']:
-            legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
-            fig.update_layout(
-                legend_tracegroupgap = legend_tracegroupgap,
-                legend_traceorder = 'grouped'
-            )
+            # Update layout and axes
 
-        fig_data.update({'fig': fig})
-        fig_data['y_min'].update({target_deck: y_min})
-        fig_data['y_max'].update({target_deck: y_max})
+            y_range = None if secondary_y else (y_min, y_max)
+            fig.update_yaxes(
+                range = y_range,
+                showticklabels = True,
+                nticks = n_yticks_max,
+                secondary_y = secondary_y,
+                showgrid = not secondary_y,
+                zeroline = not secondary_y,
+                row = target_deck, col = 1
+            )
+            if add_yaxis_title:
+                yaxes = [y for y in dir(fig['layout']) if y.startswith('yaxis')]
+                n_yaxes = len(yaxes)
+                yaxis_idx = target_deck - n_yaxes
+                current_title = fig['layout'][yaxes[yaxis_idx]]['title']['text']
+                print(yaxes[yaxis_idx], current_title, yaxis_title)
+                if current_title is None:
+                    new_yaxis_title = yaxis_title
+                else:
+                    new_yaxis_title = f'{current_title}<BR>{yaxis_title}' if target_deck > 1 else current_title
+                fig.update_yaxes(
+                    title = new_yaxis_title,
+                    row = target_deck, col = 1,
+                    secondary_y = secondary_y
+                )
+
+            if deck_type in ['double', 'triple']:
+                legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+                fig.update_layout(
+                    legend_tracegroupgap = legend_tracegroupgap,
+                    legend_traceorder = 'grouped'
+                )
+
+            fig_data.update({'fig': fig})
+            fig_data['y_min'].update({target_deck: y_min})
+            fig_data['y_max'].update({target_deck: y_max})
+
+            if len(current_names) > 0:
+                # This is an overlay on an existing plot
+
+                color_map = {legend_name: color_idx}
+                overlay_idx = len(fig_overlays) + 1
+                overlay_name = f'OV{overlay_idx}'
+                overlay_components = legend_name
+                fig_overlays.append({
+                    'name': overlay_name,
+                    'deck': target_deck,
+                    'color_theme': color_theme,
+                    'components': overlay_components,
+                    'color_map': color_map
+                })
+                fig_data.update({'overlays': fig_overlays})
 
         return fig_data
 
@@ -3231,6 +3289,7 @@ class AnalyzePrices():
         fig_y_min = fig_data['y_min'][target_deck]
         fig_y_max = fig_data['y_max'][target_deck]
         deck_type = fig_data['deck_type']
+        fig_overlays = fig_data['overlays']    
 
         if n_yticks_max is None:
             deck_height = fig_data['plot_height'][target_deck]
@@ -3251,77 +3310,105 @@ class AnalyzePrices():
             yaxis_title = 'Volatility' if yaxis_title is None else yaxis_title
             legend_name = 'Volatility'
 
-        style = theme_style[theme]
+        current_names = [trace['name'] for trace in fig_data['fig']['data'] if (trace['legendgroup'] == str(target_deck))]
 
-        if color_theme is None:
-            linecolor = style['basecolor']
+        if legend_name in current_names:
+            print(f'{legend_name} has already been plotted in this deck')
+
         else:
+
+            style = theme_style[theme]
+
             color_idx = style['overlay_color_selection'][color_theme][1][0]
             linecolor = style['overlay_color_theme'][color_theme][color_idx]
 
-        min_y = min(m_line)
-        max_y = max(m_line)
-        y_min, y_max = set_axis_limits(min_y, max_y)
+            min_y = min(m_line)
+            max_y = max(m_line)
+            y_min, y_max = set_axis_limits(min_y, max_y)
 
-        if fig_y_min is not None:
-            y_min = min(fig_y_min, y_min)
-        if fig_y_max is not None:
-            y_max = max(fig_y_max, y_max)
+            if fig_y_min is not None:
+                y_min = min(fig_y_min, y_min)
+            if fig_y_max is not None:
+                y_max = max(fig_y_max, y_max)
 
-        if target_deck > 1:
-            y_max *= 0.999
+            if target_deck > 1:
+                y_max *= 0.999
 
-        legendgrouptitle = {}
-        if deck_type == 'triple':
-            legendtitle = tripledeck_legendtitle[target_deck]
-            legendgrouptitle = dict(
-                text = legendtitle,
-                font_size = 16,
-                font_weight = 'bold'
-            )
+            legendgrouptitle = {}
+            if deck_type == 'triple':
+                legendtitle = tripledeck_legendtitle[target_deck]
+                legendgrouptitle = dict(
+                    text = legendtitle,
+                    font_size = 16,
+                    font_weight = 'bold'
+                )
 
-        fig.add_trace(
-            go.Scatter(
-                x = m_line.index.astype(str),
-                y = m_line,
-                line_color = linecolor,
-                name = legend_name,
-                legendgroup = f'{target_deck}',
-                legendgrouptitle = legendgrouptitle
-            ),
-            row = target_deck, col = 1,
-            secondary_y = secondary_y
-        )
-
-        # Update layout and axes
-
-        y_range = None if secondary_y else (y_min, y_max)
-        fig.update_yaxes(
-            range = y_range,
-            showticklabels = True,
-            nticks = n_yticks_max,
-            secondary_y = secondary_y,
-            showgrid = not secondary_y,
-            zeroline = not secondary_y,
-            row = target_deck, col = 1
-        )
-        if add_yaxis_title:
-            fig.update_yaxes(
-                title = yaxis_title,
+            fig.add_trace(
+                go.Scatter(
+                    x = m_line.index.astype(str),
+                    y = m_line,
+                    line_color = linecolor,
+                    name = legend_name,
+                    legendgroup = f'{target_deck}',
+                    legendgrouptitle = legendgrouptitle
+                ),
                 row = target_deck, col = 1,
                 secondary_y = secondary_y
             )
 
-        if deck_type in ['double', 'triple']:
-            legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
-            fig.update_layout(
-                legend_tracegroupgap = legend_tracegroupgap,
-                legend_traceorder = 'grouped'
-            )
+            # Update layout and axes
 
-        fig_data.update({'fig': fig})
-        fig_data['y_min'].update({target_deck: y_min})
-        fig_data['y_max'].update({target_deck: y_max})
+            y_range = None if secondary_y else (y_min, y_max)
+            fig.update_yaxes(
+                range = y_range,
+                showticklabels = True,
+                nticks = n_yticks_max,
+                secondary_y = secondary_y,
+                showgrid = not secondary_y,
+                zeroline = not secondary_y,
+                row = target_deck, col = 1
+            )
+            if add_yaxis_title:
+                yaxes = [y for y in dir(fig['layout']) if y.startswith('yaxis')]
+                n_yaxes = len(yaxes)
+                yaxis_idx = target_deck - n_yaxes
+                current_title = fig['layout'][yaxes[yaxis_idx]]['title']['text']
+                if current_title is None:
+                    new_yaxis_title = yaxis_title
+                else:
+                    new_yaxis_title = f'{current_title}<BR>{yaxis_title}' if target_deck > 1 else current_title
+                fig.update_yaxes(
+                    title = new_yaxis_title,
+                    row = target_deck, col = 1,
+                    secondary_y = secondary_y
+                )
+
+            if deck_type in ['double', 'triple']:
+                legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+                fig.update_layout(
+                    legend_tracegroupgap = legend_tracegroupgap,
+                    legend_traceorder = 'grouped'
+                )
+
+            fig_data.update({'fig': fig})
+            fig_data['y_min'].update({target_deck: y_min})
+            fig_data['y_max'].update({target_deck: y_max})
+
+            if len(current_names) > 0:
+                # This is an overlay on an existing plot
+
+                color_map = {legend_name: color_idx}
+                overlay_idx = len(fig_overlays) + 1
+                overlay_name = f'OV{overlay_idx}'
+                overlay_components = legend_name
+                fig_overlays.append({
+                    'name': overlay_name,
+                    'deck': target_deck,
+                    'color_theme': color_theme,
+                    'components': overlay_components,
+                    'color_map': color_map
+                })
+                fig_data.update({'overlays': fig_overlays})
 
         return fig_data
 

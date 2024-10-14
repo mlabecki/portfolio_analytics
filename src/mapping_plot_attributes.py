@@ -114,8 +114,9 @@ theme_style = {
                 # NEEDS ADJUSTMENT - expand the color scale
                 'rgba(32, 178, 170, 1)',   # lightseagreen
                 'rgba(72, 209, 204, 1)',   # mediumturquoise
-                'rgba(64, 224, 208, 1)',   # turquoise
-                'rgba(127, 255, 212, 1)',  # aquamarine
+                # 'rgba(64, 224, 208, 1)',   # turquoise
+                'rgba(64, 224, 228, 1)',   # turquoise
+                'rgba(117, 255, 222, 1)',  # aquamarine
                 'rgba(175, 238, 238, 1)',  # paleturquoise
                 'rgba(224, 255, 255, 1)'   # lightcyan
             ],
