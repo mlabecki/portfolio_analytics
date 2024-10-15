@@ -152,6 +152,36 @@ class AnalyzePrices():
         return ma
 
 
+    ##### MOVING VOLATILITY / STANDARD DEVIATION #####
+
+    def moving_volatility(
+        self,
+        df_tk,
+        window = 10,
+        min_periods = 1,
+        ddof = 0
+    ):
+        """
+        df_tk:      
+            a series of price values, taken as a column of df_close or df_adj_close for ticker tk
+        window:
+            length in days
+        Returns moving (rolling) standard deviation m_std and volatility m_vol
+        """
+
+        m_std = df_tk.rolling(window = window, min_periods = min_periods).std(ddof = ddof)
+        m_vol = df_tk.rolling(window = window, min_periods = min_periods).var(ddof = ddof)
+
+        mvol_data = {
+            'std': m_std,
+            'vol': m_vol,
+            'std name': f'MSTD {window}',
+            'vol name': f'MVOL {window}'
+        }
+
+        return mvol_data
+
+
     ##### CREATE TEMPLATE #####
 
     def create_template(
@@ -1570,25 +1600,36 @@ class AnalyzePrices():
         return drawdown_data
 
 
-    ##### PLOT DRAWDOWNS PLOTLY #####
+    ##### ADD DRAWDOWNS #####
 
-    def plot_drawdowns_plotly(
+    def add_drawdowns(
         self,
+        fig_data,
         df_price,
         tk,
         drawdown_data,
-        n_top_drawdowns,
-        x_min,
-        x_max,
-        n_ticks_max,
-        n_yticks_max = 16,
+        n_top_drawdowns = 5,
+        target_deck = 1,
+        secondary_y = False,
+        n_yticks_max = None,
+        add_price = True,
+        price_type = 'close',
         top_by = 'depth',
         show_trough_to_recovery = False,
-        plot_width = 1450,
-        plot_height = 750,
+        add_title = True,
         title_font_size = 32,
-        theme = 'dark'
+        theme = 'dark',
+        color_theme = None
     ):
+        """
+        fig_data:
+            template to add the plot to
+        target_deck:
+            1 (upper), 2 (second from top), 3 (third from top)
+            Normally drawdowns should only go into deck 1 and the title should be added.
+        price_type:
+            one of 'adjusted close', 'close', 'open', 'high', 'low', 'volume', 'dollar volume'
+        """
 
         if isinstance(df_price, pd.Series):
             df_tk = df_price.copy()
@@ -1598,21 +1639,22 @@ class AnalyzePrices():
             print('Incorrect format of input data')
             exit
 
+        infinity = 1e10
+
         df_tk_deepest_drawdowns = drawdown_data['Deepest Drawdowns']
         df_tk_longest_drawdowns = drawdown_data['Longest Drawdowns']
         df_tk_deepest_drawdowns_str = drawdown_data['Deepest Drawdowns Str']
         df_tk_longest_drawdowns_str = drawdown_data['Longest Drawdowns Str']
 
         style = theme_style[theme]
-        template = style['template']
         top_by_color = style['red_color']
+        legend_name = price_type.title()
 
         # Alpha = opacity. Since opacity of 1 covers the gridlines, alpha_max is reduced here.
         if theme == 'dark':
             alpha_min, alpha_max = 0.15, 0.6  # max intensity covers the grid
         else:
             alpha_min, alpha_max = 0.1, 0.8  # max intensity covers the grid
-
         if top_by == 'depth':
             top_list = list(df_tk_deepest_drawdowns['% Drawdown'])
             top_cmap = map_values(top_list, alpha_min, alpha_max, ascending=True)
@@ -1620,14 +1662,40 @@ class AnalyzePrices():
             top_list = list(df_tk_longest_drawdowns['Total Length'])
             top_cmap = map_values(top_list, alpha_min, alpha_max, ascending=False)
 
-        fig = make_subplots(rows = 1, cols = 1)
-   
+        if n_yticks_max is None:
+            deck_height = fig_data['plot_height'][target_deck]
+            n_yticks_max = n_yticks_map[deck_height]
+
+        color_theme = 'base' if color_theme is None else color_theme
+        color_idx = style['overlay_color_selection'][color_theme][1][0]
+        linecolor = style['overlay_color_theme'][color_theme][color_idx]
+
+        fig = fig_data['fig']
+        fig_y_min = fig_data['y_min'][target_deck]
+        fig_y_max = fig_data['y_max'][target_deck]
+        deck_type = fig_data['deck_type']
+        title_x_pos = fig_data['title_x_pos']
+        title_y_pos = fig_data['title_y_pos']
+
         min_y = min(df_tk)
         max_y = max(df_tk)
         y_min, y_max = set_axis_limits(min_y, max_y)
+        if fig_y_min is not None:
+            y_min = min(fig_y_min, y_min)
+        if fig_y_max is not None:
+            y_max = max(fig_y_max, y_max)
 
-        x_min = str(df_tk.index.min().date())
-        x_max = str(df_tk.index.max().date())
+        if target_deck > 1:
+            y_max *= 0.999
+
+        legendgrouptitle = {}
+        if deck_type == 'triple':
+            legendtitle = tripledeck_legendtitle[target_deck]
+            legendgrouptitle = dict(
+                text = legendtitle,
+                font_size = 16,
+                font_weight = 'bold'
+            )
 
         if top_by == 'depth':
             top_drawdowns = df_tk_deepest_drawdowns
@@ -1657,17 +1725,21 @@ class AnalyzePrices():
             )
             title_drawdowns = f'{tk} {n_top_drawdowns} Top Drawdowns by {top_by.capitalize()} - Peak To Trough'
 
-        # Add the price line here to make sure it's first in the legend
-        fig.add_trace(
-            go.Scatter(
-                x = df_tk.index.astype(str),
-                y = df_tk,
-                line = dict(color = style['basecolor']),
-                line_width = 2,
-                name = 'Adjusted Close',
-                showlegend = True
+        if add_price:
+            # Add the price line here to make sure it's first in the legend
+            fig.add_trace(
+                go.Scatter(
+                    x = df_tk.index.astype(str),
+                    y = df_tk,
+                    line_color = linecolor,
+                    showlegend = True,
+                    name = legend_name,
+                    legendgroup = f'{target_deck}',
+                    legendgrouptitle = legendgrouptitle
+                ),
+                row = target_deck, col = 1,
+                secondary_y = secondary_y
             )
-        )
 
         for _, x1, x2, depth, length in zip_drawdown_parameters:
 
@@ -1679,85 +1751,75 @@ class AnalyzePrices():
                 name = f'{length}d, {depth:.1f}%'
 
             fillcolor = top_by_color.replace('1)', f'{alpha_deepest})')
-            
+
             fig.add_trace(
                 go.Scatter(
                     x = [x1, x2, x2, x1, x1],
-                    y = [y_min, y_min, y_max, y_max, y_min],
+                    y = [0, 0, infinity, infinity, 0],
                     mode = 'lines',
                     line_width = 2,
                     line_color = 'brown',                    
                     fill = 'toself',
                     fillcolor = fillcolor,
-                    name = name
+                    name = name,
+                    legendgroup = f'{target_deck}',
+                    legendgrouptitle = legendgrouptitle
+                ),
+                row = target_deck, col = 1
+            )
+
+        if add_price:
+            # Add the price line here to make sure it's on top of other layers
+            fig.add_trace(
+                go.Scatter(
+                    x = df_tk.index.astype(str),
+                    y = df_tk,
+                    line_color = linecolor,
+                    showlegend = False,
+                    name = legend_name
+                ),
+                row = target_deck, col = 1,
+                secondary_y = secondary_y
+            )
+
+        # Update layout and axes
+
+        if add_title:
+            fig.update_layout(
+                title = dict(
+                    text = title_drawdowns,
+                    font_size = title_font_size,
+                    y = title_y_pos,
+                    x = title_x_pos,
+                    xanchor = 'center',
+                    yanchor = 'middle'
                 )
             )
 
-        # Add the price line here to make sure it's on top of other layers
-        fig.add_trace(
-            go.Scatter(
-                x = df_tk.index.astype(str),
-                y = df_tk,
-                line = dict(color = style['basecolor']),
-                showlegend = False
-            )
-        )
-
-        # Add plot border
-        fig.add_shape(
-            type = 'rect',
-            xref = 'x',  # use 'x' because of the seconday axis - 'paper' does not work correctly
-            yref = 'paper',
-            x0 = x_min,
-            x1 = x_max,
-            y0 = 0,
-            y1 = 1,
-            line_color = style['x_linecolor'],
-            line_width = 0.3
-        )
-
-        # Update layout and axes
-        fig.update_layout(
-            width = plot_width,
-            height = plot_height,
-            xaxis_rangeslider_visible = False,
-            template = template,
-            legend_groupclick = 'toggleitem',            
-            yaxis_title = f'Price',
-            margin_t = 60,
-            title = dict(
-                text = title_drawdowns,
-                font_size = title_font_size,
-                y = 0.975,
-                x = 0.45,
-                xanchor = 'center',
-                yanchor = 'top'
-            )
-        )
-        fig.update_xaxes(
-            type = 'category',
-            showgrid = True,
-            gridcolor = style['x_gridcolor'],
-            nticks = n_ticks_max,
-            tickangle = -90,
-            ticks = 'outside',
-            ticklen = 8,
-            ticklabelshift = 5,  # not working
-            ticklabelstandoff = 10  # not working
-        )
+        y_range = None if secondary_y else (y_min, y_max)
         fig.update_yaxes(
-            range = (y_min, y_max),
-            showgrid = True,
-            gridcolor = style['y_gridcolor'],
+            range = y_range,
+            title = legend_name,
+            showticklabels = True,
             nticks = n_yticks_max,
-            ticks = 'outside',
-            ticklen = 8,
-            ticklabelshift = 5,  # not working
-            ticklabelstandoff = 20  # not working
+            secondary_y = secondary_y,
+            showgrid = not secondary_y,
+            zeroline = not secondary_y,
+            row = target_deck, col = 1
         )
 
-        return fig
-        # MUST RETURN A DICTIONARY so overlays can be added
+        if deck_type in ['double', 'triple']:
+            legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+            fig.update_layout(
+                legend_tracegroupgap = legend_tracegroupgap,
+                legend_traceorder = 'grouped'
+            )
+
+        fig_data.update({'fig': fig})
+        fig_data['y_min'].update({target_deck: y_min})
+        fig_data['y_max'].update({target_deck: y_max})
+
+        return fig_data
 
 
     ##### RSI #####
@@ -2035,7 +2097,7 @@ class AnalyzePrices():
             '%B': pct_bollinger,
             '%B name': f'({window}, {n_std:.{k}f}) %B',
             'width': bollinger_width,
-            'width name': f'({window}, {n_std:.{k}f}) Bollinger Width'        
+            'width name': f'({window}, {n_std:.{k}f}) B-Width'        
         }
 
         return bollinger_data
@@ -2452,10 +2514,7 @@ class AnalyzePrices():
         else:
             # bollinger_type is 'width' or anything else
             b_line = bollinger_data['width']
-            if yaxis_title is None:
-                yaxis_title = 'Boll Width' if target_deck > 1 else 'Bollinger Width'
-            else:
-                yaxis_title
+            yaxis_title = 'B-Width' if yaxis_title is None else yaxis_title
             legend_name = bollinger_data['width name']
 
         current_names = [trace['name'] for trace in fig_data['fig']['data'] if (trace['legendgroup'] == str(target_deck))]
@@ -2686,16 +2745,19 @@ class AnalyzePrices():
         if mvol_type == 'std':
             m_line = mvol_data['std']
             if yaxis_title is None:
-                yaxis_title = 'St Dev' if target_deck > 1 else 'Standard Deviation'
+                yaxis_title = 'MSTD' if target_deck > 1 else 'Moving Standard Deviation'
             else:
                 yaxis_title
-            legend_name = 'Standard Deviation'
+            legend_name = mvol_data['std name']
         else:
             # mvol_type is 'vol' or anything else
             m_line = mvol_data['vol']
-            yaxis_title = 'Volatility' if yaxis_title is None else yaxis_title
-            legend_name = 'Volatility'
-
+            if yaxis_title is None:
+                yaxis_title = 'MVOL' if target_deck > 1 else 'Moving Volatility'
+            else:
+                yaxis_title
+            legend_name = mvol_data['vol name']
+    
         current_names = [trace['name'] for trace in fig_data['fig']['data'] if (trace['legendgroup'] == str(target_deck))]
 
         if legend_name in current_names:
