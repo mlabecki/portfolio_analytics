@@ -242,11 +242,11 @@ This combination of indicators - candles, EMA 200, Stochastic %K and %D lines wi
 > Interactive: yes<BR>
 
 ### 18. Top Drawdowns With SMA Overlays (Upper), Bollinger Width and Moving STD (Middle) and Stochastic K-D Difference With Signal (Lower)
-The main plot in the upper deck is similar to 11. above, except the five top drawdowns by % depth are displayed in their full length from the initial peak to recovery. The drawdowns are based on, and are overlaid with, the Close price, and their color intensity is proportional to the % depth. Additional overlays are SMA lines in 10-day window increments.
+The main plot in the upper deck is similar to 11. above except the five top drawdowns by % depth are displayed in their full length from the initial peak to recovery. The drawdowns are based on and are overlaid with the Close price. As in 11. above, the drawdown color intensity is proportional to the % depth. Additional overlays are SMA lines in 10-day window increments.
 
-The middle deck plots two volatility-related metrics: the standard (20, 2) Bollinger Width and the 10-day Moving Standard Deviation.
+The middle deck plots two volatility-related metrics: the one-standard-deviation 20-day Bollinger width (B-Width) and the 10-day moving standard deviation (MSTD). You can notice shifts in the peaks and other features of the two curves due to the difference in the moving average windows.
 
-The lower deck plots the difference of standard (14,3) Slow Stochastic %K and %D lines, with an arbitrary 5-day SMA signal overlay.
+The lower deck plots the difference of standard (14,3) slow stochastic %K and %D lines, with an arbitrary 5-day SMA signal overlay. Note that the signal line can only provide any additional and meaningful information if its window is smaller than the stochastic's look-back (fast %K) period.
 
 > ![](img/18_Drawdowns_SMA10_BollWidthMSTD_K-D_Light_600x200x200.png)
 
