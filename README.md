@@ -13,16 +13,19 @@ The project is ongoing, although a vast amount of functionality has already been
 
 **b) Analyze prices**
 > - statistical summary at the portfolio level
-> - drawdown analysis with tabular summaries and an interactive plot of top drawdowns
-> - interactive line graphs and candlestick plots with traditional and hollow candles
-> - moving average convergence divergence (MACD) plot with signal overlay and an optional price overlay
-> - relative strength index (RSI) plot with overbought and oversold overlays and an optional price overlay
-> - stochastic oscillator %K-%D plot with overbought and oversold overlays and an optional price overlay
+> - choice of a single-, double- or triple-deck template, with an optional secondary y-axis in the upper deck, allowing to combine multiple plots on one stacked graph
+> - drawdown analysis with tabular summaries at both the portfolio and individual asset levels
+> - top drawdowns plot for each asset with depth-dependent color intensity overlays 
+> - line graph or candlestick plot - with traditional or hollow candles - of historical prices
+> - histogram or (optionally filled) line plot of historical volumes or dollar volumes
+> - histogram or filled-line plot of moving average convergence divergence (MACD) / volatility-normalized (MACD-V), with a signal overlay
+> - difference (oscillator) plot for two custom selected moving averages or price types or stochastic %K-%D lines, with an optional signal line
+> - relative strength index (RSI) plot with overbought and oversold overlays
+> - stochastic oscillator %K and %D line plot with overbought and oversold overlays
+> - plot or overlay of volatility metrics: moving volatility / standard deviation (MVOL/MSTD), average true rate / percentage (ATR/ATRP), Bollinger band width (B-Width)
 > - up to six custom selected moving average overlays on top of an existing graph
 > - up to three pairs of customized Bollinger band overlays on top of an existing graph
 > - up to three pairs of customized moving average envelope overlays on top of an existing graph
-> - price oscillator plot for two custom selected moving averages or price types with an optional signal line
-> - choice of a double- or triple-deck template allowing to combine most of the above plots in one stacked graph
 
 **c) Analyze returns**
 > - summary of statistical properties of asset return distributions
@@ -31,19 +34,19 @@ The project is ongoing, although a vast amount of functionality has already been
 
 **d) Analyze performance**
 > - summaries of performance metrics for each asset and for the asset-weighted portfolio:
->   - Sharpe Ratio
->   - Sortino Ratio
->   - Probabilistic Sharpe Ratio
->   - Treynor's Ratio
->   - Jensen's Alpha
->   - Information Ratio
->   - Omega Ratio
->   - Up and Down Market Capture Ratios
->   - Amihud Liquidity Measure
->   - Utility Function
->   - Calmar Ratio
->   - Sterling Ratio
->   - Martin Ratio
+> - Sharpe Ratio
+> - Sortino Ratio
+> - Probabilistic Sharpe Ratio
+> - Treynor's Ratio
+> - Jensen's Alpha
+> - Information Ratio
+> - Omega Ratio
+> - Up and Down Market Capture Ratios
+> - Amihud Liquidity Measure
+> - Utility Function
+> - Calmar Ratio
+> - Sterling Ratio
+> - Martin Ratio
 
 Detailed implementation of the c) and d) groups of tasks is still in progress. 
 
