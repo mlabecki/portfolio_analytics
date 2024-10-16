@@ -243,7 +243,7 @@ The main plot in the upper deck is similar to 11. above, except the five top dra
 
 The middle deck plots two volatility-related metrics: the standard (20, 2) Bollinger Width and the 10-day Moving Standard Deviation.
 
-The lower deck plots the difference of standard (14,3) Slow Stochastic %K and %D lines, with an arbitrary 5-day SMA overlay.
+The lower deck plots the difference of standard (14,3) Slow Stochastic %K and %D lines, with an arbitrary 5-day SMA signal overlay.
 
 > ![](img/18_Drawdowns_SMA10_BollWidthMSTD_K-D_Light_600x200x200.png)
 
