@@ -238,7 +238,7 @@ This combination of indicators - candles, EMA 200, Stochastic %K and %D lines wi
 > Lower deck signal color: gold<BR>
 > Interactive: yes<BR>
 
-### 18. Top Drawdowns With SMA Overlays (Upper), Bollinger Width and Moving STD (Middle) and Stochastic K-D Differemce With Signal (Lower)
+### 18. Top Drawdowns With SMA Overlays (Upper), Bollinger Width and Moving STD (Middle) and Stochastic K-D Difference With Signal (Lower)
 The main plot in the upper deck is similar to 11. above, except the five top drawdowns by % depth are displayed in their full length from the initial peak to recovery. The drawdowns are based on, and are overlaid with, the Close price, and their color intensity is proportional to the % depth. Additional overlays are SMA lines in 10-day window increments.
 
 The middle deck plots two volatility-related metrics: the standard (20, 2) Bollinger Width and the 10-day Moving Standard Deviation.
