@@ -18,9 +18,9 @@ n_xticks_map = {
 ##### LEGEND MAPS #####
 
 tripledeck_legendtitle = {
-    1: 'UPPER',
-    2: 'MIDDLE',
-    3: 'LOWER'
+    1: 'UPPER DECK',
+    2: 'MIDDLE DECK',
+    3: 'LOWER DECK'
 } 
 
 legend_gap = {
@@ -136,6 +136,15 @@ theme_style = {
                 'rgba(182, 251, 182, 1)',
                 'rgba(204, 253, 204, 1)'
             ],
+            # https://www.schemecolor.com/everything-green.php
+            'grasslands': [
+                'rgba(13, 91, 17, 1)',      # Royal Green
+                'rgba(24, 124, 25, 1)',     # Verse Green
+                'rgba(105, 180, 30, 1)',    # RYB Green
+                'rgba(141, 199, 30, 1)',    # Dark Lemon Green
+                'rgba(174, 203, 51, 1)',    # Android Green darkened
+                'rgba(202, 236, 128, 1)'    # Crayola Yellow Green darkened
+            ],
             # https://www.schemecolor.com/clean-blues.php
             'sapphire': [
                 'rgba(16, 84, 190, 1)',     # sapphire
@@ -235,6 +244,14 @@ theme_style = {
                 4: [5, 3, 2, 0],        # lightgreen lightened, darkseagreen, mediumseagreen, darkgreen
                 5: [5, 3, 2, 1, 0],     # lightgreen lightened, darkseagreen, mediumseagreen, seagreen, darkgreen
                 6: [5, 4, 3, 2, 1, 0]   # lightgreen lightened, lightgreen, darkseagreen, mediumseagreen, seagreen, darkgreen
+            },
+            'grasslands': {
+                1: [3],                 # 
+                2: [5, 2],              # 
+                3: [5, 2, 0],           # 
+                4: [5, 3, 2, 0],        # 
+                5: [5, 3, 2, 1, 0],     # 
+                6: [5, 4, 3, 2, 1, 0]   # 
             },
             'sapphire': {
                 1: [2],                 # sapphire
@@ -351,6 +368,15 @@ theme_style = {
                 'rgba(142, 228, 138, 1)',  # lightgreen modified
                 'rgba(164, 244, 164, 1)'   # lightgreen lightened modified
             ],
+            # https://www.schemecolor.com/everything-green.php
+            'grasslands': [
+                'rgba(7, 61, 10, 1)',       # Royal Green darkened
+                'rgba(13, 91, 17, 1)',      # Royal Green
+                'rgba(24, 124, 25, 1)',     # Verse Green
+                'rgba(105, 180, 30, 1)',    # RYB Green
+                'rgba(141, 199, 30, 1)',    # Dark Lemon Green
+                'rgba(184, 213, 61, 1)'     # Android Green
+            ],
             # https://www.schemecolor.com/clean-blues.php
             'sapphire': [
                 'rgba(8, 42, 95, 1)',      # darkened sapphire
@@ -441,6 +467,14 @@ theme_style = {
                 6: [0, 1, 2, 3, 4, 5]   # 
             },
             'seagreen': {
+                1: [1],                 # 
+                2: [1, 3],              # 
+                3: [0, 2, 4],           # 
+                4: [0, 2, 3, 4],        # 
+                5: [0, 1, 2, 3, 4],     # 
+                6: [0, 1, 2, 3, 4, 5]   # 
+            },
+            'grasslands': {
                 1: [1],                 # 
                 2: [1, 3],              # 
                 3: [0, 2, 4],           # 

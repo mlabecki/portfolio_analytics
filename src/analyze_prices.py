@@ -752,7 +752,7 @@ class AnalyzePrices():
                 line_width = 2,
                 legendgroup = f'{target_deck}',
                 legendgrouptitle = legendgrouptitle,
-                name = f'{stochastic_type} {stochastic_label} %K Line'
+                name = f'{stochastic_type} {stochastic_label} %K'
             ),
             row = target_deck, col = 1
         )
@@ -764,7 +764,7 @@ class AnalyzePrices():
                 line_width = 2,
                 legendgroup = f'{target_deck}',
                 legendgrouptitle = legendgrouptitle,
-                name = f'{stochastic_type} {stochastic_label} %D Line'
+                name = f'{stochastic_type} {stochastic_label} %D'
             ),
             row = target_deck, col = 1
         )
@@ -1655,6 +1655,7 @@ class AnalyzePrices():
             alpha_min, alpha_max = 0.15, 0.6  # max intensity covers the grid
         else:
             alpha_min, alpha_max = 0.1, 0.8  # max intensity covers the grid
+
         if top_by == 'depth':
             top_list = list(df_tk_deepest_drawdowns['% Drawdown'])
             top_cmap = map_values(top_list, alpha_min, alpha_max, ascending=True)
@@ -3740,21 +3741,21 @@ class AnalyzePrices():
         p2 = stochastic_data['d_line']
 
         if not reverse_diff:
-            p1_name = '%K Line'
-            p2_name = '%D Line'
+            p1_name = '%K'
+            p2_name = '%D'
             diff = p1 - p2
-            diff_title = f'{tk} {stochastic_type} {stochastic_label} Stochastic %K-%D Line Difference'
-            yaxis_title = f'Stochastic %K-%D'
+            diff_title = f'{tk} {stochastic_type} {stochastic_label} Stochastic %K-%D Difference'
+            yaxis_title = f'%K-%D'
 
         else:
-            p1_name = '%D Line'
-            p2_name = '%K Line'
+            p1_name = '%D'
+            p2_name = '%K'
             diff = p2 - p1
-            diff_title = f'{tk} {stochastic_type} {stochastic_label} Stochastic %D-%K Line Difference'
-            yaxis_title = f'Stochastic %D-%K'
+            diff_title = f'{tk} {stochastic_type} {stochastic_label} Stochastic %D-%K Difference'
+            yaxis_title = f'%D-%K'
 
-        diff_positive_name = f'{p1_name} > {p2_name}'
-        diff_negative_name = f'{p1_name} < {p2_name}'        
+        diff_positive_name = f'{stochastic_label} {p1_name} > {p2_name}'
+        diff_negative_name = f'{stochastic_label} {p1_name} < {p2_name}'        
 
         diff_signal = self.moving_average(diff, signal_type, signal_window)
         signal_name = f'{signal_type.upper()} {signal_window} Signal'

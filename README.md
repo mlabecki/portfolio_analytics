@@ -81,12 +81,12 @@ If you are more used to the traditional candles and find hollow candelabra a bit
 
 > Plotting package: plotly<BR>
 > Theme: dark<BR>
-> Plot type: green-red holllow candles<BR>
+> Plot type: green-red hollow candles<BR>
 > Overlay color theme: sapphire<BR>
 > Interactive: yes<BR>
 
 ### 5. Traditional Candles With Moving Average Overlays
-In case you prefer a light plot background, you can switch at any time between the dark and light themes. You can also pick and switch between any of the 10 pre-defined overlay color themes and/or invert the sequence of colors, if desired. In this traditional candlestick plot, a ribbon of six Close-based Simple Moving Average (SMA) overlays have been added with windows increasing in 5-day increments. You can custom-define the window size and choose one of several moving average types. 
+In case you prefer a light plot background, you can switch at any time between the dark and light themes. You can also pick and switch between any of the 12 pre-defined overlay color themes and/or invert the sequence of colors, if desired. In this traditional candlestick plot, a ribbon of six Close-based Simple Moving Average (SMA) overlays have been added with windows increasing in 5-day increments. You can custom-define the window size and choose one of several moving average types. 
 > ![](img/05_CandlesTraditional5dSMAOverlaysLavender_Light.png)
 
 > Plotting package: plotly<BR>
@@ -222,7 +222,7 @@ For comparison with the MACD-V histogram in the lower deck, the middle deck show
 > Interactive: yes<BR>
 
 ### 17. Traditional Candles With EMA Overlays (Upper), Stochastic (Middle) and MACD Histogram (Lower)
-This combination of indicators - candles, EMA 200, Stochastic K- and D-lines with overbought/oversold overlays, and MACD Histogram with the EMA 9 signal - is used in one of the actual trading startegies. A buy signal is generated when the price is above EMA 200, and Stochastic is in the oversold range, and MACD changes sign to positive. A sell signal arises when the price is below EMA 200, and Stochastic is in the overbought range, and MACD changes sign to negative.
+This combination of indicators - candles, EMA 200, Stochastic %K and %D lines with overbought/oversold overlays, and MACD Histogram with the EMA 9 signal - is used in one of the actual trading startegies. A buy signal is generated when the price is above EMA 200, and Stochastic is in the oversold range, and MACD changes sign to positive. A sell signal arises when the price is below EMA 200, and Stochastic is in the overbought range, and MACD changes sign to negative.
 
 > ![](img/17_TraditionalCandles_EMA200_Stochastic_MACD_450x200x200.png)
 
@@ -235,5 +235,26 @@ This combination of indicators - candles, EMA 200, Stochastic K- and D-lines wit
 > Middle deck stochastic slow line color: darkorchid<BR>
 > Lower deck MACD plot type: green-red histogram<BR>
 > Lower deck MACD line color: tableau blue<BR>
+> Lower deck signal color: gold<BR>
+> Interactive: yes<BR>
+
+### 18. Top Drawdowns With SMA Overlays (Upper), Bollinger Width and Moving STD (Middle) and Stochastic K-D Differemce With Signal (Lower)
+The main plot in the upper deck is similar to 11. above, except the five top drawdowns by % depth are displayed in their full length from the initial peak to recovery. The drawdowns are based on, and are overlaid with, the Close price, and their color intensity is proportional to the % depth. Additional overlays are SMA lines in 10-day window increments.
+
+The middle deck plots two volatility-related metrics: the standard (20, 2) Bollinger Width and the 10-day Moving Standard Deviation.
+
+The lower deck plots the difference of standard (14,3) Slow Stochastic %K and %D lines, with an arbitrary 5-day SMA overlay.
+
+> ![](img/18_Drawdowns_SMA10_BollWidthMSTD_K-D_Light_600x200x200.png)
+
+> Plotting package: plotly<BR>
+> Theme: light<BR>
+> Template type: triple-deck<BR>
+> Upper deck plot type: drawdowns with Close price overlay<BR>
+> Upper deck color theme: base<BR>
+> Upper deck SMA overlay color theme: grasslands<BR>
+> Middle deck Bollinger Width color theme: magenta<BR>
+> Middle deck Moving STD color theme: lavender<BR>
+> Lower deck plot type: green-red K-D difference<BR>
 > Lower deck signal color: gold<BR>
 > Interactive: yes<BR>
