@@ -434,46 +434,50 @@ class AnalyzePrices():
         self,
         fig_data,
         deck_type,
-        legend_title_height = 21
+        legend_item_height = None,
+        legend_title_height = None
     ):
         """
         legend_title_height:
-            upper title height to be subtracted for triple deck, depends on the legend title font size, 21 is for size 16
+            legend title height to be subtracted for triple deck, depends on the legend title font size, 21 is for size 16
+        legend_item_height:
+            legend item height to be subtracted from the unadjusted gap, depends on the legend item font size, 19 is for the default size
         """
+
+        legend_item_height = 19 if legend_item_height is None else legend_item_height
+        legend_title_height = 21 if legend_title_height is None else legend_title_height
 
         n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
         n_traces_middle = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '2') & (x['showlegend'] if x['showlegend'] is not None else True)])
         n_traces_lower = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '3') & (x['showlegend'] if x['showlegend'] is not None else True)])
         n_traces_total = n_traces_upper + n_traces_middle + n_traces_lower
 
-        legend_item_height = abs(legend_gap['double']['slope'])
-
         # NOTE: The middle and lower plots in the triple deck should be of the same height
         height_upper = fig_data['plot_height'][1]
         height_lower = fig_data['plot_height'][2]
 
-        a0 = -118.3
-        a_upper = 0.94258
-        a_lower = 0.17954
+        intercept_double = legend_gap['double']['intercept']
+        slope_upper_double = legend_gap['double']['slope_upper']
+        slope_lower_double = legend_gap['double']['slope_lower']
     
         if (deck_type == 'double') | (n_traces_lower == 0):
 
-            intercept = a0 + a_upper * height_upper + a_lower * height_lower
-            legend_groupgap = intercept - legend_item_height * n_traces_upper
+            legend_groupgap_unadjusted = intercept_double + slope_upper_double * height_upper + slope_lower_double * height_lower
+            legend_groupgap = legend_groupgap_unadjusted - legend_item_height * n_traces_upper
 
         elif deck_type == 'triple':
 
             if n_traces_middle == 0:
-
-                intercept = a0 + a_upper * (height_upper + height_lower) + a_lower * height_lower
-                legend_groupgap = intercept - n_traces_upper * legend_item_height - legend_title_height
+                legend_groupgap_unadjusted = intercept_double + slope_upper_double * (height_upper + height_lower) + slope_lower_double * height_lower
+                legend_groupgap = legend_groupgap_unadjusted - n_traces_upper * legend_item_height - legend_title_height
 
             else:
-                # a0 = legend_gap['triple']['intercept'][height_lower]
-                # a1 = legend_gap['triple']['slope'][height_lower]
+                intercept_triple = legend_gap['triple']['intercept']
+                slope_upper_triple = legend_gap['triple']['slope_upper']
+                slope_lower_triple = legend_gap['triple']['slope_lower']
 
-                a0 = -177
-                legend_groupgap = (a0 + height_upper + 2 * height_lower - n_traces_total * legend_item_height - 3 * legend_title_height) / 2
+                legend_groupgap_unadjusted = intercept_triple + slope_upper_triple * height_upper + slope_lower_triple * height_lower
+                legend_groupgap = (legend_groupgap_unadjusted - n_traces_total * legend_item_height - 3 * legend_title_height) / 2
     
         legend_tracegroupgap = max(legend_groupgap, 0)
 

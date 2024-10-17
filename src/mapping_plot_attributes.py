@@ -24,53 +24,16 @@ tripledeck_legendtitle = {
 } 
 
 legend_gap = {
-
+    # NOTE: The coefficients below come from linear regression analysis    
     'double': {
-        'slope': -19,
-        'intercept': {
-            # keys are upper plot heights
-            750: {
-                # keys are lower plot heights
-                300: 637,
-                250: 631,
-                200: 625,
-                150: 618,
-                100: 611
-            },
-            600: {
-                # keys are lower plot heights
-                300: 495,
-                250: 488,
-                200: 481,
-                150: 473,
-                100: 465
-            },
-            450: {
-                # keys are lower plot heights
-                300: 355,
-                250: 348,
-                200: 341,
-                150: 332,
-                100: 320
-            },
-            300: {
-                # keys are lower plot heights
-                300: 221,
-                250: 213,
-                200: 205,
-                150: 194,
-                100: 179
-            }
-        }
-    },
-    
-    # For triple decks, slope and intercept are linear regression coefficients that
-    # can be used to calculate the base distance between the upper and lower legends,
-    # before further adjustments to obtain the final estimate of legend_tracesgroupgap
+        'intercept': -118.3,
+        'slope_upper': 0.94258,
+        'slope_lower': 0.17954
+    },   
     'triple': {
+        'intercept': -177.0,
         'slope_upper': 1,
-        'slope_lower': 2,
-        'intercept': -177.0
+        'slope_lower': 2
     }
 }
 
