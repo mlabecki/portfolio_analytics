@@ -246,7 +246,7 @@ The main plot in the upper deck is similar to 11. above except the five top draw
 
 The middle deck plots two volatility-related metrics: the one-standard-deviation 20-day Bollinger width (B-Width) and the 10-day moving standard deviation (MSTD). You can notice shifts in the peaks and other features of the two curves due to the difference in the moving average windows.
 
-The lower deck plots the difference of standard (14,3) slow stochastic %K and %D lines, with an arbitrary 5-day SMA signal overlay. Note that the signal line can only provide any additional and meaningful information if its window is smaller than the stochastic's look-back (fast %K) period.
+The lower deck plots the difference of standard (14,3) slow stochastic %K and %D lines, with an arbitrary 7-day SMA signal overlay. Note that the signal line can only provide any additional and meaningful information if its window is smaller than the stochastic's look-back (fast %K) period.
 
 > ![](img/18_Drawdowns_SMA10_BollWidthMSTD_K-D_Light_600x200x200.png)
 
