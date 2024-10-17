@@ -370,7 +370,7 @@ theme_style = {
             ],
             # https://www.schemecolor.com/everything-green.php
             'grasslands': [
-                'rgba(7, 61, 10, 1)',       # Royal Green darkened
+                'rgba(10, 70, 13, 1)',       # Royal Green darkened
                 'rgba(13, 91, 17, 1)',      # Royal Green
                 'rgba(24, 124, 25, 1)',     # Verse Green
                 'rgba(105, 180, 30, 1)',    # RYB Green
