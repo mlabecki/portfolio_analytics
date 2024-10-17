@@ -407,7 +407,11 @@ class AnalyzePrices():
             height = plot_height_total,
             xaxis_rangeslider_visible = False,
             template = style['template'],
-            legend_groupclick = 'toggleitem'
+            legend_groupclick = 'toggleitem',
+            modebar_add = [
+                "v1hovermode",
+                'toggleSpikelines'
+            ]
         )
 
         y_min = {1: None, 2: None, 3: None}
