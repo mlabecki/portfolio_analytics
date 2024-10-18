@@ -565,7 +565,7 @@ class AnalyzePrices():
                 legendgrouptitle = dict(
                     text = legendtitle,
                     font_size = 16,
-                    font_weight = 'bold'
+                    font_weight = 'normal'
                 )
 
             fig.add_trace(
@@ -749,7 +749,7 @@ class AnalyzePrices():
             legendgrouptitle = dict(
                 text = legendtitle,
                 font_size = 16,
-                font_weight = 'bold'
+                font_weight = 'normal'
             )
 
         fig_stochastic.add_trace(
@@ -1018,7 +1018,7 @@ class AnalyzePrices():
             legendgrouptitle = dict(
                 text = legendtitle,
                 font_size = 16,
-                font_weight = 'bold'
+                font_weight = 'normal'
             )
 
         #####
@@ -1703,7 +1703,7 @@ class AnalyzePrices():
             legendgrouptitle = dict(
                 text = legendtitle,
                 font_size = 16,
-                font_weight = 'bold'
+                font_weight = 'normal'
             )
 
         if top_by == 'depth':
@@ -1927,7 +1927,7 @@ class AnalyzePrices():
             legendgrouptitle = dict(
                 text = legendtitle,
                 font_size = 16,
-                font_weight = 'bold'
+                font_weight = 'normal'
             )
 
         fig_rsi.add_trace(
@@ -2247,7 +2247,7 @@ class AnalyzePrices():
             legendgrouptitle = dict(
                 text = legendtitle,
                 font_size = 16,
-                font_weight = 'bold'
+                font_weight = 'normal'
             )
 
         fig.add_trace(
@@ -2555,7 +2555,7 @@ class AnalyzePrices():
                 legendgrouptitle = dict(
                     text = legendtitle,
                     font_size = 16,
-                    font_weight = 'bold'
+                    font_weight = 'normal'
                 )
 
             fig.add_trace(
@@ -2797,7 +2797,7 @@ class AnalyzePrices():
                 legendgrouptitle = dict(
                     text = legendtitle,
                     font_size = 16,
-                    font_weight = 'bold'
+                    font_weight = 'normal'
                 )
 
             fig.add_trace(
@@ -3018,7 +3018,7 @@ class AnalyzePrices():
             legendgrouptitle = dict(
                 text = legendtitle,
                 font_size = 16,
-                font_weight = 'bold'
+                font_weight = 'normal'
             )
 
         # Add trace
@@ -3161,7 +3161,7 @@ class AnalyzePrices():
             legendgrouptitle = dict(
                 text = legendtitle,
                 font_size = 16,
-                font_weight = 'bold'
+                font_weight = 'normal'
             )
 
         if candle_type == 'traditional':
@@ -3495,7 +3495,7 @@ class AnalyzePrices():
             legendgrouptitle = dict(
                 text = legendtitle,
                 font_size = 16,
-                font_weight = 'bold'
+                font_weight = 'normal'
             )
 
         if n_yticks_max is None:
@@ -3734,7 +3734,7 @@ class AnalyzePrices():
             legendgrouptitle = dict(
                 text = legendtitle,
                 font_size = 16,
-                font_weight = 'bold'
+                font_weight = 'normal'
             )
 
         if n_yticks_max is None:
