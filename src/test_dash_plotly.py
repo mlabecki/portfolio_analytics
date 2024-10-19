@@ -30,12 +30,35 @@ print(tripledeck_legendtitle)
 app = dash.Dash(__name__)
 app.layout = html.Div(children=[
     # html.H1(children='Hello Dash'),
-    dcc.Dropdown(tickers, tickers[0], id='tickers-dropdown'),
+    dcc.Dropdown(tickers, 'MSFT', id='tickers-dropdown'),
     html.Div(id='dd-output-container'),
     dcc.Graph(id='test-graph')
 ])
-
-
+"""
+{
+	modeBarButtons: [[
+		'toImage',
+    ], [
+		'zoom2d',
+		'pan2d',
+		'zoomIn2d',
+		'zoomOut2d',
+	], [
+		'autoScale2d',
+		{
+			name: 'myResetScale2d',
+			title: 'Reset axes',
+			icon: Plotly.Icons.home,
+			click: function(gd) {
+				Plotly.relayout(gd, 'xaxis.range', [0, 1])
+			}
+		}
+	], [
+		'hoverClosestCartesian',
+		'hoverCompareCartesian'
+	]]
+}
+"""
 @callback(
     # Output('dd-output-container', 'children'),
     Output('test-graph', 'figure'),
@@ -159,18 +182,18 @@ def create_graph(tk):
         # plot_width = 1450,
         plot_width = 1450,
         plot_height_1 = 600,
-        plot_height_2 = 200,
-        plot_height_3 = 200,
+        plot_height_2 = 150,
+        plot_height_3 = 150,
         theme = theme
     )
     ##### NOTE: Decks need to get populated from top to bottom, i.e. from 1 to 3, otherwise the legends will end up in the wrong order
 
-    # fig_data = add_candlestick(fig_data, ohlc_tk, tk, candle_type = 'traditional', target_deck = 1, theme = theme)
+    # fig_data = analyze_prices.add_candlestick(fig_data, ohlc_tk, tk, candle_type = 'traditional', target_deck = 1, theme = theme)
     # fig_data = add_candlestick(fig_data, ohlc_tk, tk, candle_type = 'hollow', target_deck = 1, theme = theme)
 
     # fig_data = add_diff_stochastic(fig_data, tk, stochastic_data, target_deck = 1, reverse_diff = False, add_signal = True, signal_window = 5, add_title = True)
     # fig_data = add_diff(fig_data, tk, diff_data_stochastic, price_type_map, target_deck = 2, n_yticks_max = 7, add_title = True)
-
+    """
     fig_data = analyze_prices.add_drawdowns(
         fig_data,
         close_tk,
@@ -189,13 +212,14 @@ def create_graph(tk):
         theme = theme,
         color_theme = 'base'
     )
-
+    """
     # fig_data = analyze_prices.add_hist_price(fig_data, close_tk, tk, target_deck = 1, secondary_y = True, add_title = False, price_type = 'close', theme = theme)
+    fig_data = analyze_prices.add_hist_price(fig_data, close_tk, tk, target_deck = 1, add_title = True, price_type = 'close', theme = theme)
     # fig_data = analyze_prices.add_price_overlays(fig_data, price_list, tk, target_deck = 1, theme = theme, color_theme = 'turquoise')
-
+    
     # fig_data = add_ma_overlays(fig_data, close_tk, ema_list[: 6], target_deck = 1, theme = theme, color_theme = color_theme)
     fig_data = analyze_prices.add_ma_overlays(fig_data, close_tk, ma_list[: 6], target_deck = 1, theme = theme, color_theme = 'grasslands')
-
+    """
     fig_data = analyze_prices.add_bollinger_width(
     # fig_data = add_bollinger_width(    
         fig_data,
@@ -224,8 +248,11 @@ def create_graph(tk):
     )
 
     fig_data = analyze_prices.add_diff_stochastic(fig_data, tk, stochastic_data, target_deck = 3, reverse_diff = False, add_signal = True, signal_window = 7, add_title = False, theme = theme)
-
+    """
     fig = fig_data['fig']
+    print(fig_data['y_min'])
+    print(fig_data['y_max'])
+    print(fig['layout'])
 
     return fig
 

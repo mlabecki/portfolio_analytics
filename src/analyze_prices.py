@@ -194,6 +194,243 @@ class AnalyzePrices():
         plot_height_1 = None,
         plot_height_2 = None,
         plot_height_3 = None,
+        top_margin = 60,
+        theme = 'dark'
+    ):
+        """
+        Info whether the deck is a single, double or triple will come from user's input.
+        Then the name of the deck (deck_type) will be translated into a number;, e.g. 'lower'
+        will be translated to 2 in a double deck, while 'middle' and 'lower' will be translated 
+        to 2 and 3, respectively, in a triple deck.
+
+        legendgrouptitle will be an empty dictionary for a single and double deck, and will
+        be populated with the appropriate deck name in a triple deck.
+
+        date_index:
+            series or list of dates (e.g. close_tk.index)
+        deck_type:
+            'single', 'double' or 'triple'
+
+        The default n_yticks values should really be some function of plot height,
+        except in special cases where it can be specified customly.
+
+        There should be a separate function to update the y axis in any deck based
+        on the custom-specified number of ticks.
+        Likewise to update the x axis to select a different width (1280, 1450, 1600)
+
+        """
+
+        map_deck_type = {'single': 1, 'double': 2, 'triple': 3}
+        n_rows = map_deck_type[deck_type]
+
+        # Set up dictionaries for convenience
+
+        plot_height = {}
+
+        if (deck_type == 'single'):
+            plot_height_1 = 750 if plot_height_1 is None else plot_height_1
+            plot_height.update({1: plot_height_1})
+
+        elif (deck_type == 'double'):
+            plot_height_1 = 750 if plot_height_1 is None else plot_height_1
+            plot_height_2 = 250 if plot_height_2 is None else plot_height_2
+            plot_height.update({
+                1: plot_height_1,
+                2: plot_height_2
+            })
+
+        elif (deck_type == 'triple'):
+            plot_height_1 = 600 if plot_height_1 is None else plot_height_1
+            plot_height_2 = 200 if plot_height_2 is None else plot_height_2
+            plot_height_3 = 200 if plot_height_3 is None else plot_height_3
+            plot_height.update({
+                1: plot_height_1,
+                2: plot_height_2,
+                3: plot_height_3
+            })
+
+        n_ticks_max = round(plot_width / n_xticks_map['width_slope']) if n_ticks_max is None else n_ticks_max
+
+        df_dummy = pd.Series(index = date_index)
+        for _, idx in enumerate(date_index):
+            df_dummy[idx] = 0
+
+        x_min = str(min(df_dummy.index).date())
+        x_max = str(max(df_dummy.index).date())
+
+        height_pct = {}
+        row_heights = []
+        plot_height_total = sum(h for h in plot_height.values())
+        for k, h in plot_height.items():
+            h_pct = h / plot_height_total
+            height_pct.update({k: h_pct})
+            row_heights.append(h_pct)
+
+        if deck_type == 'single':
+            y_range = {
+                1: {
+                    'y0': 0,
+                    'y1': 1
+                }
+            }
+            specs_list = [
+                [{'secondary_y': True}]
+            ]
+
+        elif deck_type == 'double': 
+            y_range = {
+                1: {
+                    'y0': height_pct[2],
+                    'y1': 1
+                },
+                2: {
+                    'y0': 0,
+                    'y1': height_pct[2]
+                }
+            }
+            specs_list = [
+                [{'secondary_y': True}],
+                [{'secondary_y': False}]
+            ]
+
+        elif deck_type == 'triple': 
+            y_range = {
+                1: {
+                    'y0': height_pct[2] + height_pct[3],
+                    'y1': 1
+                },
+                2: {
+                    'y0': height_pct[3],
+                    'y1': height_pct[2] + height_pct[3]
+                },
+                3: {
+                    'y0': 0,
+                    'y1': height_pct[3]
+                }
+            }
+            specs_list = [
+                [{'secondary_y': True}],
+                [{'secondary_y': False}],
+                [{'secondary_y': False}]
+            ]
+
+        title_y_pos = 1 - 0.5 * top_margin / plot_height_total
+        title_x_pos = 0.435 if secondary_y else 0.45
+
+        style = theme_style[theme]
+
+        if secondary_y:
+            fig = make_subplots(
+                rows = n_rows,
+                cols = 1,
+                shared_xaxes = True,
+                vertical_spacing = 0,
+                row_heights = row_heights,
+                specs = specs_list
+            )
+        else:
+            fig = make_subplots(
+                rows = n_rows,
+                cols = 1,
+                shared_xaxes = True,
+                vertical_spacing = 0,
+                row_heights = row_heights
+            )
+
+        for k in range(n_rows + 1)[1:]:
+
+            # Add dummy traces
+            fig.add_trace(
+                go.Scatter(
+                    x = df_dummy.index.astype(str),
+                    y = df_dummy,
+                    line_width = 0,         
+                    showlegend = False,     
+                    legendgroup = 'dummy',
+                    hoverinfo = 'skip'
+                ),
+                row = k, col = 1
+            )
+
+            # Add plot borders
+            fig.add_shape(
+                type = 'rect',
+                xref = 'x',  # use 'x' because 'paper' does not work correctly with stacked plots
+                yref = 'paper',
+                x0 = x_min,
+                x1 = x_max,
+                y0 = y_range[k]['y0'],
+                y1 = y_range[k]['y1'],
+                line_color = style['x_linecolor'],
+                line_width = 2
+            )
+
+            # Update axes
+            fig.update_xaxes(
+                type = 'category',
+                showgrid = True,
+                gridcolor = style['x_gridcolor'],
+                nticks = n_ticks_max,
+                tickangle = -90,
+                ticks = 'outside',
+                ticklen = 8,
+                row = k, col = 1
+            )
+            fig.update_yaxes(
+                showgrid = True,
+                gridcolor = style['y_gridcolor'],
+                zerolinecolor = style['x_gridcolor'],
+                zerolinewidth = 1,
+                ticks = 'outside',
+                ticklen = 8,
+                showticklabels = False,
+                row = k, col = 1
+            )
+
+        # Update layout
+        fig.update_layout(
+            margin_t = top_margin,
+            width = plot_width,
+            height = plot_height_total,
+            xaxis_rangeslider_visible = False,
+            template = style['template'],
+            legend_groupclick = 'toggleitem',
+            modebar_add = [
+                "v1hovermode",
+                'toggleSpikelines'
+            ]
+        )
+
+        y_min = {1: None, 2: None, 3: None}
+        y_max = {1: None, 2: None, 3: None}
+
+        fig_data = {
+            'fig': fig,
+            'y_min': y_min,
+            'y_max': y_max,
+            'plot_height': plot_height,
+            'deck_type': deck_type,
+            'title_x_pos': title_x_pos,
+            'title_y_pos': title_y_pos,
+            'overlays': [],
+            'has_secondary_y': secondary_y
+        }
+
+        return fig_data
+
+
+    ##### OLD CREATE TEMPLATE #####
+
+    def old_create_template(
+        self,
+        date_index,
+        deck_type = 'triple',
+        secondary_y = False,
+        plot_width = 1600,
+        n_ticks_max = None,
+        plot_height_1 = None,
+        plot_height_2 = None,
+        plot_height_3 = None,
         n_yticks_max_1 = None,
         n_yticks_max_2 = None,
         n_yticks_max_3 = None,
@@ -551,13 +788,13 @@ class AnalyzePrices():
             max_y = max(atr_line)
             y_min, y_max = set_axis_limits(min_y, max_y)
 
+            if target_deck > 1:
+                y_max *= 0.999
+
             if fig_y_min is not None:
                 y_min = min(fig_y_min, y_min)
             if fig_y_max is not None:
                 y_max = max(fig_y_max, y_max)
-
-            if target_deck > 1:
-                y_max *= 0.999
 
             legendgrouptitle = {}
             if deck_type == 'triple':
@@ -1689,13 +1926,14 @@ class AnalyzePrices():
         min_y = min(df_tk)
         max_y = max(df_tk)
         y_min, y_max = set_axis_limits(min_y, max_y)
+
+        if target_deck > 1:
+            y_max *= 0.999
+
         if fig_y_min is not None:
             y_min = min(fig_y_min, y_min)
         if fig_y_max is not None:
             y_max = max(fig_y_max, y_max)
-
-        if target_deck > 1:
-            y_max *= 0.999
 
         legendgrouptitle = {}
         if deck_type == 'triple':
@@ -2539,15 +2777,15 @@ class AnalyzePrices():
 
             min_y = min(b_line)
             max_y = max(b_line)
-            y_min, y_max = set_axis_limits(min_y, max_y)
+            y_min, y_max = set_axis_limits(min_y, max_y, max_n_intervals = n_yticks_max)
+
+            if target_deck > 1:
+                y_max *= 0.999
 
             if fig_y_min is not None:
                 y_min = min(fig_y_min, y_min)
             if fig_y_max is not None:
                 y_max = max(fig_y_max, y_max)
-
-            if target_deck > 1:
-                y_max *= 0.999
 
             legendgrouptitle = {}
             if deck_type == 'triple':
@@ -2781,15 +3019,15 @@ class AnalyzePrices():
 
             min_y = min(m_line)
             max_y = max(m_line)
-            y_min, y_max = set_axis_limits(min_y, max_y)
+            y_min, y_max = set_axis_limits(min_y, max_y, max_n_intervals = n_yticks_max)
+
+            if target_deck > 1:
+                y_max *= 0.999
 
             if fig_y_min is not None:
                 y_min = min(fig_y_min, y_min)
             if fig_y_max is not None:
                 y_max = max(fig_y_max, y_max)
-
-            if target_deck > 1:
-                y_max *= 0.999
 
             legendgrouptitle = {}
             if deck_type == 'triple':
