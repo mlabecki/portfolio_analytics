@@ -5,6 +5,77 @@ import math
 def set_axis_limits(
     x_min,
     x_max,
+    min_n_intervals = 5,
+    max_n_intervals = 15
+):
+    """
+    Returns the lower and upper limits for an axis where x_min and x_max are the min/max values.
+    max_n_intervals: maximum number of intervals between y-ticks
+    units: increments of values at axis ticks, will be scaled to correspond with the
+        order of magntitude of x_max - x_min
+    """
+
+    if x_min == x_max:
+        return x_min, x_max
+    
+    else:
+        units = np.array([0.05, 0.1, 0.2, 0.25, 0.5])
+        # intervals = np.array(range(4, max_n_intervals + 1))
+
+        x_maxmax = max(abs(x_max), abs(x_min))
+        diff = 2 * x_maxmax
+        x_diff = x_max - x_min
+        # order = 10 ** round(math.log10(x_maxmax))
+        order = 10 ** round(math.log10(x_diff))
+        print(f'order = {order}')
+        eps = order * 1e-10
+
+        for unit in units:
+            unit_scaled = order * unit
+            print(f'unit scaled = {unit_scaled}')
+
+            lower_anchor = 0
+            increment = unit_scaled
+            while lower_anchor - abs(x_min) < eps:
+                lower_anchor += increment
+            lower_anchor *= np.sign(x_min)
+            if x_min > eps:
+                lower_anchor -= increment
+
+            diff_lower = abs(lower_anchor - x_min)
+            if diff_lower < eps:
+                diff_lower = 0
+
+            print(f'\tlower anchor = {lower_anchor}')
+            print(f'\tdiff lower = {diff_lower}')
+
+            upper_anchor = lower_anchor
+            while (upper_anchor < x_max) & (abs(upper_anchor - x_max) > eps) & (round((upper_anchor - lower_anchor) / increment) < max_n_intervals):
+                upper_anchor += unit_scaled
+                # print(f'\tupper anchor = {upper_anchor}')
+            diff_upper = abs(upper_anchor - x_max)
+            if diff_upper < eps:
+                diff_upper = 0
+            
+            print(f'\tupper anchor = {upper_anchor}')
+            print(f'\tdiff upper = {diff_upper}')
+            n = round((upper_anchor - lower_anchor) / increment)
+
+            if (upper_anchor - x_max > -eps) & (diff_lower + diff_upper < diff) & (n >= min_n_intervals):
+                diff = diff_lower + diff_upper
+                lower_limit = lower_anchor
+                upper_limit = upper_anchor
+                delta = increment
+                # n_intervals = n
+
+        # print(f'Number of intervals: {n_intervals}')
+
+        return lower_limit, upper_limit, delta
+
+
+def old_set_axis_limits(
+    x_min,
+    x_max,
     max_n_intervals = 15
 ):
     """

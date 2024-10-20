@@ -757,6 +757,27 @@ class AnalyzePrices():
         fig_overlays = fig_data['overlays']
         has_secondary_y = fig_data['has_secondary_y']
 
+        # Plot on secondary axis only if it has been created in subplots
+        # Plot on primary axis of upper deck only if it is available, i.e. if there are no traces plotted there
+
+        if target_deck == 1:
+            if secondary_y:
+                 if not has_secondary_y:
+                    print('ERROR: Secondary y axis must be selected when creating the plotting template')
+                    return fig_data
+            else:
+                # Must check if there are traces on the primary y axis
+                n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
+                # This is NOT an overlay, so if the primary y axis is unavailable, then refuse to plot, regardless if it's volume or price
+                if n_traces_upper > 0:
+                    print(f'ERROR: Can only plot {atr_type.upper()} on the secondary y axis or in the middle/lower deck')
+                    return fig_data
+        else:
+            # If it's the middle or lower deck, just set secondary_y to False and continue
+            secondary_y = False
+
+        #####
+
         if n_yticks_max is None:
             deck_height = fig_data['plot_height'][target_deck]
             n_yticks_max = n_yticks_map[deck_height]
@@ -2748,6 +2769,27 @@ class AnalyzePrices():
         fig_overlays = fig_data['overlays']
         has_secondary_y = fig_data['has_secondary_y'] 
 
+        # Plot on secondary axis only if it has been created in subplots
+        # Plot on primary axis of upper deck only if it is available, i.e. if there are no traces plotted there
+
+        if target_deck == 1:
+            if secondary_y:
+                 if not has_secondary_y:
+                    print('ERROR: Secondary y axis must be selected when creating the plotting template')
+                    return fig_data
+            else:
+                # Must check if there are traces on the primary y axis
+                n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
+                # This is NOT an overlay, so if the primary y axis is unavailable, then refuse to plot, regardless if it's volume or price
+                if n_traces_upper > 0:
+                    print(f'ERROR: Can only plot {bollinger_type.title()} on the secondary y axis or in the middle/lower deck')
+                    return fig_data
+        else:
+            # If it's the middle or lower deck, just set secondary_y to False and continue
+            secondary_y = False
+
+        #####
+
         if n_yticks_max is None:
             deck_height = fig_data['plot_height'][target_deck]
             n_yticks_max = n_yticks_map[deck_height]
@@ -2983,6 +3025,27 @@ class AnalyzePrices():
         fig_overlays = fig_data['overlays']
         has_secondary_y = fig_data['has_secondary_y']
 
+        # Plot on secondary axis only if it has been created in subplots
+        # Plot on primary axis of upper deck only if it is available, i.e. if there are no traces plotted there
+
+        if target_deck == 1:
+            if secondary_y:
+                 if not has_secondary_y:
+                    print('ERROR: Secondary y axis must be selected when creating the plotting template')
+                    return fig_data
+            else:
+                # Must check if there are traces on the primary y axis
+                n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
+                # This is NOT an overlay, so if the primary y axis is unavailable, then refuse to plot, regardless if it's volume or price
+                if n_traces_upper > 0:
+                    print(f'ERROR: Can only plot MVOL/MSTD on the secondary y axis or in the middle/lower deck')
+                    return fig_data
+        else:
+            # If it's the middle or lower deck, just set secondary_y to False and continue
+            secondary_y = False
+
+        #####
+
         if n_yticks_max is None:
             deck_height = fig_data['plot_height'][target_deck]
             n_yticks_max = n_yticks_map[deck_height]
@@ -3212,6 +3275,28 @@ class AnalyzePrices():
         title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
         fig_overlays = fig_data['overlays']
+        has_secondary_y = fig_data['has_secondary_y']
+
+        # Plot on secondary axis only if it has been created in subplots
+        # Plot on primary axis of upper deck only if it is available, i.e. if there are no traces plotted there
+
+        if target_deck == 1:
+            if secondary_y:
+                 if not has_secondary_y:
+                    print('ERROR: Secondary y axis must be selected when creating the plotting template')
+                    return fig_data
+            else:
+                # Must check if there are traces on the primary y axis
+                n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
+                # This is NOT an overlay, so if the primary y axis is unavailable, then refuse to plot, regardless if it's volume or price
+                if n_traces_upper > 0:
+                    print(f'ERROR: Can only plot {price_type} on the secondary y axis or in the middle/lower deck')
+                    return fig_data
+        else:
+            # If it's the middle or lower deck, just set secondary_y to False and continue
+            secondary_y = False
+
+        #####
 
         if n_yticks_max is None:
             deck_height = fig_data['plot_height'][target_deck]

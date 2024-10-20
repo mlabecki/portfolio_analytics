@@ -1,4 +1,4 @@
-##### TICK NUMBER MAPS #####
+##### MAPS of NUMBER of Y-AXIS TICKS / INTERVALS vs. PLOT HEIGHT #####
 
 n_yticks_map = {
     100: 5,
@@ -9,6 +9,29 @@ n_yticks_map = {
     450: 12,
     600: 14,
     750: 16
+}
+
+n_yintervals_map = {
+    'min': {
+        100: 3,
+        150: 4,
+        200: 5,
+        250: 5,
+        300: 5,
+        450: 5,
+        600: 6,
+        750: 7
+    },
+    'max': {
+        100: 7,
+        150: 9,
+        200: 11,
+        250: 12,
+        300: 13,
+        450: 14,
+        600: 15,
+        750: 16
+    }
 }
 
 n_xticks_map = {
