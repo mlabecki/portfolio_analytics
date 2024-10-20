@@ -211,9 +211,6 @@ class AnalyzePrices():
         deck_type:
             'single', 'double' or 'triple'
 
-        The default n_yticks values should really be some function of plot height,
-        except in special cases where it can be specified customly.
-
         There should be a separate function to update the y axis in any deck based
         on the custom-specified number of ticks.
         Likewise to update the x axis to select a different width (1280, 1450, 1600)
@@ -381,256 +378,6 @@ class AnalyzePrices():
                 gridcolor = style['y_gridcolor'],
                 zerolinecolor = style['x_gridcolor'],
                 zerolinewidth = 1,
-                ticks = 'outside',
-                ticklen = 8,
-                showticklabels = False,
-                row = k, col = 1
-            )
-
-        # Update layout
-        fig.update_layout(
-            margin_t = top_margin,
-            width = plot_width,
-            height = plot_height_total,
-            xaxis_rangeslider_visible = False,
-            template = style['template'],
-            legend_groupclick = 'toggleitem',
-            modebar_add = [
-                "v1hovermode",
-                'toggleSpikelines'
-            ]
-        )
-
-        y_min = {1: None, 2: None, 3: None}
-        y_max = {1: None, 2: None, 3: None}
-
-        fig_data = {
-            'fig': fig,
-            'y_min': y_min,
-            'y_max': y_max,
-            'plot_height': plot_height,
-            'deck_type': deck_type,
-            'title_x_pos': title_x_pos,
-            'title_y_pos': title_y_pos,
-            'overlays': [],
-            'has_secondary_y': secondary_y
-        }
-
-        return fig_data
-
-
-    ##### OLD CREATE TEMPLATE #####
-
-    def old_create_template(
-        self,
-        date_index,
-        deck_type = 'triple',
-        secondary_y = False,
-        plot_width = 1600,
-        n_ticks_max = None,
-        plot_height_1 = None,
-        plot_height_2 = None,
-        plot_height_3 = None,
-        n_yticks_max_1 = None,
-        n_yticks_max_2 = None,
-        n_yticks_max_3 = None,
-        top_margin = 60,
-        theme = 'dark'
-    ):
-        """
-        Info whether the deck is a single, double or triple will come from user's input.
-        Then the name of the deck (deck_type) will be translated into a number;, e.g. 'lower'
-        will be translated to 2 in a double deck, while 'middle' and 'lower' will be translated 
-        to 2 and 3, respectively, in a triple deck.
-
-        legendgrouptitle will be an empty dictionary for a single and double deck, and will
-        be populated with the appropriate deck name in a triple deck.
-
-        date_index:
-            series or list of dates (e.g. close_tk.index)
-        deck_type:
-            'single', 'double' or 'triple'
-
-        The default n_yticks values should really be some function of plot height,
-        except in special cases where it can be specified customly.
-
-        There should be a separate function to update the y axis in any deck based
-        on the custom-specified number of ticks.
-        Likewise to update the x axis to select a different width (1280, 1450, 1600)
-
-        """
-
-        map_deck_type = {'single': 1, 'double': 2, 'triple': 3}
-        n_rows = map_deck_type[deck_type]
-
-        # Set up dictionaries for convenience
-
-        plot_height = {}
-
-        if (deck_type == 'single'):
-            plot_height_1 = 750 if plot_height_1 is None else plot_height_1
-            plot_height.update({1: plot_height_1})
-
-        elif (deck_type == 'double'):
-            plot_height_1 = 750 if plot_height_1 is None else plot_height_1
-            plot_height_2 = 250 if plot_height_2 is None else plot_height_2
-            plot_height.update({
-                1: plot_height_1,
-                2: plot_height_2
-            })
-
-        elif (deck_type == 'triple'):
-            plot_height_1 = 600 if plot_height_1 is None else plot_height_1
-            plot_height_2 = 200 if plot_height_2 is None else plot_height_2
-            plot_height_3 = 200 if plot_height_3 is None else plot_height_3
-            plot_height.update({
-                1: plot_height_1,
-                2: plot_height_2,
-                3: plot_height_3
-            })
-
-        n_ticks_max = round(plot_width / n_xticks_map['width_slope']) if n_ticks_max is None else n_ticks_max
-
-        n_yticks_max_1 = n_yticks_map[plot_height_1] if n_yticks_max_1 is None else n_yticks_max_1
-        n_yticks_max_2 = n_yticks_map[plot_height_2] if n_yticks_max_2 is None else n_yticks_max_2
-        n_yticks_max_3 = n_yticks_map[plot_height_3] if n_yticks_max_1 is None else n_yticks_max_3
-        n_yticks = {
-            1: n_yticks_max_1,
-            2: n_yticks_max_2,
-            3: n_yticks_max_3
-        }
-
-        df_dummy = pd.Series(index = date_index)
-        for _, idx in enumerate(date_index):
-            df_dummy[idx] = 0
-
-        x_min = str(min(df_dummy.index).date())
-        x_max = str(max(df_dummy.index).date())
-
-        height_pct = {}
-        row_heights = []
-        plot_height_total = sum(h for h in plot_height.values())
-        for k, h in plot_height.items():
-            h_pct = h / plot_height_total
-            height_pct.update({k: h_pct})
-            row_heights.append(h_pct)
-
-        if deck_type == 'single':
-            y_range = {
-                1: {
-                    'y0': 0,
-                    'y1': 1
-                }
-            }
-            specs_list = [
-                [{'secondary_y': True}]
-            ]
-
-        elif deck_type == 'double': 
-            y_range = {
-                1: {
-                    'y0': height_pct[2],
-                    'y1': 1
-                },
-                2: {
-                    'y0': 0,
-                    'y1': height_pct[2]
-                }
-            }
-            specs_list = [
-                [{'secondary_y': True}],
-                [{'secondary_y': False}]
-            ]
-
-        elif deck_type == 'triple': 
-            y_range = {
-                1: {
-                    'y0': height_pct[2] + height_pct[3],
-                    'y1': 1
-                },
-                2: {
-                    'y0': height_pct[3],
-                    'y1': height_pct[2] + height_pct[3]
-                },
-                3: {
-                    'y0': 0,
-                    'y1': height_pct[3]
-                }
-            }
-            specs_list = [
-                [{'secondary_y': True}],
-                [{'secondary_y': False}],
-                [{'secondary_y': False}]
-            ]
-
-        title_y_pos = 1 - 0.5 * top_margin / plot_height_total
-        title_x_pos = 0.435 if secondary_y else 0.45
-
-        style = theme_style[theme]
-
-        if secondary_y:
-            fig = make_subplots(
-                rows = n_rows,
-                cols = 1,
-                shared_xaxes = True,
-                vertical_spacing = 0,
-                row_heights = row_heights,
-                specs = specs_list
-            )
-        else:
-            fig = make_subplots(
-                rows = n_rows,
-                cols = 1,
-                shared_xaxes = True,
-                vertical_spacing = 0,
-                row_heights = row_heights
-            )
-
-        for k in range(n_rows + 1)[1:]:
-
-            # Add dummy traces
-            fig.add_trace(
-                go.Scatter(
-                    x = df_dummy.index.astype(str),
-                    y = df_dummy,
-                    line_width = 0,         
-                    showlegend = False,     
-                    legendgroup = 'dummy',
-                    hoverinfo = 'skip'
-                ),
-                row = k, col = 1
-            )
-
-            # Add plot borders
-            fig.add_shape(
-                type = 'rect',
-                xref = 'x',  # use 'x' because 'paper' does not work correctly with stacked plots
-                yref = 'paper',
-                x0 = x_min,
-                x1 = x_max,
-                y0 = y_range[k]['y0'],
-                y1 = y_range[k]['y1'],
-                line_color = style['x_linecolor'],
-                line_width = 2
-            )
-
-            # Update axes
-            fig.update_xaxes(
-                type = 'category',
-                showgrid = True,
-                gridcolor = style['x_gridcolor'],
-                nticks = n_ticks_max,
-                tickangle = -90,
-                ticks = 'outside',
-                ticklen = 8,
-                row = k, col = 1
-            )
-            fig.update_yaxes(
-                showgrid = True,
-                gridcolor = style['y_gridcolor'],
-                zerolinecolor = style['x_gridcolor'],
-                zerolinewidth = 1,
-                nticks = n_yticks[k],
                 ticks = 'outside',
                 ticklen = 8,
                 showticklabels = False,
@@ -736,7 +483,6 @@ class AnalyzePrices():
         secondary_y = False,
         add_yaxis_title = None,
         yaxis_title = None,
-        n_yticks_max = None,
         theme = 'dark',
         color_theme = 'gold'
     ):
@@ -753,6 +499,7 @@ class AnalyzePrices():
         fig = fig_data['fig']
         fig_y_min = fig_data['y_min'][target_deck]
         fig_y_max = fig_data['y_max'][target_deck]
+        plot_height = fig_data['plot_height'][target_deck]        
         deck_type = fig_data['deck_type']
         fig_overlays = fig_data['overlays']
         has_secondary_y = fig_data['has_secondary_y']
@@ -777,10 +524,6 @@ class AnalyzePrices():
             secondary_y = False
 
         #####
-
-        if n_yticks_max is None:
-            deck_height = fig_data['plot_height'][target_deck]
-            n_yticks_max = n_yticks_map[deck_height]
 
         add_yaxis_title = secondary_y if add_yaxis_title is None else add_yaxis_title
 
@@ -807,7 +550,9 @@ class AnalyzePrices():
 
             min_y = min(atr_line)
             max_y = max(atr_line)
-            y_min, y_max = set_axis_limits(min_y, max_y)
+            min_n_intervals = n_yintervals_map['min'][plot_height]
+            max_n_intervals = n_yintervals_map['max'][plot_height]
+            y_min, y_max, y_delta = set_axis_limits(min_y, max_y, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
 
             if target_deck > 1:
                 y_max *= 0.999
@@ -845,7 +590,8 @@ class AnalyzePrices():
             fig.update_yaxes(
                 range = y_range,
                 showticklabels = True,
-                nticks = n_yticks_max,
+                tick0 = y_min,
+                dtick = y_delta,
                 secondary_y = secondary_y,
                 showgrid = not secondary_y,
                 zeroline = not secondary_y,
@@ -969,7 +715,6 @@ class AnalyzePrices():
         oversold_threshold = 20,
         overbought_threshold = 80,
         add_threshold_overlays = True,
-        n_yticks_max = None,
         add_title = False,
         title_font_size = 32,
         theme = 'dark'
@@ -994,10 +739,6 @@ class AnalyzePrices():
 
         title_stochastic = f'{tk} {stochastic_type} {stochastic_label} Stochastic Oscillator (%)'
         yaxis_title = f'Stochastic (%)'
-
-        if n_yticks_max is None:
-            deck_height = fig_data['plot_height'][target_deck]
-            n_yticks_max = n_yticks_map[deck_height]
 
         y_max = 99.99 if target_deck > 1 else 100
 
@@ -1103,7 +844,6 @@ class AnalyzePrices():
             range = (0, y_max),
             title = yaxis_title,
             showticklabels = True,
-            nticks = n_yticks_max,
             row = target_deck, col = 1
         )
 
@@ -1205,7 +945,6 @@ class AnalyzePrices():
         histogram_type = 'macd-signal',
         include_signal = True,
         plot_type = 'bar',
-        n_yticks_max = None,
         target_deck = 2,
         add_title = False,
         title_font_size = 32,
@@ -1228,13 +967,10 @@ class AnalyzePrices():
         # x_max = end_date if x_max is None else x_max
 
         fig_macd = fig_data['fig']
+        plot_height = fig_data['plot_height'][target_deck]
         deck_type = fig_data['deck_type']
         title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
-
-        if n_yticks_max is None:
-            deck_height = fig_data['plot_height'][target_deck]
-            n_yticks_max = n_yticks_map[deck_height]
 
         style = theme_style[theme]
 
@@ -1266,7 +1002,10 @@ class AnalyzePrices():
                 min_macd = min(macd)
                 max_macd = max(macd)
 
-        y_macd_min, y_macd_max = set_axis_limits(min_macd, max_macd, max_n_intervals = 8)
+        min_n_intervals = n_yintervals_map['min'][plot_height]
+        max_n_intervals = n_yintervals_map['max'][plot_height]
+        y_macd_min, y_macd_max, y_delta = set_axis_limits(min_macd, max_macd, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
+
         if target_deck > 1:
             y_macd_max *= 0.999
 
@@ -1520,8 +1259,9 @@ class AnalyzePrices():
         fig_macd.update_yaxes(
             title_text = yaxis_title,
             range = (y_macd_min, y_macd_max),
+            tick0 = y_macd_min,
+            dtick = y_delta,
             showticklabels = True,        
-            nticks = n_yticks_max,
             row = target_deck, col = 1
         )
 
@@ -1876,8 +1616,6 @@ class AnalyzePrices():
         drawdown_data,
         n_top_drawdowns = 5,
         target_deck = 1,
-        secondary_y = False,
-        n_yticks_max = None,
         add_price = True,
         price_type = 'close',
         top_by = 'depth',
@@ -1905,6 +1643,14 @@ class AnalyzePrices():
             print('Incorrect format of input data')
             exit
 
+        fig = fig_data['fig']
+        fig_y_min = fig_data['y_min'][target_deck]
+        fig_y_max = fig_data['y_max'][target_deck]
+        plot_height = fig_data['plot_height'][target_deck]        
+        deck_type = fig_data['deck_type']
+        title_x_pos = fig_data['title_x_pos']
+        title_y_pos = fig_data['title_y_pos']
+
         infinity = 1e10
 
         df_tk_deepest_drawdowns = drawdown_data['Deepest Drawdowns']
@@ -1929,24 +1675,15 @@ class AnalyzePrices():
             top_list = list(df_tk_longest_drawdowns['Total Length'])
             top_cmap = map_values(top_list, alpha_min, alpha_max, ascending=False)
 
-        if n_yticks_max is None:
-            deck_height = fig_data['plot_height'][target_deck]
-            n_yticks_max = n_yticks_map[deck_height]
-
         color_theme = 'base' if color_theme is None else color_theme
         color_idx = style['overlay_color_selection'][color_theme][1][0]
         linecolor = style['overlay_color_theme'][color_theme][color_idx]
 
-        fig = fig_data['fig']
-        fig_y_min = fig_data['y_min'][target_deck]
-        fig_y_max = fig_data['y_max'][target_deck]
-        deck_type = fig_data['deck_type']
-        title_x_pos = fig_data['title_x_pos']
-        title_y_pos = fig_data['title_y_pos']
-
         min_y = min(df_tk)
         max_y = max(df_tk)
-        y_min, y_max = set_axis_limits(min_y, max_y)
+        min_n_intervals = n_yintervals_map['min'][plot_height]
+        max_n_intervals = n_yintervals_map['max'][plot_height]
+        y_min, y_max, y_delta = set_axis_limits(min_y, max_y, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
 
         if target_deck > 1:
             y_max *= 0.999
@@ -2005,8 +1742,7 @@ class AnalyzePrices():
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle
                 ),
-                row = target_deck, col = 1,
-                secondary_y = secondary_y
+                row = target_deck, col = 1
             )
 
         for _, x1, x2, depth, length in zip_drawdown_parameters:
@@ -2046,8 +1782,7 @@ class AnalyzePrices():
                     showlegend = False,
                     name = legend_name
                 ),
-                row = target_deck, col = 1,
-                secondary_y = secondary_y
+                row = target_deck, col = 1
             )
 
         # Update layout and axes
@@ -2064,15 +1799,15 @@ class AnalyzePrices():
                 )
             )
 
-        y_range = None if secondary_y else (y_min, y_max)
+        y_range = (y_min, y_max)
         fig.update_yaxes(
             range = y_range,
             title = legend_name,
             showticklabels = True,
-            nticks = n_yticks_max,
-            secondary_y = secondary_y,
-            showgrid = not secondary_y,
-            zeroline = not secondary_y,
+            tick0 = y_min,
+            dtick = y_delta,
+            showgrid = True,
+            zeroline = True,
             row = target_deck, col = 1
         )
 
@@ -2148,7 +1883,6 @@ class AnalyzePrices():
         oversold_threshold = 30,
         overbought_threshold = 70,
         add_threshold_overlays = True,
-        n_yticks_max = None,
         add_title = False,
         title_font_size = 32,
         theme = 'dark'
@@ -2173,10 +1907,6 @@ class AnalyzePrices():
 
         title_rsi = f'{tk} Relative Strength Index {rsi_type} (%)'
         yaxis_title = f'RSI (%)'
-
-        if n_yticks_max is None:
-            deck_height = fig_data['plot_height'][target_deck]
-            n_yticks_max = n_yticks_map[deck_height]
 
         y_max = 99.99 if target_deck > 1 else 100
 
@@ -2268,7 +1998,6 @@ class AnalyzePrices():
             range = (0, y_max),
             title = yaxis_title,
             showticklabels = True,
-            nticks = n_yticks_max,
             row = target_deck, col = 1
         )
 
@@ -2480,15 +2209,18 @@ class AnalyzePrices():
         fig = fig_data['fig']
         y_min_fig = fig_data['y_min'][target_deck]
         y_max_fig = fig_data['y_max'][target_deck]
+        plot_height = fig_data['plot_height'][target_deck]        
         deck_type = fig_data['deck_type']
 
         min_y = min(df)
         max_y = max(df)
-        y_min, y_max = set_axis_limits(min_y, max_y)
+        min_n_intervals = n_yintervals_map['min'][plot_height]
+        max_n_intervals = n_yintervals_map['max'][plot_height]
+        y_min, y_max, y_delta = set_axis_limits(min_y, max_y, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
 
         # ESSENTIALLY THERE SHOULD BE NO OVERLAYS ADDED TO AN EMPTY DECK so this may not be necessary
         try:
-            new_y_min, new_y_max = set_axis_limits(min(y_min, y_min_fig), max(y_max, y_max_fig))
+            new_y_min, new_y_max, y_delta = set_axis_limits(min(y_min, y_min_fig), max(y_max, y_max_fig), min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
         except:
             # if the existing y_min and y_max are None
             new_y_min, new_y_max = y_min, y_max
@@ -2525,6 +2257,8 @@ class AnalyzePrices():
         fig.update_yaxes(
             range = (new_y_min, new_y_max),
             showticklabels = True,
+            tick0 = new_y_min,  #
+            dtick = y_delta,    #
             ticks = 'outside',
             ticklen = 8,
             row = target_deck, col = 1
@@ -2747,7 +2481,6 @@ class AnalyzePrices():
         secondary_y = False,
         add_yaxis_title = None,
         yaxis_title = None,
-        n_yticks_max = None,
         theme = 'dark',
         color_theme = 'gold'
     ):
@@ -2765,6 +2498,7 @@ class AnalyzePrices():
         fig = fig_data['fig']
         fig_y_min = fig_data['y_min'][target_deck]
         fig_y_max = fig_data['y_max'][target_deck]
+        plot_height = fig_data['plot_height'][target_deck]
         deck_type = fig_data['deck_type']
         fig_overlays = fig_data['overlays']
         has_secondary_y = fig_data['has_secondary_y'] 
@@ -2789,10 +2523,6 @@ class AnalyzePrices():
             secondary_y = False
 
         #####
-
-        if n_yticks_max is None:
-            deck_height = fig_data['plot_height'][target_deck]
-            n_yticks_max = n_yticks_map[deck_height]
 
         add_yaxis_title = secondary_y if add_yaxis_title is None else add_yaxis_title
 
@@ -2819,7 +2549,9 @@ class AnalyzePrices():
 
             min_y = min(b_line)
             max_y = max(b_line)
-            y_min, y_max = set_axis_limits(min_y, max_y, max_n_intervals = n_yticks_max)
+            min_n_intervals = n_yintervals_map['min'][plot_height]
+            max_n_intervals = n_yintervals_map['max'][plot_height]
+            y_min, y_max, y_delta = set_axis_limits(min_y, max_y, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
 
             if target_deck > 1:
                 y_max *= 0.999
@@ -2857,7 +2589,8 @@ class AnalyzePrices():
             fig.update_yaxes(
                 range = y_range,
                 showticklabels = True,
-                nticks = n_yticks_max,
+                tick0 = y_min,
+                dtick = y_delta,
                 secondary_y = secondary_y,
                 showgrid = not secondary_y,
                 zeroline = not secondary_y,
@@ -3004,7 +2737,6 @@ class AnalyzePrices():
         secondary_y = False,
         add_yaxis_title = None,
         yaxis_title = None,
-        n_yticks_max = None,
         theme = 'dark',
         color_theme = 'gold'
     ):
@@ -3021,6 +2753,7 @@ class AnalyzePrices():
         fig = fig_data['fig']
         fig_y_min = fig_data['y_min'][target_deck]
         fig_y_max = fig_data['y_max'][target_deck]
+        plot_height = fig_data['plot_height'][target_deck]
         deck_type = fig_data['deck_type']
         fig_overlays = fig_data['overlays']
         has_secondary_y = fig_data['has_secondary_y']
@@ -3045,10 +2778,6 @@ class AnalyzePrices():
             secondary_y = False
 
         #####
-
-        if n_yticks_max is None:
-            deck_height = fig_data['plot_height'][target_deck]
-            n_yticks_max = n_yticks_map[deck_height]
 
         add_yaxis_title = secondary_y if add_yaxis_title is None else add_yaxis_title
 
@@ -3082,7 +2811,9 @@ class AnalyzePrices():
 
             min_y = min(m_line)
             max_y = max(m_line)
-            y_min, y_max = set_axis_limits(min_y, max_y, max_n_intervals = n_yticks_max)
+            min_n_intervals = n_yintervals_map['min'][plot_height]
+            max_n_intervals = n_yintervals_map['max'][plot_height]
+            y_min, y_max, y_delta = set_axis_limits(min_y, max_y, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
 
             if target_deck > 1:
                 y_max *= 0.999
@@ -3120,7 +2851,8 @@ class AnalyzePrices():
             fig.update_yaxes(
                 range = y_range,
                 showticklabels = True,
-                nticks = n_yticks_max,
+                tick0 = y_min,
+                dtick = y_delta,
                 secondary_y = secondary_y,
                 showgrid = not secondary_y,
                 zeroline = not secondary_y,
@@ -3234,7 +2966,6 @@ class AnalyzePrices():
         target_deck = 1,
         secondary_y = False,
         plot_type = 'scatter',
-        n_yticks_max = None,
         price_type = 'adjusted close',
         add_title = True,
         title = None,
@@ -3271,6 +3002,7 @@ class AnalyzePrices():
         fig = fig_data['fig']
         fig_y_min = fig_data['y_min'][target_deck]
         fig_y_max = fig_data['y_max'][target_deck]
+        plot_height = fig_data['plot_height'][target_deck]
         deck_type = fig_data['deck_type']
         title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
@@ -3298,10 +3030,6 @@ class AnalyzePrices():
 
         #####
 
-        if n_yticks_max is None:
-            deck_height = fig_data['plot_height'][target_deck]
-            n_yticks_max = n_yticks_map[deck_height]
-
         style = theme_style[theme]
 
         color_theme = 'base' if color_theme is None else color_theme
@@ -3325,7 +3053,9 @@ class AnalyzePrices():
 
         min_y = min(df_tk)
         max_y = max(df_tk)
-        y_min, y_max = set_axis_limits(min_y, max_y)
+        min_n_intervals = n_yintervals_map['min'][plot_height]
+        max_n_intervals = n_yintervals_map['max'][plot_height]
+        y_min, y_max, y_delta = set_axis_limits(min_y, max_y, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
 
         if fig_y_min is not None:
             y_min = min(fig_y_min, y_min)
@@ -3395,7 +3125,8 @@ class AnalyzePrices():
             range = y_range,
             title = yaxis_title,
             showticklabels = True,
-            nticks = n_yticks_max,
+            tick0 = y_min,
+            dtick = y_delta,
             secondary_y = secondary_y,
             showgrid = not secondary_y,
             zeroline = not secondary_y,
@@ -3438,7 +3169,6 @@ class AnalyzePrices():
         tk,
         candle_type = 'hollow',
         target_deck = 1,
-        n_yticks_max = None,
         add_title = True,
         title_font_size = 32,
         theme = 'dark'
@@ -3449,6 +3179,12 @@ class AnalyzePrices():
         """
 
         style = theme_style[theme]
+
+        fig = fig_data['fig']
+        plot_height = fig_data['plot_height'][target_deck]
+        deck_type = fig_data['deck_type']
+        title_x_pos = fig_data['title_x_pos']
+        title_y_pos = fig_data['title_y_pos']
 
         # Colors must be in the RGBA format
         red_color = style['red_color']
@@ -3462,21 +3198,14 @@ class AnalyzePrices():
 
         min_y = min(df['Low'])
         max_y = max(df['High'])
-        y_min, y_max = set_axis_limits(min_y, max_y)
+        min_n_intervals = n_yintervals_map['min'][plot_height]
+        max_n_intervals = n_yintervals_map['max'][plot_height]
+        y_min, y_max, y_delta = set_axis_limits(min_y, max_y, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
 
         if target_deck > 1:
             y_max *= 0.999
 
         df['Date'] = df.index.astype(str)
-
-        fig = fig_data['fig']
-        deck_type = fig_data['deck_type']
-        title_x_pos = fig_data['title_x_pos']
-        title_y_pos = fig_data['title_y_pos']
-
-        if n_yticks_max is None:
-            deck_height = fig_data['plot_height'][target_deck]
-            n_yticks_max = n_yticks_map[deck_height]
 
         legendgrouptitle = {}
         if deck_type == 'triple':
@@ -3634,7 +3363,8 @@ class AnalyzePrices():
         fig.update_yaxes(
             range = (y_min, y_max),
             title = f'Price',
-            nticks = n_yticks_max,        
+            tick0 = y_min,
+            dtick = y_delta,
             showticklabels = True,
             row = target_deck, col = 1
         )
@@ -3775,7 +3505,6 @@ class AnalyzePrices():
         reverse_diff = False,
         plot_type = 'filled_line',
         add_signal = True,
-        n_yticks_max = None,
         add_yaxis_title = True,
         add_title = False,
         title_font_size = 32,
@@ -3796,6 +3525,12 @@ class AnalyzePrices():
             if True, a signal will be added that is a moving average of the calculated difference
         """
 
+        fig_diff = fig_data['fig']
+        plot_height = fig_data['plot_height'][target_deck]
+        deck_type = fig_data['deck_type']
+        title_x_pos = fig_data['title_x_pos']
+        title_y_pos = fig_data['title_y_pos']
+
         base = diff_data['p_base']
         p_base_name = base.title()
         p_base = price_type_map[p_base_name]
@@ -3807,11 +3542,6 @@ class AnalyzePrices():
         signal_type = diff_data['signal_type']
         signal_window = diff_data['signal_window']
 
-        fig_diff = fig_data['fig']
-        deck_type = fig_data['deck_type']
-        title_x_pos = fig_data['title_x_pos']
-        title_y_pos = fig_data['title_y_pos']
-
         legendgrouptitle = {}
         if deck_type == 'triple':
             legendtitle = tripledeck_legendtitle[target_deck]
@@ -3820,10 +3550,6 @@ class AnalyzePrices():
                 font_size = 16,
                 font_weight = 'normal'
             )
-
-        if n_yticks_max is None:
-            deck_height = fig_data['plot_height'][target_deck]
-            n_yticks_max = n_yticks_map[deck_height]
 
         style = theme_style[theme]
 
@@ -3870,8 +3596,10 @@ class AnalyzePrices():
 
         min_diff = min(diff)
         max_diff = max(diff)
+        min_n_intervals = n_yintervals_map['min'][plot_height]
+        max_n_intervals = n_yintervals_map['max'][plot_height]
+        y_diff_min, y_diff_max, y_delta = set_axis_limits(min_diff, max_diff, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
 
-        y_diff_min, y_diff_max = set_axis_limits(min_diff, max_diff)
         if target_deck > 1:
             y_diff_max *= 0.999 
 
@@ -4003,7 +3731,8 @@ class AnalyzePrices():
         fig_diff.update_yaxes(
             range = (y_diff_min, y_diff_max),
             showticklabels = True,
-            nticks = n_yticks_max,
+            tick0 = y_diff_min,
+            dtick = y_delta,
             row = target_deck, col = 1
         )
 
@@ -4033,7 +3762,6 @@ class AnalyzePrices():
         add_signal = False,
         signal_type = 'sma',
         signal_window = 10,
-        n_yticks_max = None,
         add_yaxis_title = True,
         add_title = False,
         title_font_size = 32,
@@ -4047,6 +3775,7 @@ class AnalyzePrices():
         """
 
         fig_diff = fig_data['fig']
+        plot_height = fig_data['plot_height'][target_deck]        
         deck_type = fig_data['deck_type']
         title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
@@ -4059,10 +3788,6 @@ class AnalyzePrices():
                 font_size = 16,
                 font_weight = 'normal'
             )
-
-        if n_yticks_max is None:
-            deck_height = fig_data['plot_height'][target_deck]
-            n_yticks_max = n_yticks_map[deck_height]
 
         style = theme_style[theme]
 
@@ -4093,8 +3818,10 @@ class AnalyzePrices():
 
         min_diff = min(diff)
         max_diff = max(diff)
+        min_n_intervals = n_yintervals_map['min'][plot_height]
+        max_n_intervals = n_yintervals_map['max'][plot_height]
+        y_diff_min, y_diff_max, y_delta = set_axis_limits(min_diff, max_diff, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
 
-        y_diff_min, y_diff_max = set_axis_limits(min_diff, max_diff)
         if target_deck > 1:
             y_diff_max *= 0.999 
 
@@ -4228,7 +3955,8 @@ class AnalyzePrices():
         fig_diff.update_yaxes(
             range = (y_diff_min, y_diff_max),
             showticklabels = True,
-            nticks = n_yticks_max,
+            tick0 = y_diff_min,
+            dtick = y_delta,
             row = target_deck, col = 1
         )
 

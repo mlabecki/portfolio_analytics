@@ -30,34 +30,46 @@ print(tripledeck_legendtitle)
 app = dash.Dash(__name__)
 app.layout = html.Div(children=[
     # html.H1(children='Hello Dash'),
+    html.Script(src="https://cdn.plot.ly/plotly-latest.min.js"),
     dcc.Dropdown(tickers, 'MSFT', id='tickers-dropdown'),
     html.Div(id='dd-output-container'),
-    dcc.Graph(id='test-graph')
-])
+    html.Div(id='graphDiv'),
+    dcc.Graph(id='test-graph'),
+    html.Script(
+        Plotly.newPlot(graphDiv, fig['data'], fig['layout'],
+        {
+	        modeBarButtons:
+            [[
+        		'toImage'
+            ],
+            [
+        		'zoom2d',
+        		'pan2d',
+        		'zoomIn2d',
+        		'zoomOut2d'
+        	],
+            [
+        		'autoScale2d',
+        		{
+        			name: 'myResetScale2d',
+        			title: 'Reset axes',
+        			icon: Plotly.Icons.home,
+        			click: function(gd) { Plotly.relayout(gd, 'yaxis.range', [300, 500]) }
+                }
+        	],
+            [
+        		'hoverClosestCartesian',
+        		'hoverCompareCartesian'
+        	]]
+        }
+        );
+        var update = { yaxis: {range: (300, 500)} }
+
+        Plotly.relayout(graphDiv, update);
+    )
+]
+)
 """
-{
-	modeBarButtons: [[
-		'toImage',
-    ], [
-		'zoom2d',
-		'pan2d',
-		'zoomIn2d',
-		'zoomOut2d',
-	], [
-		'autoScale2d',
-		{
-			name: 'myResetScale2d',
-			title: 'Reset axes',
-			icon: Plotly.Icons.home,
-			click: function(gd) {
-				Plotly.relayout(gd, 'xaxis.range', [0, 1])
-			}
-		}
-	], [
-		'hoverClosestCartesian',
-		'hoverCompareCartesian'
-	]]
-}
 """
 @callback(
     # Output('dd-output-container', 'children'),
