@@ -28,57 +28,8 @@ print(tickers)
 print(tripledeck_legendtitle)
 
 app = dash.Dash(__name__)
-app.layout = html.Div(children=[
-    # html.H1(children='Hello Dash'),
-    html.Script(src="https://cdn.plot.ly/plotly-latest.min.js"),
-    dcc.Dropdown(tickers, 'MSFT', id='tickers-dropdown'),
-    html.Div(id='dd-output-container'),
-    html.Div(id='graphDiv'),
-    dcc.Graph(id='test-graph'),
-    html.Script(
-        Plotly.newPlot(graphDiv, fig['data'], fig['layout'],
-        {
-	        modeBarButtons:
-            [[
-        		'toImage'
-            ],
-            [
-        		'zoom2d',
-        		'pan2d',
-        		'zoomIn2d',
-        		'zoomOut2d'
-        	],
-            [
-        		'autoScale2d',
-        		{
-        			name: 'myResetScale2d',
-        			title: 'Reset axes',
-        			icon: Plotly.Icons.home,
-        			click: function(gd) { Plotly.relayout(gd, 'yaxis.range', [300, 500]) }
-                }
-        	],
-            [
-        		'hoverClosestCartesian',
-        		'hoverCompareCartesian'
-        	]]
-        }
-        );
-        var update = { yaxis: {range: (300, 500)} }
 
-        Plotly.relayout(graphDiv, update);
-    )
-]
-)
-"""
-"""
-@callback(
-    # Output('dd-output-container', 'children'),
-    Output('test-graph', 'figure'),
-    Input('tickers-dropdown', 'value')
-)
 def create_graph(tk):
-
-    # tk = 'AAPL'
 
     end_date = datetime.today()
     hist_years, hist_months, hist_days = 1, 0, 0
@@ -102,19 +53,6 @@ def create_graph(tk):
     low_tk = ohlc_tk['Low']
     volume_tk = df_volume[tk]
 
-    price_type_map = {
-        'Adj Close': adj_close_tk,
-        'Adjusted Close': adj_close_tk,
-        'Close': close_tk,
-        'Open': open_tk,
-        'High': high_tk,
-        'Low': low_tk
-    }
-
-    # display(df_adj_close)
-    # display(df_close)
-    # display(df_ohlc)
-
     analyze_prices = AnalyzePrices(end_date, start_date, [tk])
     date_index = ohlc_tk.index
 
@@ -125,6 +63,8 @@ def create_graph(tk):
     drawdown_data = analyze_prices.summarize_tk_drawdowns(df_adj_close, tk, sort_by, n_top)
 
     ma_envelope_list = analyze_prices.ma_envelopes(close_tk, window = 20, prc_offset = 5, n_bands = 2)
+
+    ma_ribbon = analyze_prices.get_ma_ribbon(ma_type = 'sma', ma_window = 10, n_ma = 6)
 
     bollinger_data = analyze_prices.bollinger_bands(close_tk, window = 20, n_std = 1, n_bands = 1)
     # bollinger_data = bollinger_bands(close_tk, window = 20, n_std = 2, n_bands = 3)
@@ -137,39 +77,6 @@ def create_graph(tk):
     atr_data = analyze_prices.average_true_rate(close_tk, high_tk, low_tk, n = 10)
 
     rsi_data = analyze_prices.relative_strength(close_tk)
-
-    ma_list = [
-        {
-            'ma_idx': 1,
-            'ma_type': 'sma',
-            'ma_window': 10,
-        },
-        {
-            'ma_idx': 2,
-            'ma_type': 'sma',
-            'ma_window': 20,
-        },
-        {
-            'ma_idx': 3,
-            'ma_type': 'sma',
-            'ma_window': 30,
-        },
-        {
-            'ma_idx': 4,
-            'ma_type': 'sma',
-            'ma_window': 40,
-        },
-        {
-            'ma_idx': 5,
-            'ma_type': 'sma',
-            'ma_window': 50,
-        },
-        {
-            'ma_idx': 6,
-            'ma_type': 'sma',
-            'ma_window': 60,
-        }
-    ]
 
     ##################################
 
@@ -204,8 +111,8 @@ def create_graph(tk):
     # fig_data = add_candlestick(fig_data, ohlc_tk, tk, candle_type = 'hollow', target_deck = 1, theme = theme)
 
     # fig_data = add_diff_stochastic(fig_data, tk, stochastic_data, target_deck = 1, reverse_diff = False, add_signal = True, signal_window = 5, add_title = True)
-    # fig_data = add_diff(fig_data, tk, diff_data_stochastic, price_type_map, target_deck = 2, n_yticks_max = 7, add_title = True)
-    """
+    # fig_data = add_diff(fig_data, tk, diff_data_stochastic, price_type_map, target_deck = 2, add_title = True)
+    
     fig_data = analyze_prices.add_drawdowns(
         fig_data,
         close_tk,
@@ -213,8 +120,6 @@ def create_graph(tk):
         drawdown_data,
         n_top_drawdowns = 5,
         target_deck = 1,
-        n_yticks_max = 15,
-        secondary_y = False,
         add_price = True,
         # add_price = False,
         price_type = 'close',
@@ -224,14 +129,14 @@ def create_graph(tk):
         theme = theme,
         color_theme = 'base'
     )
-    """
+    
     # fig_data = analyze_prices.add_hist_price(fig_data, close_tk, tk, target_deck = 1, secondary_y = True, add_title = False, price_type = 'close', theme = theme)
-    fig_data = analyze_prices.add_hist_price(fig_data, close_tk, tk, target_deck = 1, add_title = True, price_type = 'close', theme = theme)
+    # fig_data = analyze_prices.add_hist_price(fig_data, close_tk, tk, target_deck = 1, add_title = False, price_type = 'close', theme = theme)
     # fig_data = analyze_prices.add_price_overlays(fig_data, price_list, tk, target_deck = 1, theme = theme, color_theme = 'turquoise')
     
     # fig_data = add_ma_overlays(fig_data, close_tk, ema_list[: 6], target_deck = 1, theme = theme, color_theme = color_theme)
-    fig_data = analyze_prices.add_ma_overlays(fig_data, close_tk, ma_list[: 6], target_deck = 1, theme = theme, color_theme = 'grasslands')
-    """
+    fig_data = analyze_prices.add_ma_overlays(fig_data, close_tk, ma_ribbon, target_deck = 1, theme = theme, color_theme = 'grasslands')
+    
     fig_data = analyze_prices.add_bollinger_width(
     # fig_data = add_bollinger_width(    
         fig_data,
@@ -242,7 +147,6 @@ def create_graph(tk):
         secondary_y = False,
         add_yaxis_title = True,
         yaxis_title = None,
-        n_yticks_max = None,
         theme = theme,
         color_theme = 'magenta'
     )
@@ -254,19 +158,60 @@ def create_graph(tk):
         secondary_y = False,
         add_yaxis_title = True,
         yaxis_title = None,
-        n_yticks_max = None,
         theme = theme,
         color_theme = 'lavender'
     )
 
     fig_data = analyze_prices.add_diff_stochastic(fig_data, tk, stochastic_data, target_deck = 3, reverse_diff = False, add_signal = True, signal_window = 7, add_title = False, theme = theme)
-    """
+    
     fig = fig_data['fig']
     print(fig_data['y_min'])
     print(fig_data['y_max'])
-    print(fig['layout'])
+    # layout = fig['layout']
+    # output_text = f'This is a {deck_type}-deck plot'
 
-    return fig
+    fig_div = html.Div(
+            # [dcc.Graph(id='linlogplot', figure=fig, config=_config)],
+            [dcc.Graph(id='test-graph', figure = fig)],
+            id='fig_div',
+        )
+
+    # return output_text, fig
+
+    return fig_div
+
+
+#################
+
+app.layout = html.Div([
+
+    # html.H1(children='Hello Dash'),
+    # html.Script(src="https://cdn.plot.ly/plotly-latest.min.js"),
+
+    dcc.Dropdown(
+        id='tickers-dropdown',
+        options = tickers,
+        value = 'MSFT',
+        style = {'width': '20%'}
+    ),
+
+    # html.Div(id = 'dd-output-container', children = []),
+
+    # html.Div(id='graphDiv'),
+    create_graph('MSFT'),
+    html.Div(children = [
+        dcc.Graph(id = 'test-graph', figure = {})
+    ])
+])
+
+@app.callback(
+    # Output(component_id = 'dd-output-container', component_property = 'children'),
+    # Output(component_id = 'test-graph', component_property = 'figure'),
+    Output(component_id = 'fig_div', component_property = 'children'),
+    Input(component_id = 'tickers-dropdown', component_property = 'value')
+)
+def update_graph(tk):
+    return create_graph(tk)
 
 # app.layout = html.Div(children=[
 #    dcc.Graph(

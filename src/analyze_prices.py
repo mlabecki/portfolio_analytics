@@ -152,6 +152,42 @@ class AnalyzePrices():
         return ma
 
 
+    ##### MOVING AVERAGE RIBBON #####
+
+    def get_ma_ribbon(
+        self,
+        ma_type,
+        ma_window,
+        n_ma = 6
+    ):
+        """
+        ma_type:    
+            simple ('sma'),
+            exponential ('ema'),
+            double exponential ('dema'),
+            triple exponential ('tema'),
+            weighted ('wma'),
+            Welles Wilder ('wwma')
+        ma_window:
+            length in days
+        n_ma:
+            number of elements in the ribbon (1-6)
+        Returns ma
+        """
+
+        n_ma = 6 if n_ma > 6 else 1 if n_ma < 1 else n_ma
+
+        ma_ribbon = []
+        for k in range(n_ma + 1)[1:]:
+            ma_ribbon.append({
+                'ma_idx': k,
+                'ma_type': ma_type,
+                'ma_window': k * ma_window
+            })
+
+        return ma_ribbon
+
+
     ##### MOVING VOLATILITY / STANDARD DEVIATION #####
 
     def moving_volatility(
@@ -364,6 +400,7 @@ class AnalyzePrices():
 
             # Update axes
             fig.update_xaxes(
+                # autorange = False,
                 type = 'category',
                 showgrid = True,
                 gridcolor = style['x_gridcolor'],
@@ -374,6 +411,7 @@ class AnalyzePrices():
                 row = k, col = 1
             )
             fig.update_yaxes(
+                # autorange = False,
                 showgrid = True,
                 gridcolor = style['y_gridcolor'],
                 zerolinecolor = style['x_gridcolor'],
