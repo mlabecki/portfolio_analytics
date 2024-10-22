@@ -2232,11 +2232,11 @@ class AnalyzePrices():
         """
         fig_data: a dictionary of the underlying figure data
 
-        y_min_fig: y_min on the existing fig
-        y_max_fig: y_max on the existing fig
+        fig_y_min: y_min on the existing fig
+        fig_y_max: y_max on the existing fig
         color_idx: an integer (0, ...) indicating the color from those available in theme_style
-        showlegend: whether or not to show line in legend (e.g. we only need one Bollinger band in legend)
-        legendgroup: 'upper' is top graph in subplots (row 1), 'lower' is the stacked lower graph (row 2)
+        showlegend:
+        legendgroup:
 
         Returns the updated fig_data dictionary
         """
@@ -2245,26 +2245,53 @@ class AnalyzePrices():
         overlay_colors = style['overlay_color_theme'][color_theme]
 
         fig = fig_data['fig']
-        y_min_fig = fig_data['y_min'][target_deck]
-        y_max_fig = fig_data['y_max'][target_deck]
+        fig_y_min = fig_data['y_min'][target_deck]
+        fig_y_max = fig_data['y_max'][target_deck]
         plot_height = fig_data['plot_height'][target_deck]        
         deck_type = fig_data['deck_type']
 
+        print(f'\nOVERLAY: {name}')
+
         min_y = min(df)
         max_y = max(df)
-        min_n_intervals = n_yintervals_map['min'][plot_height]
-        max_n_intervals = n_yintervals_map['max'][plot_height]
-        y_min, y_max, y_delta = set_axis_limits(min_y, max_y, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
 
-        # ESSENTIALLY THERE SHOULD BE NO OVERLAYS ADDED TO AN EMPTY DECK so this may not be necessary
-        try:
-            new_y_min, new_y_max, y_delta = set_axis_limits(min(y_min, y_min_fig), max(y_max, y_max_fig), min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
-        except:
-            # if the existing y_min and y_max are None
-            new_y_min, new_y_max = y_min, y_max
+        if fig_y_min is None:
+            new_y_min = fig_y_min = min_y
+        else:
+            new_y_min = min(min_y, fig_y_min)
 
-        if target_deck > 1:
-            new_y_max *= 0.999
+        if fig_y_max is None:
+            new_y_max = fig_y_max = max_y
+        else:
+            new_y_max = max(max_y, fig_y_max)
+
+        # print(f'min_y, max_y = {min_y, max_y}')
+        # print(f'fig_y_min, fig_y_max = {fig_y_min, fig_y_max}')
+
+        # Find new y limits and delta if the y range is expanded
+        if (new_y_min < fig_y_min) | (new_y_max > fig_y_max):
+
+            min_n_intervals = n_yintervals_map['min'][plot_height]
+            max_n_intervals = n_yintervals_map['max'][plot_height]
+            y_lower_limit, y_upper_limit, y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
+
+            if target_deck > 1:
+                y_upper_limit *= 0.999
+
+            fig.update_yaxes(
+                range = (y_lower_limit, y_upper_limit),
+                showticklabels = True,
+                tick0 = y_lower_limit,  #
+                dtick = y_delta,    #
+                ticks = 'outside',
+                ticklen = 8,
+                row = target_deck, col = 1
+            )
+
+            # print(f'\nOVERLAY: {name} - CONTINUE')
+            # print(f'min_n_intervals, max_n_intervals = {min_n_intervals, max_n_intervals}')
+            # print(f'y_lower_limit, y_upper_limit, y_delta = {y_lower_limit, y_upper_limit, y_delta}')
+            # # print(f'FINAL new_y_min, new_y_max, y_delta = {new_y_min, new_y_max, y_delta}')
 
         if color_idx >= len(overlay_colors):
             # Take the last overlay color from the available list
@@ -2290,16 +2317,6 @@ class AnalyzePrices():
                 legendgrouptitle = legendgrouptitle
             ),
             row = target_deck, col = 1    
-        )
-
-        fig.update_yaxes(
-            range = (new_y_min, new_y_max),
-            showticklabels = True,
-            tick0 = new_y_min,  #
-            dtick = y_delta,    #
-            ticks = 'outside',
-            ticklen = 8,
-            row = target_deck, col = 1
         )
 
         fig_data.update({'fig': fig})
@@ -2580,24 +2597,63 @@ class AnalyzePrices():
             print(f'{legend_name} has already been plotted in this deck')
 
         else:
+            
             style = theme_style[theme]
-
             color_idx = style['overlay_color_selection'][color_theme][1][0]
             linecolor = style['overlay_color_theme'][color_theme][color_idx]
 
+            # Adjust y range if necessary
             min_y = min(b_line)
             max_y = max(b_line)
-            min_n_intervals = n_yintervals_map['min'][plot_height]
-            max_n_intervals = n_yintervals_map['max'][plot_height]
-            y_min, y_max, y_delta = set_axis_limits(min_y, max_y, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
+            if fig_y_min is None:
+                new_y_min = fig_y_min = min_y
+            else:
+                new_y_min = min(min_y, fig_y_min)
+            if fig_y_max is None:
+                new_y_max = fig_y_max = max_y
+            else:
+                new_y_max = max(max_y, fig_y_max)
 
-            if target_deck > 1:
-                y_max *= 0.999
+            print(f'min_y, max_y = {min_y, max_y}')
+            print(f'fig_y_min, fig_y_max = {fig_y_min, fig_y_max}')
 
-            if fig_y_min is not None:
-                y_min = min(fig_y_min, y_min)
-            if fig_y_max is not None:
-                y_max = max(fig_y_max, y_max)
+            if not secondary_y:
+
+                # Find new y limits and delta if the y range is expanded
+                if (new_y_min < fig_y_min) | (new_y_max > fig_y_max):
+
+                    min_n_intervals = n_yintervals_map['min'][plot_height]
+                    max_n_intervals = n_yintervals_map['max'][plot_height]
+                    y_lower_limit, y_upper_limit, y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
+
+                    if target_deck > 1:
+                        y_upper_limit *= 0.999
+
+                    print(f'min_n_intervals, max_n_intervals = {min_n_intervals, max_n_intervals}')
+                    print(f'y_lower_limit, y_upper_limit, y_delta = {y_lower_limit, y_upper_limit, y_delta}')
+                    print(f'FINAL new_y_min, new_y_max, y_delta = {new_y_min, new_y_max, y_delta}')
+
+                    y_range = (y_lower_limit, y_upper_limit)
+                    fig.update_yaxes(
+                        range = y_range,
+                        showticklabels = True,
+                        tick0 = y_lower_limit,
+                        dtick = y_delta,
+                        # secondary_y = False,
+                        showgrid = True,
+                        zeroline = True,
+                        row = target_deck, col = 1
+                    )
+            
+            else:
+
+                fig.update_yaxes(
+                    range = None,
+                    secondary_y = True,
+                    showgrid = False,
+                    zeroline = False,
+                    row = target_deck, col = 1
+                )
 
             legendgrouptitle = {}
             if deck_type == 'triple':
@@ -2622,18 +2678,6 @@ class AnalyzePrices():
             )
 
             # Update layout and axes
-
-            y_range = None if secondary_y else (y_min, y_max)
-            fig.update_yaxes(
-                range = y_range,
-                showticklabels = True,
-                tick0 = y_min,
-                dtick = y_delta,
-                secondary_y = secondary_y,
-                showgrid = not secondary_y,
-                zeroline = not secondary_y,
-                row = target_deck, col = 1
-            )
 
             if add_yaxis_title:
 
@@ -2660,8 +2704,8 @@ class AnalyzePrices():
                 )
 
             fig_data.update({'fig': fig})
-            fig_data['y_min'].update({target_deck: y_min})
-            fig_data['y_max'].update({target_deck: y_max})
+            fig_data['y_min'].update({target_deck: new_y_min})
+            fig_data['y_max'].update({target_deck: new_y_max})
 
             color_map = {legend_name: color_idx}
             overlay_idx = len(fig_overlays) + 1
