@@ -547,13 +547,13 @@ class AnalyzePrices():
 
         if target_deck == 1:
             if secondary_y:
-                 if not has_secondary_y:
+                if not has_secondary_y:
                     print('ERROR: Secondary y axis must be selected when creating the plotting template')
                     return fig_data
             else:
                 # Must check if there are traces on the primary y axis
                 n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
-                # This is NOT an overlay, so if the primary y axis is unavailable, then refuse to plot, regardless if it's volume or price
+                # If the primary y axis is unavailable, then refuse to plot
                 if n_traces_upper > 0:
                     print(f'ERROR: Can only plot {atr_type.upper()} on the secondary y axis or in the middle/lower deck')
                     return fig_data
@@ -586,19 +586,57 @@ class AnalyzePrices():
             color_idx = style['overlay_color_selection'][color_theme][1][0]
             linecolor = style['overlay_color_theme'][color_theme][color_idx]
 
+            # Adjust y range if necessary
+            reset_y_limits = False
+
             min_y = min(atr_line)
             max_y = max(atr_line)
-            min_n_intervals = n_yintervals_map['min'][plot_height]
-            max_n_intervals = n_yintervals_map['max'][plot_height]
-            y_min, y_max, y_delta = set_axis_limits(min_y, max_y, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
+            
+            if fig_y_min is None:
+                new_y_min = min_y
+                reset_y_limits = True
+            else:
+                new_y_min = min(min_y, fig_y_min)
+                if new_y_min < fig_y_min:
+                    reset_y_limits = True
 
-            if target_deck > 1:
-                y_max *= 0.999
+            if fig_y_max is None:
+                new_y_max = max_y
+                reset_y_limits = True
+            else:
+                new_y_max = max(max_y, fig_y_max)
+                if new_y_max > fig_y_max:
+                    reset_y_limits = True
 
-            if fig_y_min is not None:
-                y_min = min(fig_y_min, y_min)
-            if fig_y_max is not None:
-                y_max = max(fig_y_max, y_max)
+            if not secondary_y:
+
+                # Find new y limits and delta if the y range is expanded
+                if reset_y_limits:
+                    min_n_intervals = n_yintervals_map['min'][plot_height]
+                    max_n_intervals = n_yintervals_map['max'][plot_height]
+                    y_lower_limit, y_upper_limit, y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
+                    if target_deck > 1:
+                        y_upper_limit *= 0.999
+
+                    y_range = (y_lower_limit, y_upper_limit)
+                    fig.update_yaxes(
+                        range = y_range,
+                        showticklabels = True,
+                        tick0 = y_lower_limit,
+                        dtick = y_delta,
+                        showgrid = True,
+                        zeroline = True,
+                        row = target_deck, col = 1
+                    )
+
+            else:
+                fig.update_yaxes(
+                    range = None,
+                    secondary_y = True,
+                    showgrid = False,
+                    zeroline = False,
+                    row = target_deck, col = 1
+                )
 
             legendgrouptitle = {}
             if deck_type == 'triple':
@@ -623,18 +661,6 @@ class AnalyzePrices():
             )
 
             # Update layout and axes
-
-            y_range = None if secondary_y else (y_min, y_max)
-            fig.update_yaxes(
-                range = y_range,
-                showticklabels = True,
-                tick0 = y_min,
-                dtick = y_delta,
-                secondary_y = secondary_y,
-                showgrid = not secondary_y,
-                zeroline = not secondary_y,
-                row = target_deck, col = 1
-            )
 
             if add_yaxis_title:
 
@@ -661,8 +687,8 @@ class AnalyzePrices():
                 )
 
             fig_data.update({'fig': fig})
-            fig_data['y_min'].update({target_deck: y_min})
-            fig_data['y_max'].update({target_deck: y_max})
+            fig_data['y_min'].update({target_deck: new_y_min})
+            fig_data['y_max'].update({target_deck: new_y_max})
 
             color_map = {legend_name: color_idx}
             overlay_idx = len(fig_overlays) + 1
@@ -735,6 +761,7 @@ class AnalyzePrices():
         stochastic_data = {
             'k_line': k_line,
             'd_line': d_line,
+            'price': close_tk,
             'label': stochastic_label,
             'type': stochastic_type
         }
@@ -749,6 +776,7 @@ class AnalyzePrices():
         fig_data,
         stochastic_data,
         tk,
+        add_price = False,
         target_deck = 2,
         oversold_threshold = 20,
         overbought_threshold = 80,
@@ -758,27 +786,51 @@ class AnalyzePrices():
         theme = 'dark'
     ):
         """
-        stochastic_data: output from stochastic_oscillator()
-        tk: ticker for which to plot the stochastic %K and %D lines
+        stochastic_data: 
+            output from stochastic_oscillator()
+        tk: 
+            ticker for which to plot the stochastic %K and %D lines
+        add_price:
+            Can only add price to secondary_y, which means target_deck must be 1.
+            Except for price on secondary_y, no other overlays will be available.
+            None of the traces added by add_stochastic() will be appended to the overlay list.
+            Note that, because of the way Stochastic is defined, it only makes sense to 
+            overlay it with the Close price.
 
         """
+
+        k_line = stochastic_data['k_line']
+        d_line = stochastic_data['d_line']
+        df_price = stochastic_data['price']
+        stochastic_label = stochastic_data['label']
+        stochastic_type = stochastic_data['type']
 
         fig_stochastic = fig_data['fig']
         deck_type = fig_data['deck_type']
         title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
+        has_secondary_y = fig_data['has_secondary_y']
 
-        k_line = stochastic_data['k_line']
-        d_line = stochastic_data['d_line']
-        stochastic_label = stochastic_data['label']
-        stochastic_type = stochastic_data['type']
+        # Plot price on secondary axis of the upper deck only if it has been created in subplots
+
+        if target_deck == 1:
+            if add_price:
+                if not has_secondary_y:
+                    print('ERROR: Secondary y axis must be selected when creating the plotting template')
+                    return fig_data
+        else:
+            # If it's the middle or lower deck, just set add_price to False and continue
+            add_price = False
+
+        min_stochastic = min(min(k_line), min(d_line))
+        max_stochastic = max(max(k_line), max(d_line))
 
         style = theme_style[theme]
 
         title_stochastic = f'{tk} {stochastic_type} {stochastic_label} Stochastic Oscillator (%)'
         yaxis_title = f'Stochastic (%)'
 
-        y_max = 99.99 if target_deck > 1 else 100
+        y_upper_limit = 99.99 if target_deck > 1 else 100
 
         legendgrouptitle = {}
         if deck_type == 'triple':
@@ -820,7 +872,7 @@ class AnalyzePrices():
                 {
                     'oversold': oversold_threshold,
                     'overbought': overbought_threshold,
-                    'y_max': y_max
+                    'y_max': y_upper_limit
                 },
                 index = k_line.index
             )
@@ -865,6 +917,19 @@ class AnalyzePrices():
                 row = target_deck, col = 1
             )
 
+        if add_price:
+            fig_stochastic.add_trace(
+                go.Scatter(
+                    x = k_line.index,
+                    y = df_price,
+                    line_color = style['basecolor'],
+                    showgrid = False,
+                    name = 'Close',
+                    title = 'Close'
+                ),
+                secondary_y = True
+            )
+
         # Update layout and axes
         if add_title:
             fig_stochastic.update_layout(
@@ -879,7 +944,7 @@ class AnalyzePrices():
             )
 
         fig_stochastic.update_yaxes(
-            range = (0, y_max),
+            range = (0, y_upper_limit),
             title = yaxis_title,
             showticklabels = True,
             row = target_deck, col = 1
@@ -893,8 +958,8 @@ class AnalyzePrices():
             )
 
         fig_data.update({'fig': fig_stochastic})
-        fig_data['y_min'].update({target_deck: 0})
-        fig_data['y_max'].update({target_deck: y_max})
+        fig_data['y_min'].update({target_deck: min_stochastic})
+        fig_data['y_max'].update({target_deck: max_stochastic})
 
         return fig_data
 
@@ -903,19 +968,18 @@ class AnalyzePrices():
 
     def get_macd(
         self,
-        df_tk,
+        close_tk,
         signal_window = 9      
     ):
         """
-        df_tk: a series of price values, taken as a column of df_close or df_adj_close for ticker tk
         """ 
 
-        if not isinstance(df_tk, pd.Series):
+        if not isinstance(close_tk, pd.Series):
             print('Incorrect format of input data')
             exit
 
-        ema_26 = df_tk.ewm(span = 26).mean()
-        ema_12 = df_tk.ewm(span = 12).mean()
+        ema_26 = close_tk.ewm(span = 26).mean()
+        ema_12 = close_tk.ewm(span = 12).mean()
         macd_line = ema_12 - ema_26
 
         macd_signal = macd_line.ewm(span = signal_window).mean()
@@ -925,7 +989,8 @@ class AnalyzePrices():
             'MACD': macd_line,
             'MACD Signal': macd_signal,
             'MACD Signal Window': signal_window,
-            'MACD Histogram': macd_histogram
+            'MACD Histogram': macd_histogram,
+            'price': close_tk
         }
 
         return macd_data
@@ -966,7 +1031,8 @@ class AnalyzePrices():
             'MACD': macd_v_line,
             'MACD Signal': macd_v_signal,
             'MACD Signal Window': signal_window,
-            'MACD Histogram': macd_v_histogram
+            'MACD Histogram': macd_v_histogram,
+            'price': close_tk
         }
 
         return macd_v_data
@@ -979,6 +1045,7 @@ class AnalyzePrices():
         fig_data,
         tk_macd,
         macd_data,
+        add_price = False, 
         volatility_normalized = True,
         histogram_type = 'macd-signal',
         include_signal = True,
@@ -999,6 +1066,12 @@ class AnalyzePrices():
                 and the Signal line will be added if include_signal is True
         include_signal:
             this will plot Signal line and MACD-V line in addition to the histogram
+        add_price:
+            Can only add price to secondary_y, which means target_deck must be 1.
+            Except for price on secondary_y, no other overlays will be available.
+            None of the traces added by add_macd will be appended to the overlay list.
+            To simplify, and because of the way MACD-V is defined, the only price option
+            available for overlay is Close.
         """
 
         # x_min = start_date if x_min is None else x_min
@@ -1009,6 +1082,18 @@ class AnalyzePrices():
         deck_type = fig_data['deck_type']
         title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
+        has_secondary_y = fig_data['has_secondary_y']        
+
+        # Plot price on secondary axis of the upper deck only if it has been created in subplots
+
+        if target_deck == 1:
+            if add_price:
+                if not has_secondary_y:
+                    print('ERROR: Secondary y axis must be selected when creating the plotting template')
+                    return fig_data
+        else:
+            # If it's the middle or lower deck, just set add_price to False and continue
+            add_price = False
 
         style = theme_style[theme]
 
@@ -1019,6 +1104,7 @@ class AnalyzePrices():
 
         macd = macd_data['MACD']
         macd_histogram = macd_data['MACD Histogram']
+        df_price = macd_data['price']
 
         if histogram_type == 'macd-signal':
             macd_legend_positive = f'{yaxis_title} > Signal'
@@ -1269,6 +1355,19 @@ class AnalyzePrices():
                 row = target_deck, col = 1
             )
 
+        if add_price:
+            fig_macd.add_trace(
+                go.Scatter(
+                    x = df_price.index,
+                    y = df_price,
+                    line_color = style['basecolor'],
+                    showgrid = False,
+                    name = 'Close',
+                    title = 'Close'
+                ),
+                secondary_y = True
+            )
+
         if deck_type in ['double', 'triple']:
             legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
             fig_data['fig'].update_layout(
@@ -1304,8 +1403,8 @@ class AnalyzePrices():
         )
 
         fig_data.update({'fig': fig_macd})
-        fig_data['y_min'].update({target_deck: y_macd_min})
-        fig_data['y_max'].update({target_deck: y_macd_max})
+        fig_data['y_min'].update({target_deck: min_macd})
+        fig_data['y_max'].update({target_deck: max_macd})
 
         return fig_data 
 
@@ -1669,8 +1768,17 @@ class AnalyzePrices():
         target_deck:
             1 (upper), 2 (second from top), 3 (third from top)
             Normally drawdowns should only go into deck 1 and the title should be added.
+        add_price:
+            Normally True, and the y-axis range will be set based on the price range.
+            Should be forced to True if fig_y_min/fig_y_max are None (empty deck).
+            However, there might be some interest in adding drawdowns as an overlay on a
+            different plot, in which case:
+              - add_price could be False, and the y-axis range will not be reset; e.g. drawdowns
+                could be overlaid onto a MACD or DIFF plot
+              - add_price could be True, and the y-axis would be reset or not based on the price
+                range and the existing y-value range (stored in data_fig['y_min/y_max'][target_deck])
         price_type:
-            one of 'adjusted close', 'close', 'open', 'high', 'low', 'volume', 'dollar volume'
+            one of 'adjusted close', 'close', 'open', 'high', 'low'
         """
 
         if isinstance(df_price, pd.Series):
@@ -1688,6 +1796,9 @@ class AnalyzePrices():
         deck_type = fig_data['deck_type']
         title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
+
+        if (fig_y_min is None) | (fig_y_max is None):
+            add_price = True
 
         infinity = 1e10
 
@@ -1717,19 +1828,53 @@ class AnalyzePrices():
         color_idx = style['overlay_color_selection'][color_theme][1][0]
         linecolor = style['overlay_color_theme'][color_theme][color_idx]
 
-        min_y = min(df_tk)
-        max_y = max(df_tk)
-        min_n_intervals = n_yintervals_map['min'][plot_height]
-        max_n_intervals = n_yintervals_map['max'][plot_height]
-        y_min, y_max, y_delta = set_axis_limits(min_y, max_y, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
+        reset_y_limits = False
+        
+        if add_price:
+            
+            min_y = min(df_tk)
+            max_y = max(df_tk)
 
-        if target_deck > 1:
-            y_max *= 0.999
+            if fig_y_min is None:
+                new_y_min = min_y
+                reset_y_limits = True
+            else:
+                new_y_min = min(min_y, fig_y_min)
+                if new_y_min < fig_y_min:
+                    reset_y_limits = True
 
-        if fig_y_min is not None:
-            y_min = min(fig_y_min, y_min)
-        if fig_y_max is not None:
-            y_max = max(fig_y_max, y_max)
+            if fig_y_max is None:
+                new_y_max = max_y
+                reset_y_limits = True
+            else:
+                new_y_max = max(max_y, fig_y_max)
+                if new_y_max > fig_y_max:
+                    reset_y_limits = True
+
+            if reset_y_limits:
+                
+                min_n_intervals = n_yintervals_map['min'][plot_height]
+                max_n_intervals = n_yintervals_map['max'][plot_height]
+                y_lower_limit, y_upper_limit, y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
+
+                if target_deck > 1:
+                    y_upper_limit *= 0.999
+
+                print(f'min_n_intervals, max_n_intervals = {min_n_intervals, max_n_intervals}')
+                print(f'y_lower_limit, y_upper_limit, y_delta = {y_lower_limit, y_upper_limit, y_delta}')
+                print(f'FINAL new_y_min, new_y_max, y_delta = {new_y_min, new_y_max, y_delta}')
+
+                y_range = (y_lower_limit, y_upper_limit)
+                fig.update_yaxes(
+                    range = y_range,
+                    title = legend_name,
+                    showticklabels = True,
+                    tick0 = y_lower_limit,
+                    dtick = y_delta,
+                    showgrid = True,
+                    zeroline = True,
+                    row = target_deck, col = 1
+                )
 
         legendgrouptitle = {}
         if deck_type == 'triple':
@@ -1837,18 +1982,6 @@ class AnalyzePrices():
                 )
             )
 
-        y_range = (y_min, y_max)
-        fig.update_yaxes(
-            range = y_range,
-            title = legend_name,
-            showticklabels = True,
-            tick0 = y_min,
-            dtick = y_delta,
-            showgrid = True,
-            zeroline = True,
-            row = target_deck, col = 1
-        )
-
         if deck_type in ['double', 'triple']:
             legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
             fig.update_layout(
@@ -1857,8 +1990,10 @@ class AnalyzePrices():
             )
 
         fig_data.update({'fig': fig})
-        fig_data['y_min'].update({target_deck: y_min})
-        fig_data['y_max'].update({target_deck: y_max})
+        
+        if reset_y_limits:
+            fig_data['y_min'].update({target_deck: new_y_min})
+            fig_data['y_max'].update({target_deck: new_y_max})
 
         return fig_data
 
@@ -1871,6 +2006,8 @@ class AnalyzePrices():
         period = 14
     ):
         """
+        prices:
+            this should be close_tk
         http://stockcharts.com/school/doku.php?id=chart_school:glossary_r#relativestrengthindex
         http://www.investopedia.com/terms/r/rsi.asp
         """
@@ -1904,7 +2041,8 @@ class AnalyzePrices():
 
         rsi_data = {
             'rsi': rsi,
-            'type': rsi_type
+            'price': prices,
+            'rsi_type': rsi_type
         }
 
         return rsi_data
@@ -1917,6 +2055,7 @@ class AnalyzePrices():
         fig_data,
         rsi_data,
         tk,
+        add_price = False,
         target_deck = 2,
         oversold_threshold = 30,
         overbought_threshold = 70,
@@ -1926,27 +2065,49 @@ class AnalyzePrices():
         theme = 'dark'
     ):
         """
-        rsi_data:   output from relative_strength()
-        tk:         ticker for which to plot RSI
-        price_type: normally 'adjusted close' or 'close', whatever the RSI is based on
-        df_price:   dataframe/series of prices to overlay (if overlay_price is True)
+        rsi_data:
+            output from relative_strength()
+        tk:
+            ticker for which to plot RSI
+        add_price:
+            Can only add price to secondary_y, which means target_deck must be 1.
+            Except for price on secondary_y, no other overlays will be available.
+            None of the traces added by add_rsi() will be appended to the overlay list.
+        df_price:
+            dataframe/series of prices to overlay (if add_price is True)
 
         """
 
         rsi = rsi_data['rsi']
-        rsi_type = rsi_data['type']
+        rsi_type = rsi_data['rsi_type']
+        df_price = rsi_data['price']         # must be consistent with RSI construction
 
         fig_rsi = fig_data['fig']    
         deck_type = fig_data['deck_type']
         title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
+        has_secondary_y = fig_data['has_secondary_y']
+
+        # Plot price on secondary axis of the upper deck only if it has been created in subplots
+
+        if target_deck == 1:
+            if add_price:
+                if not has_secondary_y:
+                    print('ERROR: Secondary y axis must be selected when creating the plotting template')
+                    return fig_data
+        else:
+            # If it's the middle or lower deck, just set add_price to False and continue
+            add_price = False
+
+        min_rsi = min(rsi)
+        max_rsi = max(rsi)
 
         style = theme_style[theme]
 
         title_rsi = f'{tk} Relative Strength Index {rsi_type} (%)'
         yaxis_title = f'RSI (%)'
 
-        y_max = 99.99 if target_deck > 1 else 100
+        y_upper_limit = 99.99 if target_deck > 1 else 100
 
         legendgrouptitle = {}
         if deck_type == 'triple':
@@ -1975,7 +2136,7 @@ class AnalyzePrices():
                 {
                     'oversold': oversold_threshold,
                     'overbought': overbought_threshold,
-                    'y_max': y_max
+                    'y_max': y_upper_limit
                 },
                 index = rsi.index
             )
@@ -2019,6 +2180,19 @@ class AnalyzePrices():
                 row = target_deck, col = 1
             )
 
+        if add_price:
+            fig_rsi.add_trace(
+                go.Scatter(
+                    x = rsi.index,
+                    y = df_price,
+                    line_color = style['basecolor'],
+                    showgrid = False,
+                    name = 'Close',
+                    title = 'Close'
+                ),
+                secondary_y = True
+            )
+
         # Update layout and axes
         if add_title:
             fig_rsi.update_layout(
@@ -2033,7 +2207,7 @@ class AnalyzePrices():
             )
 
         fig_rsi.update_yaxes(
-            range = (0, y_max),
+            range = (0, y_upper_limit),
             title = yaxis_title,
             showticklabels = True,
             row = target_deck, col = 1
@@ -2047,8 +2221,8 @@ class AnalyzePrices():
             )
 
         fig_data.update({'fig': fig_rsi})
-        fig_data['y_min'].update({target_deck: 0})
-        fig_data['y_max'].update({target_deck: y_max})
+        fig_data['y_min'].update({target_deck: min_rsi})
+        fig_data['y_max'].update({target_deck: max_rsi})
 
         return fig_data
 
@@ -2252,46 +2426,51 @@ class AnalyzePrices():
 
         print(f'\nOVERLAY: {name}')
 
+        # Adjust y range if necessary
+        reset_y_limits = False
+
         min_y = min(df)
         max_y = max(df)
 
         if fig_y_min is None:
-            new_y_min = fig_y_min = min_y
+            new_y_min = min_y
+            reset_y_limits = True
         else:
             new_y_min = min(min_y, fig_y_min)
-
+            if new_y_min < fig_y_min:
+                reset_y_limits = True
         if fig_y_max is None:
-            new_y_max = fig_y_max = max_y
+            new_y_max = max_y
+            reset_y_limits = True
         else:
             new_y_max = max(max_y, fig_y_max)
+            if new_y_max > fig_y_max:
+                reset_y_limits = True
 
-        # print(f'min_y, max_y = {min_y, max_y}')
-        # print(f'fig_y_min, fig_y_max = {fig_y_min, fig_y_max}')
+            # Find new y limits and delta if the y range is expanded
+            if reset_y_limits:
+                
+                min_n_intervals = n_yintervals_map['min'][plot_height]
+                max_n_intervals = n_yintervals_map['max'][plot_height]
+                y_lower_limit, y_upper_limit, y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
 
-        # Find new y limits and delta if the y range is expanded
-        if (new_y_min < fig_y_min) | (new_y_max > fig_y_max):
+                if target_deck > 1:
+                    y_upper_limit *= 0.999
 
-            min_n_intervals = n_yintervals_map['min'][plot_height]
-            max_n_intervals = n_yintervals_map['max'][plot_height]
-            y_lower_limit, y_upper_limit, y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
+                # print(f'min_n_intervals, max_n_intervals = {min_n_intervals, max_n_intervals}')
+                # print(f'y_lower_limit, y_upper_limit, y_delta = {y_lower_limit, y_upper_limit, y_delta}')
+                # print(f'FINAL new_y_min, new_y_max, y_delta = {new_y_min, new_y_max, y_delta}')
 
-            if target_deck > 1:
-                y_upper_limit *= 0.999
-
-            fig.update_yaxes(
-                range = (y_lower_limit, y_upper_limit),
-                showticklabels = True,
-                tick0 = y_lower_limit,  #
-                dtick = y_delta,    #
-                ticks = 'outside',
-                ticklen = 8,
-                row = target_deck, col = 1
-            )
-
-            # print(f'\nOVERLAY: {name} - CONTINUE')
-            # print(f'min_n_intervals, max_n_intervals = {min_n_intervals, max_n_intervals}')
-            # print(f'y_lower_limit, y_upper_limit, y_delta = {y_lower_limit, y_upper_limit, y_delta}')
-            # # print(f'FINAL new_y_min, new_y_max, y_delta = {new_y_min, new_y_max, y_delta}')
+                y_range = (y_lower_limit, y_upper_limit)
+                fig.update_yaxes(
+                    range = y_range,
+                    showticklabels = True,
+                    tick0 = y_lower_limit,
+                    dtick = y_delta,
+                    showgrid = True,
+                    zeroline = True,
+                    row = target_deck, col = 1
+                )
 
         if color_idx >= len(overlay_colors):
             # Take the last overlay color from the available list
@@ -2563,13 +2742,13 @@ class AnalyzePrices():
 
         if target_deck == 1:
             if secondary_y:
-                 if not has_secondary_y:
+                if not has_secondary_y:
                     print('ERROR: Secondary y axis must be selected when creating the plotting template')
                     return fig_data
             else:
                 # Must check if there are traces on the primary y axis
                 n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
-                # This is NOT an overlay, so if the primary y axis is unavailable, then refuse to plot, regardless if it's volume or price
+                # If the primary y axis is unavailable, then refuse to plot
                 if n_traces_upper > 0:
                     print(f'ERROR: Can only plot {bollinger_type.title()} on the secondary y axis or in the middle/lower deck')
                     return fig_data
@@ -2603,24 +2782,37 @@ class AnalyzePrices():
             linecolor = style['overlay_color_theme'][color_theme][color_idx]
 
             # Adjust y range if necessary
+
+            reset_y_limits = False
+            
             min_y = min(b_line)
             max_y = max(b_line)
+            
             if fig_y_min is None:
-                new_y_min = fig_y_min = min_y
+                new_y_min = min_y
+                reset_y_limits = True
             else:
                 new_y_min = min(min_y, fig_y_min)
+                if new_y_min < fig_y_min:
+                    reset_y_limits = True
+            
             if fig_y_max is None:
-                new_y_max = fig_y_max = max_y
+                new_y_max = max_y
+                reset_y_limits = True
             else:
                 new_y_max = max(max_y, fig_y_max)
+                if new_y_max > fig_y_max:
+                    reset_y_limits = True
 
+            print(f'\nADD BOLLINGER WIDTH')
             print(f'min_y, max_y = {min_y, max_y}')
             print(f'fig_y_min, fig_y_max = {fig_y_min, fig_y_max}')
+            print(f'new_y_min, new_y_max = {new_y_min, new_y_max}')
 
             if not secondary_y:
 
                 # Find new y limits and delta if the y range is expanded
-                if (new_y_min < fig_y_min) | (new_y_max > fig_y_max):
+                if reset_y_limits:
 
                     min_n_intervals = n_yintervals_map['min'][plot_height]
                     max_n_intervals = n_yintervals_map['max'][plot_height]
@@ -2845,13 +3037,13 @@ class AnalyzePrices():
 
         if target_deck == 1:
             if secondary_y:
-                 if not has_secondary_y:
+                if not has_secondary_y:
                     print('ERROR: Secondary y axis must be selected when creating the plotting template')
                     return fig_data
             else:
                 # Must check if there are traces on the primary y axis
                 n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
-                # This is NOT an overlay, so if the primary y axis is unavailable, then refuse to plot, regardless if it's volume or price
+                # If the primary y axis is unavailable, then refuse to plot
                 if n_traces_upper > 0:
                     print(f'ERROR: Can only plot MVOL/MSTD on the secondary y axis or in the middle/lower deck')
                     return fig_data
@@ -2891,19 +3083,69 @@ class AnalyzePrices():
             color_idx = style['overlay_color_selection'][color_theme][1][0]
             linecolor = style['overlay_color_theme'][color_theme][color_idx]
 
+            # Adjust y range if necessary
+            reset_y_limits = False
+
             min_y = min(m_line)
             max_y = max(m_line)
-            min_n_intervals = n_yintervals_map['min'][plot_height]
-            max_n_intervals = n_yintervals_map['max'][plot_height]
-            y_min, y_max, y_delta = set_axis_limits(min_y, max_y, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
 
-            if target_deck > 1:
-                y_max *= 0.999
+            if fig_y_min is None:
+                new_y_min = min_y
+                reset_y_limits = True
+            else:
+                new_y_min = min(min_y, fig_y_min)
+                if new_y_min < fig_y_min:
+                    reset_y_limits = True
 
-            if fig_y_min is not None:
-                y_min = min(fig_y_min, y_min)
-            if fig_y_max is not None:
-                y_max = max(fig_y_max, y_max)
+            if fig_y_max is None:
+                new_y_max = max_y
+                reset_y_limits = True
+            else:
+                new_y_max = max(max_y, fig_y_max)
+                if new_y_max > fig_y_max:
+                    reset_y_limits = True
+
+            print(f'\nADD MVOL')
+            print(f'min_y, max_y = {min_y, max_y}')
+            print(f'fig_y_min, fig_y_max = {fig_y_min, fig_y_max}')
+            print(f'new_y_min, new_y_max = {new_y_min, new_y_max}')
+
+            if not secondary_y:
+            
+                # Find new y limits and delta if the y range is expanded
+                if reset_y_limits:
+                    
+                    min_n_intervals = n_yintervals_map['min'][plot_height]
+                    max_n_intervals = n_yintervals_map['max'][plot_height]
+                    y_lower_limit, y_upper_limit, y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
+
+                    if target_deck > 1:
+                        y_upper_limit *= 0.999
+
+                    print(f'min_n_intervals, max_n_intervals = {min_n_intervals, max_n_intervals}')
+                    print(f'y_lower_limit, y_upper_limit, y_delta = {y_lower_limit, y_upper_limit, y_delta}')
+                    print(f'FINAL new_y_min, new_y_max, y_delta = {new_y_min, new_y_max, y_delta}')
+
+                    y_range = (y_lower_limit, y_upper_limit)
+                    fig.update_yaxes(
+                        range = y_range,
+                        showticklabels = True,
+                        tick0 = y_lower_limit,
+                        dtick = y_delta,
+                        showgrid = True,
+                        zeroline = True,
+                        row = target_deck, col = 1
+                    )
+
+            else:
+
+                fig.update_yaxes(
+                    range = None,
+                    secondary_y = True,
+                    showgrid = False,
+                    zeroline = False,
+                    row = target_deck, col = 1
+                )
 
             legendgrouptitle = {}
             if deck_type == 'triple':
@@ -2929,18 +3171,6 @@ class AnalyzePrices():
 
             # Update layout and axes
 
-            y_range = None if secondary_y else (y_min, y_max)
-            fig.update_yaxes(
-                range = y_range,
-                showticklabels = True,
-                tick0 = y_min,
-                dtick = y_delta,
-                secondary_y = secondary_y,
-                showgrid = not secondary_y,
-                zeroline = not secondary_y,
-                row = target_deck, col = 1
-            )
-            
             if add_yaxis_title:
 
                 yaxes = [y for y in dir(fig['layout']) if y.startswith('yaxis')]
@@ -2966,8 +3196,8 @@ class AnalyzePrices():
                 )
 
             fig_data.update({'fig': fig})
-            fig_data['y_min'].update({target_deck: y_min})
-            fig_data['y_max'].update({target_deck: y_max})
+            fig_data['y_min'].update({target_deck: new_y_min})
+            fig_data['y_max'].update({target_deck: new_y_max})
 
             color_map = {legend_name: color_idx}
             overlay_idx = len(fig_overlays) + 1
@@ -3096,13 +3326,14 @@ class AnalyzePrices():
 
         if target_deck == 1:
             if secondary_y:
-                 if not has_secondary_y:
+                if not has_secondary_y:
                     print('ERROR: Secondary y axis must be selected when creating the plotting template')
                     return fig_data
             else:
                 # Must check if there are traces on the primary y axis
                 n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
                 # This is NOT an overlay, so if the primary y axis is unavailable, then refuse to plot, regardless if it's volume or price
+                # Price overlays can be added through add_price_overlays()
                 if n_traces_upper > 0:
                     print(f'ERROR: Can only plot {price_type} on the secondary y axis or in the middle/lower deck')
                     return fig_data
@@ -3133,19 +3364,58 @@ class AnalyzePrices():
         else:
             fill = 'none'
 
+        # Adjust y range if necessary
+
+        reset_y_limits = False
+
         min_y = min(df_tk)
         max_y = max(df_tk)
-        min_n_intervals = n_yintervals_map['min'][plot_height]
-        max_n_intervals = n_yintervals_map['max'][plot_height]
-        y_min, y_max, y_delta = set_axis_limits(min_y, max_y, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
 
-        if fig_y_min is not None:
-            y_min = min(fig_y_min, y_min)
-        if fig_y_max is not None:
-            y_max = max(fig_y_max, y_max)
+        if fig_y_min is None:
+            new_y_min = min_y
+            reset_y_limits = True
+        else:
+            new_y_min = min(min_y, fig_y_min)
+            if new_y_min < fig_y_min:
+                reset_y_limits = True
+        
+        if fig_y_max is None:
+            new_y_max = max_y
+            reset_y_limits = True
+        else:
+            new_y_max = max(max_y, fig_y_max)
+            if new_y_max > fig_y_max:
+                reset_y_limits = True
 
-        if target_deck > 1:
-            y_max *= 0.999
+        if not secondary_y:
+            # Find new y limits and delta if the y range is expanded
+            if reset_y_limits:
+                min_n_intervals = n_yintervals_map['min'][plot_height]
+                max_n_intervals = n_yintervals_map['max'][plot_height]
+                y_lower_limit, y_upper_limit, y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
+                if target_deck > 1:
+                    y_upper_limit *= 0.999
+                y_range = (y_lower_limit, y_upper_limit)
+                fig.update_yaxes(
+                    range = y_range,
+                    title = yaxis_title,
+                    showticklabels = True,
+                    tick0 = y_lower_limit,
+                    dtick = y_delta,
+                    showgrid = True,
+                    zeroline = True,
+                    row = target_deck, col = 1
+                )
+        
+        else:
+            fig.update_yaxes(
+                range = None,
+                title = yaxis_title,
+                secondary_y = True,
+                showgrid = False,
+                zeroline = False,
+                row = target_deck, col = 1
+            )
 
         legendgrouptitle = {}
         if deck_type == 'triple':
@@ -3202,19 +3472,6 @@ class AnalyzePrices():
                 )
             )
 
-        y_range = None if secondary_y else (y_min, y_max)
-        fig.update_yaxes(
-            range = y_range,
-            title = yaxis_title,
-            showticklabels = True,
-            tick0 = y_min,
-            dtick = y_delta,
-            secondary_y = secondary_y,
-            showgrid = not secondary_y,
-            zeroline = not secondary_y,
-            row = target_deck, col = 1
-        )
-
         if deck_type in ['double', 'triple']:
             legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
             fig.update_layout(
@@ -3223,8 +3480,8 @@ class AnalyzePrices():
             )
 
         fig_data.update({'fig': fig})
-        fig_data['y_min'].update({target_deck: y_min})
-        fig_data['y_max'].update({target_deck: y_max})
+        fig_data['y_min'].update({target_deck: new_y_min})
+        fig_data['y_max'].update({target_deck: new_y_max})
 
         color_map = {legend_name: color_idx}
         overlay_idx = len(fig_overlays) + 1
@@ -3459,6 +3716,7 @@ class AnalyzePrices():
             )
 
         fig_data.update({'fig': fig})
+        ### MUST CORRECT
         fig_data['y_min'].update({target_deck: y_min})
         fig_data['y_max'].update({target_deck: y_max})
 
@@ -3587,6 +3845,7 @@ class AnalyzePrices():
         reverse_diff = False,
         plot_type = 'filled_line',
         add_signal = True,
+        add_price = False,        
         add_yaxis_title = True,
         add_title = False,
         title_font_size = 32,
@@ -3605,6 +3864,12 @@ class AnalyzePrices():
             if True, the (p2 - p1) difference will be used instead of (p1 - p2)
         add_signal:
             if True, a signal will be added that is a moving average of the calculated difference
+        add_price:
+            Can only add price to secondary_y, which means target_deck must be 1.
+            Except for price on secondary_y, no other overlays will be available.
+            None of the traces added by add_macd will be appended to the overlay list.
+        price_type is base in diff_data
+        df_price is p_base after mapping through price_type_map
         """
 
         fig_diff = fig_data['fig']
@@ -3612,6 +3877,18 @@ class AnalyzePrices():
         deck_type = fig_data['deck_type']
         title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
+        has_secondary_y = fig_data['has_secondary_y']
+
+        # Plot price on secondary axis of the upper deck only if it has been created in subplots
+
+        if target_deck == 1:
+            if add_price:
+                if not has_secondary_y:
+                    print('ERROR: Secondary y axis must be selected when creating the plotting template')
+                    return fig_data
+        else:
+            # If it's the middle or lower deck, just set add_price to False and continue
+            add_price = False
 
         base = diff_data['p_base']
         p_base_name = base.title()
@@ -3676,14 +3953,15 @@ class AnalyzePrices():
         diff_signal = self.moving_average(diff, signal_type, signal_window)
         signal_name = f'{signal_type.upper()} {signal_window} Signal'
 
+        # By definition, the range of signal will not exceed the range of diff
         min_diff = min(diff)
         max_diff = max(diff)
         min_n_intervals = n_yintervals_map['min'][plot_height]
         max_n_intervals = n_yintervals_map['max'][plot_height]
-        y_diff_min, y_diff_max, y_delta = set_axis_limits(min_diff, max_diff, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
+        y_lower_limit, y_upper_limit, y_delta = set_axis_limits(min_diff, max_diff, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
 
         if target_deck > 1:
-            y_diff_max *= 0.999 
+            y_upper_limit *= 0.999 
 
         diff_positive = diff.copy()
         diff_negative = diff.copy()
@@ -3788,6 +4066,19 @@ class AnalyzePrices():
                 row = target_deck, col = 1
             )
 
+        if add_price:
+            fig_diff.add_trace(
+                go.Scatter(
+                    x = p_base.index,
+                    y = p_base,
+                    line_color = style['basecolor'],
+                    showgrid = False,
+                    name = p_base_name,
+                    title = p_base_name
+                ),
+                secondary_y = True
+            )
+
         if deck_type in ['double', 'triple']:
             legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
             fig_data['fig'].update_layout(
@@ -3811,9 +4102,9 @@ class AnalyzePrices():
             )
 
         fig_diff.update_yaxes(
-            range = (y_diff_min, y_diff_max),
+            range = (y_lower_limit, y_upper_limit),
             showticklabels = True,
-            tick0 = y_diff_min,
+            tick0 = y_lower_limit,
             dtick = y_delta,
             row = target_deck, col = 1
         )
@@ -3825,8 +4116,8 @@ class AnalyzePrices():
             )
 
         fig_data.update({'fig': fig_diff})
-        fig_data['y_min'].update({target_deck: y_diff_min})
-        fig_data['y_max'].update({target_deck: y_diff_max})
+        fig_data['y_min'].update({target_deck: min_diff})
+        fig_data['y_max'].update({target_deck: max_diff})
 
         return fig_data
 
@@ -3842,6 +4133,7 @@ class AnalyzePrices():
         reverse_diff = False,    
         plot_type = 'filled_line',
         add_signal = False,
+        add_price = False,
         signal_type = 'sma',
         signal_window = 10,
         add_yaxis_title = True,
@@ -3861,6 +4153,24 @@ class AnalyzePrices():
         deck_type = fig_data['deck_type']
         title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
+        has_secondary_y = fig_data['has_secondary_y']
+
+        # Plot price on secondary axis of the upper deck only if it has been created in subplots
+
+        if target_deck == 1:
+            if add_price:
+                if not has_secondary_y:
+                    print('ERROR: Secondary y axis must be selected when creating the plotting template')
+                    return fig_data
+        else:
+            # If it's the middle or lower deck, just set add_price to False and continue
+            add_price = False
+
+        stochastic_type = stochastic_data['type']
+        stochastic_label = stochastic_data['label']
+        p1 = stochastic_data['k_line']
+        p2 = stochastic_data['d_line']
+        df_price = stochastic_data['price']
 
         legendgrouptitle = {}
         if deck_type == 'triple':
@@ -3872,11 +4182,6 @@ class AnalyzePrices():
             )
 
         style = theme_style[theme]
-
-        stochastic_type = stochastic_data['type']
-        stochastic_label = stochastic_data['label']
-        p1 = stochastic_data['k_line']
-        p2 = stochastic_data['d_line']
 
         if not reverse_diff:
             p1_name = '%K'
@@ -3898,14 +4203,15 @@ class AnalyzePrices():
         diff_signal = self.moving_average(diff, signal_type, signal_window)
         signal_name = f'{signal_type.upper()} {signal_window} Signal'
 
+        # By definition, the range of signal will not exceed the range of diff
         min_diff = min(diff)
         max_diff = max(diff)
         min_n_intervals = n_yintervals_map['min'][plot_height]
         max_n_intervals = n_yintervals_map['max'][plot_height]
-        y_diff_min, y_diff_max, y_delta = set_axis_limits(min_diff, max_diff, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
+        y_lower_limit, y_upper_limit, y_delta = set_axis_limits(min_diff, max_diff, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
 
         if target_deck > 1:
-            y_diff_max *= 0.999 
+            y_upper_limit *= 0.999 
 
         ######
 
@@ -4012,6 +4318,19 @@ class AnalyzePrices():
                 row = target_deck, col = 1
             )
 
+        if add_price:
+            fig_diff.add_trace(
+                go.Scatter(
+                    x = df_price.index,
+                    y = df_price,
+                    line_color = style['basecolor'],
+                    showgrid = False,
+                    name = 'Close',
+                    title = 'Close'
+                ),
+                secondary_y = True
+            )
+
         if deck_type in ['double', 'triple']:
             legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
             fig_data['fig'].update_layout(
@@ -4035,9 +4354,9 @@ class AnalyzePrices():
             )
 
         fig_diff.update_yaxes(
-            range = (y_diff_min, y_diff_max),
+            range = (y_lower_limit, y_upper_limit),
             showticklabels = True,
-            tick0 = y_diff_min,
+            tick0 = y_lower_limit,
             dtick = y_delta,
             row = target_deck, col = 1
         )
@@ -4049,7 +4368,7 @@ class AnalyzePrices():
             )
 
         fig_data.update({'fig': fig_diff})
-        fig_data['y_min'].update({target_deck: y_diff_min})
-        fig_data['y_max'].update({target_deck: y_diff_max})
+        fig_data['y_min'].update({target_deck: min_diff})
+        fig_data['y_max'].update({target_deck: max_diff})
 
         return fig_data
