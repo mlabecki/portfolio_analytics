@@ -93,7 +93,7 @@ theme_style = {
                 'border':   'rgba(165, 42, 42, 1)'    # brown
             },
             'green': {
-                'fill':     'rgba(250, 205, 50, 1)',  # limegreen
+                'fill':     'rgba(50, 205, 50, 1)',   # limegreen
                 'border':   'rgba(0, 100, 0, 1)'      # darkgreen
             },
             'yellow': {
@@ -368,6 +368,37 @@ theme_style = {
         'x_linecolor':              'black',
         'y_linecolor':              'black',
 
+        'drawdown_colors': {
+            'red': {
+                'fill':     'rgba(178, 34, 34, 1)',   # firebrick
+                'border':   'rgba(165, 42, 42, 1)'    # brown
+            },
+            'green': {
+                'fill':     'rgba(25, 185, 25, 1)',   # limegreen
+                'border':   'rgba(0, 100, 0, 1)'      # darkgreen
+            },
+            'yellow': {
+                'fill':     'rgba(205, 180, 0, 1)',   # gold
+                'border':   'rgba(180, 124, 8, 1)'    # darkgoldenrod
+            },
+            'blue': {
+                'fill':     'rgba(0, 175, 235, 1)',   # deepskyblue
+                'border':   'rgba(0, 50, 160, 1)'     #
+            },
+            'purple': {
+                'fill':     'rgba(190, 30, 220, 1)',  # 
+                'border':   'rgba(90, 0, 130, 1)'     #
+            },
+            'orange': {
+                'fill':     'rgba(225, 100, 0, 1)',   # 
+                'border':   'rgba(115, 55, 0, 1)'     #
+            },
+            'silver': {
+                'fill':     'rgba(65, 65, 65, 1)', # 
+                'border':   'rgba(10, 10, 10, 1)'     #
+            }
+        },
+
         'overlay_color_theme': {
             'base': [
                 'rgba(31, 119, 180, 1)',    # '#1f77b4', base blue
@@ -470,6 +501,14 @@ theme_style = {
                 'rgba(127, 127, 127, 1)',  # grey
                 'rgba(188, 189, 34, 1)',   # olive
                 'rgba(23, 190, 207, 1)'    # cyan
+            ],
+            'silver': [
+                'rgba(220, 220, 220, 1)',  # 
+                'rgba(190, 190, 190, 1)',  #
+                'rgba(160, 160, 160, 1)',  # 
+                'rgba(130, 130, 130, 1)',  #
+                'rgba(100, 100, 100, 1)',  #
+                'rgba(70, 70, 70, 1)'      #
             ]
         },
 
@@ -570,6 +609,14 @@ theme_style = {
                 4: [0, 1, 2, 3],        # brown
                 5: [0, 1, 2, 3, 4],     # purple
                 6: [0, 1, 2, 3, 4, 5]   # orange
+            },
+            'silver': {
+                1: [2],                 # 
+                2: [5, 2],              # 
+                3: [5, 2, 0],           # 
+                4: [5, 3, 2, 0],        #
+                5: [5, 3, 2, 1, 0],     #
+                6: [5, 4, 3, 2, 1, 0]   #
             }
         }
     }

@@ -27,9 +27,13 @@ tickers = list(magnificent_7_tickers.keys())
 print(tickers)
 print(tripledeck_legendtitle)
 
+tk = 'MSFT'
+drawdown_color = 'red'
+theme = 'dark'
+
 app = dash.Dash(__name__)
 
-def create_graph(tk):
+def create_graph(tk, drawdown_color, theme):
 
     end_date = datetime.today()
     hist_years, hist_months, hist_days = 1, 0, 0
@@ -84,7 +88,7 @@ def create_graph(tk):
     # deck_type = 'double'
     # deck_type = 'single'
 
-    theme = 'dark'
+    # theme = 'dark'
     # theme = 'light'
     color_theme = 'magenta'
     # color_theme = 'tableau'
@@ -129,7 +133,7 @@ def create_graph(tk):
         theme = theme,
         # color_theme = 'base'
         price_color_theme = 'magenta',
-        drawdown_color = 'purple'
+        drawdown_color = drawdown_color
     )
     
     fig_data = analyze_prices.add_hist_price(fig_data, volume_tk, tk, target_deck = 2, secondary_y = False, plot_type = 'bar', add_title = False, price_type = 'volume', theme = theme)
@@ -188,33 +192,87 @@ def create_graph(tk):
 
 #################
 
-app.layout = html.Div([
+app.layout = html.Div(children = [
 
     # html.H1(children='Hello Dash'),
     # html.Script(src="https://cdn.plot.ly/plotly-latest.min.js"),
-
-    dcc.Dropdown(
-        id='tickers-dropdown',
-        options = tickers,
-        value = 'MSFT',
-        style = {'width': '20%'}
-    ),
-
-    # html.Div(id = 'dd-output-container', children = []),
-
+    html.Div(
+    [
+        dcc.Dropdown(
+            id='tickers-dropdown',
+            options = tickers,
+            value = 'MSFT',
+            style = {'width': '100px'}
+        )
     # html.Div(id='graphDiv'),
-    create_graph('MSFT'),
+    # create_graph(tk, drawdown_color),
     #html.Div(children = [dcc.Graph(id = 'test-graph', figure = {})])
+    ],
+    style={
+        "display": "inline-block",
+        # "margin-top": "10px",
+        # "margin-left": "10px",
+        "verticalAlign": "middle",
+        "font-family": "Helvetica"
+    }),
+
+    html.Div(
+    [
+        dcc.Dropdown(
+            id='drawdowns-dropdown',
+            options = ['yellow', 'orange', 'blue', 'purple', 'silver', 'red', 'green'],
+            value = 'red',
+            style = {'width': '100px'}
+        ),
+        # html.Div(id = 'dd-output-container', children = []),
+
+        # html.Div(id='graphDiv'),
+        # create_graph(tk, drawdown_color),
+        #html.Div(children = [dcc.Graph(id = 'test-graph', figure = {})])
+    ],
+    style={
+        "display": "inline-block",
+        # "margin-top": "10px",
+        # "margin-left": "10px",
+        "verticalAlign": "middle",
+        "font-family": "Helvetica"
+    }),
+
+    html.Div(
+    [
+        dcc.Dropdown(
+            id='theme-dropdown',
+            options = ['dark', 'light'],
+            value = 'dark',
+            style = {'width': '100px'}
+        ),
+        # html.Div(id = 'dd-output-container', children = []),
+
+        # html.Div(id='graphDiv'),
+        # create_graph(tk, drawdown_color),
+        #html.Div(children = [dcc.Graph(id = 'test-graph', figure = {})])
+    ],
+    style={
+        "display": "inline-block",
+        # "margin-top": "10px",
+        # "margin-left": "10px",
+        "verticalAlign": "middle",
+        "font-family": "Helvetica"
+    }),
+
+    create_graph(tk, drawdown_color, theme)
 ])
 
 @app.callback(
     # Output(component_id = 'dd-output-container', component_property = 'children'),
     # Output(component_id = 'test-graph', component_property = 'figure'),
     Output(component_id = 'fig_div', component_property = 'children'),
-    Input(component_id = 'tickers-dropdown', component_property = 'value')
+    Input(component_id = 'tickers-dropdown', component_property = 'value'),
+    Input(component_id = 'drawdowns-dropdown', component_property = 'value'),
+    Input(component_id = 'theme-dropdown', component_property = 'value')
 )
-def update_graph(tk):
-    return create_graph(tk)
+def update_graph(tk, drawdown_color, theme):
+    return create_graph(tk, drawdown_color, theme)
 
 # app.layout = html.Div(children=[
 #    dcc.Graph(
