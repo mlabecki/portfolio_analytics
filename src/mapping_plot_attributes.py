@@ -87,6 +87,37 @@ theme_style = {
         'x_linecolor':              '#506784',
         'y_linecolor':              '#506784',
 
+        'drawdown_colors': {
+            'red': {
+                'fill':     'rgba(255, 0, 0, 1)',     # red
+                'border':   'rgba(165, 42, 42, 1)'    # brown
+            },
+            'green': {
+                'fill':     'rgba(250, 205, 50, 1)',  # limegreen
+                'border':   'rgba(0, 100, 0, 1)'      # darkgreen
+            },
+            'yellow': {
+                'fill':     'rgba(255, 215, 0, 1)',   # gold
+                'border':   'rgba(184, 134, 11, 1)'   # darkgoldenrod
+            },
+            'blue': {
+                'fill':     'rgba(0, 191, 255, 1)',   # deepskyblue
+                'border':   'rgba(0, 50, 160, 1)'     #
+            },
+            'purple': {
+                'fill':     'rgba(205, 35, 230, 1)',  # 
+                'border':   'rgba(90, 0, 130, 1)'     #
+            },
+            'orange': {
+                'fill':     'rgba(255, 150, 0, 1)',   # 
+                'border':   'rgba(115, 55, 0, 1)'     #
+            },
+            'silver': {
+                'fill':     'rgba(240, 240, 240, 1)', # 
+                'border':   'rgba(80, 80, 80, 1)'     #
+            }
+        },
+
         'overlay_color_theme': {
             'base': [
                 'rgba(0, 191, 255, 1)',     # deepskyblue
@@ -194,6 +225,14 @@ theme_style = {
                 'rgba(199, 199, 199, 1)',  # light grey
                 'rgba(219, 219, 141, 1)',  # light olive
                 'rgba(158, 218, 229, 1)'   # light cyan
+            ],
+            'silver': [
+                'rgba(55, 55, 55, 1)',  #
+                'rgba(95, 95, 95, 1)',  #
+                'rgba(135, 135, 135, 1)',  # 
+                'rgba(175, 175, 175, 1)',  #
+                'rgba(215, 215, 215, 1)',  # 
+                'rgba(255, 255, 255, 1)'   #
             ]
         },
         
@@ -294,6 +333,14 @@ theme_style = {
                 4: [5, 4, 3, 2],        # light brown
                 5: [5, 4, 3, 2, 1],     # light purple
                 6: [5, 4, 3, 2, 1, 0]   # light orange
+            },
+            'silver': {
+                1: [2],                 # 
+                2: [5, 2],              # 
+                3: [5, 2, 0],           # 
+                4: [5, 3, 2, 0],        #
+                5: [5, 3, 2, 1, 0],     #
+                6: [5, 4, 3, 2, 1, 0]   #
             }
         }
     },

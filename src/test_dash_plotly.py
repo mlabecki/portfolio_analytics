@@ -66,7 +66,7 @@ def create_graph(tk):
 
     ma_ribbon = analyze_prices.get_ma_ribbon(ma_type = 'sma', ma_window = 10, n_ma = 6)
 
-    bollinger_data = analyze_prices.bollinger_bands(close_tk, window = 20, n_std = 1, n_bands = 1)
+    bollinger_data = analyze_prices.bollinger_bands(close_tk, window = 20, n_std = 2, n_bands = 3)
     # bollinger_data = bollinger_bands(close_tk, window = 20, n_std = 2, n_bands = 3)
     bollinger_list = bollinger_data['list']
 
@@ -127,16 +127,21 @@ def create_graph(tk):
         show_trough_to_recovery = True,
         add_title = True,
         theme = theme,
-        color_theme = 'base'
+        # color_theme = 'base'
+        price_color_theme = 'magenta',
+        drawdown_color = 'purple'
     )
     
-    # fig_data = analyze_prices.add_hist_price(fig_data, close_tk, tk, target_deck = 1, secondary_y = True, add_title = False, price_type = 'close', theme = theme)
+    fig_data = analyze_prices.add_hist_price(fig_data, volume_tk, tk, target_deck = 2, secondary_y = False, plot_type = 'bar', add_title = False, price_type = 'volume', theme = theme)
     # fig_data = analyze_prices.add_hist_price(fig_data, close_tk, tk, target_deck = 1, add_title = False, price_type = 'close', theme = theme)
     # fig_data = analyze_prices.add_price_overlays(fig_data, price_list, tk, target_deck = 1, theme = theme, color_theme = 'turquoise')
     
     # fig_data = add_ma_overlays(fig_data, close_tk, ema_list[: 6], target_deck = 1, theme = theme, color_theme = color_theme)
-    fig_data = analyze_prices.add_ma_overlays(fig_data, close_tk, ma_ribbon, target_deck = 1, theme = theme, color_theme = 'grasslands')
+    # fig_data = analyze_prices.add_ma_overlays(fig_data, close_tk, ma_ribbon, target_deck = 1, theme = theme, color_theme = 'grasslands')
+    fig_data = analyze_prices.add_ma_overlays(fig_data, close_tk, ma_ribbon, target_deck = 1, theme = theme, color_theme = 'silver')
     
+    fig_data = analyze_prices.add_bollinger_overlays(fig_data, bollinger_list, target_deck = 1, theme = theme, color_theme = 'sapphire')
+    """
     fig_data = analyze_prices.add_bollinger_width(
     # fig_data = add_bollinger_width(    
         fig_data,
@@ -161,7 +166,7 @@ def create_graph(tk):
         theme = theme,
         color_theme = 'lavender'
     )
-
+    """
     fig_data = analyze_prices.add_diff_stochastic(fig_data, tk, stochastic_data, target_deck = 3, reverse_diff = False, add_signal = True, signal_window = 7, add_title = False, theme = theme)
     
     fig = fig_data['fig']
@@ -199,9 +204,7 @@ app.layout = html.Div([
 
     # html.Div(id='graphDiv'),
     create_graph('MSFT'),
-    html.Div(children = [
-        dcc.Graph(id = 'test-graph', figure = {})
-    ])
+    #html.Div(children = [dcc.Graph(id = 'test-graph', figure = {})])
 ])
 
 @app.callback(

@@ -972,6 +972,7 @@ class AnalyzePrices():
         signal_window = 9      
     ):
         """
+        Only Close price is used to calculate MACD
         """ 
 
         if not isinstance(close_tk, pd.Series):
@@ -1760,7 +1761,8 @@ class AnalyzePrices():
         add_title = True,
         title_font_size = 32,
         theme = 'dark',
-        color_theme = None
+        price_color_theme = None,
+        drawdown_color = 'red'
     ):
         """
         fig_data:
@@ -1808,12 +1810,15 @@ class AnalyzePrices():
         df_tk_longest_drawdowns_str = drawdown_data['Longest Drawdowns Str']
 
         style = theme_style[theme]
-        top_by_color = style['red_color']
+        ### top_by_color = style['red_color']
+        top_by_color = style['drawdown_colors'][drawdown_color]['fill']
+        drawdown_border_color = style['drawdown_colors'][drawdown_color]['border']
+                
         legend_name = price_type.title()
 
         # Alpha = opacity. Since opacity of 1 covers the gridlines, alpha_max is reduced here.
         if theme == 'dark':
-            alpha_min, alpha_max = 0.15, 0.6  # max intensity covers the grid
+            alpha_min, alpha_max = 0.15, 0.7  # max intensity covers the grid
         else:
             alpha_min, alpha_max = 0.1, 0.8  # max intensity covers the grid
 
@@ -1824,9 +1829,9 @@ class AnalyzePrices():
             top_list = list(df_tk_longest_drawdowns['Total Length'])
             top_cmap = map_values(top_list, alpha_min, alpha_max, ascending=False)
 
-        color_theme = 'base' if color_theme is None else color_theme
-        color_idx = style['overlay_color_selection'][color_theme][1][0]
-        linecolor = style['overlay_color_theme'][color_theme][color_idx]
+        price_color_theme = 'base' if price_color_theme is None else price_color_theme
+        color_idx = style['overlay_color_selection'][price_color_theme][1][0]
+        linecolor = style['overlay_color_theme'][price_color_theme][color_idx]
 
         reset_y_limits = False
         
@@ -1860,9 +1865,9 @@ class AnalyzePrices():
                 if target_deck > 1:
                     y_upper_limit *= 0.999
 
-                print(f'min_n_intervals, max_n_intervals = {min_n_intervals, max_n_intervals}')
-                print(f'y_lower_limit, y_upper_limit, y_delta = {y_lower_limit, y_upper_limit, y_delta}')
-                print(f'FINAL new_y_min, new_y_max, y_delta = {new_y_min, new_y_max, y_delta}')
+                # print(f'min_n_intervals, max_n_intervals = {min_n_intervals, max_n_intervals}')
+                # print(f'y_lower_limit, y_upper_limit, y_delta = {y_lower_limit, y_upper_limit, y_delta}')
+                # print(f'FINAL new_y_min, new_y_max, y_delta = {new_y_min, new_y_max, y_delta}')
 
                 y_range = (y_lower_limit, y_upper_limit)
                 fig.update_yaxes(
@@ -1945,7 +1950,8 @@ class AnalyzePrices():
                     y = [0, 0, infinity, infinity, 0],
                     mode = 'lines',
                     line_width = 2,
-                    line_color = 'brown',                    
+                    # line_color = 'brown',
+                    line_color = drawdown_border_color,
                     fill = 'toself',
                     fillcolor = fillcolor,
                     name = name,
