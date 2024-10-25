@@ -212,26 +212,29 @@ app.layout = html.Div([
     
     html.Div([
 
-    # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/
-    dbc.Button(
-        'MENU',
-        id = 'collapse-button',
-        class_name = 'ma-1',
-        color = 'primary',
-        # color = 'dark',
-        size = 'sm',
-        n_clicks = 0,
-        style = {
-            'display': 'inline-block',
-            'margin-right': '5px',
-            # 'verticalAlign': 'middle',
-            # 'horizontaAlign': 'left',
-            'text-align': 'left',
-            'font-family': 'Helvetica',
-            'font-size': '10',
-            'font-weight': 'bold',
-            'width': '65px'
-        }),
+        # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/
+        html.Div(
+            children = [
+            dbc.Button(
+                # 'HIDE MENU',
+                id = 'collapse-button',
+                class_name = 'ma-1',
+                color = 'primary',
+                # color = 'dark',
+                size = 'sm',
+                n_clicks = 0,
+                # n_clicks = 1,
+                style = {
+                    'display': 'inline-block',
+                    'margin-right': '5px',
+                    'text-align': 'left',
+                    'font-family': 'Helvetica',
+                    'font-size': '10',
+                    'font-weight': 'bold',
+                    'width': '130px'
+                }
+            )
+        ]),
 
     dbc.Collapse(
 
@@ -324,14 +327,17 @@ app.layout = html.Div([
 ])
 
 @app.callback(
+    Output('collapse-button', 'children'),
     Output('collapse', 'is_open'),
-    [Input('collapse-button', 'n_clicks')],
-    [State('collapse', 'is_open')]
+    Input('collapse-button', 'n_clicks'),
+    State('collapse', 'is_open')
 )
 def toggle_collapse(n, is_open):
+    label = 'SHOW OPTIONS' if is_open else 'HIDE OPTIONS'
     if n:
-        return not is_open
-    return is_open
+        return label, not is_open
+    else:
+        return 'HIDE OPTIONS', is_open
 
 @app.callback(
     # Output(component_id = 'dd-output-container', component_property = 'children'),
