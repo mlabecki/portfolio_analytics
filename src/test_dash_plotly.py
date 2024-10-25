@@ -1,5 +1,6 @@
 import dash
-from dash import Dash, dcc, html, Input, Output, callback
+from dash import Dash, dcc, html, Input, Output, State, callback
+import dash_bootstrap_components as dbc
 
 import yfinance as yf
 import pandas as pd
@@ -34,7 +35,14 @@ overlay_color_theme = 'grasslands'
 overlay_color_themes = list(theme_style[theme]['overlay_color_theme'].keys())
 drawdown_colors = list(theme_style[theme]['drawdown_colors'].keys())
 
-app = dash.Dash(__name__)
+# app = dash.Dash(__name__, external_stylesheets = [dbc.themes.CYBORG])  # lightens font in dcc.Dropdown
+# app = dash.Dash(__name__, external_stylesheets = [dbc.themes.COSMO])     # sharp corners
+# app = dash.Dash(__name__, external_stylesheets = [dbc.themes.LUX])     # sharp corners
+app = dash.Dash(__name__, external_stylesheets = [dbc.themes.YETI])     # sharp corners
+# app = dash.Dash(__name__, external_stylesheets = [dbc.themes.ZEPHYR])  # rounded corners
+# app = dash.Dash(__name__, external_stylesheets = [dbc.themes.SANDSTONE])
+# app = dash.Dash(__name__, external_stylesheets = [dbc.themes.CYBORG, dbc.icons.FONT_AWESOME])
+# app = dash.Dash(__name__, external_stylesheets = [dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP])
 
 def create_graph(
     theme,
@@ -200,74 +208,130 @@ def create_graph(
 #################
 # html.Script(src='https://cdn.plot.ly/plotly-latest.min.js')
 
-app.layout = html.Div(
-
-    children = [
-   
+app.layout = html.Div([
+    
     html.Div([
-        html.Div('Theme', style = {'font-weight': 'bold', 'margin-down': '0px'}),
-        dcc.Dropdown(
-            id='theme-dropdown',
-            options = ['dark', 'light'],
-            value = 'dark',
-            style = {'width': '85px'}
-        )],
-        style={
-            'display': 'inline-block',
-            'margin-right': '5px',
-            'verticalAlign': 'middle',
-            'font-family': 'Helvetica'
-        }),
 
-    html.Div([
-        html.Div('Ticker', style = {'font-weight': 'bold', 'margin-down': '0px'}),
-        dcc.Dropdown(
-            id='tickers-dropdown',
-            options = tickers,
-            value = 'MSFT',
-            style = {'width': '110px'}
-        )],
+    # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/
+    dbc.Button(
+        'MENU',
+        id = 'collapse-button',
+        class_name = 'ma-1',
+        color = 'primary',
+        # color = 'dark',
+        size = 'sm',
+        n_clicks = 0,
         style = {
             'display': 'inline-block',
             'margin-right': '5px',
-            'verticalAlign': 'middle',
-            'font-family': 'Helvetica'
+            # 'verticalAlign': 'middle',
+            # 'horizontaAlign': 'left',
+            'text-align': 'left',
+            'font-family': 'Helvetica',
+            'font-size': '10',
+            'font-weight': 'bold',
+            'width': '65px'
         }),
 
-    html.Div([
-        html.Div('DD Color', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
-        dcc.Dropdown(
-            id='drawdowns-dropdown',
-            options = drawdown_colors,
-            value = 'red',
-            style = {'width': '120px'}
-        )],
-        style={
-            'display': 'inline-block',
-            # 'margin-top': '5px',
-            'margin-right': '5px',
-            'verticalAlign': 'middle',
-            'font-family': 'Helvetica'
-        }),
+    dbc.Collapse(
 
-    html.Div([
-        html.Div('Overlay Theme', style = {'font-weight': 'bold', 'margin-down': '0px'}),                
-        dcc.Dropdown(
-            id='overlay-dropdown',
-            options = overlay_color_themes,
-            value = 'grasslands',
-            style = {'width': '135px'}
-        )],
-        style={
-            'display': 'inline-block',
-            # 'margin-top': '5px',
-            'margin-right': '5px',
-            'verticalAlign': 'middle',
-            'font-family': 'Helvetica'
-        }),
+        html.Div(
+            id = 'controls-container',
+            children =
+            [
+            html.Div([
+                html.Div('Theme', style = {'font-weight': 'bold', 'margin-down': '0px'}),
+                dcc.Dropdown(
+                    id = 'theme-dropdown',
+                    options = ['dark', 'light'],
+                    value = 'dark',
+                    style = {'width': '85px'}
+                )],
+                style={
+                    'display': 'inline-block',
+                    'margin-right': '5px',
+                    'verticalAlign': 'middle',
+                    'font-family': 'Helvetica'
+                }),
+
+            html.Div([
+                html.Div('Ticker', style = {'font-weight': 'bold', 'margin-down': '0px'}),
+                dcc.Dropdown(
+                    id='tickers-dropdown',
+                    options = tickers,
+                    value = 'MSFT',
+                    style = {'width': '110px'}
+                )],
+                style = {
+                    'display': 'inline-block',
+                    'margin-right': '5px',
+                    'verticalAlign': 'middle',
+                    'font-family': 'Helvetica'
+                }),
+
+            html.Div([
+                html.Div('DD Color', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
+                dcc.Dropdown(
+                    id='drawdowns-dropdown',
+                    options = drawdown_colors,
+                    value = 'red',
+                    style = {'width': '120px', 'font-color': 'black'}
+                )],
+                style={
+                    'display': 'inline-block',
+                    'margin-right': '5px',
+                    'verticalAlign': 'middle',
+                    'font-family': 'Helvetica'
+                }),
+
+            html.Div([
+                html.Div('Overlay Theme', style = {'font-weight': 'bold', 'margin-down': '0px'}),
+                dcc.Dropdown(
+                    id='overlay-dropdown',
+                    options = overlay_color_themes,
+                    value = 'grasslands',
+                    style = {'width': '135px', 'font-color': 'black'}
+                )],
+                style={
+                    'display': 'inline-block',
+                    # 'margin-top': '5px',
+                    'margin-right': '5px',
+                    'verticalAlign': 'middle',
+                    'font-family': 'Helvetica'
+                })
+            ]
+#        ))
+        ),
+        
+        id = 'collapse',
+        is_open = True
+    
+    )],
+    style = {
+        'display': 'inline-block',
+        'margin-right': '5px',
+        'verticalAlign': 'middle',
+        'font-family': 'Helvetica'
+    }
+    ),
+
+    # style = {'font-family': 'Helvetica', 'font-weight': 'normal', 'margin-down': '5px'}
+
+    html.Br(),
 
     create_graph(theme, tk, drawdown_color, overlay_color_theme)
+
 ])
+
+@app.callback(
+    Output('collapse', 'is_open'),
+    [Input('collapse-button', 'n_clicks')],
+    [State('collapse', 'is_open')]
+)
+def toggle_collapse(n, is_open):
+    if n:
+        return not is_open
+    return is_open
 
 @app.callback(
     # Output(component_id = 'dd-output-container', component_property = 'children'),
