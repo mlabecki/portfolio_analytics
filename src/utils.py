@@ -28,13 +28,13 @@ def set_axis_limits(
         # order = 10 ** round(math.log10(x_maxmax))
         order = 10 ** round(math.log10(x_diff))
 
-        print(f'\ny_min, y_max = {x_min}, {x_max}')
-        print(f'order = {order}')
+        # print(f'\ny_min, y_max = {x_min}, {x_max}')
+        # print(f'order = {order}')
         eps = order * 1e-10
 
         for unit in units:
             unit_scaled = order * unit
-            print(f'unit scaled = {unit_scaled}')
+            # print(f'unit scaled = {unit_scaled}')
 
             lower_anchor = 0
             increment = unit_scaled
@@ -48,29 +48,29 @@ def set_axis_limits(
             if diff_lower < eps:
                 diff_lower = 0
 
-            print(f'\tlower anchor = {lower_anchor}')
-            print(f'\tdiff lower = {diff_lower}')
+            # print(f'\tlower anchor = {lower_anchor}')
+            # print(f'\tdiff lower = {diff_lower}')
 
             upper_anchor = lower_anchor
             while (upper_anchor < x_max) & (abs(upper_anchor - x_max) > eps) & (round((upper_anchor - lower_anchor) / increment) < max_n_intervals):
                 upper_anchor += unit_scaled
-                print(f'\tupper anchor = {upper_anchor}')
+                # print(f'\tupper anchor = {upper_anchor}')
             diff_upper = abs(upper_anchor - x_max)
             if diff_upper < eps:
                 diff_upper = 0
             
-            print(f'\tupper anchor = {upper_anchor}')
-            print(f'\tdiff upper = {diff_upper}')
+            # print(f'\tupper anchor = {upper_anchor}')
+            # print(f'\tdiff upper = {diff_upper}')
             n = round((upper_anchor - lower_anchor) / increment)
 
-            print(f'\tTotal Diff = {diff_upper + diff_lower}')
+            # print(f'\tTotal Diff = {diff_upper + diff_lower}')
             if (upper_anchor - x_max > -eps) & (diff_lower + diff_upper < diff) & (n >= min_n_intervals):
                 diff = diff_lower + diff_upper
                 lower_limit = lower_anchor
                 upper_limit = upper_anchor
                 delta = increment
 
-            print(f'Number of intervals: {n}')
+            # print(f'Number of intervals: {n}')
 
         return lower_limit, upper_limit, delta
 

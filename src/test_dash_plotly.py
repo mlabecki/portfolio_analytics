@@ -30,10 +30,18 @@ print(tripledeck_legendtitle)
 tk = 'MSFT'
 drawdown_color = 'red'
 theme = 'dark'
+overlay_color_theme = 'grasslands'
+overlay_color_themes = list(theme_style[theme]['overlay_color_theme'].keys())
+drawdown_colors = list(theme_style[theme]['drawdown_colors'].keys())
 
 app = dash.Dash(__name__)
 
-def create_graph(tk, drawdown_color, theme):
+def create_graph(
+    theme,
+    tk,
+    drawdown_color,
+    overlay_color_theme
+):
 
     end_date = datetime.today()
     hist_years, hist_months, hist_days = 1, 0, 0
@@ -70,8 +78,7 @@ def create_graph(tk, drawdown_color, theme):
 
     ma_ribbon = analyze_prices.get_ma_ribbon(ma_type = 'sma', ma_window = 10, n_ma = 6)
 
-    bollinger_data = analyze_prices.bollinger_bands(close_tk, window = 20, n_std = 2, n_bands = 3)
-    # bollinger_data = bollinger_bands(close_tk, window = 20, n_std = 2, n_bands = 3)
+    bollinger_data = analyze_prices.bollinger_bands(close_tk, window = 20, n_std = 2, n_bands = 1)
     bollinger_list = bollinger_data['list']
 
     mvol_data = analyze_prices.moving_volatility(close_tk, window = 10)
@@ -103,7 +110,7 @@ def create_graph(tk, drawdown_color, theme):
         secondary_y = False,
         # secondary_y = True,
         # plot_width = 1450,
-        plot_width = 1450,
+        plot_width = 1800,
         plot_height_1 = 600,
         plot_height_2 = 150,
         plot_height_3 = 150,
@@ -128,7 +135,7 @@ def create_graph(tk, drawdown_color, theme):
         # add_price = False,
         price_type = 'close',
         top_by = 'depth',
-        show_trough_to_recovery = True,
+        # show_trough_to_recovery = True,
         add_title = True,
         theme = theme,
         # color_theme = 'base'
@@ -142,10 +149,10 @@ def create_graph(tk, drawdown_color, theme):
     
     # fig_data = add_ma_overlays(fig_data, close_tk, ema_list[: 6], target_deck = 1, theme = theme, color_theme = color_theme)
     # fig_data = analyze_prices.add_ma_overlays(fig_data, close_tk, ma_ribbon, target_deck = 1, theme = theme, color_theme = 'grasslands')
-    fig_data = analyze_prices.add_ma_overlays(fig_data, close_tk, ma_ribbon, target_deck = 1, theme = theme, color_theme = 'silver')
+    fig_data = analyze_prices.add_ma_overlays(fig_data, close_tk, ma_ribbon, target_deck = 1, theme = theme, color_theme = overlay_color_theme)
     
     fig_data = analyze_prices.add_bollinger_overlays(fig_data, bollinger_list, target_deck = 1, theme = theme, color_theme = 'sapphire')
-    """
+    '''
     fig_data = analyze_prices.add_bollinger_width(
     # fig_data = add_bollinger_width(    
         fig_data,
@@ -170,12 +177,12 @@ def create_graph(tk, drawdown_color, theme):
         theme = theme,
         color_theme = 'lavender'
     )
-    """
+    '''
     fig_data = analyze_prices.add_diff_stochastic(fig_data, tk, stochastic_data, target_deck = 3, reverse_diff = False, add_signal = True, signal_window = 7, add_title = False, theme = theme)
     
     fig = fig_data['fig']
-    print(fig_data['y_min'])
-    print(fig_data['y_max'])
+    # print(fig_data['y_min'])
+    # print(fig_data['y_max'])
     # layout = fig['layout']
     # output_text = f'This is a {deck_type}-deck plot'
 
@@ -191,88 +198,88 @@ def create_graph(tk, drawdown_color, theme):
 
 
 #################
+# html.Script(src='https://cdn.plot.ly/plotly-latest.min.js')
 
-app.layout = html.Div(children = [
+app.layout = html.Div(
 
-    # html.H1(children='Hello Dash'),
-    # html.Script(src="https://cdn.plot.ly/plotly-latest.min.js"),
-    html.Div(
-    [
-        dcc.Dropdown(
-            id='tickers-dropdown',
-            options = tickers,
-            value = 'MSFT',
-            style = {'width': '100px'}
-        )
-    # html.Div(id='graphDiv'),
-    # create_graph(tk, drawdown_color),
-    #html.Div(children = [dcc.Graph(id = 'test-graph', figure = {})])
-    ],
-    style={
-        "display": "inline-block",
-        # "margin-top": "10px",
-        # "margin-left": "10px",
-        "verticalAlign": "middle",
-        "font-family": "Helvetica"
-    }),
-
-    html.Div(
-    [
-        dcc.Dropdown(
-            id='drawdowns-dropdown',
-            options = ['yellow', 'orange', 'blue', 'purple', 'silver', 'red', 'green'],
-            value = 'red',
-            style = {'width': '100px'}
-        ),
-        # html.Div(id = 'dd-output-container', children = []),
-
-        # html.Div(id='graphDiv'),
-        # create_graph(tk, drawdown_color),
-        #html.Div(children = [dcc.Graph(id = 'test-graph', figure = {})])
-    ],
-    style={
-        "display": "inline-block",
-        # "margin-top": "10px",
-        # "margin-left": "10px",
-        "verticalAlign": "middle",
-        "font-family": "Helvetica"
-    }),
-
-    html.Div(
-    [
+    children = [
+   
+    html.Div([
+        html.Div('Theme', style = {'font-weight': 'bold', 'margin-down': '0px'}),
         dcc.Dropdown(
             id='theme-dropdown',
             options = ['dark', 'light'],
             value = 'dark',
-            style = {'width': '100px'}
-        ),
-        # html.Div(id = 'dd-output-container', children = []),
+            style = {'width': '85px'}
+        )],
+        style={
+            'display': 'inline-block',
+            'margin-right': '5px',
+            'verticalAlign': 'middle',
+            'font-family': 'Helvetica'
+        }),
 
-        # html.Div(id='graphDiv'),
-        # create_graph(tk, drawdown_color),
-        #html.Div(children = [dcc.Graph(id = 'test-graph', figure = {})])
-    ],
-    style={
-        "display": "inline-block",
-        # "margin-top": "10px",
-        # "margin-left": "10px",
-        "verticalAlign": "middle",
-        "font-family": "Helvetica"
-    }),
+    html.Div([
+        html.Div('Ticker', style = {'font-weight': 'bold', 'margin-down': '0px'}),
+        dcc.Dropdown(
+            id='tickers-dropdown',
+            options = tickers,
+            value = 'MSFT',
+            style = {'width': '110px'}
+        )],
+        style = {
+            'display': 'inline-block',
+            'margin-right': '5px',
+            'verticalAlign': 'middle',
+            'font-family': 'Helvetica'
+        }),
 
-    create_graph(tk, drawdown_color, theme)
+    html.Div([
+        html.Div('DD Color', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
+        dcc.Dropdown(
+            id='drawdowns-dropdown',
+            options = drawdown_colors,
+            value = 'red',
+            style = {'width': '120px'}
+        )],
+        style={
+            'display': 'inline-block',
+            # 'margin-top': '5px',
+            'margin-right': '5px',
+            'verticalAlign': 'middle',
+            'font-family': 'Helvetica'
+        }),
+
+    html.Div([
+        html.Div('Overlay Theme', style = {'font-weight': 'bold', 'margin-down': '0px'}),                
+        dcc.Dropdown(
+            id='overlay-dropdown',
+            options = overlay_color_themes,
+            value = 'grasslands',
+            style = {'width': '135px'}
+        )],
+        style={
+            'display': 'inline-block',
+            # 'margin-top': '5px',
+            'margin-right': '5px',
+            'verticalAlign': 'middle',
+            'font-family': 'Helvetica'
+        }),
+
+    create_graph(theme, tk, drawdown_color, overlay_color_theme)
 ])
 
 @app.callback(
     # Output(component_id = 'dd-output-container', component_property = 'children'),
     # Output(component_id = 'test-graph', component_property = 'figure'),
     Output(component_id = 'fig_div', component_property = 'children'),
+    Input(component_id = 'theme-dropdown', component_property = 'value'),
     Input(component_id = 'tickers-dropdown', component_property = 'value'),
     Input(component_id = 'drawdowns-dropdown', component_property = 'value'),
-    Input(component_id = 'theme-dropdown', component_property = 'value')
+    Input(component_id = 'overlay-dropdown', component_property = 'value')
 )
-def update_graph(tk, drawdown_color, theme):
-    return create_graph(tk, drawdown_color, theme)
+def update_graph(theme, tk, drawdown_color, overlay_color_theme):
+    return create_graph(theme, tk, drawdown_color, overlay_color_theme)
 
 # app.layout = html.Div(children=[
 #    dcc.Graph(

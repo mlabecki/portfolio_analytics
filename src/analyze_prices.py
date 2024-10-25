@@ -2427,10 +2427,10 @@ class AnalyzePrices():
         fig = fig_data['fig']
         fig_y_min = fig_data['y_min'][target_deck]
         fig_y_max = fig_data['y_max'][target_deck]
-        plot_height = fig_data['plot_height'][target_deck]        
+        plot_height = fig_data['plot_height'][target_deck]
         deck_type = fig_data['deck_type']
 
-        print(f'\nOVERLAY: {name}')
+        # print(f'\nOVERLAY: {name}')
 
         # Adjust y range if necessary
         reset_y_limits = False
