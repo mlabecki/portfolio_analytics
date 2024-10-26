@@ -229,9 +229,8 @@ app.layout = html.Div([
                     'margin-right': '5px',
                     'text-align': 'left',
                     'font-family': 'Helvetica',
-                    'font-size': '10',
                     'font-weight': 'bold',
-                    'width': '130px'
+                    'width': '33px'
                 }
             )
         ]),
@@ -333,11 +332,12 @@ app.layout = html.Div([
     State('collapse', 'is_open')
 )
 def toggle_collapse(n, is_open):
-    label = 'SHOW OPTIONS' if is_open else 'HIDE OPTIONS'
+    # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
+    label = '▼' if is_open else '▲'
     if n:
         return label, not is_open
     else:
-        return 'HIDE OPTIONS', is_open
+        return '▲', is_open
 
 @app.callback(
     # Output(component_id = 'dd-output-container', component_property = 'children'),
