@@ -261,3 +261,7 @@ The lower deck plots the difference of standard (14,3) slow stochastic %K and %D
 > Lower deck plot type: green-red K-D difference<BR>
 > Lower deck signal color: gold<BR>
 > Interactive: yes<BR>
+
+### 19. Top Drawdowns With SMA and Bollinger Overlays (Upper), Volume (Middle) and Stochastic K-D Difference With Signal (Lower)
+A preliminary look at the app in Dash. The limited test menu can be collapsed/expanded using the up/down arrow button at upper left. 
+> ![](img/19_DashApp_Screenshot_2024-10-25_TSLA_1800x600x150x150.png)
