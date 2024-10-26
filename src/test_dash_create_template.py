@@ -150,6 +150,7 @@ app.layout = html.Div([
                     id = 'theme-dropdown',
                     options = ['Dark', 'Light'],
                     value = 'Dark',
+                    disabled = False,
                     style = {'width': '90px'}
                 )],
                 style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
@@ -204,7 +205,7 @@ app.layout = html.Div([
                 dcc.Dropdown(
                     id='lower-height-dropdown',
                     options = lower_deck_heights,
-                    value = 200,
+                    value = 150,
                     style = {'width': '160px', 'font-color': 'black'}
                 )],
                 style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
@@ -256,6 +257,15 @@ def toggle_collapse(n, is_open):
         return label, not is_open
     else:
         return f'▲ {title}', is_open
+
+@app.callback(
+    Output('lower-height-dropdown', 'disabled'),
+    Input('deck-type-dropdown', 'value'))
+def disable_options(selected_option):
+    if selected_option == 'Single':
+        return True
+    else:
+        return False
 
 @app.callback(
     # Output(component_id = 'dd-output-container', component_property = 'children'),
