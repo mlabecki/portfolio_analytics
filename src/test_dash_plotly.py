@@ -159,7 +159,7 @@ def create_graph(
     # fig_data = analyze_prices.add_ma_overlays(fig_data, close_tk, ma_ribbon, target_deck = 1, theme = theme, color_theme = 'grasslands')
     fig_data = analyze_prices.add_ma_overlays(fig_data, close_tk, ma_ribbon, target_deck = 1, theme = theme, color_theme = overlay_color_theme)
     
-    fig_data = analyze_prices.add_bollinger_overlays(fig_data, bollinger_list, target_deck = 1, theme = theme, color_theme = 'sapphire')
+    fig_data = analyze_prices.add_bollinger_overlays(fig_data, bollinger_list, target_deck = 1, theme = theme, color_theme = 'sienna')
     '''
     fig_data = analyze_prices.add_bollinger_width(
     # fig_data = add_bollinger_width(    
@@ -252,7 +252,7 @@ app.layout = html.Div([
                 style={
                     'display': 'inline-block',
                     'margin-right': '5px',
-                    'verticalAlign': 'middle',
+                    # 'verticalAlign': 'middle',
                     'font-family': 'Helvetica'
                 }),
 
@@ -267,7 +267,7 @@ app.layout = html.Div([
                 style = {
                     'display': 'inline-block',
                     'margin-right': '5px',
-                    'verticalAlign': 'middle',
+                    # 'verticalAlign': 'middle',
                     'font-family': 'Helvetica'
                 }),
 
@@ -282,7 +282,7 @@ app.layout = html.Div([
                 style={
                     'display': 'inline-block',
                     'margin-right': '5px',
-                    'verticalAlign': 'middle',
+                    # 'verticalAlign': 'middle',
                     'font-family': 'Helvetica'
                 }),
 
@@ -298,7 +298,7 @@ app.layout = html.Div([
                     'display': 'inline-block',
                     # 'margin-top': '5px',
                     'margin-right': '5px',
-                    'verticalAlign': 'middle',
+                    # 'verticalAlign': 'middle',
                     'font-family': 'Helvetica'
                 })
             ]
