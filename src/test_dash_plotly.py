@@ -372,7 +372,7 @@ def update_graph(theme, tk, drawdown_color, overlay_color_theme):
     fig_data = create_graph(theme, tk, drawdown_color, overlay_color_theme)
     # fig_div = create_graph(theme, tk, drawdown_color, overlay_color_theme)
     fig = fig_data['fig']
-    fig_div = html.Div(dcc.Graph(id='test-graph', figure = fig))
+    fig_div = html.Div(dcc.Graph(id='drawdowns-graph', figure = fig))
     return fig_div
 
 # app.layout = html.Div(children=[

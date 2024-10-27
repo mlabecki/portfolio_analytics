@@ -1899,7 +1899,8 @@ class AnalyzePrices():
 
         n_top_drawdowns = min(n_top_drawdowns, len(top_drawdowns))
 
-        if show_trough_to_recovery | (top_by == 'length'):
+        # if show_trough_to_recovery | (top_by == 'length'):
+        if show_trough_to_recovery:
             zip_drawdown_parameters = zip(
                 top_drawdowns_str.index,
                 top_drawdowns_str['Peak Date'],
@@ -1914,7 +1915,8 @@ class AnalyzePrices():
                 top_drawdowns_str['Peak Date'],
                 top_drawdowns_str['Trough Date'],
                 top_drawdowns['% Drawdown'],
-                top_drawdowns['Peak To Trough']  # This corresponds to the width of the Peak-To-Trough band
+                top_drawdowns['Total Length']                
+                # top_drawdowns['Peak To Trough']  # This corresponds to the width of the Peak-To-Trough band
             )
             title_drawdowns = f'{tk} {n_top_drawdowns} Top Drawdowns by {top_by.capitalize()} - Peak To Trough'
 

@@ -23,7 +23,6 @@ from utils import *
 from download_data import DownloadData
 from analyze_prices import AnalyzePrices
 
-
 tickers = list(magnificent_7_tickers.keys())
 print(tickers)
 print(tripledeck_legendtitle)
@@ -67,6 +66,7 @@ volume_tk = df_volume[tk]
 
 analyze_prices = AnalyzePrices(end_date, start_date, [tk])
 date_index = ohlc_tk.index
+sort_by = ['Total Length', '% Drawdown']
 
 app = dash.Dash(__name__, external_stylesheets = [dbc.themes.YETI])     # sharp corners
 
@@ -94,7 +94,7 @@ def create_graph(
     )
 
     fig_data = analyze_prices.add_hist_price(fig_data, volume_tk, tk, target_deck = 1, secondary_y = False, plot_type = 'bar', add_title = False, price_type = 'volume', theme = theme)
-    
+
     fig = fig_data['fig']
     # print(fig_data['y_min'])
     # print(fig_data['y_max'])
@@ -123,7 +123,7 @@ app.layout = html.Div([
         html.Div(
             children = [
             dbc.Button(
-                id = 'collapse-button',
+                id = 'collapse-button-template',
                 class_name = 'ma-1',
                 color = 'primary',
                 # color = 'dark',
@@ -136,7 +136,8 @@ app.layout = html.Div([
                     'text-align': 'left',
                     'font-family': 'Helvetica',
                     'font-weight': 'bold',
-                    'width': '185px'
+                    'width': '220px'
+                    # 'width': '185px'
                 }
             )
         ]),
@@ -144,7 +145,7 @@ app.layout = html.Div([
     dbc.Collapse(
 
         html.Div(
-            id = 'controls-container',
+            id = 'template-controls',
             children =
             [
             html.Div([
@@ -218,47 +219,162 @@ app.layout = html.Div([
 #        ))
         ),
         
-        id = 'collapse',
-        is_open = True
+        id = 'collapse-template',
+        is_open = False
     
     )],
-    style = {
-        'display': 'inline-block',
-        'margin-right': '5px',
-        'verticalAlign': 'middle',
-        'font-family': 'Helvetica'
-    }
+    style = {'font-family': 'Helvetica', 'font-weight': 'normal', 'margin-down': '5px'}
+
     ),
 
-    # style = {'font-family': 'Helvetica', 'font-weight': 'normal', 'margin-down': '5px'}
+    html.Div([
 
-    html.Br(),
-    dcc.Graph(id='test-graph', figure = {})
+        html.Div(
+            children = [
+            dbc.Button(
+                id = 'collapse-button-drawdowns',
+                class_name = 'ma-1',
+                color = 'primary',
+                # color = 'dark',
+                size = 'sm',
+                n_clicks = 0,
+                # n_clicks = 1,
+                style = {
+                    'display': 'inline-block',
+                    'margin-right': '5px',
+                    'text-align': 'left',
+                    'font-family': 'Helvetica',
+                    'font-weight': 'bold',
+                    # 'width': '33px'
+                    'width': '220px'
+                }
+            )
+        ]),
 
-    # html.Div(
-    #     [dcc.Graph(id='test-graph', figure = {})],
-    #     id='fig_div'
-    # )
+    dbc.Collapse(
 
-#     create_graph(
-#         # date_index,
-#         theme,
-#         deck_type,
-#         secondary_y,
-#         plot_width,
-#         plot_height_1,
-#         plot_height_2,
-#         plot_height_3)
+        html.Div(
+            id = 'drawdown-controls',
+            children =
+            [
+            html.Div([
+                html.Div('Theme', style = {'font-weight': 'bold', 'margin-down': '0px'}),
+                dcc.Dropdown(
+                    id = 'drawdowns-theme-dropdown',
+                    options = ['dark', 'light'],
+                    value = 'dark',
+                    style = {'width': '85px'}
+                )],
+                style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                ),
+
+            html.Div([
+                html.Div('Ticker', style = {'font-weight': 'bold', 'margin-down': '0px'}),
+                dcc.Dropdown(
+                    id='tickers-dropdown',
+                    options = tickers,
+                    value = 'MSFT',
+                    style = {'width': '110px'}
+                )],
+                style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                ),
+
+            html.Div([
+                html.Div('Top DD Number', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
+                dcc.Dropdown(
+                    id='drawdowns-number-dropdown',
+                    options = [1, 2, 3, 4, 5, 6, 7, 8],
+                    value = 5,
+                    style = {'width': '140px', 'font-color': 'black'}
+                )],
+                style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                ),
+
+            html.Div([
+                html.Div('Top DD By', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
+                dcc.Dropdown(
+                    id='drawdowns-topby-dropdown',
+                    options = ['Depth', 'Length'],
+                    value = 'Depth',
+                    style = {'width': '140px', 'font-color': 'black'}
+                )],
+                style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                ),
+
+            html.Div([
+                html.Div('DD Display', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
+                dcc.Dropdown(
+                    id='drawdowns-display-dropdown',
+                    options = ['Peak To Trough', 'Peak To Recovery'],
+                    value = 'Peak To Trough',
+                    style = {'width': '190px', 'font-color': 'black'}
+                )],
+                style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                ),
+
+            html.Div([
+                html.Div('DD Color', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
+                dcc.Dropdown(
+                    id='drawdowns-color-dropdown',
+                    options = drawdown_colors,
+                    value = 'red',
+                    style = {'width': '120px', 'font-color': 'black'}
+                )],
+                style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                ),
+            
+            html.Div([
+                html.Div('Price Color Theme', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
+                dcc.Dropdown(
+                    id='drawdowns-price-color-dropdown',
+                    options = overlay_color_themes,
+                    value = 'magenta',
+                    style = {'width': '150px', 'font-color': 'black'}
+                )],
+                style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                ),
+
+            # html.Div([
+                # html.Div('Overlay Theme', style = {'font-weight': 'bold', 'margin-down': '0px'}),
+                # dcc.Dropdown(
+                    # id='overlay-dropdown',
+                    # options = overlay_color_themes,
+                    # value = 'grasslands',
+                    # style = {'width': '135px', 'font-color': 'black'}
+                # )],
+                # style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                # )
+            ]
+#        ))
+        ),
+        
+        id = 'collapse-drawdowns',
+        is_open = False
+        # is_open = True
+    
+    )], 
+    style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+    ),
+
+    # html.Br(),
+    
+    dcc.Store(id = 'fig_data'),
+
+    html.Div(
+        id='fig_div',
+        children = []
+            # [dcc.Graph(id='test-graph', figure = {})],
+    )
 
 ])
 
 @app.callback(
-    Output('collapse-button', 'children'),
-    Output('collapse', 'is_open'),
-    Input('collapse-button', 'n_clicks'),
-    State('collapse', 'is_open')
+    Output('collapse-button-template', 'children'),
+    Output('collapse-template', 'is_open'),
+    Input('collapse-button-template', 'n_clicks'),
+    State('collapse-template', 'is_open')
 )
-def toggle_collapse(n, is_open):
+def toggle_collapse_template(n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
     title = 'CREATE TEMPLATE'
     label = f'► {title}' if is_open else f'▼ {title}'
@@ -267,7 +383,7 @@ def toggle_collapse(n, is_open):
         return label, not is_open
     else:
         # return f'▲ {title}', is_open
-        return f'▼ {title}', is_open
+        return f'► {title}', is_open
 
 @app.callback(
     Output('lower-height-dropdown', 'disabled'),
@@ -280,16 +396,17 @@ def disable_options(selected_option):
 
 @app.callback(
     # Output(component_id = 'dd-output-container', component_property = 'children'),
-    Output(component_id = 'test-graph', component_property = 'figure'),
-    # Output(component_id = 'fig_div', component_property = 'children'),
+    # Output(component_id = 'test-graph', component_property = 'figure'),
+    Output(component_id = 'fig_div', component_property = 'children', allow_duplicate = True),
     Input(component_id = 'theme-dropdown', component_property = 'value'),
     Input(component_id = 'deck-type-dropdown', component_property = 'value'),
     Input(component_id = 'secondary-y-dropdown', component_property = 'value'),
     Input(component_id = 'width-dropdown', component_property = 'value'),
     Input(component_id = 'upper-height-dropdown', component_property = 'value'),
     Input(component_id = 'lower-height-dropdown', component_property = 'value'),
+    prevent_initial_call = True
 )
-def update_graph(
+def update_template(
         theme,
         deck_type,
         sec_y,
@@ -297,31 +414,123 @@ def update_graph(
         upper_height,
         lower_height
     ):
+
     theme = theme.lower()
     deck_type = deck_type.lower()
     secondary_y = False if sec_y == 'No' else True
     # width = int(width)
     # upper_height = int(upper_height)
     # lower_height = int(lower_height)
-    fig_data = create_graph(
-    # return create_graph(
-        # date_index,
-        theme,
-        deck_type,
-        secondary_y,
-        width,
-        upper_height,
-        lower_height,
-        lower_height
-        )
-    return fig_data['fig']
+    # fig_data = create_graph(
+    # # return create_graph(
+    #     # date_index,
+    #     theme,
+    #     deck_type,
+    #     secondary_y,
+    #     width,
+    #     upper_height,
+    #     lower_height,
+    #     lower_height
+    #     )
+    fig_data = analyze_prices.create_template(
+    # fig_data = create_template(    
+        date_index,
+        deck_type = deck_type,
+        secondary_y = secondary_y,
+        plot_width = width,
+        plot_height_1 = upper_height,
+        plot_height_2 = lower_height,
+        plot_height_3 = lower_height,
+        theme = theme
+    )
 
-# app.layout = html.Div(children=[
-#    dcc.Graph(
-#        id='example-graph',
-#        figure = fig
-#    )
-# ])
+    fig = fig_data['fig']
+    # fig_div = html.Div(dcc.Graph(id='template-graph', figure = fig))
+    fig_div = dcc.Graph(id='template-graph', figure = fig)
+    return fig_div
+
+
+@app.callback(
+    Output('collapse-button-drawdowns', 'children'),
+    Output('collapse-drawdowns', 'is_open'),
+    Input('collapse-button-drawdowns', 'n_clicks'),
+    State('collapse-drawdowns', 'is_open')
+)
+def toggle_collapse_drawdowns(n, is_open):
+    # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
+    title = 'SELECT PLOT OPTIONS'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    # label = f'▼ {title}' if is_open else f'▲ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+        #return f'▼ {title}', is_open
+    
+    # label = '▼' if is_open else '▲'
+    # if n:
+    #     return label, not is_open
+    # else:
+    #     return '▲', is_open
+
+@app.callback(
+    # Output(component_id = 'dd-output-container', component_property = 'children'),
+    # Output(component_id = 'test-graph', component_property = 'figure'),
+    Output(component_id = 'fig_div', component_property = 'children', allow_duplicate = True),
+    # Output(component_id = 'fig_div', component_property = 'children'),
+    Input(component_id = 'drawdowns-theme-dropdown', component_property = 'value'),
+    Input(component_id = 'tickers-dropdown', component_property = 'value'),
+    Input(component_id = 'drawdowns-number-dropdown', component_property = 'value'),
+    Input(component_id = 'drawdowns-topby-dropdown', component_property = 'value'),
+    Input(component_id = 'drawdowns-display-dropdown', component_property = 'value'),
+    Input(component_id = 'drawdowns-color-dropdown', component_property = 'value'),
+    Input(component_id = 'drawdowns-price-color-dropdown', component_property = 'value'),
+    prevent_initial_call=True #,
+    #Input(component_id = 'overlay-dropdown', component_property = 'value')
+)
+
+def update_drawdowns(theme, tk, n_top, top_by, drawdown_display, drawdown_color, price_color_theme):
+
+    # fig_data = create_graph(theme, tk, drawdown_color, overlay_color_theme)
+
+    fig_data = analyze_prices.create_template(
+    # fig_data = create_template(    
+        date_index,
+        deck_type = 'single',
+        secondary_y = False,
+        plot_width = 1600,
+        plot_height_1 = 600,
+        plot_height_2 = 150,
+        plot_height_3 = 150,
+        theme = theme
+    )
+
+    drawdown_data = analyze_prices.summarize_tk_drawdowns(df_close, tk, sort_by, n_top)
+    show_trough_to_recovery = True if drawdown_display == 'Peak To Recovery' else False
+    fig_data = analyze_prices.add_drawdowns(
+        fig_data,
+        # close_tk,
+        df_close[tk],
+        tk,
+        drawdown_data,
+        n_top_drawdowns = n_top,
+        target_deck = 1,
+        add_price = True,
+        # add_price = False,
+        price_type = 'close',
+        top_by = top_by.lower(),
+        show_trough_to_recovery = show_trough_to_recovery,
+        add_title = True,
+        theme = theme,
+        # color_theme = 'base'
+        price_color_theme = price_color_theme.lower(),
+        drawdown_color = drawdown_color
+    )
+    # fig_div = create_graph(theme, tk, drawdown_color, overlay_color_theme)
+    fig = fig_data['fig']
+    # fig_div = html.Div(dcc.Graph(id='drawdowns-graph', figure = fig))
+    fig_div = dcc.Graph(id='drawdowns-graph', figure = fig)
+    return fig_div
 
 
 if __name__ == '__main__':
