@@ -376,7 +376,7 @@ app.layout = html.Div([
 )
 def toggle_collapse_template(n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
-    title = 'CREATE TEMPLATE'
+    title = 'TEMPLATE OPTIONS'
     label = f'► {title}' if is_open else f'▼ {title}'
     # label = f'▼ {title}' if is_open else f'▲ {title}'
     if n:
@@ -394,55 +394,56 @@ def disable_options(selected_option):
     else:
         return False
 
-@app.callback(
-    # Output(component_id = 'dd-output-container', component_property = 'children'),
-    # Output(component_id = 'test-graph', component_property = 'figure'),
-    Output(component_id = 'fig_div', component_property = 'children', allow_duplicate = True),
-    Input(component_id = 'theme-dropdown', component_property = 'value'),
-    Input(component_id = 'deck-type-dropdown', component_property = 'value'),
-    Input(component_id = 'secondary-y-dropdown', component_property = 'value'),
-    Input(component_id = 'width-dropdown', component_property = 'value'),
-    Input(component_id = 'upper-height-dropdown', component_property = 'value'),
-    Input(component_id = 'lower-height-dropdown', component_property = 'value'),
-    prevent_initial_call = True
-)
-def update_template(
-        theme,
-        deck_type,
-        sec_y,
-        width,
-        upper_height,
-        lower_height
-    ):
-
-    theme = theme.lower()
-    deck_type = deck_type.lower()
-    secondary_y = False if sec_y == 'No' else True
-    # width = int(width)
-    # upper_height = int(upper_height)
-    # lower_height = int(lower_height)
-    # fig_data = create_graph(
-    # # return create_graph(
-    #     # date_index,
-    #     theme,
-    #     deck_type,
-    #     secondary_y,
-    #     width,
-    #     upper_height,
-    #     lower_height,
-    #     lower_height
-    #     )
-    fig_data = analyze_prices.create_template(
-    # fig_data = create_template(    
-        date_index,
-        deck_type = deck_type,
-        secondary_y = secondary_y,
-        plot_width = width,
-        plot_height_1 = upper_height,
-        plot_height_2 = lower_height,
-        plot_height_3 = lower_height,
-        theme = theme
-    )
+# @app.callback(
+#     # Output(component_id = 'dd-output-container', component_property = 'children'),
+#     # Output(component_id = 'test-graph', component_property = 'figure'),
+#     # Output(component_id = 'fig_div', component_property = 'children', allow_duplicate = True),
+#     Output(component_id = 'fig_div', component_property = 'children'),
+#     Input(component_id = 'theme-dropdown', component_property = 'value'),
+#     Input(component_id = 'deck-type-dropdown', component_property = 'value'),
+#     Input(component_id = 'secondary-y-dropdown', component_property = 'value'),
+#     Input(component_id = 'width-dropdown', component_property = 'value'),
+#     Input(component_id = 'upper-height-dropdown', component_property = 'value'),
+#     Input(component_id = 'lower-height-dropdown', component_property = 'value'),
+#     # prevent_initial_call = True
+# )
+# def update_template(
+#         theme,
+#         deck_type,
+#         sec_y,
+#         width,
+#         upper_height,
+#         lower_height
+#     ):
+# 
+#     theme = theme.lower()
+#     deck_type = deck_type.lower()
+#     secondary_y = False if sec_y == 'No' else True
+#     # width = int(width)
+#     # upper_height = int(upper_height)
+#     # lower_height = int(lower_height)
+#     # fig_data = create_graph(
+#     # # return create_graph(
+#     #     # date_index,
+#     #     theme,
+#     #     deck_type,
+#     #     secondary_y,
+#     #     width,
+#     #     upper_height,
+#     #     lower_height,
+#     #     lower_height
+#     #     )
+#     fig_data = analyze_prices.create_template(
+#     # fig_data = create_template(    
+#         date_index,
+#         deck_type = deck_type,
+#         secondary_y = secondary_y,
+#         plot_width = width,
+#         plot_height_1 = upper_height,
+#         plot_height_2 = lower_height,
+#         plot_height_3 = lower_height,
+#         theme = theme
+#     )
 
     fig = fig_data['fig']
     # fig_div = html.Div(dcc.Graph(id='template-graph', figure = fig))
@@ -458,7 +459,7 @@ def update_template(
 )
 def toggle_collapse_drawdowns(n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
-    title = 'SELECT PLOT OPTIONS'
+    title = 'UPPER PLOT OPTIONS'
     label = f'► {title}' if is_open else f'▼ {title}'
     # label = f'▼ {title}' if is_open else f'▲ {title}'
     if n:
@@ -476,8 +477,15 @@ def toggle_collapse_drawdowns(n, is_open):
 @app.callback(
     # Output(component_id = 'dd-output-container', component_property = 'children'),
     # Output(component_id = 'test-graph', component_property = 'figure'),
-    Output(component_id = 'fig_div', component_property = 'children', allow_duplicate = True),
+    # Output(component_id = 'fig_div', component_property = 'children', allow_duplicate = True),
+    Output(component_id = 'fig_div', component_property = 'children'),
     # Output(component_id = 'fig_div', component_property = 'children'),
+    Input(component_id = 'theme-dropdown', component_property = 'value'),
+    Input(component_id = 'deck-type-dropdown', component_property = 'value'),
+    Input(component_id = 'secondary-y-dropdown', component_property = 'value'),
+    Input(component_id = 'width-dropdown', component_property = 'value'),
+    Input(component_id = 'upper-height-dropdown', component_property = 'value'),
+    Input(component_id = 'lower-height-dropdown', component_property = 'value'),
     Input(component_id = 'drawdowns-theme-dropdown', component_property = 'value'),
     Input(component_id = 'tickers-dropdown', component_property = 'value'),
     Input(component_id = 'drawdowns-number-dropdown', component_property = 'value'),
@@ -485,23 +493,40 @@ def toggle_collapse_drawdowns(n, is_open):
     Input(component_id = 'drawdowns-display-dropdown', component_property = 'value'),
     Input(component_id = 'drawdowns-color-dropdown', component_property = 'value'),
     Input(component_id = 'drawdowns-price-color-dropdown', component_property = 'value'),
-    prevent_initial_call=True #,
+    # prevent_initial_call=True #,
     #Input(component_id = 'overlay-dropdown', component_property = 'value')
 )
 
-def update_drawdowns(theme, tk, n_top, top_by, drawdown_display, drawdown_color, price_color_theme):
+def update_drawdowns(
+        # template options
+        theme,
+        deck_type,
+        sec_y,
+        width,
+        upper_height,
+        lower_height,
+        # drawdowns options
+        theme_drawdowns,
+        tk, 
+        n_top, 
+        top_by, 
+        drawdown_display, 
+        drawdown_color, 
+        price_color_theme
+    ):
 
     # fig_data = create_graph(theme, tk, drawdown_color, overlay_color_theme)
-
+    theme = theme.lower()
+    deck_type = deck_type.lower()
+    secondary_y = False if sec_y == 'No' else True
     fig_data = analyze_prices.create_template(
-    # fig_data = create_template(    
         date_index,
-        deck_type = 'single',
-        secondary_y = False,
-        plot_width = 1600,
-        plot_height_1 = 600,
-        plot_height_2 = 150,
-        plot_height_3 = 150,
+        deck_type = deck_type,
+        secondary_y = secondary_y,
+        plot_width = width,
+        plot_height_1 = upper_height,
+        plot_height_2 = lower_height,
+        plot_height_3 = lower_height,
         theme = theme
     )
 
@@ -521,7 +546,7 @@ def update_drawdowns(theme, tk, n_top, top_by, drawdown_display, drawdown_color,
         top_by = top_by.lower(),
         show_trough_to_recovery = show_trough_to_recovery,
         add_title = True,
-        theme = theme,
+        theme = theme_drawdowns,
         # color_theme = 'base'
         price_color_theme = price_color_theme.lower(),
         drawdown_color = drawdown_color

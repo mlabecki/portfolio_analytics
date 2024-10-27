@@ -1920,19 +1920,19 @@ class AnalyzePrices():
             )
             title_drawdowns = f'{tk} {n_top_drawdowns} Top Drawdowns by {top_by.capitalize()} - Peak To Trough'
 
-        if add_price:
-            # Add the price line here to make sure it's first in the legend
-            fig.add_trace(
-                go.Scatter(
-                    x = df_tk.index.astype(str),
-                    y = df_tk,
-                    line_color = linecolor,
-                    line_width = 0,
-                    showlegend = False,
-                    name = legend_name
-                ),
-                row = target_deck, col = 1
-            )
+        # if add_price:
+        #     # Add the price line here to make sure it's first in the legend
+        #     fig.add_trace(
+        #         go.Scatter(
+        #             x = df_tk.index.astype(str),
+        #             y = df_tk,
+        #             line_color = linecolor,
+        #             line_width = 0,
+        #             showlegend = False,
+        #             name = legend_name
+        #         ),
+        #         row = target_deck, col = 1
+        #     )
 
         for _, x1, x2, depth, length in zip_drawdown_parameters:
 
