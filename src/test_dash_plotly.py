@@ -194,15 +194,16 @@ def create_graph(
     # layout = fig['layout']
     # output_text = f'This is a {deck_type}-deck plot'
 
-    fig_div = html.Div(
-            # [dcc.Graph(id='linlogplot', figure=fig, config=_config)],
-            [dcc.Graph(id='test-graph', figure = fig)],
-            id='fig_div',
-        )
+    # fig_div = html.Div(
+    #         # [dcc.Graph(id='linlogplot', figure=fig, config=_config)],
+    #         [dcc.Graph(id='test-graph', figure = fig)],
+    #         id='fig_div',
+    #     )
 
     # return output_text, fig
 
-    return fig_div
+    # return fig_div
+    return fig_data
 
 
 #################
@@ -230,7 +231,8 @@ app.layout = html.Div([
                     'text-align': 'left',
                     'font-family': 'Helvetica',
                     'font-weight': 'bold',
-                    'width': '33px'
+                    # 'width': '33px'
+                    'width': '220px'
                 }
             )
         ]),
@@ -306,7 +308,8 @@ app.layout = html.Div([
         ),
         
         id = 'collapse',
-        is_open = True
+        is_open = False
+        # is_open = True
     
     )],
     style = {
@@ -321,7 +324,15 @@ app.layout = html.Div([
 
     html.Br(),
 
-    create_graph(theme, tk, drawdown_color, overlay_color_theme)
+    html.Div(
+        id='fig_div',
+        children = []
+            # [dcc.Graph(id='test-graph', figure = {})],
+    )
+    
+    # dcc.Graph(id='test-graph', figure = {})
+
+    # create_graph(theme, tk, drawdown_color, overlay_color_theme)
 
 ])
 
@@ -333,11 +344,20 @@ app.layout = html.Div([
 )
 def toggle_collapse(n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
-    label = '▼' if is_open else '▲'
+    title = 'SELECT PLOT OPTIONS'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    # label = f'▼ {title}' if is_open else f'▲ {title}'
     if n:
         return label, not is_open
     else:
-        return '▲', is_open
+        return f'► {title}', is_open
+        #return f'▼ {title}', is_open
+    
+    # label = '▼' if is_open else '▲'
+    # if n:
+    #     return label, not is_open
+    # else:
+    #     return '▲', is_open
 
 @app.callback(
     # Output(component_id = 'dd-output-container', component_property = 'children'),
@@ -349,7 +369,11 @@ def toggle_collapse(n, is_open):
     Input(component_id = 'overlay-dropdown', component_property = 'value')
 )
 def update_graph(theme, tk, drawdown_color, overlay_color_theme):
-    return create_graph(theme, tk, drawdown_color, overlay_color_theme)
+    fig_data = create_graph(theme, tk, drawdown_color, overlay_color_theme)
+    # fig_div = create_graph(theme, tk, drawdown_color, overlay_color_theme)
+    fig = fig_data['fig']
+    fig_div = html.Div(dcc.Graph(id='test-graph', figure = fig))
+    return fig_div
 
 # app.layout = html.Div(children=[
 #    dcc.Graph(

@@ -1925,10 +1925,9 @@ class AnalyzePrices():
                     x = df_tk.index.astype(str),
                     y = df_tk,
                     line_color = linecolor,
-                    showlegend = True,
-                    name = legend_name,
-                    legendgroup = f'{target_deck}',
-                    legendgrouptitle = legendgrouptitle
+                    line_width = 0,
+                    showlegend = False,
+                    name = legend_name
                 ),
                 row = target_deck, col = 1
             )
@@ -1968,8 +1967,11 @@ class AnalyzePrices():
                     x = df_tk.index.astype(str),
                     y = df_tk,
                     line_color = linecolor,
-                    showlegend = False,
-                    name = legend_name
+                    line_width = 2,
+                    showlegend = True,
+                    name = legend_name,
+                    legendgroup = f'{target_deck}',
+                    legendgrouptitle = legendgrouptitle
                 ),
                 row = target_deck, col = 1
             )

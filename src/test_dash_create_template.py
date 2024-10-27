@@ -93,20 +93,23 @@ def create_graph(
         theme = theme
     )
 
+    fig_data = analyze_prices.add_hist_price(fig_data, volume_tk, tk, target_deck = 1, secondary_y = False, plot_type = 'bar', add_title = False, price_type = 'volume', theme = theme)
+    
     fig = fig_data['fig']
     # print(fig_data['y_min'])
     # print(fig_data['y_max'])
     # layout = fig['layout']
     # output_text = f'This is a {deck_type}-deck plot'
 
-    fig_div = html.Div(
-            [dcc.Graph(id='test-graph', figure = fig)],
-            id='fig_div',
-        )
+    # fig_div = html.Div(
+    #         [dcc.Graph(id='test-graph', figure = fig)],
+    #         id='fig_div',
+    #     )
 
     # return output_text, fig
 
-    return fig_div
+    # return fig_div
+    return fig_data
 
 
 #################
@@ -168,12 +171,12 @@ app.layout = html.Div([
                 ),
 
             html.Div([
-                html.Div('Secondary Y', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
+                html.Div('Sec Y', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
                 dcc.Dropdown(
                     id='secondary-y-dropdown',
                     options = ['No', 'Yes'],
                     value = 'No',
-                    style = {'width': '120px', 'font-color': 'black'}
+                    style = {'width': '80px', 'font-color': 'black'}
                 )],
                 style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
                 ),
@@ -230,16 +233,22 @@ app.layout = html.Div([
     # style = {'font-family': 'Helvetica', 'font-weight': 'normal', 'margin-down': '5px'}
 
     html.Br(),
+    dcc.Graph(id='test-graph', figure = {})
 
-    create_graph(
-        # date_index,
-        theme,
-        deck_type,
-        secondary_y,
-        plot_width,
-        plot_height_1,
-        plot_height_2,
-        plot_height_3)
+    # html.Div(
+    #     [dcc.Graph(id='test-graph', figure = {})],
+    #     id='fig_div'
+    # )
+
+#     create_graph(
+#         # date_index,
+#         theme,
+#         deck_type,
+#         secondary_y,
+#         plot_width,
+#         plot_height_1,
+#         plot_height_2,
+#         plot_height_3)
 
 ])
 
@@ -252,11 +261,13 @@ app.layout = html.Div([
 def toggle_collapse(n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
     title = 'CREATE TEMPLATE'
-    label = f'▼ {title}' if is_open else f'▲ {title}'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    # label = f'▼ {title}' if is_open else f'▲ {title}'
     if n:
         return label, not is_open
     else:
-        return f'▲ {title}', is_open
+        # return f'▲ {title}', is_open
+        return f'▼ {title}', is_open
 
 @app.callback(
     Output('lower-height-dropdown', 'disabled'),
@@ -269,8 +280,8 @@ def disable_options(selected_option):
 
 @app.callback(
     # Output(component_id = 'dd-output-container', component_property = 'children'),
-    # Output(component_id = 'test-graph', component_property = 'figure'),
-    Output(component_id = 'fig_div', component_property = 'children'),
+    Output(component_id = 'test-graph', component_property = 'figure'),
+    # Output(component_id = 'fig_div', component_property = 'children'),
     Input(component_id = 'theme-dropdown', component_property = 'value'),
     Input(component_id = 'deck-type-dropdown', component_property = 'value'),
     Input(component_id = 'secondary-y-dropdown', component_property = 'value'),
@@ -292,7 +303,8 @@ def update_graph(
     # width = int(width)
     # upper_height = int(upper_height)
     # lower_height = int(lower_height)
-    return create_graph(
+    fig_data = create_graph(
+    # return create_graph(
         # date_index,
         theme,
         deck_type,
@@ -302,6 +314,7 @@ def update_graph(
         lower_height,
         lower_height
         )
+    return fig_data['fig']
 
 # app.layout = html.Div(children=[
 #    dcc.Graph(
