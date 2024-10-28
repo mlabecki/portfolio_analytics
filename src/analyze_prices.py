@@ -1802,7 +1802,8 @@ class AnalyzePrices():
         if (fig_y_min is None) | (fig_y_max is None):
             add_price = True
 
-        infinity = 1e10
+        # infinity = 1e10
+        infinity = 1e3
 
         df_tk_deepest_drawdowns = drawdown_data['Deepest Drawdowns']
         df_tk_longest_drawdowns = drawdown_data['Longest Drawdowns']
@@ -1899,6 +1900,11 @@ class AnalyzePrices():
 
         n_top_drawdowns = min(n_top_drawdowns, len(top_drawdowns))
 
+        if top_by == 'length':
+            title_text = 'Total Length'
+        else:
+            title_text = '% Depth'
+            
         # if show_trough_to_recovery | (top_by == 'length'):
         if show_trough_to_recovery:
             zip_drawdown_parameters = zip(
@@ -1908,7 +1914,7 @@ class AnalyzePrices():
                 top_drawdowns['% Drawdown'],
                 top_drawdowns['Total Length']
             )
-            title_drawdowns = f'{tk} {n_top_drawdowns} Top Drawdowns by {top_by.capitalize()} - Peak To Recovery'    
+            title_drawdowns = f'{tk} {n_top_drawdowns} Top Drawdowns by {title_text} - Peak To Recovery'    
         else:
             zip_drawdown_parameters = zip(
                 top_drawdowns_str.index,
@@ -1918,7 +1924,7 @@ class AnalyzePrices():
                 top_drawdowns['Total Length']                
                 # top_drawdowns['Peak To Trough']  # This corresponds to the width of the Peak-To-Trough band
             )
-            title_drawdowns = f'{tk} {n_top_drawdowns} Top Drawdowns by {top_by.capitalize()} - Peak To Trough'
+            title_drawdowns = f'{tk} {n_top_drawdowns} Top Drawdowns by {title_text} - Peak To Trough'
 
         # if add_price:
         #     # Add the price line here to make sure it's first in the legend
@@ -1933,35 +1939,6 @@ class AnalyzePrices():
         #         ),
         #         row = target_deck, col = 1
         #     )
-
-        for _, x1, x2, depth, length in zip_drawdown_parameters:
-
-            if top_by == 'depth':
-                alpha_deepest = top_cmap[depth]
-                name = f'{depth:.1f}%, {length}d'
-            else:
-                alpha_deepest = top_cmap[length]
-                name = f'{length}d, {depth:.1f}%'
-
-            fillcolor = top_by_color.replace('1)', f'{alpha_deepest})')
-
-            fig.add_trace(
-                go.Scatter(
-                    x = [x1, x2, x2, x1, x1],
-                    y = [0, 0, infinity, infinity, 0],
-                    mode = 'lines',
-                    line_width = 2,
-                    # line_color = 'brown',
-                    line_color = drawdown_border_color,
-                    fill = 'toself',
-                    fillcolor = fillcolor,
-                    name = name,
-                    legendgroup = f'{target_deck}',
-                    legendgrouptitle = legendgrouptitle
-                ),
-                row = target_deck, col = 1
-            )
-
         if add_price:
             # Add the price line here to make sure it's on top of other layers
             fig.add_trace(
@@ -1978,6 +1955,52 @@ class AnalyzePrices():
                 row = target_deck, col = 1
             )
 
+        for idx, x1, x2, depth, length in zip_drawdown_parameters:
+
+            if top_by == 'depth':
+                alpha_deepest = top_cmap[depth]
+                name = f'{depth:.1f}%, {length}d'
+            else:
+                alpha_deepest = top_cmap[length]
+                name = f'{length}d, {depth:.1f}%'
+
+            fillcolor = top_by_color.replace('1)', f'{alpha_deepest})')
+
+            fig.add_trace(
+                go.Scatter(
+                    x = [x1, x2, x2, x1, x1],
+                    y = [0, 0, infinity, infinity, 0],
+                    # y = [0, 0, y_upper_limit, y_upper_limit, 0],
+                    mode = 'lines',
+                    line_width = 2,
+                    # line_color = 'brown',
+                    line_color = drawdown_border_color,
+                    fill = 'toself',
+                    fillcolor = fillcolor,
+                    name = name,
+                    legendgroup = f'{target_deck}',
+                    legendgrouptitle = legendgrouptitle,
+                    zorder = -1 - idx
+                ),
+                row = target_deck, col = 1
+            )
+        """
+        if add_price:
+            # Add the price line here to make sure it's on top of other layers
+            fig.add_trace(
+                go.Scatter(
+                    x = df_tk.index.astype(str),
+                    y = df_tk,
+                    line_color = linecolor,
+                    line_width = 2,
+                    showlegend = True,
+                    name = legend_name,
+                    legendgroup = f'{target_deck}',
+                    legendgrouptitle = legendgrouptitle
+                ),
+                row = target_deck, col = 1
+            )
+        """
         # Update layout and axes
 
         if add_title:
@@ -3530,6 +3553,8 @@ class AnalyzePrices():
         style = theme_style[theme]
 
         fig = fig_data['fig']
+        fig_y_min = fig_data['y_min'][target_deck]
+        fig_y_max = fig_data['y_max'][target_deck]        
         plot_height = fig_data['plot_height'][target_deck]
         deck_type = fig_data['deck_type']
         title_x_pos = fig_data['title_x_pos']
@@ -3545,14 +3570,51 @@ class AnalyzePrices():
 
         df = df_ohlc.copy()
 
+        # Adjust y range if necessary
+        reset_y_limits = False
+
         min_y = min(df['Low'])
         max_y = max(df['High'])
-        min_n_intervals = n_yintervals_map['min'][plot_height]
-        max_n_intervals = n_yintervals_map['max'][plot_height]
-        y_min, y_max, y_delta = set_axis_limits(min_y, max_y, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
 
-        if target_deck > 1:
-            y_max *= 0.999
+        if fig_y_min is None:
+            new_y_min = min_y
+            reset_y_limits = True
+        else:
+            new_y_min = min(min_y, fig_y_min)
+            if new_y_min < fig_y_min:
+                reset_y_limits = True
+        if fig_y_max is None:
+            new_y_max = max_y
+            reset_y_limits = True
+        else:
+            new_y_max = max(max_y, fig_y_max)
+            if new_y_max > fig_y_max:
+                reset_y_limits = True
+
+            # Find new y limits and delta if the y range is expanded
+            if reset_y_limits:
+                
+                min_n_intervals = n_yintervals_map['min'][plot_height]
+                max_n_intervals = n_yintervals_map['max'][plot_height]
+                y_lower_limit, y_upper_limit, y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
+
+                if target_deck > 1:
+                    y_upper_limit *= 0.999
+
+                # print(f'min_n_intervals, max_n_intervals = {min_n_intervals, max_n_intervals}')
+                # print(f'y_lower_limit, y_upper_limit, y_delta = {y_lower_limit, y_upper_limit, y_delta}')
+                # print(f'FINAL new_y_min, new_y_max, y_delta = {new_y_min, new_y_max, y_delta}')
+
+                y_range = (y_lower_limit, y_upper_limit)
+                fig.update_yaxes(
+                    range = y_range,
+                    showticklabels = True,
+                    tick0 = y_lower_limit,
+                    dtick = y_delta,
+                    showgrid = True,
+                    zeroline = True,
+                    row = target_deck, col = 1
+                )
 
         df['Date'] = df.index.astype(str)
 
@@ -3709,14 +3771,6 @@ class AnalyzePrices():
         fig.update_xaxes(
             rangeslider_visible=False
         )
-        fig.update_yaxes(
-            range = (y_min, y_max),
-            title = f'Price',
-            tick0 = y_min,
-            dtick = y_delta,
-            showticklabels = True,
-            row = target_deck, col = 1
-        )
 
         if deck_type in ['double', 'triple']:
             legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
@@ -3726,9 +3780,8 @@ class AnalyzePrices():
             )
 
         fig_data.update({'fig': fig})
-        ### MUST CORRECT
-        fig_data['y_min'].update({target_deck: y_min})
-        fig_data['y_max'].update({target_deck: y_max})
+        fig_data['y_min'].update({target_deck: new_y_min})
+        fig_data['y_max'].update({target_deck: new_y_max})
 
         return fig_data
 

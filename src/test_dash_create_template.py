@@ -294,9 +294,9 @@ app.layout = html.Div([
                 html.Div('Top DD By', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
                 dcc.Dropdown(
                     id='drawdowns-topby-dropdown',
-                    options = ['Depth', 'Length'],
-                    value = 'Depth',
-                    style = {'width': '140px', 'font-color': 'black'}
+                    options = ['% Depth', 'Total Length'],
+                    value = '% Depth',
+                    style = {'width': '150px', 'font-color': 'black'}
                 )],
                 style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
                 ),
@@ -328,7 +328,7 @@ app.layout = html.Div([
                 dcc.Dropdown(
                     id='drawdowns-price-color-dropdown',
                     options = overlay_color_themes,
-                    value = 'magenta',
+                    value = 'sapphire',
                     style = {'width': '150px', 'font-color': 'black'}
                 )],
                 style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
@@ -509,7 +509,7 @@ def update_drawdowns(
         theme_drawdowns,
         tk, 
         n_top, 
-        top_by, 
+        drawdown_top_by, 
         drawdown_display, 
         drawdown_color, 
         price_color_theme
@@ -532,6 +532,7 @@ def update_drawdowns(
 
     drawdown_data = analyze_prices.summarize_tk_drawdowns(df_close, tk, sort_by, n_top)
     show_trough_to_recovery = True if drawdown_display == 'Peak To Recovery' else False
+    top_by = 'length' if drawdown_top_by == 'Total Length' else 'depth'
     fig_data = analyze_prices.add_drawdowns(
         fig_data,
         # close_tk,
@@ -553,8 +554,8 @@ def update_drawdowns(
     )
     # fig_div = create_graph(theme, tk, drawdown_color, overlay_color_theme)
     fig = fig_data['fig']
-    # fig_div = html.Div(dcc.Graph(id='drawdowns-graph', figure = fig))
-    fig_div = dcc.Graph(id='drawdowns-graph', figure = fig)
+    fig_div = html.Div(dcc.Graph(id='drawdowns-graph', figure = fig))
+    # fig_div = dcc.Graph(id='drawdowns-graph', figure = fig)
     return fig_div
 
 
