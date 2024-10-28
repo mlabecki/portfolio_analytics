@@ -1926,21 +1926,8 @@ class AnalyzePrices():
             )
             title_drawdowns = f'{tk} {n_top_drawdowns} Top Drawdowns by {title_text} - Peak To Trough'
 
-        # if add_price:
-        #     # Add the price line here to make sure it's first in the legend
-        #     fig.add_trace(
-        #         go.Scatter(
-        #             x = df_tk.index.astype(str),
-        #             y = df_tk,
-        #             line_color = linecolor,
-        #             line_width = 0,
-        #             showlegend = False,
-        #             name = legend_name
-        #         ),
-        #         row = target_deck, col = 1
-        #     )
         if add_price:
-            # Add the price line here to make sure it's on top of other layers
+            # Add the price line here to make sure it's first in the legend
             fig.add_trace(
                 go.Scatter(
                     x = df_tk.index.astype(str),
@@ -1948,13 +1935,14 @@ class AnalyzePrices():
                     line_color = linecolor,
                     line_width = 2,
                     showlegend = True,
+                    hoverinfo = 'skip',
                     name = legend_name,
                     legendgroup = f'{target_deck}',
-                    legendgrouptitle = legendgrouptitle
+                    legendgrouptitle = legendgrouptitle                    
                 ),
                 row = target_deck, col = 1
             )
-
+        
         for idx, x1, x2, depth, length in zip_drawdown_parameters:
 
             if top_by == 'depth':
@@ -1973,18 +1961,16 @@ class AnalyzePrices():
                     # y = [0, 0, y_upper_limit, y_upper_limit, 0],
                     mode = 'lines',
                     line_width = 2,
-                    # line_color = 'brown',
                     line_color = drawdown_border_color,
                     fill = 'toself',
                     fillcolor = fillcolor,
                     name = name,
                     legendgroup = f'{target_deck}',
-                    legendgrouptitle = legendgrouptitle,
-                    zorder = -1 - idx
+                    legendgrouptitle = legendgrouptitle
                 ),
                 row = target_deck, col = 1
             )
-        """
+
         if add_price:
             # Add the price line here to make sure it's on top of other layers
             fig.add_trace(
@@ -1993,14 +1979,14 @@ class AnalyzePrices():
                     y = df_tk,
                     line_color = linecolor,
                     line_width = 2,
-                    showlegend = True,
+                    showlegend = False,
                     name = legend_name,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle
                 ),
                 row = target_deck, col = 1
             )
-        """
+
         # Update layout and axes
 
         if add_title:
@@ -2179,7 +2165,7 @@ class AnalyzePrices():
                     y = rsi_hlines['y_max'],
                     line_color = 'black',
                     line_width = 0,
-                    hoverinfo = 'skip',                
+                    hoverinfo = 'skip',            
                     showlegend = False
                 ),
                 row = target_deck, col = 1

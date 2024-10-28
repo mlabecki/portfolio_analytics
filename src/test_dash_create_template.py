@@ -475,17 +475,21 @@ def toggle_collapse_drawdowns(n, is_open):
     #     return '▲', is_open
 
 @app.callback(
-    # Output(component_id = 'dd-output-container', component_property = 'children'),
+
     # Output(component_id = 'test-graph', component_property = 'figure'),
     # Output(component_id = 'fig_div', component_property = 'children', allow_duplicate = True),
+    # Output(component_id = 'test-graph', component_property = 'figure'),
     Output(component_id = 'fig_div', component_property = 'children'),
-    # Output(component_id = 'fig_div', component_property = 'children'),
+
+    # template options
     Input(component_id = 'theme-dropdown', component_property = 'value'),
     Input(component_id = 'deck-type-dropdown', component_property = 'value'),
     Input(component_id = 'secondary-y-dropdown', component_property = 'value'),
     Input(component_id = 'width-dropdown', component_property = 'value'),
     Input(component_id = 'upper-height-dropdown', component_property = 'value'),
     Input(component_id = 'lower-height-dropdown', component_property = 'value'),
+    
+    # drawdowns options
     Input(component_id = 'drawdowns-theme-dropdown', component_property = 'value'),
     Input(component_id = 'tickers-dropdown', component_property = 'value'),
     Input(component_id = 'drawdowns-number-dropdown', component_property = 'value'),
@@ -532,7 +536,7 @@ def update_drawdowns(
 
     drawdown_data = analyze_prices.summarize_tk_drawdowns(df_close, tk, sort_by, n_top)
     show_trough_to_recovery = True if drawdown_display == 'Peak To Recovery' else False
-    top_by = 'length' if drawdown_top_by == 'Total Length' else 'depth'
+    drawdown_top_by = 'length' if drawdown_top_by == 'Total Length' else 'depth'
     fig_data = analyze_prices.add_drawdowns(
         fig_data,
         # close_tk,
@@ -544,20 +548,38 @@ def update_drawdowns(
         add_price = True,
         # add_price = False,
         price_type = 'close',
-        top_by = top_by.lower(),
+        top_by = drawdown_top_by,
         show_trough_to_recovery = show_trough_to_recovery,
         add_title = True,
         theme = theme_drawdowns,
-        # color_theme = 'base'
+        # color_theme = 'base',
         price_color_theme = price_color_theme.lower(),
         drawdown_color = drawdown_color
     )
     # fig_div = create_graph(theme, tk, drawdown_color, overlay_color_theme)
-    fig = fig_data['fig']
-    fig_div = html.Div(dcc.Graph(id='drawdowns-graph', figure = fig))
-    # fig_div = dcc.Graph(id='drawdowns-graph', figure = fig)
-    return fig_div
+    # fig = fig_data['fig']
 
+    target_deck = 1
+    plot_height = fig_data['plot_height'][target_deck]
+    y_min = fig_data['y_min'][target_deck]
+    y_max = fig_data['y_max'][target_deck]
+    min_n_intervals = n_yintervals_map['min'][plot_height]
+    max_n_intervals = n_yintervals_map['max'][plot_height]
+    
+    # y_lower_limit, y_upper_limit, y_delta = set_axis_limits(y_min, y_max, min_n_intervals, max_n_intervals)
+
+    y_lower_limit, y_upper_limit, y_delta = 100, 450, 50
+    fig = fig_data['fig']
+    fig['layout']['yaxis']['range'] = (y_lower_limit, y_upper_limit)
+    fig['layout']['yaxis']['tick0'] = y_lower_limit
+    fig['layout']['yaxis']['dtick'] = y_delta
+    
+    fig_div = html.Div(html.Div(dcc.Graph(id = 'drawdowns-graph', figure = fig)))
+    # fig_div = html.Div(html.Div(children = [dcc.Graph(id = 'drawdowns-graph', figure = fig)]))
+    # fig_div = dcc.Graph(id='drawdowns-graph', figure = fig)
+
+    return fig_div
+    
 
 if __name__ == '__main__':
     app.run_server(debug=True, port=8051)
