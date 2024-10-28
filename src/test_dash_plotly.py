@@ -77,10 +77,10 @@ def create_graph(
     date_index = ohlc_tk.index
 
     n_top = 5
-    sort_by = ['Total Length', '% Drawdown']
-    # sort_by = '% Drawdown'
+    sort_by = ['Total Length', '% Depth']
+    # sort_by = '% Depth'
     # sort_by = 'Peak Date'
-    drawdown_data = analyze_prices.summarize_tk_drawdowns(df_adj_close, tk, sort_by, n_top)
+    drawdown_data = analyze_prices.summarize_tk_drawdowns(df_close, tk, sort_by, n_top)
 
     ma_envelope_list = analyze_prices.ma_envelopes(close_tk, window = 20, prc_offset = 5, n_bands = 2)
 
@@ -119,7 +119,7 @@ def create_graph(
         # secondary_y = True,
         # plot_width = 1450,
         plot_width = 1800,
-        plot_height_1 = 600,
+        plot_height_1 = 900,
         plot_height_2 = 150,
         plot_height_3 = 150,
         theme = theme
@@ -325,7 +325,7 @@ app.layout = html.Div([
     html.Br(),
 
     html.Div(
-        id='fig_div',
+        id='fig_div_drawdowns',
         children = []
             # [dcc.Graph(id='test-graph', figure = {})],
     )
@@ -362,7 +362,7 @@ def toggle_collapse(n, is_open):
 @app.callback(
     # Output(component_id = 'dd-output-container', component_property = 'children'),
     # Output(component_id = 'test-graph', component_property = 'figure'),
-    Output(component_id = 'fig_div', component_property = 'children'),
+    Output(component_id = 'fig_div_drawdowns', component_property = 'children'),
     Input(component_id = 'theme-dropdown', component_property = 'value'),
     Input(component_id = 'tickers-dropdown', component_property = 'value'),
     Input(component_id = 'drawdowns-dropdown', component_property = 'value'),
@@ -372,8 +372,8 @@ def update_graph(theme, tk, drawdown_color, overlay_color_theme):
     fig_data = create_graph(theme, tk, drawdown_color, overlay_color_theme)
     # fig_div = create_graph(theme, tk, drawdown_color, overlay_color_theme)
     fig = fig_data['fig']
-    fig_div = html.Div(dcc.Graph(id='drawdowns-graph', figure = fig))
-    return fig_div
+    fig_div_drawdowns = html.Div(dcc.Graph(id='drawdowns-graph', figure = fig))
+    return fig_div_drawdowns
 
 # app.layout = html.Div(children=[
 #    dcc.Graph(

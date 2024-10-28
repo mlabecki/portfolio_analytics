@@ -41,7 +41,7 @@ plot_height_1 = 600
 plot_height_2 = 150
 plot_height_3 = 150
 plot_widths = [1000, 1050, 1100, 1150, 1200, 1250, 1300, 1350, 1400, 1450, 1500, 1550, 1600, 1650, 1700, 1750, 1800]
-upper_deck_heights = [750, 600, 450, 300]
+upper_deck_heights = [900, 750, 600, 450, 300]
 lower_deck_heights = [300, 250, 200, 150, 100]
 deck_types = ['Single', 'Double', 'Triple']
 
@@ -66,7 +66,7 @@ volume_tk = df_volume[tk]
 
 analyze_prices = AnalyzePrices(end_date, start_date, [tk])
 date_index = ohlc_tk.index
-sort_by = ['Total Length', '% Drawdown']
+sort_by = ['Total Length', '% Depth']
 
 app = dash.Dash(__name__, external_stylesheets = [dbc.themes.YETI])     # sharp corners
 
@@ -257,16 +257,16 @@ app.layout = html.Div([
             id = 'drawdown-controls',
             children =
             [
-            html.Div([
-                html.Div('Theme', style = {'font-weight': 'bold', 'margin-down': '0px'}),
-                dcc.Dropdown(
-                    id = 'drawdowns-theme-dropdown',
-                    options = ['dark', 'light'],
-                    value = 'dark',
-                    style = {'width': '85px'}
-                )],
-                style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
-                ),
+            # html.Div([
+            #     html.Div('Theme', style = {'font-weight': 'bold', 'margin-down': '0px'}),
+            #     dcc.Dropdown(
+            #         id = 'drawdowns-theme-dropdown',
+            #         options = ['dark', 'light'],
+            #         value = 'dark',
+            #         style = {'width': '85px'}
+            #     )],
+            #     style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+            #     ),
 
             html.Div([
                 html.Div('Ticker', style = {'font-weight': 'bold', 'margin-down': '0px'}),
@@ -490,7 +490,7 @@ def toggle_collapse_drawdowns(n, is_open):
     Input(component_id = 'lower-height-dropdown', component_property = 'value'),
     
     # drawdowns options
-    Input(component_id = 'drawdowns-theme-dropdown', component_property = 'value'),
+    # Input(component_id = 'drawdowns-theme-dropdown', component_property = 'value'),
     Input(component_id = 'tickers-dropdown', component_property = 'value'),
     Input(component_id = 'drawdowns-number-dropdown', component_property = 'value'),
     Input(component_id = 'drawdowns-topby-dropdown', component_property = 'value'),
@@ -510,7 +510,7 @@ def update_drawdowns(
         upper_height,
         lower_height,
         # drawdowns options
-        theme_drawdowns,
+        # theme_drawdowns,
         tk, 
         n_top, 
         drawdown_top_by, 
@@ -534,6 +534,9 @@ def update_drawdowns(
         theme = theme
     )
 
+    # if (theme_drawdowns != theme):
+    #     theme = theme_drawdowns
+
     drawdown_data = analyze_prices.summarize_tk_drawdowns(df_close, tk, sort_by, n_top)
     show_trough_to_recovery = True if drawdown_display == 'Peak To Recovery' else False
     drawdown_top_by = 'length' if drawdown_top_by == 'Total Length' else 'depth'
@@ -551,7 +554,8 @@ def update_drawdowns(
         top_by = drawdown_top_by,
         show_trough_to_recovery = show_trough_to_recovery,
         add_title = True,
-        theme = theme_drawdowns,
+        theme = theme,
+        # theme = theme_drawdowns,
         # color_theme = 'base',
         price_color_theme = price_color_theme.lower(),
         drawdown_color = drawdown_color
@@ -566,17 +570,17 @@ def update_drawdowns(
     min_n_intervals = n_yintervals_map['min'][plot_height]
     max_n_intervals = n_yintervals_map['max'][plot_height]
     
-    # y_lower_limit, y_upper_limit, y_delta = set_axis_limits(y_min, y_max, min_n_intervals, max_n_intervals)
+    y_lower_limit, y_upper_limit, y_delta = set_axis_limits(y_min, y_max, min_n_intervals, max_n_intervals)
 
-    y_lower_limit, y_upper_limit, y_delta = 100, 450, 50
+    # y_lower_limit, y_upper_limit, y_delta = 100, 450, 50
     fig = fig_data['fig']
     fig['layout']['yaxis']['range'] = (y_lower_limit, y_upper_limit)
     fig['layout']['yaxis']['tick0'] = y_lower_limit
     fig['layout']['yaxis']['dtick'] = y_delta
     
-    fig_div = html.Div(html.Div(dcc.Graph(id = 'drawdowns-graph', figure = fig)))
+    # fig_div = html.Div(html.Div(dcc.Graph(id = 'drawdowns-graph', figure = fig)))
     # fig_div = html.Div(html.Div(children = [dcc.Graph(id = 'drawdowns-graph', figure = fig)]))
-    # fig_div = dcc.Graph(id='drawdowns-graph', figure = fig)
+    fig_div = dcc.Graph(id='drawdowns-graph', figure = fig)
 
     return fig_div
     

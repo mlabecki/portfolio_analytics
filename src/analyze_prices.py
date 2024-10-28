@@ -1599,7 +1599,7 @@ class AnalyzePrices():
         drawdown_columns = [
             'Peak',
             'Trough',
-            '% Drawdown',
+            '% Depth',
             'Peak Date',
             'Trough Date',
             'Recovery Date',
@@ -1610,7 +1610,7 @@ class AnalyzePrices():
         cols_float = [
             'Peak',
             'Trough',
-            '% Drawdown'
+            '% Depth'
         ]
         cols_int = [
             'Total Length',
@@ -1680,7 +1680,7 @@ class AnalyzePrices():
                 df_tk_drawdowns.loc[peak, 'Peak Date'] = peak_date
                 df_tk_drawdowns.loc[peak, 'Trough Date'] = trough_date
                 df_tk_drawdowns.loc[peak, 'Recovery Date'] = recovery_date
-                df_tk_drawdowns.loc[peak, '% Drawdown'] = 100 * drawdown
+                df_tk_drawdowns.loc[peak, '% Depth'] = 100 * drawdown
                 df_tk_drawdowns.loc[peak, 'Total Length'] = n_length
                 df_tk_drawdowns.loc[peak, 'Peak To Trough'] = n_to_trough
                 df_tk_drawdowns.loc[peak, 'Trough To Recovery'] = n_recovery
@@ -1691,7 +1691,7 @@ class AnalyzePrices():
         df_tk_drawdowns = df_tk_drawdowns.sort_values(by=sort_by, ascending=ascending)
         df_tk_drawdowns = df_tk_drawdowns.reset_index(drop=True)
 
-        df_tk_deepest_drawdowns = df_tk_drawdowns.sort_values(by='% Drawdown', ascending=True)
+        df_tk_deepest_drawdowns = df_tk_drawdowns.sort_values(by='% Depth', ascending=True)
         df_tk_deepest_drawdowns = df_tk_deepest_drawdowns.reset_index(drop=True)[:n_top]
     
         df_tk_longest_drawdowns = df_tk_drawdowns.sort_values(by='Total Length', ascending=False)
@@ -1705,7 +1705,7 @@ class AnalyzePrices():
             df_tk_drawdowns_str.loc[idx, 'Peak Date'] = f"{df_tk_drawdowns.loc[idx, 'Peak Date'].date()}"
             df_tk_drawdowns_str.loc[idx, 'Trough Date'] = f"{df_tk_drawdowns.loc[idx, 'Trough Date'].date()}"
             df_tk_drawdowns_str.loc[idx, 'Recovery Date'] = f"{df_tk_drawdowns.loc[idx, 'Recovery Date'].date()}"
-            df_tk_drawdowns_str.loc[idx, '% Drawdown'] = f"{(df_tk_drawdowns.loc[idx, '% Drawdown']):.2f}"
+            df_tk_drawdowns_str.loc[idx, '% Depth'] = f"{(df_tk_drawdowns.loc[idx, '% Depth']):.2f}%"
             df_tk_drawdowns_str.loc[idx, 'Total Length'] = f"{df_tk_drawdowns.loc[idx, 'Total Length']}"
             df_tk_drawdowns_str.loc[idx, 'Peak To Trough'] = f"{df_tk_drawdowns.loc[idx, 'Peak To Trough']}"
             df_tk_drawdowns_str.loc[idx, 'Trough To Recovery'] = f"{df_tk_drawdowns.loc[idx, 'Trough To Recovery']}"
@@ -1716,10 +1716,10 @@ class AnalyzePrices():
             df_tk_deepest_drawdowns_str.loc[idx, 'Peak Date'] = f"{df_tk_deepest_drawdowns.loc[idx, 'Peak Date'].date()}"
             df_tk_deepest_drawdowns_str.loc[idx, 'Trough Date'] = f"{df_tk_deepest_drawdowns.loc[idx, 'Trough Date'].date()}"
             df_tk_deepest_drawdowns_str.loc[idx, 'Recovery Date'] = f"{df_tk_deepest_drawdowns.loc[idx, 'Recovery Date'].date()}"
-            df_tk_deepest_drawdowns_str.loc[idx, '% Drawdown'] = f"{(df_tk_deepest_drawdowns.loc[idx, '% Drawdown']):.2f}"
-            df_tk_deepest_drawdowns_str.loc[idx, 'Total Length'] = f"{df_tk_deepest_drawdowns.loc[idx, 'Total Length']}"
-            df_tk_deepest_drawdowns_str.loc[idx, 'Peak To Trough'] = f"{df_tk_deepest_drawdowns.loc[idx, 'Peak To Trough']}"
-            df_tk_deepest_drawdowns_str.loc[idx, 'Trough To Recovery'] = f"{df_tk_deepest_drawdowns.loc[idx, 'Trough To Recovery']}"
+            df_tk_deepest_drawdowns_str.loc[idx, '% Depth'] = f"{(df_tk_deepest_drawdowns.loc[idx, '% Depth']):.2f}%"
+            df_tk_deepest_drawdowns_str.loc[idx, 'Total Length'] = f"{df_tk_deepest_drawdowns.loc[idx, 'Total Length']}d"
+            df_tk_deepest_drawdowns_str.loc[idx, 'Peak To Trough'] = f"{df_tk_deepest_drawdowns.loc[idx, 'Peak To Trough']}d"
+            df_tk_deepest_drawdowns_str.loc[idx, 'Trough To Recovery'] = f"{df_tk_deepest_drawdowns.loc[idx, 'Trough To Recovery']}d"
 
         for idx in df_tk_longest_drawdowns.index:
             df_tk_longest_drawdowns_str.loc[idx, 'Peak'] = f"{df_tk_longest_drawdowns.loc[idx, 'Peak']:.2f}"
@@ -1727,10 +1727,10 @@ class AnalyzePrices():
             df_tk_longest_drawdowns_str.loc[idx, 'Peak Date'] = f"{df_tk_longest_drawdowns.loc[idx, 'Peak Date'].date()}"
             df_tk_longest_drawdowns_str.loc[idx, 'Trough Date'] = f"{df_tk_longest_drawdowns.loc[idx, 'Trough Date'].date()}"
             df_tk_longest_drawdowns_str.loc[idx, 'Recovery Date'] = f"{df_tk_longest_drawdowns.loc[idx, 'Recovery Date'].date()}"
-            df_tk_longest_drawdowns_str.loc[idx, '% Drawdown'] = f"{(df_tk_longest_drawdowns.loc[idx, '% Drawdown']):.2f}"
-            df_tk_longest_drawdowns_str.loc[idx, 'Total Length'] = f"{df_tk_longest_drawdowns.loc[idx, 'Total Length']}"
-            df_tk_longest_drawdowns_str.loc[idx, 'Peak To Trough'] = f"{df_tk_longest_drawdowns.loc[idx, 'Peak To Trough']}"
-            df_tk_longest_drawdowns_str.loc[idx, 'Trough To Recovery'] = f"{df_tk_longest_drawdowns.loc[idx, 'Trough To Recovery']}"
+            df_tk_longest_drawdowns_str.loc[idx, '% Depth'] = f"{(df_tk_longest_drawdowns.loc[idx, '% Depth']):.2f}%"
+            df_tk_longest_drawdowns_str.loc[idx, 'Total Length'] = f"{df_tk_longest_drawdowns.loc[idx, 'Total Length']}d"
+            df_tk_longest_drawdowns_str.loc[idx, 'Peak To Trough'] = f"{df_tk_longest_drawdowns.loc[idx, 'Peak To Trough']}d"
+            df_tk_longest_drawdowns_str.loc[idx, 'Trough To Recovery'] = f"{df_tk_longest_drawdowns.loc[idx, 'Trough To Recovery']}d"
 
         drawdown_data = {
             'Drawdown Stats': df_tk_drawdowns,
@@ -1824,7 +1824,7 @@ class AnalyzePrices():
             alpha_min, alpha_max = 0.1, 0.8  # max intensity covers the grid
 
         if top_by == 'depth':
-            top_list = list(df_tk_deepest_drawdowns['% Drawdown'])
+            top_list = list(df_tk_deepest_drawdowns['% Depth'])
             top_cmap = map_values(top_list, alpha_min, alpha_max, ascending=True)
         else:
             top_list = list(df_tk_longest_drawdowns['Total Length'])
@@ -1911,7 +1911,7 @@ class AnalyzePrices():
                 top_drawdowns_str.index,
                 top_drawdowns_str['Peak Date'],
                 top_drawdowns_str['Recovery Date'],
-                top_drawdowns['% Drawdown'],
+                top_drawdowns['% Depth'],
                 top_drawdowns['Total Length']
             )
             title_drawdowns = f'{tk} {n_top_drawdowns} Top Drawdowns by {title_text} - Peak To Recovery'    
@@ -1920,7 +1920,7 @@ class AnalyzePrices():
                 top_drawdowns_str.index,
                 top_drawdowns_str['Peak Date'],
                 top_drawdowns_str['Trough Date'],
-                top_drawdowns['% Drawdown'],
+                top_drawdowns['% Depth'],
                 top_drawdowns['Total Length']                
                 # top_drawdowns['Peak To Trough']  # This corresponds to the width of the Peak-To-Trough band
             )
