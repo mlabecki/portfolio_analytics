@@ -65,6 +65,9 @@ high_tk = ohlc_tk['High']
 low_tk = ohlc_tk['Low']
 volume_tk = df_volume[tk]
 
+tickers = tickers[:-1]
+print(tickers)
+
 analyze_prices = AnalyzePrices(end_date, start_date, [tk])
 date_index = ohlc_tk.index
 
@@ -403,63 +406,6 @@ def disable_options(selected_option):
     else:
         return False
 
-# @app.callback(
-#     # Output(component_id = 'dd-output-container', component_property = 'children'),
-#     # Output(component_id = 'test-graph', component_property = 'figure'),
-#     # Output(component_id = 'fig_div', component_property = 'children', allow_duplicate = True),
-#     Output(component_id = 'fig_div', component_property = 'children'),
-#     Input(component_id = 'theme-dropdown', component_property = 'value'),
-#     Input(component_id = 'deck-type-dropdown', component_property = 'value'),
-#     Input(component_id = 'secondary-y-dropdown', component_property = 'value'),
-#     Input(component_id = 'width-dropdown', component_property = 'value'),
-#     Input(component_id = 'upper-height-dropdown', component_property = 'value'),
-#     Input(component_id = 'lower-height-dropdown', component_property = 'value'),
-#     # prevent_initial_call = True
-# )
-# def update_template(
-#         theme,
-#         deck_type,
-#         sec_y,
-#         width,
-#         upper_height,
-#         lower_height
-#     ):
-# 
-#     theme = theme.lower()
-#     deck_type = deck_type.lower()
-#     secondary_y = False if sec_y == 'No' else True
-#     # width = int(width)
-#     # upper_height = int(upper_height)
-#     # lower_height = int(lower_height)
-#     # fig_data = create_graph(
-#     # # return create_graph(
-#     #     # date_index,
-#     #     theme,
-#     #     deck_type,
-#     #     secondary_y,
-#     #     width,
-#     #     upper_height,
-#     #     lower_height,
-#     #     lower_height
-#     #     )
-#     fig_data = analyze_prices.create_template(
-#     # fig_data = create_template(    
-#         date_index,
-#         deck_type = deck_type,
-#         secondary_y = secondary_y,
-#         plot_width = width,
-#         plot_height_1 = upper_height,
-#         plot_height_2 = lower_height,
-#         plot_height_3 = lower_height,
-#         theme = theme
-#     )
-# 
-# fig = fig_data['fig']
-# fig_div = html.Div(dcc.Graph(id='template-graph', figure = fig))
-# fig_div = dcc.Graph(id='template-graph', figure = fig)
-# return fig_div
-
-
 @app.callback(
     Output('collapse-button-drawdowns', 'children'),
     Output('collapse-drawdowns', 'is_open'),
@@ -476,29 +422,17 @@ def toggle_collapse_drawdowns(n, is_open):
     else:
         return f'► {title}', is_open
         #return f'▼ {title}', is_open
-    
-    # label = '▼' if is_open else '▲'
-    # if n:
-    #     return label, not is_open
-    # else:
-    #     return '▲', is_open
 
 @app.callback(
     Output(component_id = 'drawdowns-number-dropdown', component_property = 'options'),
-    Input(component_id = 'tickers-dropdown', component_property = 'value')
-)
-def update_drawdowns_number_dropdown_options(tk):
-    n_drawdowns = portfolio_drawdown_data[tk]['Total Drawdowns']
-    return [x for x in range(n_drawdowns + 1)][1:]
-
-@app.callback(
     Output(component_id = 'drawdowns-number-dropdown', component_property = 'value'),
     Input(component_id = 'tickers-dropdown', component_property = 'value')
 )
-def update_drawdowns_number_dropdown_value(tk):
+def update_drawdowns_number_dropdown(tk):
     n_drawdowns = portfolio_drawdown_data[tk]['Total Drawdowns']
-    return min(5, n_drawdowns)
-
+    dd_number_options = [x for x in range(n_drawdowns + 1)][1:]
+    dd_number_value = min(5, n_drawdowns)
+    return dd_number_options, dd_number_value
 
 @app.callback(
 
@@ -563,6 +497,7 @@ def update_drawdowns(
     # if (theme_drawdowns != theme):
     #     theme = theme_drawdowns
 
+    drawdown_data = portfolio_drawdown_data[tk]
     selected_drawdown_data = analyze_prices.select_tk_drawdowns(drawdown_data, n_top)
     # n_drawdowns = len(drawdown_data['Drawdown Stats'])
     # n_drawdown_list = [x for x in range(n_drawdowns + 1)][1:]
@@ -574,7 +509,6 @@ def update_drawdowns(
     drawdown_top_by = 'length' if drawdown_top_by == 'Total Length' else 'depth'
     fig_data = analyze_prices.add_drawdowns(
         fig_data,
-        # close_tk,
         df_close[tk],
         tk,
         selected_drawdown_data,

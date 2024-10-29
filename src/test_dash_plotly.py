@@ -80,7 +80,8 @@ def create_graph(
     sort_by = ['Total Length', '% Depth']
     # sort_by = '% Depth'
     # sort_by = 'Peak Date'
-    drawdown_data = analyze_prices.summarize_tk_drawdowns(df_close, tk, sort_by, n_top)
+    drawdown_data = analyze_prices.summarize_tk_drawdowns(df_close, tk, sort_by)
+    selected_drawdown_data = analyze_prices.select_tk_drawdowns(drawdown_data, n_top)
 
     ma_envelope_list = analyze_prices.ma_envelopes(close_tk, window = 20, prc_offset = 5, n_bands = 2)
 
@@ -136,7 +137,7 @@ def create_graph(
         fig_data,
         close_tk,
         tk,
-        drawdown_data,
+        selected_drawdown_data,
         n_top_drawdowns = 5,
         target_deck = 1,
         add_price = True,
