@@ -1572,14 +1572,12 @@ class AnalyzePrices():
         self,
         df_price,
         tk,
-        sort_by,
-        n_top = 5
+        sort_by
     ):
         """
         df_price:   series/dataframe of historical prices, such as df_adj_close
         tk:         ticker for which to perform the analysis
         sort_by:    column to sort by, should be a based on user input
-        n_top:      number of top drawdowns to include in df_tk_deepest_drawdowns
         return:     drawdown_data = {
                         'Drawdown Stats': df_tk_drawdowns,
                         'Deepest Drawdowns': df_tk_deepest_drawdowns,
@@ -1685,17 +1683,15 @@ class AnalyzePrices():
                 df_tk_drawdowns.loc[peak, 'Peak To Trough'] = n_to_trough
                 df_tk_drawdowns.loc[peak, 'Trough To Recovery'] = n_recovery
 
-        n_top = min(n_top, len(df_tk_drawdowns))
-
         ascending = True if sort_by in cols_float + cols_str else False
         df_tk_drawdowns = df_tk_drawdowns.sort_values(by=sort_by, ascending=ascending)
         df_tk_drawdowns = df_tk_drawdowns.reset_index(drop=True)
 
         df_tk_deepest_drawdowns = df_tk_drawdowns.sort_values(by='% Depth', ascending=True)
-        df_tk_deepest_drawdowns = df_tk_deepest_drawdowns.reset_index(drop=True)[:n_top]
+        df_tk_deepest_drawdowns = df_tk_deepest_drawdowns.reset_index(drop=True)
     
         df_tk_longest_drawdowns = df_tk_drawdowns.sort_values(by='Total Length', ascending=False)
-        df_tk_longest_drawdowns = df_tk_longest_drawdowns.reset_index(drop=True)[:n_top]
+        df_tk_longest_drawdowns = df_tk_longest_drawdowns.reset_index(drop=True)
 
         # Convert output to strings
 
@@ -1733,6 +1729,7 @@ class AnalyzePrices():
             df_tk_longest_drawdowns_str.loc[idx, 'Trough To Recovery'] = f"{df_tk_longest_drawdowns.loc[idx, 'Trough To Recovery']}d"
 
         drawdown_data = {
+            'Total Drawdowns': len(df_tk_drawdowns),
             'Drawdown Stats': df_tk_drawdowns,
             'Deepest Drawdowns': df_tk_deepest_drawdowns,
             'Longest Drawdowns': df_tk_longest_drawdowns,
@@ -1742,6 +1739,41 @@ class AnalyzePrices():
         }
 
         return drawdown_data
+
+
+    ##### SELECT TK DRAWDOWNS #####
+
+    def select_tk_drawdowns(
+        self,
+        drawdown_data,
+        n_top = 5
+    ):
+        """
+        n_top:      
+            number of top drawdowns to include in the tables/graphs
+        return:     
+            selected_drawdown_data = {
+                'Deepest Drawdowns': df_tk_deepest_drawdowns,
+                'Longest Drawdowns': df_tk_longest_drawdowns,
+                'Deepest Drawdowns Str': df_tk_deepest_drawdowns,
+                'Longest Drawdowns Str': df_tk_longest_drawdowns
+            }
+        """
+
+        drawdown_data_list = [
+            'Deepest Drawdowns',                  
+            'Longest Drawdowns',
+            'Deepest Drawdowns Str',                  
+            'Longest Drawdowns Str'
+        ]
+
+        n_top = min(n_top, drawdown_data['Total Drawdowns'])
+
+        selected_drawdown_data = {}
+        for dd in drawdown_data_list:
+            selected_drawdown_data.update({dd: drawdown_data[dd][:n_top]})
+
+        return selected_drawdown_data
 
 
     ##### ADD DRAWDOWNS #####
@@ -1803,7 +1835,7 @@ class AnalyzePrices():
             add_price = True
 
         # infinity = 1e10
-        infinity = 1e3
+        infinity = 1e3  # should it be based on y_max/y_upper_limit?
 
         df_tk_deepest_drawdowns = drawdown_data['Deepest Drawdowns']
         df_tk_longest_drawdowns = drawdown_data['Longest Drawdowns']
@@ -1827,7 +1859,9 @@ class AnalyzePrices():
             top_list = list(df_tk_deepest_drawdowns['% Depth'])
             top_cmap = map_values(top_list, alpha_min, alpha_max, ascending=True)
         else:
-            top_list = list(df_tk_longest_drawdowns['Total Length'])
+            # length_col = 'Total Length' if show_trough_to_recovery else 'Peak To Trough'
+            length_col = 'Total Length'
+            top_list = list(df_tk_longest_drawdowns[length_col])
             top_cmap = map_values(top_list, alpha_min, alpha_max, ascending=False)
 
         price_color_theme = 'base' if price_color_theme is None else price_color_theme
@@ -1912,6 +1946,7 @@ class AnalyzePrices():
                 top_drawdowns_str['Peak Date'],
                 top_drawdowns_str['Recovery Date'],
                 top_drawdowns['% Depth'],
+                top_drawdowns['Peak To Trough'],
                 top_drawdowns['Total Length']
             )
             title_drawdowns = f'{tk} {n_top_drawdowns} Top Drawdowns by {title_text} - Peak To Recovery'    
@@ -1921,8 +1956,8 @@ class AnalyzePrices():
                 top_drawdowns_str['Peak Date'],
                 top_drawdowns_str['Trough Date'],
                 top_drawdowns['% Depth'],
-                top_drawdowns['Total Length']                
-                # top_drawdowns['Peak To Trough']  # This corresponds to the width of the Peak-To-Trough band
+                top_drawdowns['Peak To Trough'],
+                top_drawdowns['Total Length']
             )
             title_drawdowns = f'{tk} {n_top_drawdowns} Top Drawdowns by {title_text} - Peak To Trough'
 
@@ -1943,14 +1978,17 @@ class AnalyzePrices():
                 row = target_deck, col = 1
             )
         
-        for idx, x1, x2, depth, length in zip_drawdown_parameters:
+        for idx, x1, x2, depth, peak_to_trough, total_length in zip_drawdown_parameters:
+
+            # length = total_length if show_trough_to_recovery else peak_to_trough
+            length = total_length
 
             if top_by == 'depth':
                 alpha_deepest = top_cmap[depth]
-                name = f'{depth:.1f}%, {length}d'
+                name = f'{depth:.1f}%, {peak_to_trough}d / {total_length}d'
             else:
                 alpha_deepest = top_cmap[length]
-                name = f'{length}d, {depth:.1f}%'
+                name = f'{peak_to_trough}d / {total_length}d, {depth:.1f}%'
 
             fillcolor = top_by_color.replace('1)', f'{alpha_deepest})')
 

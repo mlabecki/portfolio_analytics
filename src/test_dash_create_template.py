@@ -34,10 +34,11 @@ overlay_color_theme = 'grasslands'
 overlay_color_themes = list(theme_style[theme]['overlay_color_theme'].keys())
 drawdown_colors = list(theme_style[theme]['drawdown_colors'].keys())
 
-deck_type = 'triple'
+# deck_type = 'triple'
+deck_type = 'single'
 secondary_y = False
 plot_width = 1600
-plot_height_1 = 600
+plot_height_1 = 750
 plot_height_2 = 150
 plot_height_3 = 150
 plot_widths = [1000, 1050, 1100, 1150, 1200, 1250, 1300, 1350, 1400, 1450, 1500, 1550, 1600, 1650, 1700, 1750, 1800]
@@ -66,7 +67,12 @@ volume_tk = df_volume[tk]
 
 analyze_prices = AnalyzePrices(end_date, start_date, [tk])
 date_index = ohlc_tk.index
+
 sort_by = ['Total Length', '% Depth']
+drawdown_data = analyze_prices.summarize_tk_drawdowns(df_close, tk, sort_by)
+n_drawdowns = drawdown_data['Total Drawdowns']
+drawdown_numbers = [x for x in range(n_drawdowns + 1)[1:]]
+
 
 app = dash.Dash(__name__, external_stylesheets = [dbc.themes.YETI])     # sharp corners
 
@@ -165,7 +171,7 @@ app.layout = html.Div([
                 dcc.Dropdown(
                     id='deck-type-dropdown',
                     options = deck_types,
-                    value = 'Triple',
+                    value = 'Single',
                     style = {'width': '110px'}
                 )],
                 style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
@@ -198,7 +204,7 @@ app.layout = html.Div([
                 dcc.Dropdown(
                     id='upper-height-dropdown',
                     options = upper_deck_heights,
-                    value = 600,
+                    value = 750,
                     style = {'width': '160px', 'font-color': 'black'}
                 )],
                 style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
@@ -283,7 +289,7 @@ app.layout = html.Div([
                 html.Div('Top DD Number', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
                 dcc.Dropdown(
                     id='drawdowns-number-dropdown',
-                    options = [1, 2, 3, 4, 5, 6, 7, 8],
+                    options = drawdown_numbers,
                     value = 5,
                     style = {'width': '140px', 'font-color': 'black'}
                 )],
@@ -444,11 +450,11 @@ def disable_options(selected_option):
 #         plot_height_3 = lower_height,
 #         theme = theme
 #     )
-
-    fig = fig_data['fig']
-    # fig_div = html.Div(dcc.Graph(id='template-graph', figure = fig))
-    fig_div = dcc.Graph(id='template-graph', figure = fig)
-    return fig_div
+# 
+# fig = fig_data['fig']
+# fig_div = html.Div(dcc.Graph(id='template-graph', figure = fig))
+# fig_div = dcc.Graph(id='template-graph', figure = fig)
+# return fig_div
 
 
 @app.callback(
@@ -537,7 +543,23 @@ def update_drawdowns(
     # if (theme_drawdowns != theme):
     #     theme = theme_drawdowns
 
-    drawdown_data = analyze_prices.summarize_tk_drawdowns(df_close, tk, sort_by, n_top)
+    selected_drawdown_data = analyze_prices.select_tk_drawdowns(drawdown_data, n_top)
+    # n_drawdowns = len(drawdown_data['Drawdown Stats'])
+    # n_drawdown_list = [x for x in range(n_drawdowns + 1)][1:]
+
+    # def test_fun(n_drawdowns):
+        # update_drawdowns_number_dropdown_options(n_drawdowns)
+
+    # def update_drawdowns_number_dropdown_options(n):
+        # return [x for x in range(n + 1)][1:]
+        # return [1, 2, 3, 4, 5, 6, 7]
+
+    # app.callback(
+    #Output(component_id = 'drawdowns-number-dropdown', component_property = 'options')
+    # Output(component_id = 'drawdowns-number-dropdown', component_property = 'value')
+    # Input(component_id = 'drawdowns-number-dropdown', component_property = 'value')
+    # )(update_drawdowns_number_dropdown_options(n_drawdowns))
+
     show_trough_to_recovery = True if drawdown_display == 'Peak To Recovery' else False
     drawdown_top_by = 'length' if drawdown_top_by == 'Total Length' else 'depth'
     fig_data = analyze_prices.add_drawdowns(
@@ -545,7 +567,7 @@ def update_drawdowns(
         # close_tk,
         df_close[tk],
         tk,
-        drawdown_data,
+        selected_drawdown_data,
         n_top_drawdowns = n_top,
         target_deck = 1,
         add_price = True,
