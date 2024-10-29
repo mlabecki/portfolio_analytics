@@ -293,7 +293,7 @@ app.layout = html.Div([
                 dcc.Dropdown(
                     id='drawdowns-number-dropdown',
                     # options = drawdown_numbers,
-                    value = 5,
+                    value = 10,
                     style = {'width': '140px', 'font-color': 'black'}
                 )],
                 style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
@@ -490,7 +490,15 @@ def toggle_collapse_drawdowns(n, is_open):
 def update_drawdowns_number_dropdown_options(tk):
     n_drawdowns = portfolio_drawdown_data[tk]['Total Drawdowns']
     return [x for x in range(n_drawdowns + 1)][1:]
-    # return [1, 2, 3, 4, 5, 6, 7]
+
+@app.callback(
+    Output(component_id = 'drawdowns-number-dropdown', component_property = 'value'),
+    Input(component_id = 'tickers-dropdown', component_property = 'value')
+)
+def update_drawdowns_number_dropdown_value(tk):
+    n_drawdowns = portfolio_drawdown_data[tk]['Total Drawdowns']
+    return min(5, n_drawdowns)
+
 
 @app.callback(
 
