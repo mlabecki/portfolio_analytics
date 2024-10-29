@@ -69,9 +69,12 @@ analyze_prices = AnalyzePrices(end_date, start_date, [tk])
 date_index = ohlc_tk.index
 
 sort_by = ['Total Length', '% Depth']
-drawdown_data = analyze_prices.summarize_tk_drawdowns(df_close, tk, sort_by)
-n_drawdowns = drawdown_data['Total Drawdowns']
-drawdown_numbers = [x for x in range(n_drawdowns + 1)[1:]]
+portfolio_drawdown_data = {}
+for tk in tickers:
+    drawdown_data = analyze_prices.summarize_tk_drawdowns(df_close, tk, sort_by)
+    n_drawdowns = drawdown_data['Total Drawdowns']
+    drawdown_numbers = [x for x in range(n_drawdowns + 1)[1:]]
+    portfolio_drawdown_data.update({tk: drawdown_data})
 
 
 app = dash.Dash(__name__, external_stylesheets = [dbc.themes.YETI])     # sharp corners
@@ -289,7 +292,7 @@ app.layout = html.Div([
                 html.Div('Top DD Number', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
                 dcc.Dropdown(
                     id='drawdowns-number-dropdown',
-                    options = drawdown_numbers,
+                    # options = drawdown_numbers,
                     value = 5,
                     style = {'width': '140px', 'font-color': 'black'}
                 )],
@@ -481,6 +484,15 @@ def toggle_collapse_drawdowns(n, is_open):
     #     return '▲', is_open
 
 @app.callback(
+    Output(component_id = 'drawdowns-number-dropdown', component_property = 'options'),
+    Input(component_id = 'tickers-dropdown', component_property = 'value')
+)
+def update_drawdowns_number_dropdown_options(tk):
+    n_drawdowns = portfolio_drawdown_data[tk]['Total Drawdowns']
+    return [x for x in range(n_drawdowns + 1)][1:]
+    # return [1, 2, 3, 4, 5, 6, 7]
+
+@app.callback(
 
     # Output(component_id = 'test-graph', component_property = 'figure'),
     # Output(component_id = 'fig_div', component_property = 'children', allow_duplicate = True),
@@ -549,16 +561,6 @@ def update_drawdowns(
 
     # def test_fun(n_drawdowns):
         # update_drawdowns_number_dropdown_options(n_drawdowns)
-
-    # def update_drawdowns_number_dropdown_options(n):
-        # return [x for x in range(n + 1)][1:]
-        # return [1, 2, 3, 4, 5, 6, 7]
-
-    # app.callback(
-    #Output(component_id = 'drawdowns-number-dropdown', component_property = 'options')
-    # Output(component_id = 'drawdowns-number-dropdown', component_property = 'value')
-    # Input(component_id = 'drawdowns-number-dropdown', component_property = 'value')
-    # )(update_drawdowns_number_dropdown_options(n_drawdowns))
 
     show_trough_to_recovery = True if drawdown_display == 'Peak To Recovery' else False
     drawdown_top_by = 'length' if drawdown_top_by == 'Total Length' else 'depth'
