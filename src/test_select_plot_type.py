@@ -131,19 +131,18 @@ def create_graph(
 
 app.layout = html.Div([
     
+    ##### BEGIN TEMPLATE CONTROLS
+
     html.Div([
 
         # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/
         html.Div(
-            children = [
             dbc.Button(
                 id = 'collapse-button-template',
                 class_name = 'ma-1',
                 color = 'primary',
-                # color = 'dark',
                 size = 'sm',
                 n_clicks = 0,
-                # n_clicks = 1,
                 style = {
                     'display': 'inline-block',
                     'margin-right': '5px',
@@ -151,259 +150,255 @@ app.layout = html.Div([
                     'font-family': 'Helvetica',
                     'font-weight': 'bold',
                     'width': '220px'
-                    # 'width': '185px'
                 }
             )
-        ]),
-
-    dbc.Collapse(
-
-        html.Div(
-            id = 'template-controls',
-            children =
-            [
-            html.Div([
-                html.Div('Theme', style = {'font-weight': 'bold', 'margin-down': '0px'}),
-                dcc.Dropdown(
-                    id = 'theme-dropdown',
-                    options = ['Dark', 'Light'],
-                    value = 'Dark',
-                    disabled = False,
-                    style = {'width': '90px'}
-                )],
-                style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
-                ),
-
-            html.Div([
-                html.Div('Deck Type', style = {'font-weight': 'bold', 'margin-down': '0px'}),
-                dcc.Dropdown(
-                    id='deck-type-dropdown',
-                    options = deck_types,
-                    value = 'Single',
-                    style = {'width': '110px'}
-                )],
-                style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
-                ),
-
-            html.Div([
-                html.Div('Sec Y', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
-                dcc.Dropdown(
-                    id='secondary-y-dropdown',
-                    options = ['No', 'Yes'],
-                    value = 'No',
-                    style = {'width': '80px', 'font-color': 'black'}
-                )],
-                style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
-                ),
-
-            html.Div([
-                html.Div('Plot Width', style = {'font-weight': 'bold', 'margin-down': '0px'}),
-                dcc.Dropdown(
-                    id='width-dropdown',
-                    options = plot_widths,
-                    value = 1600,
-                    style = {'width': '100px', 'font-color': 'black'}
-                )],
-                style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
-                ),
-
-            html.Div([
-                html.Div('Upper Deck Height', style = {'font-weight': 'bold', 'margin-down': '0px'}),
-                dcc.Dropdown(
-                    id='upper-height-dropdown',
-                    options = upper_deck_heights,
-                    value = 750,
-                    style = {'width': '160px', 'font-color': 'black'}
-                )],
-                style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
-                ),
-
-            html.Div([
-                html.Div('Lower Deck Height', style = {'font-weight': 'bold', 'margin-down': '0px'}),
-                dcc.Dropdown(
-                    id='lower-height-dropdown',
-                    options = lower_deck_heights,
-                    value = 150,
-                    style = {'width': '160px', 'font-color': 'black'}
-                )],
-                style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
-                ),
-
-            ]
-#        ))
         ),
-        
-        id = 'collapse-template',
-        is_open = False
-    
-    )],
-    style = {'font-family': 'Helvetica', 'font-weight': 'normal', 'margin-down': '5px'}
 
-    ),
+        dbc.Collapse(
+
+            html.Div(
+
+                id = 'template-controls',
+                children = [
+
+                    html.Div([
+                        html.Div('Theme', style = {'font-weight': 'bold', 'margin-down': '0px'}),
+                        dcc.Dropdown(
+                            id = 'theme-dropdown',
+                            options = ['Dark', 'Light'],
+                            value = 'Dark',
+                            disabled = False,
+                            clearable = False,
+                            style = {'width': '90px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Deck Type', style = {'font-weight': 'bold', 'margin-down': '0px'}),
+                        dcc.Dropdown(
+                            id='deck-type-dropdown',
+                            options = deck_types,
+                            value = 'Single',
+                            clearable = False,
+                            style = {'width': '110px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Sec Y', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
+                        dcc.Dropdown(
+                            id='secondary-y-dropdown',
+                            options = ['No', 'Yes'],
+                            value = 'No',
+                            clearable = False,
+                            style = {'width': '80px', 'font-color': 'black'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Plot Width', style = {'font-weight': 'bold', 'margin-down': '0px'}),
+                        dcc.Dropdown(
+                            id='width-dropdown',
+                            options = plot_widths,
+                            # value = 1600,
+                            value = 1200,
+                            clearable = False,
+                            style = {'width': '100px', 'font-color': 'black'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Upper Deck Height', style = {'font-weight': 'bold', 'margin-down': '0px'}),
+                        dcc.Dropdown(
+                            id='upper-height-dropdown',
+                            options = upper_deck_heights,
+                            value = 750,
+                            clearable = False,
+                            style = {'width': '160px', 'font-color': 'black'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Lower Deck Height', style = {'font-weight': 'bold', 'margin-down': '0px'}),
+                        dcc.Dropdown(
+                            id='lower-height-dropdown',
+                            options = lower_deck_heights,
+                            value = 150,
+                            clearable = False,
+                            style = {'width': '160px', 'font-color': 'black'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                    )
+                ]
+            ),
+        
+            id = 'collapse-template',
+            is_open = False
+        )
+    
+    ]),
+
+    ##### END TEMPLATE CONTROLS
+
+    ##### BEGIN DRAWDOWN CONTROLS
 
     html.Div([
 
         html.Div(
-            children = [
             dbc.Button(
                 id = 'collapse-button-drawdowns',
                 class_name = 'ma-1',
                 color = 'primary',
-                # color = 'dark',
                 size = 'sm',
                 n_clicks = 0,
-                # n_clicks = 1,
                 style = {
                     'display': 'inline-block',
                     'margin-right': '5px',
                     'text-align': 'left',
                     'font-family': 'Helvetica',
                     'font-weight': 'bold',
-                    # 'width': '33px'
                     'width': '220px'
                 }
             )
-        ]),
-
-    dbc.Collapse(
-
-        html.Div(
-            id = 'drawdown-controls',
-            children =
-            [
-            # html.Div([
-            #     html.Div('Theme', style = {'font-weight': 'bold', 'margin-down': '0px'}),
-            #     dcc.Dropdown(
-            #         id = 'drawdowns-theme-dropdown',
-            #         options = ['dark', 'light'],
-            #         value = 'dark',
-            #         style = {'width': '85px'}
-            #     )],
-            #     style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
-            #     ),
-
-            html.Div([
-                html.Div('Ticker', style = {'font-weight': 'bold', 'margin-down': '0px'}),
-                dcc.Dropdown(
-                    id='tickers-dropdown',
-                    options = tickers,
-                    value = 'MSFT',
-                    style = {'width': '110px'}
-                )],
-                style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
-                ),
-
-            html.Div([
-                html.Div('Top DD Number', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
-                dcc.Dropdown(
-                    id='drawdowns-number-dropdown',
-                    # options = drawdown_numbers,
-                    value = 10,
-                    style = {'width': '140px', 'font-color': 'black'}
-                )],
-                style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
-                ),
-
-            html.Div([
-                html.Div('Top DD By', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
-                dcc.Dropdown(
-                    id='drawdowns-topby-dropdown',
-                    options = ['% Depth', 'Total Length'],
-                    value = '% Depth',
-                    style = {'width': '150px', 'font-color': 'black'}
-                )],
-                style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
-                ),
-
-            html.Div([
-                html.Div('DD Display', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
-                dcc.Dropdown(
-                    id='drawdowns-display-dropdown',
-                    options = ['Peak To Trough', 'Peak To Recovery'],
-                    value = 'Peak To Trough',
-                    style = {'width': '190px', 'font-color': 'black'}
-                )],
-                style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
-                ),
-
-            html.Div([
-                html.Div('DD Color', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
-                dcc.Dropdown(
-                    id='drawdowns-color-dropdown',
-                    options = drawdown_colors,
-                    value = 'red',
-                    style = {'width': '120px', 'font-color': 'black'}
-                )],
-                style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
-                ),
-            
-            html.Div([
-                html.Div('Price Color Theme', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
-                dcc.Dropdown(
-                    id='drawdowns-price-color-dropdown',
-                    options = overlay_color_themes,
-                    value = 'sapphire',
-                    style = {'width': '150px', 'font-color': 'black'}
-                )],
-                style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
-                ),
-
-            html.Div([
-                dbc.Button(
-                    'Reset Y Axis',
-                    id = 'reset_y',
-                    n_clicks = 0,
-                    class_name = 'ma-1',
-                    # color = 'primary',
-                    color = 'light',
-                    size = 'md',
-                    style = {
-                        'display': 'inline-block',
-                        'margin-right': '5px',
-                        'text-align': 'center',
-                        'font-family': 'Helvetica',
-                        'font-weight': 'bold',
-                        'width': '120px'
-                    }
-                )],
-                style = {'display': 'inline-block', 'margin-right': '5px', 'margin-down': '0px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
-            ),
-
-            # html.Div([
-                # html.Div('Overlay Theme', style = {'font-weight': 'bold', 'margin-down': '0px'}),
-                # dcc.Dropdown(
-                    # id='overlay-dropdown',
-                    # options = overlay_color_themes,
-                    # value = 'grasslands',
-                    # style = {'width': '135px', 'font-color': 'black'}
-                # )],
-                # style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
-                # )
-            ]
-#        ))
         ),
-        
-        id = 'collapse-drawdowns',
-        is_open = False
-        # is_open = True
-    
-    )], 
-    style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
-    ),
 
+        dbc.Collapse(
 
-    
+            html.Div(
+
+                id = 'drawdown-controls',
+                children = [
+
+                    html.Div([
+                        html.Div('Ticker', style = {'font-weight': 'bold', 'margin-down': '0px'}),
+                        dcc.Dropdown(
+                            id='tickers-dropdown',
+                            options = tickers,
+                            value = 'MSFT',
+                            clearable = False,
+                            style = {'width': '110px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Top DD Number', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
+                        dcc.Dropdown(
+                            id='drawdowns-number-dropdown',
+                            # options = drawdown_numbers,
+                            # value = 10,
+                            clearable = False,
+                            style = {'width': '140px', 'font-color': 'black'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Top DD By', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
+                        dcc.Dropdown(
+                            id='drawdowns-topby-dropdown',
+                            options = ['% Depth', 'Total Length'],
+                            value = '% Depth',
+                            clearable = False,
+                            style = {'width': '150px', 'font-color': 'black'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('DD Display', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
+                        dcc.Dropdown(
+                            id='drawdowns-display-dropdown',
+                            options = ['Peak To Trough', 'Peak To Recovery'],
+                            value = 'Peak To Trough',
+                            clearable = False,
+                            style = {'width': '190px', 'font-color': 'black'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('DD Color', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
+                        dcc.Dropdown(
+                            id='drawdowns-color-dropdown',
+                            options = drawdown_colors,
+                            value = 'red',
+                            clearable = False,
+                            style = {'width': '120px', 'font-color': 'black'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Price Color Theme', style = {'font-weight': 'bold', 'margin-down': '0px'}),        
+                        dcc.Dropdown(
+                            id='drawdowns-price-color-dropdown',
+                            options = overlay_color_themes,
+                            value = 'sapphire',
+                            clearable = False,
+                            style = {'width': '150px', 'font-color': 'black'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                    ),
+
+                    ### ADD RESET AXES BUTTON
+
+                    html.Div( 
+                        dbc.Button(
+                            'RESET AXES',
+                            id = 'reset_axes',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'light',
+                            size = 'sm',
+                            style = {
+                                'display': 'inline-block',
+                                'vertical-align': 'bottom',
+                                'text-align': 'center',
+                                'font-family': 'Helvetica',
+                                'font-weight': 'bold',
+                                'width': '125px'
+                            }
+                        ),
+                        style = {
+                            'position': 'relative',
+                            'display': 'grid',
+                            'float': 'right',
+                            'display': 'inline-block',
+                            'vertical-align': 'bottom',
+                            'margin-left': 'auto',
+                            'margin-right': '0px',
+                            'margin-top': 'auto'
+                        }
+                    ),            
+                ],
+                style = {'width': 1200}
+            ), 
+
+            id = 'collapse-drawdowns',
+            is_open = False
+            # is_open = True
+
+        )]
+    ), 
+
+    ##### END DRAWDOWN CONTROLS
+
+    # style = {'display': 'inline-block', 'vertical-align': 'bottom', 'margin-right': '5px', 'font-family': 'Helvetica'}
+  
     # html.Br(),
-    
-    dcc.Store(id = 'fig_data'),
+    # dcc.Store(id = 'fig_data'),
 
-    html.Div(
-        id='fig_div',
-        children = []
-            # [dcc.Graph(id='test-graph', figure = {})],
-    )
+    html.Div(id = 'fig_div', children = [])
+            # [dcc.Graph(id='test-graph', figure = {})],)
 
 ])
+
 
 @app.callback(
     Output('collapse-button-template', 'children'),
@@ -466,7 +461,7 @@ def update_drawdowns_number_dropdown(tk):
     # Output(component_id = 'test-graph', component_property = 'figure'),
     Output(component_id = 'fig_div', component_property = 'children'),
 
-    Input(component_id = 'reset_y', component_property = 'n_clicks'),
+    Input(component_id = 'reset_axes', component_property = 'n_clicks'),
     
     # template options
     Input(component_id = 'theme-dropdown', component_property = 'value'),
@@ -556,6 +551,11 @@ def update_drawdowns(
     )
     # fig_div = create_graph(theme, tk, drawdown_color, overlay_color_theme)
     # fig = fig_data['fig']
+
+    bollinger_data = analyze_prices.bollinger_bands(df_close[tk], window = 20, n_std = 2, n_bands = 3)
+    bollinger_list = bollinger_data['list']
+    fig_data = analyze_prices.add_bollinger_overlays(fig_data, bollinger_list, target_deck = 1, theme = theme, color_theme = 'sapphire')
+
 
     target_deck = 1
     plot_height = fig_data['plot_height'][target_deck]

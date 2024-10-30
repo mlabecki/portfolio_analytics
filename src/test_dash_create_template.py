@@ -65,6 +65,8 @@ high_tk = ohlc_tk['High']
 low_tk = ohlc_tk['Low']
 volume_tk = df_volume[tk]
 
+# We don't want the benchmark ticker in the app menus at this point. For example, 
+# the drawdown data is not generated unless tk_market is explicitly 
 tickers = tickers[:-1]
 print(tickers)
 
@@ -234,10 +236,8 @@ app.layout = html.Div([
         id = 'collapse-template',
         is_open = False
     
-    )],
-    style = {'font-family': 'Helvetica', 'font-weight': 'normal', 'margin-down': '5px'}
-
-    ),
+        )
+    ]),
 
     html.Div([
 
