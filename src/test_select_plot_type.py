@@ -272,7 +272,6 @@ app.layout = html.Div([
             html.Div(
 
                 id = 'drawdown-controls',
-                style = {'width': 1200, 'vertical-align': 'bottom', 'float': 'bottom', 'margin-top': 'auto', },
                 children = [
 
                     html.Div([
@@ -352,7 +351,8 @@ app.layout = html.Div([
                     html.Div([
                         html.Div('_', style = {'color': 'white', 'font-weight': 'bold', 'margin-down': '0px'}),
                         dbc.Button(
-                            'RESET AXES',
+                            # 'RESET AXES',
+                            'Reset Axes',
                             id = 'reset_axes',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -360,32 +360,39 @@ app.layout = html.Div([
                             size = 'sm',
                             style = {
                                 'display': 'inline-block',
-                                'vertical-align': 'bottom',
-                                'margin-down': '0px',
+                                #'vertical-align': 'top',
+                                'height': '37px',
+                                # 'margin-down': '0px',
+                                'margin-bottom': '0px',
+                                'margin-top': 'auto',
                                 'text-align': 'center',
                                 'font-family': 'Helvetica',
-                                'font-weight': 'bold',
-                                'width': '125px'
+                                'font-size': '15px',
+                                #'font-weight': 'bold',
+                                'width': '95px'
                             }
                         )],
                         style = {
                             # 'position': 'relative',
                             # 'display': 'grid',
                             'float': 'right',
+                            # 'height': '40px',
                             #'display': 'inline-block',
                             'vertical-align': 'bottom',
-                            'margin-down': '0px'
+                            # 'margin-down': '0px',
+                            'margin-bottom': '0px',
                             # 'margin-left': 'auto',
                             # 'margin-right': '0px',
-                            # 'margin-top': 'auto'
+                            'margin-top': 'auto'
                         }
                     ),
                 ],
             ), 
 
             id = 'collapse-drawdowns',
-            is_open = False,
-            style = {'width': 1200, 'vertical-align': 'bottom', 'float': 'bottom', 'margin-top': 'auto', }
+            is_open = False
+            # style = {'width': 1200, 'vertical-align': 'bottom', 'margin-top': 'auto', 'margin-bottom': '0px'}
+            # style = {}
             # is_open = True
 
         )]
@@ -467,6 +474,7 @@ def update_drawdowns_number_dropdown(tk):
     # Output(component_id = 'fig_div', component_property = 'children', allow_duplicate = True),
     # Output(component_id = 'test-graph', component_property = 'figure'),
     Output(component_id = 'fig_div', component_property = 'children'),
+    Output(component_id = 'drawdown-controls', component_property = 'style'),
 
     Input(component_id = 'reset_axes', component_property = 'n_clicks'),
     
@@ -527,6 +535,13 @@ def update_drawdowns(
     # if (theme_drawdowns != theme):
     #     theme = theme_drawdowns
 
+    drawdown_div_style = {
+        'width': width,
+        # 'vertical-align': 'bottom',
+        # 'margin-top': 'auto', 
+        # 'margin-bottom': '0px'
+    }
+
     drawdown_data = portfolio_drawdown_data[tk]
     selected_drawdown_data = analyze_prices.select_tk_drawdowns(drawdown_data, n_top)
     # n_drawdowns = len(drawdown_data['Drawdown Stats'])
@@ -586,7 +601,7 @@ def update_drawdowns(
     # fig_div = html.Div(html.Div(children = [dcc.Graph(id = 'drawdowns-graph', figure = fig)]))
     fig_div = dcc.Graph(id='drawdowns-graph', figure = fig)
 
-    return fig_div
+    return fig_div, drawdown_div_style
     
 
 if __name__ == '__main__':
