@@ -2289,9 +2289,9 @@ class AnalyzePrices():
     def bollinger_bands(
         self,
         prices,
-        window = 20,
-        n_std = 2.0,
-        n_bands = 1,
+        window = None,
+        n_std = None,
+        n_bands = None,
         ddof = 0
     ):
         """
@@ -2302,14 +2302,17 @@ class AnalyzePrices():
         n_std:
             width of the upper and lower bands in standard deviations, defaults to 2.0
         n_bands:
-            number of pairs of bands to be created, defaults to 1, max 3
+            number of pairs of bands to be created, defaults to 1, max 5
 
         Returns a list of bollinger band dictionaries
         """
 
-        eps = 1e-6
+        max_n_bands = 5
+        window = 20 if (window is None) else window
+        n_std = 2.0 if (n_std is None) else n_std
+        n_bands = 1 if (n_bands is None) else min(n_bands, max_n_bands)
 
-        n_bands = min(3, n_bands)
+        eps = 1e-6
 
         df_sma = prices.rolling(window = window, min_periods = 1).mean()
         df_std = prices.rolling(window = window, min_periods = 1).std(ddof = ddof)
