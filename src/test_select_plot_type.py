@@ -272,6 +272,7 @@ app.layout = html.Div([
             html.Div(
 
                 id = 'drawdown-controls',
+                style = {'width': 1200, 'vertical-align': 'bottom', 'float': 'bottom', 'margin-top': 'auto', },
                 children = [
 
                     html.Div([
@@ -348,7 +349,8 @@ app.layout = html.Div([
 
                     ### ADD RESET AXES BUTTON
 
-                    html.Div( 
+                    html.Div([
+                        html.Div('_', style = {'color': 'white', 'font-weight': 'bold', 'margin-down': '0px'}),
                         dbc.Button(
                             'RESET AXES',
                             id = 'reset_axes',
@@ -359,29 +361,31 @@ app.layout = html.Div([
                             style = {
                                 'display': 'inline-block',
                                 'vertical-align': 'bottom',
+                                'margin-down': '0px',
                                 'text-align': 'center',
                                 'font-family': 'Helvetica',
                                 'font-weight': 'bold',
                                 'width': '125px'
                             }
-                        ),
+                        )],
                         style = {
-                            'position': 'relative',
-                            'display': 'grid',
+                            # 'position': 'relative',
+                            # 'display': 'grid',
                             'float': 'right',
-                            'display': 'inline-block',
+                            #'display': 'inline-block',
                             'vertical-align': 'bottom',
-                            'margin-left': 'auto',
-                            'margin-right': '0px',
-                            'margin-top': 'auto'
+                            'margin-down': '0px'
+                            # 'margin-left': 'auto',
+                            # 'margin-right': '0px',
+                            # 'margin-top': 'auto'
                         }
-                    ),            
+                    ),
                 ],
-                style = {'width': 1200}
             ), 
 
             id = 'collapse-drawdowns',
-            is_open = False
+            is_open = False,
+            style = {'width': 1200, 'vertical-align': 'bottom', 'float': 'bottom', 'margin-top': 'auto', }
             # is_open = True
 
         )]
@@ -399,7 +403,10 @@ app.layout = html.Div([
 
 ])
 
-
+# @app.callback(
+#     Input(component_id = 'width-dropdown', component_property = 'value'),
+# 
+# 
 @app.callback(
     Output('collapse-button-template', 'children'),
     Output('collapse-template', 'is_open'),
