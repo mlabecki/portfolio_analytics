@@ -433,9 +433,13 @@ class AnalyzePrices():
             modebar_add = [
                 "v1hovermode",
                 'toggleSpikelines'
+            ],
+            modebar_remove = [
+                'autoScale2d',
+                'resetScale2d'
             ]
         )
-
+      
         y_min = {1: None, 2: None, 3: None}
         y_max = {1: None, 2: None, 3: None}
 
@@ -1913,7 +1917,7 @@ class AnalyzePrices():
                     row = target_deck, col = 1
                 )
 
-        infinity = 10 * y_upper_limit
+        infinity = 2 * y_upper_limit  # Reset Axes refresh takes very long if this is too high
 
         legendgrouptitle = {}
         if deck_type == 'triple':

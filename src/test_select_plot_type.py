@@ -36,6 +36,7 @@ hist_data = DownloadData(end_date, start_date)
 max_tickers = 10
 df = hist_data.download_from_url('cryptos_yf', max_tickers)
 tickers = list(df['YF Symbol'])
+crypto_names = list(df['Name'])
 tickers_org = tickers  #
 
 print(tickers)
@@ -481,8 +482,9 @@ app.layout = html.Div([
                     html.Div([
                         html.Div('Target Deck', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),        
                         dcc.Dropdown(
-                            id='bollinger-deck-dropdown',
-                            options = [1, 2, 3],  # Must refine not to offer non-existing decks
+                            id = 'bollinger-deck-dropdown',
+                            # options = [1, 2, 3],  # Must refine not to offer non-existing decks
+                            options = [1],
                             value = 1,
                             clearable = False,
                             style = {'width': '100px', 'font-color': 'black'}
@@ -618,12 +620,15 @@ def toggle_collapse_template(n, is_open):
 
 @app.callback(
     Output('lower-height-input', 'disabled'),
+    Output('bollinger-deck-dropdown', 'options'),
     Input('deck-type-dropdown', 'value'))
-def disable_options(selected_option):
-    if selected_option == 'Single':
-        return True
+def disable_options(deck_type):
+    if deck_type == 'Single':
+        return True, [1]
+    elif deck_type == 'Double':
+        return False, [1, 2]
     else:
-        return False
+        return False, [1, 2, 3]
 
 @app.callback(
     Output('collapse-button-drawdowns', 'children'),

@@ -346,18 +346,18 @@ class DownloadData():
                 # so yf_custom_crypto_tickers should be periodically checked and updated.
                 # For this reason it may be preferable to download from Yahoo ('cryptos_yf'), which is also much faster.
 
-                df['YF Symbol'] = df['Crypto Symbol'] + '-USD'
+                df['YF Symbol'] = df['Symbol'] + '-USD'
                 for symbol in yf_custom_crypto_tickers.keys():
-                    if symbol in list(df['Crypto Symbol']):
-                        df.loc[df['Crypto Symbol'] == symbol, 'YF Symbol'] = yf_custom_crypto_tickers[symbol]
+                    if symbol in list(df['Symbol']):
+                        df.loc[df['Symbol'] == symbol, 'YF Symbol'] = yf_custom_crypto_tickers[symbol]
 
-                # Check if the YF ticker is correct for the Crypto Symbol 
+                # Check if the YF ticker is correct for the crypto symbol 
                 for i in df.index:
                     try:
                         tk = df.loc[i, 'YF Symbol']
                         _ = yf.Ticker(tk).info
                     except:
-                        crypto_symbol = df.loc[i, 'Crypto Symbol']
+                        crypto_symbol = df.loc[i, 'Symbol']
                         print(f'WARNING: Incorrect ticker {tk} for {crypto_symbol}')
                         continue
             

@@ -62,7 +62,7 @@ url_settings = {
     'cryptos': {
         'url': 'https://coin360.com/coin',
         'cols': ['Symbol', 'Name', 'Market Cap (USD)'],
-        'cols_final': ['Crypto Symbol', 'Crypto Name', 'Market Cap ($B)'],
+        'cols_final': ['Symbol', 'Name', 'Market Cap ($B)'],
         'sort_by': 'Market Cap ($B)',
         'sort_by_factor': 1e9,
         'sort_by_type': float
