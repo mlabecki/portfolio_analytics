@@ -53,8 +53,8 @@ url_settings = {
     },
     'cryptos_yf': {
         'url': 'https://finance.yahoo.com/markets/crypto/all/?start=0&count=100',
-        'cols': ['Symbol', 'Market Cap'],
-        'cols_final': ['Symbol', 'Market Cap ($B)'],
+        'cols': ['Symbol', 'Name', 'Market Cap'],
+        'cols_final': ['Symbol', 'Name', 'Market Cap ($B)'],
         'sort_by': 'Market Cap ($B)',
         'sort_by_factor': 1e9,
         'sort_by_type': float

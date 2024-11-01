@@ -26,12 +26,14 @@ if __name__ == '__main__':
     
     # df = hist_data.download_from_url('biggest_companies', 30)
     df = pd.DataFrame()
-    df = hist_data.download_from_url('cryptos', 100)
+    # df = hist_data.download_from_url('cryptos_yf', 10)
     
-    # df = hist_data.download_from_url('cryptos', 100)
+    df = hist_data.download_from_url('cryptos', 10)
     # print(df.loc[df['Symbol'].str.contains('RENDER'), :])
     # df.to_csv('../data/downloads/cryptos_yf_from_url.csv', index=False)
-    df.to_csv('../data/downloads/cryptos_from_url.csv', index=False)
+    # df.to_csv('../data/downloads/cryptos_from_url.csv', index=False)
+
+    print(df)
 
     # if (len(tickers) == 0) | (tickers is None): 
     #     tickers = list(df['Symbol'])

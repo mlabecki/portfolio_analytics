@@ -11,9 +11,9 @@ class DownloadData():
     def __init__(
         self,
         end_date: datetime,
-        start_date: datetime,
-        tickers,
-        tk_market: str
+        start_date: datetime #,
+        # tickers,
+        # tk_market: str
     ):
     
         """
@@ -25,8 +25,8 @@ class DownloadData():
 
         self.end_date = end_date
         self.start_date = start_date
-        self.tickers = tickers
-        self.tk_market = tk_market
+        # self.tickers = tickers
+        # self.tk_market = tk_market
 
 
     def download_yh_data(
@@ -102,7 +102,7 @@ class DownloadData():
                 if last_nan_date_tk < start_date_tk:
                     df_adj_close_start.loc[tk, 'Adj Close Start Date'] = start_date_tk
 
-            if ~pd.isnull(last_nan_date_tk) & (last_nan_date_tk == end_date.date()):
+            if (not pd.isnull(last_nan_date_tk)) & (last_nan_date_tk == end_date.date()):
                 missing_end_date_tickers.append(tk)
 
         if len(df_adj_close_start) > 0:
@@ -366,7 +366,8 @@ class DownloadData():
                 
                 # The syntax below is to take care of Symbols such as 'R RENDER-USD Render USD'
                 df['YF Symbol'] = df['Symbol'].apply(lambda x: x.split('-USD')[0].split()[-1] + '-USD')
-                df['Name'] = df['Symbol'].apply(lambda x: ' '.join(x.split('-USD ')[1].split()[: -1]))
+                # df['Name'] = df['Symbol'].apply(lambda x: ' '.join(x.split('-USD ')[0].split()[: -1]))
+                df['Name'] = df['Name'].apply(lambda x: x[: -4])
 
             return df
         

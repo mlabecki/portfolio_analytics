@@ -23,11 +23,26 @@ from utils import *
 from download_data import DownloadData
 from analyze_prices import AnalyzePrices
 
-tickers = list(magnificent_7_tickers.keys())
-print(tickers)
-print(tripledeck_legendtitle)
+# tickers = list(magnificent_7_tickers.keys())
 
-tk = 'MSFT'
+end_date = datetime.today()
+hist_years, hist_months, hist_days = 1, 0, 0
+start_date = datetime(end_date.year - hist_years, end_date.month - hist_months, end_date.day - hist_days)
+# tk_market = '^GSPC'
+tk_market = 'BTC-USD'
+
+df = pd.DataFrame()
+hist_data = DownloadData(end_date, start_date)
+max_tickers = 10
+df = hist_data.download_from_url('cryptos_yf', max_tickers)
+tickers = list(df['YF Symbol'])
+tickers_org = tickers  #
+
+print(tickers)
+# print(tripledeck_legendtitle)
+
+# tk = 'MSFT'
+tk = tickers[0]  # 'BTC-USD'
 drawdown_color = 'red'
 theme = 'dark'
 overlay_color_theme = 'grasslands'
@@ -46,12 +61,8 @@ upper_deck_heights = [900, 750, 600, 450, 300]
 lower_deck_heights = [300, 250, 200, 150, 100]
 deck_types = ['Single', 'Double', 'Triple']
 
-end_date = datetime.today()
-hist_years, hist_months, hist_days = 1, 0, 0
-start_date = datetime(end_date.year - hist_years, end_date.month - hist_months, end_date.day - hist_days)
-tk_market = '^GSPC'
-hist_data = DownloadData(end_date, start_date, tickers, tk_market)
 downloaded_data = hist_data.download_yh_data(start_date, end_date, tickers, tk_market)
+
 df_adj_close = downloaded_data['Adj Close']
 df_close = downloaded_data['Close']
 df_volume = downloaded_data['Volume']
@@ -65,16 +76,20 @@ high_tk = ohlc_tk['High']
 low_tk = ohlc_tk['Low']
 volume_tk = df_volume[tk]
 
+print(df_close)
+
 # We don't want the benchmark ticker in the app menus at this point. For example, 
 # the drawdown data is not generated unless tk_market is explicitly 
-tickers = tickers[:-1]
+if tk_market not in tickers_org:
+    tickers = tickers[:-1]  # if added by download_data, tk_market would be in the last position
 print(tickers)
 
-analyze_prices = AnalyzePrices(end_date, start_date, [tk])
+analyze_prices = AnalyzePrices(end_date, start_date, tickers)
 date_index = ohlc_tk.index
 
 sort_by = ['Total Length', '% Depth']
 portfolio_drawdown_data = {}
+
 for tk in tickers:
     drawdown_data = analyze_prices.summarize_tk_drawdowns(df_close, tk, sort_by)
     n_drawdowns = drawdown_data['Total Drawdowns']
@@ -162,6 +177,18 @@ app.layout = html.Div([
                 children = [
 
                     html.Div([
+                        html.Div('Ticker', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='tickers-dropdown',
+                            options = tickers,
+                            value = tickers[0],
+                            clearable = False,
+                            style = {'width': '150px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
                         html.Div('Theme', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id = 'theme-dropdown',
@@ -200,40 +227,76 @@ app.layout = html.Div([
 
                     html.Div([
                         html.Div('Plot Width', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
-                        dcc.Dropdown(
-                            id='width-dropdown',
-                            options = plot_widths,
-                            # value = 1600,
-                            value = 1200,
-                            clearable = False,
-                            style = {'width': '100px', 'font-color': 'black'}
+                        dbc.Input(
+                            id = 'width-input',
+                            type = 'number',
+                            value = 1450,
+                            min = 800,
+                            max = 1800,
+                            step = 50,
+                            style = {'width': '100px', 'height': '36px', 'vertical-align': 'bottom', 'font-color': 'black'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
                         html.Div('Upper Deck Height', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
-                        dcc.Dropdown(
-                            id='upper-height-dropdown',
-                            options = upper_deck_heights,
+                        dbc.Input(
+                            id = 'upper-height-input',
+                            type = 'number',
                             value = 750,
-                            clearable = False,
-                            style = {'width': '160px', 'font-color': 'black'}
+                            min = 250,
+                            max = 1000,
+                            step = 50,
+                            style = {'width': '160px', 'height': '36px', 'vertical-align': 'bottom', 'font-color': 'black'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
                         html.Div('Lower Deck Height', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
-                        dcc.Dropdown(
-                            id='lower-height-dropdown',
-                            options = lower_deck_heights,
+                        dbc.Input(
+                            id = 'lower-height-input',
+                            type = 'number',
                             value = 150,
-                            clearable = False,
-                            style = {'width': '160px', 'font-color': 'black'}
+                            min = 100,
+                            max = 300,
+                            step = 50,
+                            style = {'width': '160px', 'height': '36px', 'vertical-align': 'bottom', 'font-color': 'black'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
-                    )
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
+                    ),
+
+                    ### ADD RESET AXES BUTTON
+
+                    html.Div([
+                        html.Div('_', style = {'color': 'white', 'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        dbc.Button(
+                            'Reset Axes',
+                            id = 'reset-axes-template',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'light',
+                            size = 'sm',
+                            style = {
+                                'display': 'inline-block',
+                                'height': '37px',
+                                'margin-bottom': '0px',
+                                'margin-top': 'auto',
+                                'text-align': 'center',
+                                'font-family': 'Helvetica',
+                                'font-size': '15px',
+                                'width': '95px'
+                            }
+                        )],
+                        style = {
+                            'float': 'right',
+                            'vertical-align': 'bottom',
+                            'margin-bottom': '0px',
+                            'margin-top': 'auto'
+                        }
+                    ),
+
                 ]
             ),
         
@@ -273,18 +336,6 @@ app.layout = html.Div([
 
                 id = 'drawdown-controls',
                 children = [
-
-                    html.Div([
-                        html.Div('Ticker', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
-                        dcc.Dropdown(
-                            id='tickers-dropdown',
-                            options = tickers,
-                            value = 'MSFT',
-                            clearable = False,
-                            style = {'width': '110px'}
-                        )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
-                    ),
 
                     html.Div([
                         html.Div('Top DD Number', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),        
@@ -386,6 +437,7 @@ app.layout = html.Div([
                             'margin-top': 'auto'
                         }
                     ),
+
                 ],
             ), 
 
@@ -467,15 +519,17 @@ app.layout = html.Div([
                     ),
 
                     html.Div([
-                        html.Div('Number Of Bands', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),        
-                        dcc.Dropdown(
-                            id='bollinger-nbands-dropdown',
-                            options = [1, 2, 3, 4, 5],
+                        html.Div('Number Of Bands', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        dbc.Input(
+                            id = 'bollinger-nbands-input',
+                            type = 'number',
                             value = 1,
-                            clearable = False,
-                            style = {'width': '140px', 'font-color': 'black'}
+                            min = 1,
+                            max = 5,
+                            step = 1,
+                            style = {'width': '140px', 'height': '36px', 'vertical-align': 'bottom', 'font-color': 'black'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
@@ -519,6 +573,7 @@ app.layout = html.Div([
                             'margin-top': 'auto'
                         }
                     ),
+
                 ],
             ), 
 
@@ -552,7 +607,7 @@ app.layout = html.Div([
 )
 def toggle_collapse_template(n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
-    title = 'TEMPLATE OPTIONS'
+    title = 'TICKER AND TEMPLATE OPTIONS'
     label = f'► {title}' if is_open else f'▼ {title}'
     # label = f'▼ {title}' if is_open else f'▲ {title}'
     if n:
@@ -562,7 +617,7 @@ def toggle_collapse_template(n, is_open):
         return f'► {title}', is_open
 
 @app.callback(
-    Output('lower-height-dropdown', 'disabled'),
+    Output('lower-height-input', 'disabled'),
     Input('deck-type-dropdown', 'value'))
 def disable_options(selected_option):
     if selected_option == 'Single':
@@ -621,21 +676,23 @@ def update_drawdowns_number_dropdown(tk):
     Output(component_id = 'fig_div', component_property = 'children'),
     Output(component_id = 'drawdown-controls', component_property = 'style'),
     Output(component_id = 'bollinger-controls', component_property = 'style'),
+    Output(component_id = 'template-controls', component_property = 'style'),
 
+    Input(component_id = 'reset-axes-template', component_property = 'n_clicks'),
     Input(component_id = 'reset-axes-drawdowns', component_property = 'n_clicks'),
     Input(component_id = 'reset-axes-bollinger', component_property = 'n_clicks'),
     
     # template options
+    Input(component_id = 'tickers-dropdown', component_property = 'value'),
     Input(component_id = 'theme-dropdown', component_property = 'value'),
     Input(component_id = 'deck-type-dropdown', component_property = 'value'),
     Input(component_id = 'secondary-y-dropdown', component_property = 'value'),
-    Input(component_id = 'width-dropdown', component_property = 'value'),
-    Input(component_id = 'upper-height-dropdown', component_property = 'value'),
-    Input(component_id = 'lower-height-dropdown', component_property = 'value'),
+    Input(component_id = 'width-input', component_property = 'value'),
+    Input(component_id = 'upper-height-input', component_property = 'value'),
+    Input(component_id = 'lower-height-input', component_property = 'value'),
     
     # drawdowns options
     # Input(component_id = 'drawdowns-theme-dropdown', component_property = 'value'),
-    Input(component_id = 'tickers-dropdown', component_property = 'value'),
     Input(component_id = 'drawdowns-number-dropdown', component_property = 'value'),
     Input(component_id = 'drawdowns-topby-dropdown', component_property = 'value'),
     Input(component_id = 'drawdowns-display-dropdown', component_property = 'value'),
@@ -650,17 +707,19 @@ def update_drawdowns_number_dropdown(tk):
     Input(component_id = 'bollinger-deck-dropdown', component_property = 'value'),
     Input(component_id = 'bollinger-window-input', component_property = 'value'),
     Input(component_id = 'bollinger-nstd-input', component_property = 'value'),
-    Input(component_id = 'bollinger-nbands-dropdown', component_property = 'value'),
+    Input(component_id = 'bollinger-nbands-input', component_property = 'value'),
     Input(component_id = 'bollinger-color-theme-dropdown', component_property = 'value'),
 
     
 )
 
 def update_drawdowns(
+        n_click_template,
         n_click_dd,
         n_click_bollinger,
 
-        # template options
+        # ticker and template options
+        tk,
         theme,
         deck_type,
         sec_y,
@@ -669,7 +728,6 @@ def update_drawdowns(
         lower_height,
 
         # drawdowns options
-        tk,
         n_top, 
         drawdown_top_by, 
         drawdown_display, 
@@ -711,6 +769,7 @@ def update_drawdowns(
         # 'margin-bottom': '0px'
     }
     bollinger_div_style = drawdown_div_style
+    template_div_style = drawdown_div_style
 
     drawdown_data = portfolio_drawdown_data[tk]
     selected_drawdown_data = analyze_prices.select_tk_drawdowns(drawdown_data, n_top)
@@ -771,7 +830,7 @@ def update_drawdowns(
     # fig_div = html.Div(html.Div(children = [dcc.Graph(id = 'drawdowns-graph', figure = fig)]))
     fig_div = dcc.Graph(id='drawdowns-graph', figure = fig)
 
-    return fig_div, drawdown_div_style, bollinger_div_style
+    return fig_div, drawdown_div_style, bollinger_div_style, template_div_style
     
 
 if __name__ == '__main__':

@@ -1834,9 +1834,6 @@ class AnalyzePrices():
         if (fig_y_min is None) | (fig_y_max is None):
             add_price = True
 
-        # infinity = 1e10
-        infinity = 1e3  # should it be based on y_max/y_upper_limit?
-
         df_tk_deepest_drawdowns = drawdown_data['Deepest Drawdowns']
         df_tk_longest_drawdowns = drawdown_data['Longest Drawdowns']
         df_tk_deepest_drawdowns_str = drawdown_data['Deepest Drawdowns Str']
@@ -1915,6 +1912,8 @@ class AnalyzePrices():
                     zeroline = True,
                     row = target_deck, col = 1
                 )
+
+        infinity = 10 * y_upper_limit
 
         legendgrouptitle = {}
         if deck_type == 'triple':

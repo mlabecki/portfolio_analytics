@@ -213,14 +213,17 @@ def map_values(k_list, v_min, v_max, ascending=False):
     dict_map.update({k_first: v_min, k_last: v_max})
 
     k_range = k_last - k_first
-    v_range = v_max - v_min
-    kv_scale = v_range / k_range
 
-    for k in k_list[1: -1]:
-        k_delta = k - k_first
-        v = v_min + k_delta * kv_scale
-        dict_map.update({k: v})
-    
+    if k_range != 0:
+        v_range = v_max - v_min
+        kv_scale = v_range / k_range
+        for k in k_list[1: -1]:
+            k_delta = k - k_first
+            v = v_min + k_delta * kv_scale
+            dict_map.update({k: v})
+    else:
+        dict_map.update({k_last: v_max})
+
     return dict_map
 
 
