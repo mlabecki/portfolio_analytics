@@ -47,8 +47,11 @@ tk = tickers[0]  # 'BTC-USD'
 drawdown_color = 'red'
 theme = 'dark'
 overlay_color_theme = 'grasslands'
-overlay_color_themes = list(theme_style[theme]['overlay_color_theme'].keys())
-drawdown_colors = list(theme_style[theme]['drawdown_colors'].keys())
+# overlay_color_themes = list(theme_style[theme]['overlay_color_theme'].keys())
+overlay_color_themes = [x.title() for x in theme_style[theme]['overlay_color_theme'].keys()]
+# print(overlay_color_themes)
+# drawdown_colors = list(theme_style[theme]['drawdown_colors'].keys())
+drawdown_colors = [x.title() for x in theme_style[theme]['drawdown_colors'].keys()]
 
 # deck_type = 'triple'
 deck_type = 'single'
@@ -165,7 +168,7 @@ app.layout = html.Div([
                     'text-align': 'left',
                     'font-family': 'Helvetica',
                     'font-weight': 'bold',
-                    'width': '300px'
+                    'width': '250px'
                 }
             )
         ),
@@ -326,7 +329,7 @@ app.layout = html.Div([
                     'text-align': 'left',
                     'font-family': 'Helvetica',
                     'font-weight': 'bold',
-                    'width': '300px'
+                    'width': '250px'
                 }
             )
         ),
@@ -342,10 +345,9 @@ app.layout = html.Div([
                         html.Div('Top DD Number', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),        
                         dcc.Dropdown(
                             id='drawdowns-number-dropdown',
-                            # options = drawdown_numbers,
-                            # value = 10,
+                            value = 5,
                             clearable = False,
-                            style = {'width': '140px', 'font-color': 'black'}
+                            style = {'width': '130px', 'font-color': 'black'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
                     ),
@@ -357,7 +359,7 @@ app.layout = html.Div([
                             options = ['% Depth', 'Total Length'],
                             value = '% Depth',
                             clearable = False,
-                            style = {'width': '150px', 'font-color': 'black'}
+                            style = {'width': '120px', 'font-color': 'black'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
                     ),
@@ -369,7 +371,7 @@ app.layout = html.Div([
                             options = ['Peak To Trough', 'Peak To Recovery'],
                             value = 'Peak To Trough',
                             clearable = False,
-                            style = {'width': '190px', 'font-color': 'black'}
+                            style = {'width': '160px', 'font-color': 'black'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
                     ),
@@ -379,9 +381,9 @@ app.layout = html.Div([
                         dcc.Dropdown(
                             id='drawdowns-color-dropdown',
                             options = drawdown_colors,
-                            value = 'red',
+                            value = 'Red',
                             clearable = False,
-                            style = {'width': '120px', 'font-color': 'black'}
+                            style = {'width': '100px', 'font-color': 'black'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
                     ),
@@ -391,7 +393,7 @@ app.layout = html.Div([
                         dcc.Dropdown(
                             id='drawdowns-price-color-dropdown',
                             options = overlay_color_themes,
-                            value = 'sapphire',
+                            value = 'Sapphire',
                             clearable = False,
                             style = {'width': '150px', 'font-color': 'black'}
                         )],
@@ -403,7 +405,6 @@ app.layout = html.Div([
                     html.Div([
                         html.Div('_', style = {'color': 'white', 'font-weight': 'bold', 'margin-bottom': '0px'}),
                         dbc.Button(
-                            # 'RESET AXES',
                             'Reset Axes',
                             id = 'reset-axes-drawdowns',
                             n_clicks = 0,
@@ -412,29 +413,19 @@ app.layout = html.Div([
                             size = 'sm',
                             style = {
                                 'display': 'inline-block',
-                                #'vertical-align': 'top',
                                 'height': '37px',
-                                # 'margin-bottom': '0px',
                                 'margin-bottom': '0px',
                                 'margin-top': 'auto',
                                 'text-align': 'center',
                                 'font-family': 'Helvetica',
                                 'font-size': '15px',
-                                #'font-weight': 'bold',
                                 'width': '95px'
                             }
                         )],
                         style = {
-                            # 'position': 'relative',
-                            # 'display': 'grid',
                             'float': 'right',
-                            # 'height': '40px',
-                            #'display': 'inline-block',
                             'vertical-align': 'bottom',
-                            # 'margin-bottom': '0px',
                             'margin-bottom': '0px',
-                            # 'margin-left': 'auto',
-                            # 'margin-right': '0px',
                             'margin-top': 'auto'
                         }
                     ),
@@ -467,7 +458,7 @@ app.layout = html.Div([
                     'text-align': 'left',
                     'font-family': 'Helvetica',
                     'font-weight': 'bold',
-                    'width': '300px'
+                    'width': '250px'
                 }
             )
         ),
@@ -483,7 +474,6 @@ app.layout = html.Div([
                         html.Div('Target Deck', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),        
                         dcc.Dropdown(
                             id = 'bollinger-deck-dropdown',
-                            # options = [1, 2, 3],  # Must refine not to offer non-existing decks
                             options = [1],
                             value = 1,
                             clearable = False,
@@ -539,7 +529,7 @@ app.layout = html.Div([
                         dcc.Dropdown(
                             id='bollinger-color-theme-dropdown',
                             options = overlay_color_themes,
-                            value = 'grasslands',
+                            value = 'Grasslands',
                             clearable = False,
                             style = {'width': '120px', 'font-color': 'black'}
                         )],
@@ -597,10 +587,6 @@ app.layout = html.Div([
 
 ])
 
-# @app.callback(
-#     Input(component_id = 'width-dropdown', component_property = 'value'),
-# 
-# 
 @app.callback(
     Output('collapse-button-template', 'children'),
     Output('collapse-template', 'is_open'),
@@ -609,13 +595,11 @@ app.layout = html.Div([
 )
 def toggle_collapse_template(n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
-    title = 'TICKER AND TEMPLATE OPTIONS'
+    title = 'TICKER AND TEMPLATE'
     label = f'► {title}' if is_open else f'▼ {title}'
-    # label = f'▼ {title}' if is_open else f'▲ {title}'
     if n:
         return label, not is_open
     else:
-        # return f'▲ {title}', is_open
         return f'► {title}', is_open
 
 @app.callback(
@@ -638,14 +622,12 @@ def disable_options(deck_type):
 )
 def toggle_collapse_drawdowns(n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
-    title = 'DRAWDOWNS OPTIONS'
+    title = 'DRAWDOWNS'
     label = f'► {title}' if is_open else f'▼ {title}'
-    # label = f'▼ {title}' if is_open else f'▲ {title}'
     if n:
         return label, not is_open
     else:
         return f'► {title}', is_open
-        #return f'▼ {title}', is_open
 
 @app.callback(
     Output('collapse-button-bollinger', 'children'),
@@ -655,7 +637,7 @@ def toggle_collapse_drawdowns(n, is_open):
 )
 def toggle_collapse_bollinger(n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
-    title = 'BOLLINGER BANDS OPTIONS'
+    title = 'BOLLINGER BANDS'
     label = f'► {title}' if is_open else f'▼ {title}'
     if n:
         return label, not is_open
@@ -665,12 +647,13 @@ def toggle_collapse_bollinger(n, is_open):
 @app.callback(
     Output(component_id = 'drawdowns-number-dropdown', component_property = 'options'),
     Output(component_id = 'drawdowns-number-dropdown', component_property = 'value'),
-    Input(component_id = 'tickers-dropdown', component_property = 'value')
+    Input(component_id = 'tickers-dropdown', component_property = 'value'),
+    Input(component_id = 'drawdowns-number-dropdown', component_property = 'value')
 )
-def update_drawdowns_number_dropdown(tk):
+def update_drawdowns_number_dropdown(tk, dd_number):
     n_drawdowns = portfolio_drawdown_data[tk]['Total Drawdowns']
     dd_number_options = [x for x in range(n_drawdowns + 1)][1:]
-    dd_number_value = min(5, n_drawdowns)
+    dd_number_value = min(dd_number, n_drawdowns)
     return dd_number_options, dd_number_value
 
 @app.callback(
@@ -697,7 +680,6 @@ def update_drawdowns_number_dropdown(tk):
     Input(component_id = 'lower-height-input', component_property = 'value'),
     
     # drawdowns options
-    # Input(component_id = 'drawdowns-theme-dropdown', component_property = 'value'),
     Input(component_id = 'drawdowns-number-dropdown', component_property = 'value'),
     Input(component_id = 'drawdowns-topby-dropdown', component_property = 'value'),
     Input(component_id = 'drawdowns-display-dropdown', component_property = 'value'),
@@ -707,8 +689,6 @@ def update_drawdowns_number_dropdown(tk):
     #Input(component_id = 'overlay-dropdown', component_property = 'value')
 
     # bollinger options
-    # nstd could be non-integer: must allow direct user input not from the dropdown list
-    # Input(component_id = 'tickers-dropdown-bollinger', component_property = 'value'),
     Input(component_id = 'bollinger-deck-dropdown', component_property = 'value'),
     Input(component_id = 'bollinger-window-input', component_property = 'value'),
     Input(component_id = 'bollinger-nstd-input', component_property = 'value'),
@@ -803,14 +783,20 @@ def update_drawdowns(
         # theme = theme_drawdowns,
         # color_theme = 'base',
         price_color_theme = price_color_theme.lower(),
-        drawdown_color = drawdown_color
+        drawdown_color = drawdown_color.lower()
     )
     # fig_div = create_graph(theme, tk, drawdown_color, overlay_color_theme)
     # fig = fig_data['fig']
 
     bollinger_data = analyze_prices.bollinger_bands(df_close[tk], bollinger_window, bollinger_nstd, bollinger_nbands)
     bollinger_list = bollinger_data['list']
-    fig_data = analyze_prices.add_bollinger_overlays(fig_data, bollinger_list, target_deck = bollinger_deck, theme = theme, color_theme = bollinger_color_theme)
+    fig_data = analyze_prices.add_bollinger_overlays(
+        fig_data,
+        bollinger_list,
+        target_deck = bollinger_deck,
+        theme = theme,
+        color_theme = bollinger_color_theme.lower()
+    )
 
 
     target_deck = 1
