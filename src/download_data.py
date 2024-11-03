@@ -264,6 +264,7 @@ class DownloadData():
         """
 
         x = x.replace(',', '').replace('$', '')
+
         if 'T' in x:
             return float(x.replace('T', '')) * 1e12
         elif 'B' in x:
@@ -378,8 +379,11 @@ class DownloadData():
                 # df['Name'] = df['Symbol'].apply(lambda x: ' '.join(x.split('-USD ')[0].split()[: -1]))
                 df['Name'] = df['Name'].apply(lambda x: x[: -4])
 
+            for tk in url_to_yf_ticker_map.keys():
+                df['Symbol'] = np.where(df['Symbol'] == tk, url_to_yf_ticker_map[tk], df['Symbol'])
+
             return df
-        
+
         else:
             
             print('WARNING: Could not download tickers from {url}')

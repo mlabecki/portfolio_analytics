@@ -33,12 +33,19 @@ tk_market = '^GSPC'
 
 df = pd.DataFrame()
 hist_data = DownloadData(end_date, start_date)
-max_tickers = 50
+max_tickers = 30
+
+# Ticker categories:
+# 'nasdaq100', 'sp500', 'dow_jones', 'biggest_companies',
+# 'biggest_etfs', 'crypto_etfs', 'cryptos_yf', 'cryptos', 'futures'
+
 # df = hist_data.download_from_url('futures', max_tickers)
 # df = hist_data.download_from_url('cryptos_yf', max_tickers)
-# tickers = list(df['YF Symbol'])
-df = hist_data.download_from_url('biggest_etfs', max_tickers)
-tickers = list(df['Symbol'])
+# df = hist_data.download_from_url('biggest_etfs', max_tickers)
+df = hist_data.download_from_url('biggest_companies', max_tickers)
+
+tickers = list(df['Symbol'])     
+
 """
 tickers = [  # Spot and futures
     'GC=F',  # Gold, Comex
@@ -358,20 +365,6 @@ app.layout = html.Div([
 
                 id = 'drawdown-controls',
                 children = [
-
-                    html.Div([
-                        html.Div('Top DD Number', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
-                        dbc.Input(
-                            id = 'drawdowns-number-input',
-                            type = 'number',
-                            value = 5,
-                            min = 1,
-                            max = 20,
-                            step = 1,
-                            style = {'width': '130px', 'height': '36px', 'vertical-align': 'bottom', 'font-color': 'black'}
-                        )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
-                    ),
 
                     html.Div([
                         html.Div('Top DD Number', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),        
@@ -856,3 +849,4 @@ def update_plot(
 
 if __name__ == '__main__':
     app.run_server(debug=True, port=8052)
+    # app.run_server(debug=False, port=8052)

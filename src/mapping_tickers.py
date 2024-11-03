@@ -1,3 +1,10 @@
+### URL TO YFINANCE TICKER MAP ###
+# Some websites may use tickers that differ from the YF tickers, hence the following map
+# The keys are tickers on the websites, values are YF tickers
+url_to_yf_ticker_map = {
+    'BRK.B': 'BRK-B'
+}
+
 ### STOCKS ###
 
 # Stock market benchmarks
