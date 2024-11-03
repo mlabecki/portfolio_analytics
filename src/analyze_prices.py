@@ -1636,6 +1636,9 @@ class AnalyzePrices():
         df_roll_max[tk] = df_tk.rolling(n, min_periods=1).max()
         unique_max_list = df_roll_max[tk].unique()
 
+        # print(f'df_roll_max:\n{df_roll_max}')
+        # print(f'unique_max_list:\n{unique_max_list}')
+
         for peak in unique_max_list:
 
             # Define a segment corresponding to vmax 
@@ -1643,49 +1646,65 @@ class AnalyzePrices():
             seg = df_roll_max.loc[cond, tk]
             n_seg = len(seg)
 
+            # print(f'unique_max_list peak:\n{peak}')
+            # print(f'n_seg:\n{n_seg}')
+            # print(f'seg:\n{seg}')
+
             # There was no drop within a segment if its length is 1 or 2
             if n_seg > 2:
 
                 # The first date of the segment (min_date_seg) may not necessarily be the first date of the drawdown; e.g. 
-                # if the segment starts with a flat section. In that case the last date of the flat part becomes the min_date.
+                # if the segment starts with a flat section. In that case the last date of the flat part becomes the min_date,
+                # unless the flat part is followed by a rise in price.
 
                 min_date_seg = seg.index.min()
                 max_date = seg.index.max()
                 max_iloc = df_price.index.get_loc(max_date)
 
+                # print(f'min_date_seg:\n{min_date_seg}')
+
                 cond_below_max = df_tk < peak
                 cond_in_range = (df_price.index >= min_date_seg) & (df_price.index <= max_date) & cond_below_max
 
-                min_date = df_price.loc[cond_in_range].index.min()
-                min_iloc = df_price.index.get_loc(min_date)
-                peak_date = min_date if min_iloc == 0 else df_price.index[min_iloc - 1]
+                # print(f'df_price in_range:\n{df_price.loc[cond_in_range]}')
+                # print(f'df_price.iloc[30: 40]:\n{df_price.iloc[30: 40]}')
+                # print(df_price.index)
 
-                # trough = df.loc[cond_in_range, tk].min()
-                trough = df_tk[cond_in_range].min()
-                cond_trough = cond_in_range & (df_tk == trough)
-                trough_date = df_price[cond_trough].index[0]
-                recovery_date = max_date if max_iloc == n - 1 else df_price.index[max_iloc + 1]
+                # The peak is false if the initial flat part is followed by a price increase, i.e.
+                # df_price.loc[cond_in_range] is empty - skip it in such a case
+                
+                if len(df_price.loc[cond_in_range]) > 0:
+                
+                    min_date = df_price.loc[cond_in_range].index.min()
+                    min_iloc = df_price.index.get_loc(min_date)
+                    peak_date = min_date if min_iloc == 0 else df_price.index[min_iloc - 1]
 
-                # NOTE: If the last Adj Close in the last segment is less than that segment's rolling max, then 
-                # there was no recovery in that segment. It should still be reported if the drawdown in that segment is
-                # significant, must marked somehow to indicate no recovery (e.g. as 0 or -1)
+                    # trough = df.loc[cond_in_range, tk].min()
+                    trough = df_tk[cond_in_range].min()
+                    cond_trough = cond_in_range & (df_tk == trough)
+                    trough_date = df_price[cond_trough].index[0]
+                    recovery_date = max_date if max_iloc == n - 1 else df_price.index[max_iloc + 1]
 
-                cond_to_trough = (df_price.index >= min_date) & (df_price.index <= trough_date) & cond_below_max
-                cond_recovery = (df_price.index > trough_date) & (df_price.index <= max_date) & cond_below_max
-                n_to_trough = len(seg[cond_to_trough]) + 1
-                n_recovery = len(seg[cond_recovery]) + 1
-                n_length = n_to_trough + n_recovery
-                drawdown = trough / peak - 1
+                    # NOTE: If the last Adj Close in the last segment is less than that segment's rolling max, then 
+                    # there was no recovery in that segment. It should still be reported if the drawdown in that segment is
+                    # significant, must marked somehow to indicate no recovery (e.g. as 0 or -1)
 
-                df_tk_drawdowns.loc[peak, 'Peak'] = peak
-                df_tk_drawdowns.loc[peak, 'Trough'] = trough
-                df_tk_drawdowns.loc[peak, 'Peak Date'] = peak_date
-                df_tk_drawdowns.loc[peak, 'Trough Date'] = trough_date
-                df_tk_drawdowns.loc[peak, 'Recovery Date'] = recovery_date
-                df_tk_drawdowns.loc[peak, '% Depth'] = 100 * drawdown
-                df_tk_drawdowns.loc[peak, 'Total Length'] = n_length
-                df_tk_drawdowns.loc[peak, 'Peak To Trough'] = n_to_trough
-                df_tk_drawdowns.loc[peak, 'Trough To Recovery'] = n_recovery
+                    cond_to_trough = (df_price.index >= min_date) & (df_price.index <= trough_date) & cond_below_max
+                    cond_recovery = (df_price.index > trough_date) & (df_price.index <= max_date) & cond_below_max
+                    n_to_trough = len(seg[cond_to_trough]) + 1
+                    n_recovery = len(seg[cond_recovery]) + 1
+                    n_length = n_to_trough + n_recovery
+                    drawdown = trough / peak - 1
+
+                    df_tk_drawdowns.loc[peak, 'Peak'] = peak
+                    df_tk_drawdowns.loc[peak, 'Trough'] = trough
+                    df_tk_drawdowns.loc[peak, 'Peak Date'] = peak_date
+                    df_tk_drawdowns.loc[peak, 'Trough Date'] = trough_date
+                    df_tk_drawdowns.loc[peak, 'Recovery Date'] = recovery_date
+                    df_tk_drawdowns.loc[peak, '% Depth'] = 100 * drawdown
+                    df_tk_drawdowns.loc[peak, 'Total Length'] = n_length
+                    df_tk_drawdowns.loc[peak, 'Peak To Trough'] = n_to_trough
+                    df_tk_drawdowns.loc[peak, 'Trough To Recovery'] = n_recovery
 
         ascending = True if sort_by in cols_float + cols_str else False
         df_tk_drawdowns = df_tk_drawdowns.sort_values(by=sort_by, ascending=ascending)

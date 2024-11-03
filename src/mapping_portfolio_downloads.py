@@ -69,7 +69,7 @@ url_settings = {
     },
     'futures': {
         'url': 'https://finance.yahoo.com/commodities/',
-        'cols': ['Symbol', 'Name', 'Volume', 'Unnamed: 7'],
+        'cols': ['Symbol', 'Name', 'Volume', 'Open Interest'],
         'cols_final': ['Symbol', 'Name', 'Volume', 'Open Interest'],
         'sort_by': 'Open Interest',
         'sort_by_factor': 1,

@@ -81,19 +81,31 @@ bond_fund_tickers = {
     'AGG': 'iShares Core U.S. Aggregate Bond ETF'
 }
 
+### PRECIOUS METALS ###
+
+precious_metal_futures = {
+    'GC=F': 'Gold (CMX)',
+    'SI=F': 'Silver (CMX)',
+    'HG=F': 'Copper (CMX)',
+    'PL=F': 'Platinum (NYM)',
+    'PA=F': 'Palladium (NYM)'
+}
+
 ### COMMODITIES ###
 
 commodity_etf_tickers = {
-    'GLD': 'SPDR Gold Shares',
-    'IAU': 'iShares Gold Trust',
-    'SLV': 'iShares Silver Trust',
-    'PPLT': 'abrdn Physical Platinum Shares ETF',
-    'COPX': 'Global X Copper Miners ETF',
-    'FTGC': 'First Trust Global Tactical Commodity Strategy Fund',
-    'DBC': 'Invesco DB Commodity Index Tracking Fund',
-    'USO': 'United States Oil Fund',
-    'UNG': 'United States Natural Gas Fund',
-    'DBA': 'Invesco DB Agriculture Fund'
+    'GLD':      'SPDR Gold Shares',
+    'IAU':      'iShares Gold Trust',
+    'SLV':      'iShares Silver Trust',
+    'SIVR':     'Physical Silver Shares ETF',
+    'PPLT':     'abrdn Physical Platinum Shares ETF',
+    'GDX':      'VanEck Gold Miners ETF',
+    'COPX':     'Global X Copper Miners ETF',
+    'FTGC':     'First Trust Global Tactical Commodity Strategy Fund',
+    'DBC':      'Invesco DB Commodity Index Tracking Fund',
+    'USO':      'United States Oil Fund',
+    'UNG':      'United States Natural Gas Fund',
+    'DBA':      'Invesco DB Agriculture Fund'
 }
 
 ### CRYPTOS ###

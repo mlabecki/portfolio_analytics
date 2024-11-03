@@ -26,20 +26,31 @@ from analyze_prices import AnalyzePrices
 # tickers = list(magnificent_7_tickers.keys())
 
 end_date = datetime.today()
-hist_years, hist_months, hist_days = 1, 0, 0
+hist_years, hist_months, hist_days = 20, 0, 0
 start_date = datetime(end_date.year - hist_years, end_date.month - hist_months, end_date.day - hist_days)
-# tk_market = '^GSPC'
-tk_market = 'BTC-USD'
+tk_market = '^GSPC'
+# tk_market = 'BTC-USD'
 
 df = pd.DataFrame()
 hist_data = DownloadData(end_date, start_date)
-max_tickers = 10
-df = hist_data.download_from_url('cryptos_yf', max_tickers)
-tickers = list(df['YF Symbol'])
-crypto_names = list(df['Name'])
-tickers_org = tickers  #
+max_tickers = 20
+# df = hist_data.download_from_url('futures', max_tickers)
+# df = hist_data.download_from_url('cryptos_yf', max_tickers)
+# tickers = list(df['YF Symbol'])
+# tickers = list(df['Symbol'])
+tickers = [  # Spot and futures
+    'GC=F',  # Gold, Comex
+    'SI=F',  # Silver, Comex
+    'HG=F',  # Copper, Comex
+    'PL=F',  # Platinum, NY Mercantile
+    'PA=F',  # Palladium, NY Mercantile
+    ]
+# tickers = ['SHIB-USD']
+# tickers = ['PEPE24478-USD']
+# crypto_names = list(df['Name'])
+tickers_org = tickers.copy()  #
 
-print(tickers)
+print(f'tickers_org = {tickers_org}')
 # print(tripledeck_legendtitle)
 
 # tk = 'MSFT'
@@ -60,9 +71,6 @@ plot_width = 1600
 plot_height_1 = 750
 plot_height_2 = 150
 plot_height_3 = 150
-plot_widths = [1000, 1050, 1100, 1150, 1200, 1250, 1300, 1350, 1400, 1450, 1500, 1550, 1600, 1650, 1700, 1750, 1800]
-upper_deck_heights = [900, 750, 600, 450, 300]
-lower_deck_heights = [300, 250, 200, 150, 100]
 deck_types = ['Single', 'Double', 'Triple']
 
 downloaded_data = hist_data.download_yh_data(start_date, end_date, tickers, tk_market)
@@ -80,13 +88,13 @@ high_tk = ohlc_tk['High']
 low_tk = ohlc_tk['Low']
 volume_tk = df_volume[tk]
 
-print(df_close)
+# print(df_close)
 
-# We don't want the benchmark ticker in the app menus at this point. For example, 
-# the drawdown data is not generated unless tk_market is explicitly 
+# We don't want the benchmark ticker in the app menus at this point (for example, 
+# the drawdown data will not generated) unless tk_market is explicitly selected.
+
 if tk_market not in tickers_org:
     tickers = tickers[:-1]  # if added by download_data, tk_market would be in the last position
-print(tickers)
 
 analyze_prices = AnalyzePrices(end_date, start_date, tickers)
 date_index = ohlc_tk.index
@@ -103,6 +111,7 @@ for tk in tickers:
 
 app = dash.Dash(__name__, external_stylesheets = [dbc.themes.YETI])     # sharp corners
 
+"""
 def create_graph(
     # date_index,
     theme,
@@ -143,7 +152,7 @@ def create_graph(
 
     # return fig_div
     return fig_data
-
+"""
 
 #################
 # html.Script(src='https://cdn.plot.ly/plotly-latest.min.js')
@@ -187,7 +196,7 @@ app.layout = html.Div([
                             options = tickers,
                             value = tickers[0],
                             clearable = False,
-                            style = {'width': '150px'}
+                            style = {'width': '180px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
                     ),
@@ -488,9 +497,9 @@ app.layout = html.Div([
                             id = 'bollinger-window-input',
                             type = 'number',
                             value = 20,
-                            min = 0,
+                            min = 1,
                             max = 100,
-                            step = 5,
+                            step = 1,
                             style = {'width': '120px', 'height': '36px', 'vertical-align': 'bottom', 'font-color': 'black'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
@@ -698,7 +707,7 @@ def update_drawdowns_number_dropdown(tk, dd_number):
     
 )
 
-def update_drawdowns(
+def update_plot(
         n_click_template,
         n_click_dd,
         n_click_bollinger,
@@ -760,9 +769,6 @@ def update_drawdowns(
     selected_drawdown_data = analyze_prices.select_tk_drawdowns(drawdown_data, n_top)
     # n_drawdowns = len(drawdown_data['Drawdown Stats'])
     # n_drawdown_list = [x for x in range(n_drawdowns + 1)][1:]
-
-    # def test_fun(n_drawdowns):
-        # update_drawdowns_number_dropdown_options(n_drawdowns)
 
     show_trough_to_recovery = True if drawdown_display == 'Peak To Recovery' else False
     drawdown_top_by = 'length' if drawdown_top_by == 'Total Length' else 'depth'
