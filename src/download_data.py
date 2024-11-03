@@ -60,19 +60,28 @@ class DownloadData():
         tickers_market = tickers
         if tk_market not in tickers:
             tickers_market += [tk_market]
-            
+        
+        tickers_to_be_removed = []
         for tk in tickers_market:
 
             data = yf.download(tk, start=start_date, end=end_date)
-            df_adj_close[tk] = data['Adj Close']
-            df_close[tk] = data['Close']
-            df_volume[tk] = data['Volume']
-            df_dollar_volume[tk] = data['Adj Close'] * data['Volume']
+            if tk in yf.shared._ERRORS.keys():
+                print(f'WARNING: Data is unavailable for {tk}, ticker will be removed from the portfolio')
+                tickers_to_be_removed.append(tk)
+            else:
+                df_adj_close[tk] = data['Adj Close']
+                df_close[tk] = data['Close']
+                df_volume[tk] = data['Volume']
+                df_dollar_volume[tk] = data['Adj Close'] * data['Volume']
 
-            df_ohlc = data[ohlc_cols]
-            df_ohlc = df_ohlc.dropna() 
-            dict_ohlc.update({tk: df_ohlc})
+                df_ohlc = data[ohlc_cols]
+                df_ohlc = df_ohlc.dropna() 
+                dict_ohlc.update({tk: df_ohlc})
 
+        # Must not modify the tickers list inside the loop over it
+        for tk in tickers_to_be_removed:
+            tickers.remove(tk)
+ 
         df_adj_close = df_adj_close.dropna() 
         df_volume = df_volume.dropna()
         df_dollar_volume = df_dollar_volume.dropna()
@@ -95,10 +104,10 @@ class DownloadData():
         missing_end_date_tickers = []
 
         for tk in tickers:
-            start_date_tk = df_adj_close.index[~df_adj_close[tk].isna()].min().date()
+            start_date_tk = df_adj_close.index[df_adj_close[tk].notna()].min().date()
             last_nan_date_tk = df_adj_close.index[df_adj_close[tk].isna()].max().date()
 
-            if (start_date_tk > start_date.date()) & ~pd.isnull(last_nan_date_tk):
+            if (start_date_tk > start_date.date()) & (not pd.isnull(last_nan_date_tk)):
                 if last_nan_date_tk < start_date_tk:
                     df_adj_close_start.loc[tk, 'Adj Close Start Date'] = start_date_tk
 
@@ -250,14 +259,14 @@ class DownloadData():
 
     def numstring_to_float(self, x: str):
         """
-        Convert a numeric string x to a float by removing trillion ('T'), billion ('B'), 
+        Convert a numeric string x to a float by removing dollar ('$', trillion ('T'), billion ('B'), 
         million ('M') and thousand ('K') symbols and applying a corresponding multiplier
         """
 
-        x = x.replace(',', '')
+        x = x.replace(',', '').replace('$', '')
         if 'T' in x:
             return float(x.replace('T', '')) * 1e12
-        if 'B' in x:
+        elif 'B' in x:
             return float(x.replace('B', '')) * 1e9
         elif 'M' in x:
             return float(x.replace('M', '')) * 1e6

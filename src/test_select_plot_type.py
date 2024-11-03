@@ -26,18 +26,20 @@ from analyze_prices import AnalyzePrices
 # tickers = list(magnificent_7_tickers.keys())
 
 end_date = datetime.today()
-hist_years, hist_months, hist_days = 20, 0, 0
+hist_years, hist_months, hist_days = 5, 0, 0
 start_date = datetime(end_date.year - hist_years, end_date.month - hist_months, end_date.day - hist_days)
 tk_market = '^GSPC'
 # tk_market = 'BTC-USD'
 
 df = pd.DataFrame()
 hist_data = DownloadData(end_date, start_date)
-max_tickers = 20
+max_tickers = 50
 # df = hist_data.download_from_url('futures', max_tickers)
 # df = hist_data.download_from_url('cryptos_yf', max_tickers)
 # tickers = list(df['YF Symbol'])
-# tickers = list(df['Symbol'])
+df = hist_data.download_from_url('biggest_etfs', max_tickers)
+tickers = list(df['Symbol'])
+"""
 tickers = [  # Spot and futures
     'GC=F',  # Gold, Comex
     'SI=F',  # Silver, Comex
@@ -45,16 +47,17 @@ tickers = [  # Spot and futures
     'PL=F',  # Platinum, NY Mercantile
     'PA=F',  # Palladium, NY Mercantile
     ]
+"""
 # tickers = ['SHIB-USD']
 # tickers = ['PEPE24478-USD']
 # crypto_names = list(df['Name'])
+# tickers = ['GF=F', 'B0=F', 'PA=F', 'SIL=F']
+# tickers = ['PA=F']
 tickers_org = tickers.copy()  #
 
 print(f'tickers_org = {tickers_org}')
 # print(tripledeck_legendtitle)
 
-# tk = 'MSFT'
-tk = tickers[0]  # 'BTC-USD'
 drawdown_color = 'red'
 theme = 'dark'
 overlay_color_theme = 'grasslands'
@@ -79,6 +82,12 @@ df_adj_close = downloaded_data['Adj Close']
 df_close = downloaded_data['Close']
 df_volume = downloaded_data['Volume']
 dict_ohlc = downloaded_data['OHLC']
+
+# Refresh the list of tickers, as some of them may have been removed
+tickers = list(df_close.columns)
+# tk = 'MSFT'
+tk = tickers[0]  # 'BTC-USD'
+
 df_ohlc = dict_ohlc[tk]
 ohlc_tk = df_ohlc.copy()
 adj_close_tk = df_adj_close[tk]
@@ -349,6 +358,20 @@ app.layout = html.Div([
 
                 id = 'drawdown-controls',
                 children = [
+
+                    html.Div([
+                        html.Div('Top DD Number', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        dbc.Input(
+                            id = 'drawdowns-number-input',
+                            type = 'number',
+                            value = 5,
+                            min = 1,
+                            max = 20,
+                            step = 1,
+                            style = {'width': '130px', 'height': '36px', 'vertical-align': 'bottom', 'font-color': 'black'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
+                    ),
 
                     html.Div([
                         html.Div('Top DD Number', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),        
@@ -794,6 +817,7 @@ def update_plot(
     # fig_div = create_graph(theme, tk, drawdown_color, overlay_color_theme)
     # fig = fig_data['fig']
 
+    """
     bollinger_data = analyze_prices.bollinger_bands(df_close[tk], bollinger_window, bollinger_nstd, bollinger_nbands)
     bollinger_list = bollinger_data['list']
     fig_data = analyze_prices.add_bollinger_overlays(
@@ -803,7 +827,7 @@ def update_plot(
         theme = theme,
         color_theme = bollinger_color_theme.lower()
     )
-
+    """
 
     target_deck = 1
     plot_height = fig_data['plot_height'][target_deck]
