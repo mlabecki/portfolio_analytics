@@ -33,18 +33,23 @@ tk_market = '^GSPC'
 
 df = pd.DataFrame()
 hist_data = DownloadData(end_date, start_date)
-max_tickers = 30
+max_tickers = 100
 
 # Ticker categories:
 # 'nasdaq100', 'sp500', 'dow_jones', 'biggest_companies',
 # 'biggest_etfs', 'crypto_etfs', 'cryptos_yf', 'cryptos', 'futures'
 
+# df = hist_data.download_from_url('sp500', max_tickers)
 # df = hist_data.download_from_url('futures', max_tickers)
 # df = hist_data.download_from_url('cryptos_yf', max_tickers)
+###df = hist_data.download_from_url('cryptos_yf', max_tickers)
 # df = hist_data.download_from_url('biggest_etfs', max_tickers)
-df = hist_data.download_from_url('biggest_companies', max_tickers)
+# df = hist_data.download_from_url('biggest_companies', max_tickers)
 
-tickers = list(df['Symbol'])     
+# tickers = list(df['Symbol'])
+
+tk = 'USDS33039-USD'
+tickers = [tk]
 
 """
 tickers = [  # Spot and futures
@@ -93,7 +98,7 @@ dict_ohlc = downloaded_data['OHLC']
 # Refresh the list of tickers, as some of them may have been removed
 tickers = list(df_close.columns)
 # tk = 'MSFT'
-tk = tickers[0]  # 'BTC-USD'
+# tk = tickers[0]
 
 df_ohlc = dict_ohlc[tk]
 ohlc_tk = df_ohlc.copy()
@@ -396,7 +401,7 @@ app.layout = html.Div([
                             options = ['Peak To Trough', 'Peak To Recovery'],
                             value = 'Peak To Trough',
                             clearable = False,
-                            style = {'width': '160px', 'font-color': 'black'}
+                            style = {'width': '170px', 'font-color': 'black'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
                     ),
