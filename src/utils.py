@@ -12,7 +12,7 @@ def set_axis_limits(
     Returns the lower and upper limits for an axis where x_min and x_max are the min/max values.
     max_n_intervals: maximum number of intervals between y-ticks
     units: increments of values at axis ticks, will be scaled to correspond with the
-        order of magntitude of x_max - x_min
+        order of magnitude of x_max - x_min
     """
 
     if x_min == x_max:

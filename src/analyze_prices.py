@@ -1672,7 +1672,7 @@ class AnalyzePrices():
 
                 # The peak is false if the initial flat part is followed by a price increase, i.e.
                 # df_price.loc[cond_in_range] is empty - skip it in such a case
-                
+
                 if len(df_price.loc[cond_in_range]) > 0:
                 
                     min_date = df_price.loc[cond_in_range].index.min()
@@ -1892,8 +1892,11 @@ class AnalyzePrices():
         
         if add_price:
             
-            min_y = min(df_tk)
-            max_y = max(df_tk)
+            min_y = min(df_tk[~df_tk.isna()])
+            max_y = max(df_tk[~df_tk.isna()])
+
+            print(f'tk, min_y, max_y = {tk, min_y, max_y}')
+            print(f'tk, fig_y_min, fig_y_max = {tk, fig_y_min, fig_y_max}')
 
             if fig_y_min is None:
                 new_y_min = min_y
@@ -1910,6 +1913,8 @@ class AnalyzePrices():
                 new_y_max = max(max_y, fig_y_max)
                 if new_y_max > fig_y_max:
                     reset_y_limits = True
+
+            print(f'tk, new_y_min, new_y_max = {tk, new_y_min, new_y_max}')
 
             if reset_y_limits:
                 
@@ -2070,9 +2075,10 @@ class AnalyzePrices():
 
         fig_data.update({'fig': fig})
         
-        if reset_y_limits:
-            fig_data['y_min'].update({target_deck: new_y_min})
-            fig_data['y_max'].update({target_deck: new_y_max})
+        # if reset_y_limits:
+        fig_data['y_min'].update({target_deck: new_y_min})
+        fig_data['y_max'].update({target_deck: new_y_max})
+        print(f"tk, fig_data_y_min, fig_data_y_max = {tk, fig_data['y_min'], fig_data['y_max']}")
 
         return fig_data
 
@@ -3450,8 +3456,8 @@ class AnalyzePrices():
 
         reset_y_limits = False
 
-        min_y = min(df_tk)
-        max_y = max(df_tk)
+        min_y = min(df_tk[~df_tk.isna()])
+        max_y = max(df_tk[~df_tk.isna()])
 
         if fig_y_min is None:
             new_y_min = min_y

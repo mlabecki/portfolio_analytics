@@ -28,12 +28,12 @@ from analyze_prices import AnalyzePrices
 end_date = datetime.today()
 hist_years, hist_months, hist_days = 5, 0, 0
 start_date = datetime(end_date.year - hist_years, end_date.month - hist_months, end_date.day - hist_days)
-tk_market = '^GSPC'
-# tk_market = 'BTC-USD'
+# tk_market = '^GSPC'
+tk_market = 'BTC-USD'
 
 df = pd.DataFrame()
 hist_data = DownloadData(end_date, start_date)
-max_tickers = 100
+max_tickers = 50
 
 # Ticker categories:
 # 'nasdaq100', 'sp500', 'dow_jones', 'biggest_companies',
@@ -41,15 +41,39 @@ max_tickers = 100
 
 # df = hist_data.download_from_url('sp500', max_tickers)
 # df = hist_data.download_from_url('futures', max_tickers)
-# df = hist_data.download_from_url('cryptos_yf', max_tickers)
-###df = hist_data.download_from_url('cryptos_yf', max_tickers)
+# df = hist_data.download_from_url('cryptos', max_tickers)
 # df = hist_data.download_from_url('biggest_etfs', max_tickers)
 # df = hist_data.download_from_url('biggest_companies', max_tickers)
 
-# tickers = list(df['Symbol'])
+df = hist_data.download_from_url('cryptos_yf', max_tickers)
+tickers = list(df['Symbol'])
 
-tk = 'USDS33039-USD'
-tickers = [tk]
+# tickers = ['BTC-USD', 'SOL-USD']
+
+# tickers = ['BTC-USD', 'USDS33039-USD', 'RENDER-USD', 'ETH-USD', 'SOLVBTC-USD', 'CBBTC32994-USD', 'XRP-USD']
+# 
+# tickers = ['ETH-USD', 'USDT-USD', 'BNB-USD', 'SOL-USD', 'USDC-USD', 'XRP-USD', 'STETH-USD', 'DOGE-USD',            
+#     'WTRX-USD', 'TRX-USD', 'TON11419-USD', 'ADA-USD', 'WSTETH-USD', 'WBTC-USD', 'SHIB-USD', 'AVAX-USD', 'WETH-USD', 
+#     'BCH-USD', 'LINK-USD', 'DOT-USD', 'USDS33039-USD', 'LEO-USD', 'DAI-USD', 'SUI20947-USD', 'LTC-USD', 'BTCB-USD', 
+#     'WEETH-USD', 'NEAR-USD', 'EETH-USD', 'APT21794-USD', 'UNI7083-USD', 'WBETH-USD', 'PEPE24478-USD', 'ICP-USD', 
+#     'TAO22974-USD', 'XMR-USD', 'USDE29470-USD', 'XLM-USD', 'FET-USD', 'ETC-USD', 'KAS-USD', 'FDUSD-USD', 'OKB-USD', 
+#     'POL28321-USD', 'RENDER-USD', 'JITOSOL-USD', 'STX4847-USD', 'FIL-USD', 'WIF-USD', 'AAVE-USD', 'CRO-USD', 'ARB11841-USD', 
+#     'MNT27075-USD', 'SUSDE-USD', 'TIA22861-USD', 'IMX10603-USD', 'OP-USD', 'RUNE-USD', 'INJ-USD', 'HBAR-USD', 'FTM-USD', 
+#     'VET-USD', 'BGB-USD', 'ATOM-USD', 'BONK-USD', 'RETH-USD', 'SEI-USD', 'GRT6719-USD', 'POPCAT28782-USD', 'METH29035-USD', 
+#     'PYTH-USD', 'ZBU-USD', 'JUP29210-USD', 'FLOKI-USD', 'OM-USD', 'KCS-USD', 'WZEDX-USD', 'SOLVBTC-USD', 'USDCE-USD', 'THETA-USD', 
+#     'FLZ-USD', 'HNT-USD', 'MKR-USD', 'WLD-USD', 'ENA-USD', 'CBBTC32994-USD', 'EZETH-USD', 'BSV-USD', 'ALGO-USD', 'WBNB-USD', 'AR-USD', 
+#     'MSOL-USD', 'LDO-USD', 'RAY-USD', 'ONDO-USD', 'FTN-USD', 'JASMY-USD', 'BTT-USD', 'VBNB-USD']
+# 
+# print(len(tickers))
+# tickers_to_be_removed = ['USDS33039-USD', 'RENDER-USD', 'SOLVBTC-USD', 'CBBTC32994-USD']
+# for tk in tickers_to_be_removed:
+#     tickers.remove(tk)
+# 
+# print(len(tickers))
+# 
+# # tk = 'USDS33039-USD'
+tk = 'BTC-USD'
+# tickers = [tk]
 
 """
 tickers = [  # Spot and futures
@@ -80,7 +104,8 @@ overlay_color_themes = [x.title() for x in theme_style[theme]['overlay_color_the
 drawdown_colors = [x.title() for x in theme_style[theme]['drawdown_colors'].keys()]
 
 # deck_type = 'triple'
-deck_type = 'single'
+# deck_type = 'single'
+# deck_type = 'double'
 secondary_y = False
 plot_width = 1600
 plot_height_1 = 750
@@ -89,45 +114,51 @@ plot_height_3 = 150
 deck_types = ['Single', 'Double', 'Triple']
 
 downloaded_data = hist_data.download_yh_data(start_date, end_date, tickers, tk_market)
+error_msg = downloaded_data['error_msg']
 
-df_adj_close = downloaded_data['Adj Close']
-df_close = downloaded_data['Close']
-df_volume = downloaded_data['Volume']
-dict_ohlc = downloaded_data['OHLC']
+if error_msg:
+    print(error_msg)
 
-# Refresh the list of tickers, as some of them may have been removed
-tickers = list(df_close.columns)
-# tk = 'MSFT'
-# tk = tickers[0]
+else:
 
-df_ohlc = dict_ohlc[tk]
-ohlc_tk = df_ohlc.copy()
-adj_close_tk = df_adj_close[tk]
-close_tk = df_close[tk]
-open_tk = ohlc_tk['Open']
-high_tk = ohlc_tk['High']
-low_tk = ohlc_tk['Low']
-volume_tk = df_volume[tk]
+    df_adj_close = downloaded_data['Adj Close']
+    df_close = downloaded_data['Close']
+    df_volume = downloaded_data['Volume']
+    dict_ohlc = downloaded_data['OHLC']
 
-# print(df_close)
+    # Refresh the list of tickers, as some of them may have been removed
+    tickers = list(df_close.columns)
+    # tk = 'MSFT'
+    # tk = tickers[0]
 
-# We don't want the benchmark ticker in the app menus at this point (for example, 
-# the drawdown data will not generated) unless tk_market is explicitly selected.
+    df_ohlc = dict_ohlc[tk]
+    ohlc_tk = df_ohlc.copy()
+    adj_close_tk = df_adj_close[tk]
+    close_tk = df_close[tk]
+    open_tk = ohlc_tk['Open']
+    high_tk = ohlc_tk['High']
+    low_tk = ohlc_tk['Low']
+    volume_tk = df_volume[tk]
 
-if tk_market not in tickers_org:
-    tickers = tickers[:-1]  # if added by download_data, tk_market would be in the last position
+    # print(df_close)
 
-analyze_prices = AnalyzePrices(end_date, start_date, tickers)
-date_index = ohlc_tk.index
+    # We don't want the benchmark ticker in the app menus at this point (for example, 
+    # the drawdown data will not generated) unless tk_market is explicitly selected.
 
-sort_by = ['Total Length', '% Depth']
-portfolio_drawdown_data = {}
+    if tk_market not in tickers_org:
+        tickers = tickers[:-1]  # if added by download_data, tk_market would be in the last position
 
-for tk in tickers:
-    drawdown_data = analyze_prices.summarize_tk_drawdowns(df_close, tk, sort_by)
-    n_drawdowns = drawdown_data['Total Drawdowns']
-    drawdown_numbers = [x for x in range(n_drawdowns + 1)[1:]]
-    portfolio_drawdown_data.update({tk: drawdown_data})
+    analyze_prices = AnalyzePrices(end_date, start_date, tickers)
+    date_index = ohlc_tk.index
+
+    sort_by = ['Total Length', '% Depth']
+    portfolio_drawdown_data = {}
+
+    for tk in tickers:
+        drawdown_data = analyze_prices.summarize_tk_drawdowns(df_close, tk, sort_by)
+        n_drawdowns = drawdown_data['Total Drawdowns']
+        drawdown_numbers = [x for x in range(n_drawdowns + 1)[1:]]
+        portfolio_drawdown_data.update({tk: drawdown_data})
 
 
 app = dash.Dash(__name__, external_stylesheets = [dbc.themes.YETI])     # sharp corners
@@ -506,6 +537,8 @@ app.layout = html.Div([
                             id = 'bollinger-deck-dropdown',
                             options = [1],
                             value = 1,
+                            # options = [1, 2],
+                            # value = 2,
                             clearable = False,
                             style = {'width': '100px', 'font-color': 'black'}
                         )],
@@ -815,7 +848,7 @@ def update_plot(
     # fig_div = create_graph(theme, tk, drawdown_color, overlay_color_theme)
     # fig = fig_data['fig']
 
-    """
+    
     bollinger_data = analyze_prices.bollinger_bands(df_close[tk], bollinger_window, bollinger_nstd, bollinger_nbands)
     bollinger_list = bollinger_data['list']
     fig_data = analyze_prices.add_bollinger_overlays(
@@ -825,12 +858,12 @@ def update_plot(
         theme = theme,
         color_theme = bollinger_color_theme.lower()
     )
-    """
+    
 
-    target_deck = 1
-    plot_height = fig_data['plot_height'][target_deck]
-    y_min = fig_data['y_min'][target_deck]
-    y_max = fig_data['y_max'][target_deck]
+    # target_deck = 1
+    # plot_height = fig_data['plot_height'][target_deck]
+    # y_min = fig_data['y_min'][target_deck]
+    # y_max = fig_data['y_max'][target_deck]
     fig = fig_data['fig']
     
 #     if n_click:

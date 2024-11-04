@@ -73,6 +73,9 @@ class DownloadData():
                 df_close[tk] = data['Close']
                 df_volume[tk] = data['Volume']
                 df_dollar_volume[tk] = data['Adj Close'] * data['Volume']
+                # df_adj_close = df_adj_close.dropna() 
+                # df_volume = df_volume.dropna()
+                # df_dollar_volume = df_dollar_volume.dropna()
 
                 df_ohlc = data[ohlc_cols]
                 df_ohlc = df_ohlc.dropna() 
@@ -82,9 +85,26 @@ class DownloadData():
         for tk in tickers_to_be_removed:
             tickers.remove(tk)
  
-        df_adj_close = df_adj_close.dropna() 
-        df_volume = df_volume.dropna()
-        df_dollar_volume = df_dollar_volume.dropna()
+        # print(f'removed tickers:{tickers_to_be_removed}')
+
+        # print(f'df_adj_close before dropna()\n{df_adj_close}')
+
+        df_adj_close = df_adj_close.dropna()
+        if len(df_adj_close) == 0:
+            error_msg = f'ERROR: No overlapping data found for the selected portfolio within the time period specified.\n'
+            error_msg += '       Please consider removing some tickers and/or changing the historical date range.'
+            downloaded_data = {
+                'error_msg': error_msg
+            }
+            return downloaded_data
+
+        # Refresh tickers, as some may have been removed by dropna()
+        tickers = list(df_adj_close.columns)
+
+        df_volume = df_volume.dropna()                  # NOTE: 
+        df_dollar_volume = df_dollar_volume.dropna()    # Need to handle volumes separately from df_close/df_adj_close
+        
+        # print(f'df_adj_close after dropna()\n{df_adj_close}')
 
         # NOTE: We want to keep dates as index, so there is no reset_index()
 
@@ -97,15 +117,20 @@ class DownloadData():
         # of the missing data for DJIA.
 
         # Check for Adj Close data start. Volume and Close data start together with Adj Close data,
-        # so there is no need to check df_volume.
+        # so there is no need to check df_volume.  ### Not necessarily correct, e.g. for some cryptos.
 
         df_adj_close_start = pd.DataFrame(columns=['Adj Close Start Date'])
         last_date_tk = df_adj_close.index.max().date()
         missing_end_date_tickers = []
 
         for tk in tickers:
+
+            # print(f'{tk}\n\tdf_adj_close[tk] = {df_adj_close[tk]}')
+
             start_date_tk = df_adj_close.index[df_adj_close[tk].notna()].min().date()
             last_nan_date_tk = df_adj_close.index[df_adj_close[tk].isna()].max().date()
+
+            # print(f'{tk}\n\tstart_date = {start_date_tk}')
 
             if (start_date_tk > start_date.date()) & (not pd.isnull(last_nan_date_tk)):
                 if last_nan_date_tk < start_date_tk:
@@ -133,6 +158,7 @@ class DownloadData():
         # Pack downloaded data into a single dictionary
 
         downloaded_data = {
+            'error_msg': '',
             'Adj Close': df_adj_close,
             'Close': df_close,
             'Volume': df_volume,
@@ -375,7 +401,8 @@ class DownloadData():
                 # https://finance.yahoo.com/markets/crypto/all/?start=0&count=100
                 
                 # The syntax below is to take care of Symbols such as 'R RENDER-USD Render USD'
-                df['YF Symbol'] = df['Symbol'].apply(lambda x: x.split('-USD')[0].split()[-1] + '-USD')
+                # df['YF Symbol'] = df['Symbol'].apply(lambda x: x.split('-USD')[0].split()[-1] + '-USD')
+                df['Symbol'] = df['Symbol'].apply(lambda x: x.split('-USD')[0].split()[-1] + '-USD')
                 # df['Name'] = df['Symbol'].apply(lambda x: ' '.join(x.split('-USD ')[0].split()[: -1]))
                 df['Name'] = df['Name'].apply(lambda x: x[: -4])
 
