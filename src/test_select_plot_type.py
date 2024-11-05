@@ -41,8 +41,8 @@ print(ticker_categories)
 # 'nasdaq100', 'sp500', 'dow_jones', 'biggest_companies',
 # 'biggest_etfs', 'crypto_etfs', 'cryptos_yf', 'cryptos', 'futures'
 
-max_tickers = 100
-ticker_category = 'biggest_etfs'
+max_tickers = 30
+ticker_category = 'crypto_etfs'
 df = hist_data.download_from_url(ticker_category, max_tickers)
 
 category_name = url_settings[ticker_category]['category_name']
@@ -135,7 +135,7 @@ else:
         tickers = tickers[:-1]  # if added by download_data, tk_market would be in the last position
 
     analyze_prices = AnalyzePrices(end_date, start_date, tickers)
-    date_index = ohlc_tk.index
+    date_index = df_close.index
 
     sort_by = ['Total Length', '% Depth']
     portfolio_drawdown_data = {}
@@ -234,7 +234,8 @@ app.layout = html.Div([
                             # options = tickers,
                             # value = tickers[0],
                             options = ticker_menu_info_list,
-                            value = ticker_menu_info_list[0],
+                            # value = ticker_menu_info_list[0],
+                            value = ticker_menu_info_list[2],
                             clearable = False,
                             # style = {'width': '180px'}
                             style = {'width': '400px'}

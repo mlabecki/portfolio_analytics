@@ -593,8 +593,8 @@ class AnalyzePrices():
             # Adjust y range if necessary
             reset_y_limits = False
 
-            min_y = min(atr_line)
-            max_y = max(atr_line)
+            min_y = min(atr_line[~atr_line.isna()])
+            max_y = max(atr_line[~atr_line.isna()])
             
             if fig_y_min is None:
                 new_y_min = min_y
@@ -2075,9 +2075,9 @@ class AnalyzePrices():
 
         fig_data.update({'fig': fig})
         
-        # if reset_y_limits:
-        fig_data['y_min'].update({target_deck: new_y_min})
-        fig_data['y_max'].update({target_deck: new_y_max})
+        if reset_y_limits:
+            fig_data['y_min'].update({target_deck: new_y_min})
+            fig_data['y_max'].update({target_deck: new_y_max})
         # print(f"tk, fig_data_y_min, fig_data_y_max = {tk, fig_data['y_min'], fig_data['y_max']}")
 
         return fig_data
@@ -2517,8 +2517,8 @@ class AnalyzePrices():
         # Adjust y range if necessary
         reset_y_limits = False
 
-        min_y = min(df)
-        max_y = max(df)
+        min_y = min(df[~df.isna()])
+        max_y = max(df[~df.isna()])
 
         if fig_y_min is None:
             new_y_min = min_y
@@ -2873,8 +2873,8 @@ class AnalyzePrices():
 
             reset_y_limits = False
             
-            min_y = min(b_line)
-            max_y = max(b_line)
+            min_y = min(b_line[~b_line.isna()])
+            max_y = max(b_line[~b_line.isna()])
             
             if fig_y_min is None:
                 new_y_min = min_y
@@ -3174,8 +3174,8 @@ class AnalyzePrices():
             # Adjust y range if necessary
             reset_y_limits = False
 
-            min_y = min(m_line)
-            max_y = max(m_line)
+            min_y = min(m_line[~m_line.isna()])
+            max_y = max(m_line[~m_line.isna()])
 
             if fig_y_min is None:
                 new_y_min = min_y
@@ -3628,8 +3628,8 @@ class AnalyzePrices():
         # Adjust y range if necessary
         reset_y_limits = False
 
-        min_y = min(df['Low'])
-        max_y = max(df['High'])
+        min_y = min(df['Low'][~df.isna()])
+        max_y = max(df['High'][~df.isna()])
 
         if fig_y_min is None:
             new_y_min = min_y

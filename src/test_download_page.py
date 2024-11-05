@@ -13,6 +13,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from operator import itemgetter
 from mapping_plot_attributes import *
+from mapping_portfolio_downloads import *
 from mapping_tickers import *
 from utils import *
 from download_data import DownloadData
@@ -26,50 +27,32 @@ hist_data = DownloadData(end_date, start_date)
 
 # tk_market = '^GSPC'
 tk_market = 'BTC-USD'
+tk = 'BTC-USD'
 
-df = pd.DataFrame()
-max_tickers = 10
-
+ticker_categories = [x for x in url_settings.keys() if x != 'global']
+print(ticker_categories)
 # Ticker categories:
 # 'nasdaq100', 'sp500', 'dow_jones', 'biggest_companies',
 # 'biggest_etfs', 'crypto_etfs', 'cryptos_yf', 'cryptos', 'futures'
 
-# df = hist_data.download_from_url('sp500', max_tickers)
-# df = hist_data.download_from_url('futures', max_tickers)
-# df = hist_data.download_from_url('cryptos', max_tickers)
-# df = hist_data.download_from_url('biggest_etfs', max_tickers)
-# df = hist_data.download_from_url('biggest_companies', max_tickers)
+max_tickers = 10
+ticker_category = 'crypto_etfs'
+df = hist_data.download_from_url(ticker_category, max_tickers)
 
-df = hist_data.download_from_url('cryptos_yf', max_tickers)
+category_name = url_settings[ticker_category]['category_name']
+category_sort_by = url_settings[ticker_category]['sort_by']
+title_prefix = 'Top ' if not ('Biggest' in category_name) else ''
+print(f'\n{title_prefix}{category_name} by {category_sort_by}\n')
+
+ticker_menu_info = {}
+for i, tk in enumerate(df['Symbol']):
+    tk_info = f"{i + 1}. {df.loc[i, 'Name']} ({tk})"
+    ticker_menu_info.update({tk_info: tk})
+    print(tk_info)
+
 tickers = list(df['Symbol'])
-
-# tickers = ['BTC-USD', 'USDS33039-USD', 'RENDER-USD', 'ETH-USD', 'SOLVBTC-USD', 'CBBTC32994-USD', 'XRP-USD']
-# 
-# # tickers = ['BTC-USD', 'ETH-USD', 'USDT-USD', 'BNB-USD', 'SOL-USD', 'USDC-USD', 'XRP-USD', 'STETH-USD', 'DOGE-USD',
-# 
-# tickers = ['ETH-USD', 'USDT-USD', 'BNB-USD', 'SOL-USD', 'USDC-USD', 'XRP-USD', 'STETH-USD', 'DOGE-USD',            
-#     'WTRX-USD', 'TRX-USD', 'TON11419-USD', 'ADA-USD', 'WSTETH-USD', 'WBTC-USD', 'SHIB-USD', 'AVAX-USD', 'WETH-USD', 
-#     'BCH-USD', 'LINK-USD', 'DOT-USD', 'USDS33039-USD', 'LEO-USD', 'DAI-USD', 'SUI20947-USD', 'LTC-USD', 'BTCB-USD', 
-#     'WEETH-USD', 'NEAR-USD', 'EETH-USD', 'APT21794-USD', 'UNI7083-USD', 'WBETH-USD', 'PEPE24478-USD', 'ICP-USD', 
-#     'TAO22974-USD', 'XMR-USD', 'USDE29470-USD', 'XLM-USD', 'FET-USD', 'ETC-USD', 'KAS-USD', 'FDUSD-USD', 'OKB-USD', 
-#     'POL28321-USD', 'RENDER-USD', 'JITOSOL-USD', 'STX4847-USD', 'FIL-USD', 'WIF-USD', 'AAVE-USD', 'CRO-USD', 'ARB11841-USD', 
-#     'MNT27075-USD', 'SUSDE-USD', 'TIA22861-USD', 'IMX10603-USD', 'OP-USD', 'RUNE-USD', 'INJ-USD', 'HBAR-USD', 'FTM-USD', 
-#     'VET-USD', 'BGB-USD', 'ATOM-USD', 'BONK-USD', 'RETH-USD', 'SEI-USD', 'GRT6719-USD', 'POPCAT28782-USD', 'METH29035-USD', 
-#     'PYTH-USD', 'ZBU-USD', 'JUP29210-USD', 'FLOKI-USD', 'OM-USD', 'KCS-USD', 'WZEDX-USD', 'SOLVBTC-USD', 'USDCE-USD', 'THETA-USD', 
-#     'FLZ-USD', 'HNT-USD', 'MKR-USD', 'WLD-USD', 'ENA-USD', 'CBBTC32994-USD', 'EZETH-USD', 'BSV-USD', 'ALGO-USD', 'WBNB-USD', 'AR-USD', 
-#     'MSOL-USD', 'LDO-USD', 'RAY-USD', 'ONDO-USD', 'FTN-USD', 'JASMY-USD', 'BTT-USD', 'VBNB-USD']
-# 
-# print(len(tickers))
-# tickers_to_be_removed = ['USDS33039-USD', 'RENDER-USD', 'SOLVBTC-USD', 'CBBTC32994-USD']
-# for tk in tickers_to_be_removed:
-#     tickers.remove(tk)
-# 
-# print(len(tickers))
-# 
-# # tk = 'USDS33039-USD'
-
-tk = 'BTC-USD'
-# tickers = [tk]
+tk = tickers[0]
+ticker_menu_info_list = list(ticker_menu_info.keys())
 
 """
 tickers = [  # Spot and futures
@@ -80,11 +63,7 @@ tickers = [  # Spot and futures
     'PA=F',  # Palladium, NY Mercantile
     ]
 """
-# tickers = ['SHIB-USD']
-# tickers = ['PEPE24478-USD']
-# crypto_names = list(df['Name'])
-# tickers = ['GF=F', 'B0=F', 'PA=F', 'SIL=F']
-# tickers = ['PA=F']
+
 tickers_org = tickers.copy()  #
 
 print(f'tickers_org = {tickers_org}')
@@ -134,6 +113,7 @@ else:
 
     # Refresh the list of tickers, as some of them may have been removed
     tickers = list(df_close.columns)
+    ticker_names = 
     # tk = 'MSFT'
     # tk = tickers[0]
 

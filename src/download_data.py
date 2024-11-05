@@ -71,25 +71,29 @@ class DownloadData():
                 tickers_to_be_removed.append(tk)
 
             else:
-                adj_close_tk = pd.DataFrame({tk: data['Adj Close']})
+                
+                data_index = data.index
+
+                adj_close_tk = pd.DataFrame({tk: data['Adj Close']}, index = data_index)
                 df_adj_close = pd.concat([df_adj_close, adj_close_tk], axis = 1)
                 
-                close_tk = pd.DataFrame({tk: data['Close']})
+                close_tk = pd.DataFrame({tk: data['Close']}, index = data_index)
                 df_close = pd.concat([df_close, close_tk], axis = 1)
 
-                volume_tk = pd.DataFrame({tk: data['Volume']})
+                volume_tk = pd.DataFrame({tk: data['Volume']}, index = data_index)
                 df_volume = pd.concat([df_volume, volume_tk], axis = 1)
 
-                dollar_volume_tk = pd.DataFrame({tk: data['Volume'] * data['Adj Close']})
+                dollar_volume_tk = pd.DataFrame({tk: data['Volume'] * data['Adj Close']}, index = data_index)
                 df_dollar_volume = pd.concat([df_dollar_volume, dollar_volume_tk], axis = 1)
 
                 # df_adj_close[tk] = data['Adj Close']
                 # df_close[tk] = data['Close']
                 # df_volume[tk] = data['Volume']
                 # df_dollar_volume[tk] = data['Adj Close'].copy() * data['Volume'].copy()
-                # df_adj_close = df_adj_close.dropna() 
-                # df_volume = df_volume.dropna()
-                # df_dollar_volume = df_dollar_volume.dropna()
+                
+                df_adj_close = df_adj_close.dropna() 
+                df_volume = df_volume.dropna()
+                df_dollar_volume = df_dollar_volume.dropna()
 
                 df_ohlc = data[ohlc_cols]
                 df_ohlc = df_ohlc.dropna() 
