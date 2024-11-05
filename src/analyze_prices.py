@@ -1895,8 +1895,8 @@ class AnalyzePrices():
             min_y = min(df_tk[~df_tk.isna()])
             max_y = max(df_tk[~df_tk.isna()])
 
-            print(f'tk, min_y, max_y = {tk, min_y, max_y}')
-            print(f'tk, fig_y_min, fig_y_max = {tk, fig_y_min, fig_y_max}')
+            # print(f'tk, min_y, max_y = {tk, min_y, max_y}')
+            # print(f'tk, fig_y_min, fig_y_max = {tk, fig_y_min, fig_y_max}')
 
             if fig_y_min is None:
                 new_y_min = min_y
@@ -1914,7 +1914,7 @@ class AnalyzePrices():
                 if new_y_max > fig_y_max:
                     reset_y_limits = True
 
-            print(f'tk, new_y_min, new_y_max = {tk, new_y_min, new_y_max}')
+            # print(f'tk, new_y_min, new_y_max = {tk, new_y_min, new_y_max}')
 
             if reset_y_limits:
                 
@@ -2078,7 +2078,7 @@ class AnalyzePrices():
         # if reset_y_limits:
         fig_data['y_min'].update({target_deck: new_y_min})
         fig_data['y_max'].update({target_deck: new_y_max})
-        print(f"tk, fig_data_y_min, fig_data_y_max = {tk, fig_data['y_min'], fig_data['y_max']}")
+        # print(f"tk, fig_data_y_min, fig_data_y_max = {tk, fig_data['y_min'], fig_data['y_max']}")
 
         return fig_data
 

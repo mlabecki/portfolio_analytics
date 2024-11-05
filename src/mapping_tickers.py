@@ -129,20 +129,23 @@ crypto_benchmark_tickers = {
 # symbols to their corresponding YF tickers.
 
 yf_custom_crypto_tickers = {
-    'UNI': 'UNI7083-USD',  # 'Uniswap' NOTE: UNI-USD is UNICORN Token USD in Yahoo!Finance
-    'PEPE': 'PEPE24478-USD',  # 'Pepe' NOTE: PEPE-USD is PEPEGOLD, a different cryptocurrency launched in 2024
-    'ARB': 'ARB11841-USD',  # 'Arbitrum' NOTE: ARB-USD is Arbit USD in Yahoo!Finance)
-    'MNT': 'MNT27075-USD',  # 'Mantle' NOTE: MNT-USD is microNFT USD in Yahoo!Finance
-    'STX': 'STX4847-USD',  # 'Stacks' NOTE: STX-USD is stox USD in Yahoo!Finance
-    'IMX': 'IMX10603-USD',  # 'Immutable X' NOTE: IMX-USD is Impermax USD in Yahoo!Finance
-    'SUI': 'SUI20947-USD',  # 'Sui USD' NOTE: SUI-USD is Salmonation USD in Yahoo!Finance
-    'BEAMX': 'BEAM28298-USD',  # 'Beam'
-    'GRT': 'GRT6719-USD',  # 'The Graph' NOTE: GRT-USD is Golden Ratio Token USD in Yahoo!Finance)
-    'TON': 'TON11419-USD',  # 'Toncoin'
-    'APT': 'APT21794-USD',  # 'Aptos'
-    'USDE': 'USDE29470-USD',  # 'Ethena USDe'
-    'POL': 'POL28321-USD',  # 'POL (ex-MATIC)' (YF) or 'Polygon Ecosystem Token' (Coin360)
-
+    'UNI': 'UNI7083-USD',           # 'Uniswap' NOTE: UNI-USD is UNICORN Token USD in Yahoo!Finance
+    'PEPE': 'PEPE24478-USD',        # 'Pepe' NOTE: PEPE-USD is PEPEGOLD, a different cryptocurrency launched in 2024
+    'ARB': 'ARB11841-USD',          # 'Arbitrum' NOTE: ARB-USD is Arbit USD in Yahoo!Finance)
+    'MNT': 'MNT27075-USD',          # 'Mantle' NOTE: MNT-USD is microNFT USD in Yahoo!Finance
+    'STX': 'STX4847-USD',           # 'Stacks' NOTE: STX-USD is stox USD in Yahoo!Finance
+    'IMX': 'IMX10603-USD',          # 'Immutable X' NOTE: IMX-USD is Impermax USD in Yahoo!Finance
+    'SUI': 'SUI20947-USD',          # 'Sui USD' NOTE: SUI-USD is Salmonation USD in Yahoo!Finance
+    'BEAMX': 'BEAM28298-USD',       # 'Beam'
+    'GRT': 'GRT6719-USD',           # 'The Graph' NOTE: GRT-USD is Golden Ratio Token USD in Yahoo!Finance)
+    'TON': 'TON11419-USD',          # 'Toncoin'
+    'APT': 'APT21794-USD',          # 'Aptos'
+    'USDE': 'USDE29470-USD',        # 'Ethena USDe'
+    'POL': 'POL28321-USD',          # 'POL (ex-MATIC)' (YF) or 'Polygon Ecosystem Token' (Coin360)
+    'USDS': 'USDS33039-USD',        # 'USDS USD'
+    'POPCAT': 'POPCAT28782-USD',    # 'Popcat (SOL)'
+    'MEW': 'MEW30126-USD',          # 'cat in a dogs world'
+    'BRETT': 'BRETT29743-USD',      # 'Brett (Based)'
 }
 
 ######################################################################################################

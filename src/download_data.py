@@ -65,14 +65,28 @@ class DownloadData():
         for tk in tickers_market:
 
             data = yf.download(tk, start=start_date, end=end_date)
+
             if tk in yf.shared._ERRORS.keys():
                 print(f'WARNING: Data is unavailable for {tk}, ticker will be removed from the portfolio')
                 tickers_to_be_removed.append(tk)
+
             else:
-                df_adj_close[tk] = data['Adj Close']
-                df_close[tk] = data['Close']
-                df_volume[tk] = data['Volume']
-                df_dollar_volume[tk] = data['Adj Close'] * data['Volume']
+                adj_close_tk = pd.DataFrame({tk: data['Adj Close']})
+                df_adj_close = pd.concat([df_adj_close, adj_close_tk], axis = 1)
+                
+                close_tk = pd.DataFrame({tk: data['Close']})
+                df_close = pd.concat([df_close, close_tk], axis = 1)
+
+                volume_tk = pd.DataFrame({tk: data['Volume']})
+                df_volume = pd.concat([df_volume, volume_tk], axis = 1)
+
+                dollar_volume_tk = pd.DataFrame({tk: data['Volume'] * data['Adj Close']})
+                df_dollar_volume = pd.concat([df_dollar_volume, dollar_volume_tk], axis = 1)
+
+                # df_adj_close[tk] = data['Adj Close']
+                # df_close[tk] = data['Close']
+                # df_volume[tk] = data['Volume']
+                # df_dollar_volume[tk] = data['Adj Close'].copy() * data['Volume'].copy()
                 # df_adj_close = df_adj_close.dropna() 
                 # df_volume = df_volume.dropna()
                 # df_dollar_volume = df_dollar_volume.dropna()
@@ -85,7 +99,7 @@ class DownloadData():
         for tk in tickers_to_be_removed:
             tickers.remove(tk)
  
-        # print(f'removed tickers:{tickers_to_be_removed}')
+        print(f'removed tickers:{tickers_to_be_removed}')
 
         # print(f'df_adj_close before dropna()\n{df_adj_close}')
 
@@ -396,6 +410,9 @@ class DownloadData():
                         crypto_symbol = df.loc[i, 'Symbol']
                         print(f'WARNING: Incorrect ticker {tk} for {crypto_symbol}')
                         continue
+                
+                # Rename columns so 'Symbol' contains YF tickers
+                df = df.rename(columns = {'Symbol': 'Coin360 Symbol', 'YF Symbol': 'Symbol'})
             
             elif ticker_category == 'cryptos_yf':
                 # https://finance.yahoo.com/markets/crypto/all/?start=0&count=100
