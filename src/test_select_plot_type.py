@@ -41,7 +41,7 @@ print(ticker_categories)
 # 'nasdaq100', 'sp500', 'dow_jones', 'biggest_companies',
 # 'biggest_etfs', 'crypto_etfs', 'cryptos_yf', 'cryptos', 'futures'
 
-max_tickers = 30
+max_tickers = 100
 ticker_category = 'crypto_etfs'
 df = hist_data.download_from_url(ticker_category, max_tickers)
 
@@ -50,11 +50,25 @@ category_sort_by = url_settings[ticker_category]['sort_by']
 title_prefix = 'Top ' if not ('Biggest' in category_name) else ''
 print(f'\n{title_prefix}{category_name} by {category_sort_by}\n')
 
+df_ticker_info = pd.DataFrame(index = df['Symbol'], columns = ['No.', 'Name', 'Data Start', 'Data End'])
 ticker_menu_info = {}
 for i, tk in enumerate(df['Symbol']):
-    tk_info = f"{i + 1}. {df.loc[i, 'Name']} ({tk})"
-    ticker_menu_info.update({tk_info: tk})
-    print(tk_info)
+    yf_tk_hist = yf.Ticker(tk).history(period = 'max')
+    if not (yf_tk_hist is None):
+        tk_start, tk_end = str(yf_tk_hist.index[0].date()), str(yf_tk_hist.index[-1].date())
+        tk_info = f"{i + 1}. {tk}: {df.loc[i, 'Name']}, {tk_start}-{tk_end}"
+        ticker_menu_info.update({tk_info: tk})
+        # print(tk_info)
+        # print(f"{i + 1}. {tk}:\t\t{df.loc[i, 'Name']}, {tk_start}-{tk_end}")
+        df_ticker_info.loc[tk, 'No.'] = i + 1
+        df_ticker_info.loc[tk, 'Name'] = df.loc[i, 'Name']
+        df_ticker_info.loc[tk, 'Data Start'] = tk_start
+        df_ticker_info.loc[tk, 'Data End'] = tk_end
+    else:
+        print(f'SORRY: Cannot get data for {tk}')
+
+print(df_ticker_info)
+print(df_ticker_info['Data End'].min())
 
 tickers = list(df['Symbol'])
 tk = tickers[0]
@@ -70,34 +84,24 @@ tickers = [  # Spot and futures
     'PA=F',  # Palladium, NY Mercantile
     ]
 """
-# tickers = ['SHIB-USD']
-# tickers = ['PEPE24478-USD']
-# crypto_names = list(df['Name'])
-# tickers = ['GF=F', 'B0=F', 'PA=F', 'SIL=F']
-# tickers = ['PA=F']
+
 tickers_org = tickers.copy()  #
 
 print(f'tickers_org = {tickers_org}')
-# print(tripledeck_legendtitle)
 
-drawdown_color = 'red'
-theme = 'dark'
-overlay_color_theme = 'grasslands'
-# overlay_color_themes = list(theme_style[theme]['overlay_color_theme'].keys())
-overlay_color_themes = [x.title() for x in theme_style[theme]['overlay_color_theme'].keys()]
-# print(overlay_color_themes)
-# drawdown_colors = list(theme_style[theme]['drawdown_colors'].keys())
-drawdown_colors = [x.title() for x in theme_style[theme]['drawdown_colors'].keys()]
+##############
 
-# deck_type = 'triple'
-# deck_type = 'single'
-# deck_type = 'double'
-secondary_y = False
-plot_width = 1600
-plot_height_1 = 750
-plot_height_2 = 150
-plot_height_3 = 150
-deck_types = ['Single', 'Double', 'Triple']
+dict_info = hist_data.download_yh_info(tickers, tk_market)
+# print(hist_data.start_date)
+
+# for tk in dict_info:
+    # print(f'{tk}:')
+    # dict_info_tk = dict_info[tk]
+    # for field in dict_info_tk.keys():
+        # print(f'\t{field}:\t{dict_info_tk[field]}')
+    # print('')
+
+##############
 
 downloaded_data = hist_data.download_yh_data(start_date, end_date, tickers, tk_market)
 error_msg = downloaded_data['error_msg']
@@ -149,48 +153,27 @@ else:
 
 app = dash.Dash(__name__, external_stylesheets = [dbc.themes.YETI])     # sharp corners
 
-"""
-def create_graph(
-    # date_index,
-    theme,
-    deck_type,
-    secondary_y,
-    plot_width,
-    plot_height_1,
-    plot_height_2,
-    plot_height_3
-):
+##############
 
-    fig_data = analyze_prices.create_template(
-    # fig_data = create_template(    
-        date_index,
-        deck_type = deck_type,
-        secondary_y = secondary_y,
-        plot_width = plot_width,
-        plot_height_1 = plot_height_1,
-        plot_height_2 = plot_height_2,
-        plot_height_3 = plot_height_3,
-        theme = theme
-    )
+drawdown_color = 'red'
+theme = 'dark'
+overlay_color_theme = 'grasslands'
+# overlay_color_themes = list(theme_style[theme]['overlay_color_theme'].keys())
+overlay_color_themes = [x.title() for x in theme_style[theme]['overlay_color_theme'].keys()]
+# print(overlay_color_themes)
+# drawdown_colors = list(theme_style[theme]['drawdown_colors'].keys())
+drawdown_colors = [x.title() for x in theme_style[theme]['drawdown_colors'].keys()]
 
-    fig_data = analyze_prices.add_hist_price(fig_data, volume_tk, tk, target_deck = 1, secondary_y = False, plot_type = 'bar', add_title = False, price_type = 'volume', theme = theme)
+# deck_type = 'triple'
+# deck_type = 'single'
+# deck_type = 'double'
+secondary_y = False
+plot_width = 1600
+plot_height_1 = 750
+plot_height_2 = 150
+plot_height_3 = 150
+deck_types = ['Single', 'Double', 'Triple']
 
-    fig = fig_data['fig']
-    # print(fig_data['y_min'])
-    # print(fig_data['y_max'])
-    # layout = fig['layout']
-    # output_text = f'This is a {deck_type}-deck plot'
-
-    # fig_div = html.Div(
-    #         [dcc.Graph(id='test-graph', figure = fig)],
-    #         id='fig_div',
-    #     )
-
-    # return output_text, fig
-
-    # return fig_div
-    return fig_data
-"""
 
 #################
 # html.Script(src='https://cdn.plot.ly/plotly-latest.min.js')
@@ -228,60 +211,59 @@ app.layout = html.Div([
                 children = [
 
                     html.Div([
-                        html.Div('Ticker', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Ticker', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id='tickers-dropdown',
                             # options = tickers,
                             # value = tickers[0],
                             options = ticker_menu_info_list,
-                            # value = ticker_menu_info_list[0],
-                            value = ticker_menu_info_list[2],
+                            value = ticker_menu_info_list[0],
                             clearable = False,
                             # style = {'width': '180px'}
-                            style = {'width': '400px'}
+                            style = {'width': '450px', 'font-size': '15px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Theme', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Theme', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id = 'theme-dropdown',
                             options = ['Dark', 'Light'],
                             value = 'Dark',
                             disabled = False,
                             clearable = False,
-                            style = {'width': '90px'}
+                            style = {'width': '90px', 'font-size': '15px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Deck Type', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Deck Type', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id='deck-type-dropdown',
                             options = deck_types,
                             value = 'Single',
                             clearable = False,
-                            style = {'width': '110px'}
+                            style = {'width': '110px', 'font-size': '15px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Sec Y', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),        
+                        html.Div('Sec Y', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),        
                         dcc.Dropdown(
                             id='secondary-y-dropdown',
                             options = ['No', 'Yes'],
                             value = 'No',
                             clearable = False,
-                            style = {'width': '80px', 'font-color': 'black'}
+                            style = {'width': '80px', 'font-size': '15px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Plot Width', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Plot Width', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),
                         dbc.Input(
                             id = 'width-input',
                             type = 'number',
@@ -289,13 +271,13 @@ app.layout = html.Div([
                             min = 800,
                             max = 1800,
                             step = 50,
-                            style = {'width': '100px', 'height': '36px', 'vertical-align': 'bottom', 'font-color': 'black'}
+                            style = {'width': '100px', 'height': '36px', 'font-size': '15px', 'vertical-align': 'bottom', 'font-color': 'black'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Upper Deck Height', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Upper Deck Height', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),
                         dbc.Input(
                             id = 'upper-height-input',
                             type = 'number',
@@ -303,13 +285,13 @@ app.layout = html.Div([
                             min = 250,
                             max = 1000,
                             step = 50,
-                            style = {'width': '160px', 'height': '36px', 'vertical-align': 'bottom', 'font-color': 'black'}
+                            style = {'width': '160px', 'height': '36px', 'font-size': '15px', 'vertical-align': 'bottom', 'font-color': 'black'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Lower Deck Height', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Lower Deck Height', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),
                         dbc.Input(
                             id = 'lower-height-input',
                             type = 'number',
@@ -317,7 +299,7 @@ app.layout = html.Div([
                             min = 100,
                             max = 300,
                             step = 50,
-                            style = {'width': '160px', 'height': '36px', 'vertical-align': 'bottom', 'font-color': 'black'}
+                            style = {'width': '160px', 'height': '36px', 'font-size': '15px', 'vertical-align': 'bottom', 'font-color': 'black'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
                     ),
@@ -393,60 +375,60 @@ app.layout = html.Div([
                 children = [
 
                     html.Div([
-                        html.Div('Top DD Number', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),        
+                        html.Div('Top DD Number', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),        
                         dcc.Dropdown(
                             id='drawdowns-number-dropdown',
                             value = 5,
                             clearable = False,
-                            style = {'width': '130px', 'font-color': 'black'}
+                            style = {'width': '130px', 'font-size': '15px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Top DD By', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),        
+                        html.Div('Top DD By', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),        
                         dcc.Dropdown(
                             id='drawdowns-topby-dropdown',
                             options = ['% Depth', 'Total Length'],
                             value = '% Depth',
                             clearable = False,
-                            style = {'width': '130px', 'font-color': 'black'}
+                            style = {'width': '130px', 'font-size': '15px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('DD Display', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),        
+                        html.Div('DD Display', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),        
                         dcc.Dropdown(
                             id='drawdowns-display-dropdown',
                             options = ['Peak To Trough', 'Peak To Recovery'],
                             value = 'Peak To Trough',
                             clearable = False,
-                            style = {'width': '170px', 'font-color': 'black'}
+                            style = {'width': '170px', 'font-size': '15px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('DD Color', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),        
+                        html.Div('DD Color', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),        
                         dcc.Dropdown(
                             id='drawdowns-color-dropdown',
                             options = drawdown_colors,
                             value = 'Red',
                             clearable = False,
-                            style = {'width': '100px', 'font-color': 'black'}
+                            style = {'width': '100px', 'font-size': '15px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Price Color Theme', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),        
+                        html.Div('Price Color Theme', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),        
                         dcc.Dropdown(
                             id='drawdowns-price-color-dropdown',
                             options = overlay_color_themes,
                             value = 'Sapphire',
                             clearable = False,
-                            style = {'width': '150px', 'font-color': 'black'}
+                            style = {'width': '150px', 'font-size': '15px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
                     ),
@@ -522,7 +504,7 @@ app.layout = html.Div([
                 children = [
 
                     html.Div([
-                        html.Div('Target Deck', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),        
+                        html.Div('Target Deck', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),        
                         dcc.Dropdown(
                             id = 'bollinger-deck-dropdown',
                             options = [1],
@@ -530,13 +512,13 @@ app.layout = html.Div([
                             # options = [1, 2],
                             # value = 2,
                             clearable = False,
-                            style = {'width': '100px', 'font-color': 'black'}
+                            style = {'width': '100px', 'font-size': '15px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Window Size', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Window Size', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),
                         dbc.Input(
                             id = 'bollinger-window-input',
                             type = 'number',
@@ -544,13 +526,13 @@ app.layout = html.Div([
                             min = 1,
                             max = 100,
                             step = 1,
-                            style = {'width': '120px', 'height': '36px', 'vertical-align': 'bottom', 'font-color': 'black'}
+                            style = {'width': '120px', 'height': '36px', 'font-size': '15px', 'vertical-align': 'bottom', 'font-color': 'black'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('St Dev Multiplier', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('St Dev Multiplier', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),
                         dbc.Input(
                             id = 'bollinger-nstd-input',
                             type = 'number',
@@ -558,13 +540,13 @@ app.layout = html.Div([
                             min = 0,
                             max = 10,
                             step = 0.1,
-                            style = {'width': '130px', 'height': '36px', 'vertical-align': 'bottom', 'font-color': 'black'}
+                            style = {'width': '130px', 'height': '36px', 'font-size': '15px', 'vertical-align': 'bottom', 'font-color': 'black'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Number Of Bands', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Number Of Bands', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),
                         dbc.Input(
                             id = 'bollinger-nbands-input',
                             type = 'number',
@@ -572,19 +554,19 @@ app.layout = html.Div([
                             min = 1,
                             max = 5,
                             step = 1,
-                            style = {'width': '140px', 'height': '36px', 'vertical-align': 'bottom', 'font-color': 'black'}
+                            style = {'width': '140px', 'height': '36px', 'font-size': '15px', 'vertical-align': 'bottom', 'font-color': 'black'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Color Theme', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),        
+                        html.Div('Color Theme', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),        
                         dcc.Dropdown(
                             id='bollinger-color-theme-dropdown',
                             options = overlay_color_themes,
                             value = 'Grasslands',
                             clearable = False,
-                            style = {'width': '120px', 'font-color': 'black'}
+                            style = {'width': '120px', 'font-size': '15px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
                     ),

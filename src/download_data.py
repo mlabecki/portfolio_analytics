@@ -371,12 +371,18 @@ class DownloadData():
                 # This cleans up the output of https://8marketcap.com/etfs/ (top ETFs),
                 # which contains records with ads
                 df = df.loc[~df['Symbol'].str.contains('Close Ad')]
+                sep = ' - '
+                df['Full Name'] = df['Name']
+                df['Name'] = df['Name'].apply(lambda x: x.split(sep)[1] if sep in x else x)
             
             if ticker_category == 'crypto_etfs':
                 # Remove records where the sort_by column value does not contain a decimal dot, 
                 # e.g. in the output of https://stockanalysis.com/list/crypto-etfs/
                 # sort_by is in cols_final, that's why the columns must be renamed above
                 df = df.loc[df[sort_by].str.contains('\.')]
+                sep = ' - '
+                df['Full Name'] = df['Name']
+                df['Name'] = df['Name'].apply(lambda x: x.split(sep)[1] if sep in x else x)
 
             ### End of custom cleanup
 
@@ -394,7 +400,7 @@ class DownloadData():
             df = df.sort_values(by=sort_by, ascending=False)
             df = df.reset_index(drop=True)
             
-            if ticker_category == 'cryptos':
+            if ticker_category == 'cryptos_coin360':
                 # https://coin360.com/coin
                 # NOTE: Not all tickers may be properly mapped to Yahoo tickers, especially for smaller tickers,
                 # so yf_custom_crypto_tickers should be periodically checked and updated.
@@ -418,7 +424,7 @@ class DownloadData():
                 # Rename columns so 'Symbol' contains YF tickers
                 df = df.rename(columns = {'Symbol': 'Coin360 Symbol', 'YF Symbol': 'Symbol'})
             
-            elif ticker_category == 'cryptos_yf':
+            elif ticker_category == 'cryptos':
                 # https://finance.yahoo.com/markets/crypto/all/?start=0&count=100
                 
                 # The syntax below is to take care of Symbols such as 'R RENDER-USD Render USD'

@@ -63,7 +63,7 @@ url_settings = {
         'sort_by_factor': 1e6,
         'sort_by_type': float
     },
-    'cryptos_yf': {
+    'cryptos': {
         'category_name': 'Cryptos',
         'url': 'https://finance.yahoo.com/markets/crypto/all/?start=0&count=100',
         'cols': ['Symbol', 'Name', 'Market Cap'],
@@ -72,7 +72,7 @@ url_settings = {
         'sort_by_factor': 1e9,
         'sort_by_type': float
     },
-    'cryptos': {
+    'cryptos_coin360': {
         'category_name': 'Cryptos Coin360',
         'url': 'https://coin360.com/coin',
         'cols': ['Symbol', 'Name', 'Market Cap (USD)'],
