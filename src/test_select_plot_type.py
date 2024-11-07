@@ -41,7 +41,7 @@ print(ticker_categories)
 # 'nasdaq100', 'sp500', 'dow_jones', 'biggest_companies',
 # 'biggest_etfs', 'crypto_etfs', 'cryptos_yf', 'cryptos', 'futures'
 
-max_tickers = 100
+max_tickers = 5
 ticker_category = 'crypto_etfs'
 df = hist_data.download_from_url(ticker_category, max_tickers)
 
@@ -56,7 +56,8 @@ for i, tk in enumerate(df['Symbol']):
     yf_tk_hist = yf.Ticker(tk).history(period = 'max')
     if not (yf_tk_hist is None):
         tk_start, tk_end = str(yf_tk_hist.index[0].date()), str(yf_tk_hist.index[-1].date())
-        tk_info = f"{i + 1}. {tk}: {df.loc[i, 'Name']}, {tk_start}-{tk_end}"
+        # tk_info_full = f"{i + 1}. {tk}: {df.loc[i, 'Name']}, {tk_start}, {tk_end}"
+        tk_info = f"{tk}: {df.loc[i, 'Name']}"
         ticker_menu_info.update({tk_info: tk})
         # print(tk_info)
         # print(f"{i + 1}. {tk}:\t\t{df.loc[i, 'Name']}, {tk_start}-{tk_end}")
@@ -178,8 +179,63 @@ deck_types = ['Single', 'Double', 'Triple']
 #################
 # html.Script(src='https://cdn.plot.ly/plotly-latest.min.js')
 
+select_ticker_left_css = {
+    'background-color': 'rgba(0, 126, 255, .08)',
+    'border-top-left-radius': '2px',
+    'border-bottom-left-radius': '2px',
+    'border': '1px solid rgba(0, 126, 255, .24)',
+    'border-right': '0px',
+    'color': '#007eff',
+    'display': 'inline-block',
+    'cursor': 'pointer',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+    'line-height': '1.5',
+    'padding-left': '5px',
+    'padding-right': '5px',
+    'margin-top': '5px',
+    'vertical-align': 'center'
+}
+select_ticker_right_css = {
+    'background-color': 'rgba(0, 126, 255, .08)',
+    'border-top-right-radius': '2px',
+    'border-bottom-right-radius': '2px',
+    'border': '1px solid rgba(0, 126, 255, .24)',
+    'color': '#007eff',
+    'display': 'inline-block',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+    'line-height': '1.5',
+    'padding-left': '5px',
+    'padding-right': '5px',
+    'margin-top': '5px',
+    'vertical-align': 'center'
+}
+
 app.layout = html.Div([
-    
+
+    html.Div([
+            html.Div(html.Span('x'), id = 'select-ticker-icon', style = select_ticker_left_css),
+            html.Div(children = [
+                # html.B(ticker_menu_info[ticker_menu_info_list[0]], id = 'select-ticker-label-tk'),  # ticker corresponding to the first menu item
+                # html.Span(f': {ticker_menu_info_list[0].split(": ")[1]}', id = 'select-ticker-label-name')  # the first menu item
+                html.B(id = 'select-ticker-label-tk'),
+                html.Span(id = 'select-ticker-label-name')
+                ],
+                id = 'select-ticker-label',
+                style = select_ticker_right_css
+            ),
+        ],
+        id = 'select-ticker',
+        hidden = True,
+        style = {
+            # 'width': '400px',
+            'border': '1px solid rgba(0, 126, 255, .24)',
+            'border-radius': '2px',
+            'margin-right': '5px'
+        }
+    ),
+
     ##### BEGIN TEMPLATE CONTROLS
 
     html.Div([
@@ -217,8 +273,10 @@ app.layout = html.Div([
                             # options = tickers,
                             # value = tickers[0],
                             options = ticker_menu_info_list,
-                            value = ticker_menu_info_list[0],
-                            clearable = False,
+                            # value = ticker_menu_info_list[0],
+                            # clearable = False,
+                            clearable = True,
+                            multi = True,
                             # style = {'width': '180px'}
                             style = {'width': '450px', 'font-size': '15px'}
                         )],
@@ -617,11 +675,36 @@ app.layout = html.Div([
     # html.Br(),
     # dcc.Store(id = 'fig_data'),
 
-    html.Div(id = 'fig_div', children = [])
+    html.Div(id = 'fig-div', children = [])
             # [dcc.Graph(id='test-graph', figure = {})],)
 
 ])
 
+@app.callback(
+    Output('select-ticker-label-tk', 'children'),
+    Output('select-ticker-label-name', 'children'),
+    # Output('select-ticker', 'hidden'),
+    Input('tickers-dropdown', 'value'),
+    # State('select-ticker', 'hidden')
+    # Input('select-ticker-icon', 'n_clicks')
+)
+def add_ticker_select(tk_info):
+    tk = ticker_menu_info[tk_info]
+    name = tk_info.split(': ')[1]
+    return tk, f': {name}'
+
+@app.callback(
+    # Output('select-ticker_label', 'children'),
+    Output('select-ticker', 'hidden'),
+    # Input('tickers-dropdown', 'value'),
+    Input('select-ticker-icon', 'n_clicks')
+)
+def remove_ticker_select(n):
+    if n:
+        return True
+    else:
+        return False
+    
 @app.callback(
     Output('collapse-button-template', 'children'),
     Output('collapse-template', 'is_open'),
@@ -697,7 +780,7 @@ def update_drawdowns_number_dropdown(tk_menu_info, dd_number):
     # Output(component_id = 'test-graph', component_property = 'figure'),
     # Output(component_id = 'fig_div', component_property = 'children', allow_duplicate = True),
     # Output(component_id = 'test-graph', component_property = 'figure'),
-    Output(component_id = 'fig_div', component_property = 'children'),
+    Output(component_id = 'fig-div', component_property = 'children'),
     Output(component_id = 'drawdown-controls', component_property = 'style'),
     Output(component_id = 'bollinger-controls', component_property = 'style'),
     Output(component_id = 'template-controls', component_property = 'style'),
