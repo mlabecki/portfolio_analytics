@@ -41,8 +41,8 @@ print(ticker_categories)
 # 'nasdaq100', 'sp500', 'dow_jones', 'biggest_companies',
 # 'biggest_etfs', 'crypto_etfs', 'cryptos_yf', 'cryptos', 'futures'
 
-max_tickers = 5
-ticker_category = 'crypto_etfs'
+max_tickers = 50
+ticker_category = 'futures'
 df = hist_data.download_from_url(ticker_category, max_tickers)
 
 category_name = url_settings[ticker_category]['category_name']
@@ -54,19 +54,34 @@ df_ticker_info = pd.DataFrame(index = df['Symbol'], columns = ['No.', 'Name', 'D
 ticker_menu_info = {}
 for i, tk in enumerate(df['Symbol']):
     yf_tk_hist = yf.Ticker(tk).history(period = 'max')
-    if not (yf_tk_hist is None):
+    yf_tk_info = yf.Ticker(tk).info
+    if len(yf_tk_hist.index) > 0:
         tk_start, tk_end = str(yf_tk_hist.index[0].date()), str(yf_tk_hist.index[-1].date())
         # tk_info_full = f"{i + 1}. {tk}: {df.loc[i, 'Name']}, {tk_start}, {tk_end}"
-        tk_info = f"{tk}: {df.loc[i, 'Name']}"
-        ticker_menu_info.update({tk_info: tk})
+        
         # print(tk_info)
         # print(f"{i + 1}. {tk}:\t\t{df.loc[i, 'Name']}, {tk_start}-{tk_end}")
+
         df_ticker_info.loc[tk, 'No.'] = i + 1
-        df_ticker_info.loc[tk, 'Name'] = df.loc[i, 'Name']
+
+        if 'longName' in yf_tk_info.keys():
+            tk_name = yf_tk_info['longName']
+        elif 'shortName' in yf_tk_info.keys():
+            tk_name = yf_tk_info['shortName']
+        else:
+            tk_name = df.loc[i, 'Name']
+        df_ticker_info.loc[tk, 'Name'] = tk_name
+
         df_ticker_info.loc[tk, 'Data Start'] = tk_start
         df_ticker_info.loc[tk, 'Data End'] = tk_end
+
+        tk_info = f"{tk}: {tk_name}"
+        ticker_menu_info.update({tk_info: tk})
+
     else:
         print(f'SORRY: Cannot get data for {tk}')
+
+df_ticker_info = df_ticker_info.dropna()
 
 print(df_ticker_info)
 print(df_ticker_info['Data End'].min())
@@ -219,7 +234,7 @@ app.layout = html.Div([
             html.Div(children = [
                 # html.B(ticker_menu_info[ticker_menu_info_list[0]], id = 'select-ticker-label-tk'),  # ticker corresponding to the first menu item
                 # html.Span(f': {ticker_menu_info_list[0].split(": ")[1]}', id = 'select-ticker-label-name')  # the first menu item
-                html.B(id = 'select-ticker-label-tk'),
+                html.B(id = 'select-ticker-label-tk', style = {'margin-right': '10px'}),
                 html.Span(id = 'select-ticker-label-name')
                 ],
                 id = 'select-ticker-label',
@@ -273,10 +288,10 @@ app.layout = html.Div([
                             # options = tickers,
                             # value = tickers[0],
                             options = ticker_menu_info_list,
-                            # value = ticker_menu_info_list[0],
-                            # clearable = False,
-                            clearable = True,
-                            multi = True,
+                            value = ticker_menu_info_list[0],
+                            clearable = False,
+                            # clearable = True,
+                            # multi = True,
                             # style = {'width': '180px'}
                             style = {'width': '450px', 'font-size': '15px'}
                         )],
@@ -691,7 +706,7 @@ app.layout = html.Div([
 def add_ticker_select(tk_info):
     tk = ticker_menu_info[tk_info]
     name = tk_info.split(': ')[1]
-    return tk, f': {name}'
+    return tk, name
 
 @app.callback(
     # Output('select-ticker_label', 'children'),
