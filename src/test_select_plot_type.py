@@ -1,5 +1,5 @@
 import dash
-from dash import Dash, dcc, html, Input, Output, State, callback
+from dash import Dash, dcc, html, Input, Output, State, callback, dash_table
 import dash_bootstrap_components as dbc
 
 import yfinance as yf
@@ -41,7 +41,7 @@ print(ticker_categories)
 # 'nasdaq100', 'sp500', 'dow_jones', 'biggest_companies',
 # 'biggest_etfs', 'crypto_etfs', 'cryptos_yf', 'cryptos', 'futures'
 
-max_tickers = 50
+max_tickers = 5
 ticker_category = 'futures'
 df = hist_data.download_from_url(ticker_category, max_tickers)
 
@@ -50,7 +50,9 @@ category_sort_by = url_settings[ticker_category]['sort_by']
 title_prefix = 'Top ' if not ('Biggest' in category_name) else ''
 print(f'\n{title_prefix}{category_name} by {category_sort_by}\n')
 
-df_ticker_info = pd.DataFrame(index = df['Symbol'], columns = ['No.', 'Name', 'Data Start', 'Data End'])
+# df_ticker_info = pd.DataFrame(index = df['Symbol'], columns = ['No.', 'Name', 'Data Start', 'Data End'])
+df_ticker_info = pd.DataFrame(index = df['Symbol'], columns = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End'])
+
 ticker_menu_info = {}
 for i, tk in enumerate(df['Symbol']):
     yf_tk_hist = yf.Ticker(tk).history(period = 'max')
@@ -63,6 +65,7 @@ for i, tk in enumerate(df['Symbol']):
         # print(f"{i + 1}. {tk}:\t\t{df.loc[i, 'Name']}, {tk_start}-{tk_end}")
 
         df_ticker_info.loc[tk, 'No.'] = i + 1
+        df_ticker_info.loc[tk, 'Ticker'] = tk
 
         if 'longName' in yf_tk_info.keys():
             tk_name = yf_tk_info['longName']
@@ -166,9 +169,6 @@ else:
         drawdown_numbers = [x for x in range(n_drawdowns + 1)[1:]]
         portfolio_drawdown_data.update({tk: drawdown_data})
 
-
-app = dash.Dash(__name__, external_stylesheets = [dbc.themes.YETI])     # sharp corners
-
 ##############
 
 drawdown_color = 'red'
@@ -190,6 +190,36 @@ plot_height_2 = 150
 plot_height_3 = 150
 deck_types = ['Single', 'Double', 'Triple']
 
+##############
+
+df_ticker_info.insert(0, ' ', '⬜')
+
+table = html.Div([
+    dash_table.DataTable(
+        columns = [{'name': i, 'id': i} for i in df_ticker_info.columns],
+        data = df_ticker_info.to_dict('records'),
+        editable = False,
+        style_as_list_view = True,
+        # style_data_conditional = [
+        #     {'if': {'state': 'active'},'backgroundColor': 'white', 'border': '1px solid white'},
+        #     {'if': {'column_id': 'Name'}, 'textAlign': 'left', 'text-indent': '10px', 'width': 300},
+        # ],
+        fixed_rows = {'headers': True},
+        id = 'table',
+        style_data = {
+            'font-family': 'Helvetica',
+            'font-size' : '13px',
+            'width': '15px',
+            'background': 'white',
+            'text-align': 'left'
+            # 'text-align': 'center'
+        },
+    )
+])
+
+#################
+
+app = dash.Dash(__name__, external_stylesheets = [dbc.themes.YETI])     # sharp corners
 
 #################
 # html.Script(src='https://cdn.plot.ly/plotly-latest.min.js')
@@ -248,6 +278,15 @@ app.layout = html.Div([
             'border': '1px solid rgba(0, 126, 255, .24)',
             'border-radius': '2px',
             'margin-right': '5px'
+        }
+    ),
+
+    html.Div(
+        table,
+        style = {
+            'width': '300px',
+            'font-family': 'Helvetica',
+            'font-size' : '13px',
         }
     ),
 
