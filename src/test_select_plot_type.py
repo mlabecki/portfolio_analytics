@@ -1,5 +1,6 @@
 import dash
 from dash import Dash, dcc, html, Input, Output, State, callback, dash_table
+from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 
 import yfinance as yf
@@ -41,7 +42,7 @@ print(ticker_categories)
 # 'nasdaq100', 'sp500', 'dow_jones', 'biggest_companies',
 # 'biggest_etfs', 'crypto_etfs', 'cryptos_yf', 'cryptos', 'futures'
 
-max_tickers = 5
+max_tickers = 10
 ticker_category = 'futures'
 df = hist_data.download_from_url(ticker_category, max_tickers)
 
@@ -50,11 +51,14 @@ category_sort_by = url_settings[ticker_category]['sort_by']
 title_prefix = 'Top ' if not ('Biggest' in category_name) else ''
 print(f'\n{title_prefix}{category_name} by {category_sort_by}\n')
 
+# tickers = ['ZF=F', 'GC=F', 'YM=F']
 # df_ticker_info = pd.DataFrame(index = df['Symbol'], columns = ['No.', 'Name', 'Data Start', 'Data End'])
 df_ticker_info = pd.DataFrame(index = df['Symbol'], columns = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End'])
+# df_ticker_info = pd.DataFrame(index = tickers, columns = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End'])
 
 ticker_menu_info = {}
 for i, tk in enumerate(df['Symbol']):
+# for i, tk in enumerate(tickers):
     yf_tk_hist = yf.Ticker(tk).history(period = 'max')
     yf_tk_info = yf.Ticker(tk).info
     if len(yf_tk_hist.index) > 0:
@@ -90,6 +94,7 @@ print(df_ticker_info)
 print(df_ticker_info['Data End'].min())
 
 tickers = list(df['Symbol'])
+
 tk = tickers[0]
 ticker_menu_info_list = list(ticker_menu_info.keys())
 # ticker_names = list(df['Name'])
@@ -321,7 +326,7 @@ app.layout = html.Div([
                 children = [
 
                     html.Div([
-                        html.Div('Ticker', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Ticker', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id='tickers-dropdown',
                             # options = tickers,
@@ -330,15 +335,15 @@ app.layout = html.Div([
                             value = ticker_menu_info_list[0],
                             clearable = False,
                             # clearable = True,
-                            # multi = True,
+                            multi = True,
                             # style = {'width': '180px'}
                             style = {'width': '450px', 'font-size': '15px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Theme', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Theme', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id = 'theme-dropdown',
                             options = ['Dark', 'Light'],
@@ -347,11 +352,11 @@ app.layout = html.Div([
                             clearable = False,
                             style = {'width': '90px', 'font-size': '15px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Deck Type', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Deck Type', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id='deck-type-dropdown',
                             options = deck_types,
@@ -359,11 +364,11 @@ app.layout = html.Div([
                             clearable = False,
                             style = {'width': '110px', 'font-size': '15px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Sec Y', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),        
+                        html.Div('Sec Y', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),        
                         dcc.Dropdown(
                             id='secondary-y-dropdown',
                             options = ['No', 'Yes'],
@@ -371,11 +376,11 @@ app.layout = html.Div([
                             clearable = False,
                             style = {'width': '80px', 'font-size': '15px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Plot Width', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Plot Width', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dbc.Input(
                             id = 'width-input',
                             type = 'number',
@@ -383,13 +388,13 @@ app.layout = html.Div([
                             min = 800,
                             max = 1800,
                             step = 50,
-                            style = {'width': '100px', 'height': '36px', 'font-size': '15px', 'vertical-align': 'bottom', 'font-color': 'black'}
+                            style = {'width': '100px', 'height': '36px', 'font-size': '15px', 'vertical-align': 'top', 'font-color': 'black'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Upper Deck Height', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Upper Deck Height', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px'}),
                         dbc.Input(
                             id = 'upper-height-input',
                             type = 'number',
@@ -397,13 +402,13 @@ app.layout = html.Div([
                             min = 250,
                             max = 1000,
                             step = 50,
-                            style = {'width': '160px', 'height': '36px', 'font-size': '15px', 'vertical-align': 'bottom', 'font-color': 'black'}
+                            style = {'width': '160px', 'height': '36px', 'font-size': '15px', 'vertical-align': 'top', 'font-color': 'black'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Lower Deck Height', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Lower Deck Height', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dbc.Input(
                             id = 'lower-height-input',
                             type = 'number',
@@ -411,15 +416,15 @@ app.layout = html.Div([
                             min = 100,
                             max = 300,
                             step = 50,
-                            style = {'width': '160px', 'height': '36px', 'font-size': '15px', 'vertical-align': 'bottom', 'font-color': 'black'}
+                            style = {'width': '160px', 'height': '36px', 'font-size': '15px', 'vertical-align': 'top', 'font-color': 'black'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     ### ADD RESET AXES BUTTON
 
                     html.Div([
-                        html.Div('_', style = {'color': 'white', 'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('_', style = {'color': 'white', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dbc.Button(
                             'Reset Axes',
                             id = 'reset-axes-template',
@@ -440,7 +445,8 @@ app.layout = html.Div([
                         )],
                         style = {
                             'float': 'right',
-                            'vertical-align': 'bottom',
+                            # 'vertical-align': 'top',
+                            'vertical-align': 'top',
                             'margin-bottom': '0px',
                             'margin-top': 'auto'
                         }
@@ -569,7 +575,7 @@ app.layout = html.Div([
                         )],
                         style = {
                             'float': 'right',
-                            'vertical-align': 'bottom',
+                            'vertical-align': 'top',
                             'margin-bottom': '0px',
                             'margin-top': 'auto'
                         }
@@ -616,7 +622,7 @@ app.layout = html.Div([
                 children = [
 
                     html.Div([
-                        html.Div('Target Deck', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),        
+                        html.Div('Target Deck', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),        
                         dcc.Dropdown(
                             id = 'bollinger-deck-dropdown',
                             options = [1],
@@ -626,11 +632,11 @@ app.layout = html.Div([
                             clearable = False,
                             style = {'width': '100px', 'font-size': '15px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Window Size', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Window Size', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dbc.Input(
                             id = 'bollinger-window-input',
                             type = 'number',
@@ -638,13 +644,13 @@ app.layout = html.Div([
                             min = 1,
                             max = 100,
                             step = 1,
-                            style = {'width': '120px', 'height': '36px', 'font-size': '15px', 'vertical-align': 'bottom', 'font-color': 'black'}
+                            style = {'width': '120px', 'height': '36px', 'font-size': '15px', 'font-color': 'black'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('St Dev Multiplier', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('St Dev Multiplier', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dbc.Input(
                             id = 'bollinger-nstd-input',
                             type = 'number',
@@ -652,13 +658,13 @@ app.layout = html.Div([
                             min = 0,
                             max = 10,
                             step = 0.1,
-                            style = {'width': '130px', 'height': '36px', 'font-size': '15px', 'vertical-align': 'bottom', 'font-color': 'black'}
+                            style = {'width': '130px', 'height': '36px', 'font-size': '15px', 'font-color': 'black'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Number Of Bands', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Number Of Bands', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dbc.Input(
                             id = 'bollinger-nbands-input',
                             type = 'number',
@@ -666,13 +672,13 @@ app.layout = html.Div([
                             min = 1,
                             max = 5,
                             step = 1,
-                            style = {'width': '140px', 'height': '36px', 'font-size': '15px', 'vertical-align': 'bottom', 'font-color': 'black'}
+                            style = {'width': '140px', 'height': '36px', 'font-size': '15px', 'font-color': 'black'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Color Theme', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),        
+                        html.Div('Color Theme', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id='bollinger-color-theme-dropdown',
                             options = overlay_color_themes,
@@ -680,13 +686,13 @@ app.layout = html.Div([
                             clearable = False,
                             style = {'width': '120px', 'font-size': '15px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     ### ADD RESET AXES BUTTON
 
                     html.Div([
-                        html.Div('_', style = {'color': 'white', 'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('_', style = {'color': 'white', 'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dbc.Button(
                             'Reset Axes',
                             id = 'reset-axes-bollinger',
@@ -707,7 +713,8 @@ app.layout = html.Div([
                         )],
                         style = {
                             'float': 'right',
-                            'vertical-align': 'bottom',
+                            # 'vertical-align': 'top',
+                            'vertical-align': 'top', 
                             'margin-bottom': '0px',
                             'margin-top': 'auto'
                         }
@@ -724,7 +731,7 @@ app.layout = html.Div([
 
     ##### END BOLLINGER CONTROLS
 
-    # style = {'display': 'inline-block', 'vertical-align': 'bottom', 'margin-right': '5px', 'font-family': 'Helvetica'}
+    # style = {'display': 'inline-block', 'vertical-align': 'top', 'margin-right': '5px', 'font-family': 'Helvetica'}
   
     # html.Br(),
     # dcc.Store(id = 'fig_data'),
@@ -924,7 +931,7 @@ def update_plot(
 
     drawdown_div_style = {
         'width': width,
-        # 'vertical-align': 'bottom',
+        # 'vertical-align': 'top',
         # 'margin-top': 'auto', 
         # 'margin-bottom': '0px'
     }

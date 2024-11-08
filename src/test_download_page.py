@@ -1,5 +1,6 @@
 import dash
-from dash import Dash, dcc, html, Input, Output, State, callback
+from dash import Dash, dcc, html, Input, Output, State, callback, dash_table
+from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 
 import yfinance as yf
@@ -23,6 +24,8 @@ end_date = datetime.today()
 hist_years, hist_months, hist_days = 1, 0, 0
 start_date = datetime(end_date.year - hist_years, end_date.month - hist_months, end_date.day - hist_days)
 
+deck_types = ['Single', 'Double', 'Triple']
+
 hist_data = DownloadData(end_date, start_date)
 
 # tk_market = '^GSPC'
@@ -44,22 +47,38 @@ category_sort_by = url_settings[ticker_category]['sort_by']
 title_prefix = 'Top ' if not ('Biggest' in category_name) else ''
 print(f'\n{title_prefix}{category_name} by {category_sort_by}\n')
 
-df_ticker_info = pd.DataFrame(index = df['Symbol'], columns = ['No.', 'Name', 'Data Start', 'Data End'])
+df_ticker_info = pd.DataFrame(index = df['Symbol'], columns = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End'])
+
 ticker_menu_info = {}
 for i, tk in enumerate(df['Symbol']):
+    
     yf_tk_hist = yf.Ticker(tk).history(period = 'max')
-    if not (yf_tk_hist is None):
+    yf_tk_info = yf.Ticker(tk).info
+
+    if len(yf_tk_hist.index) > 0:
+
         tk_start, tk_end = str(yf_tk_hist.index[0].date()), str(yf_tk_hist.index[-1].date())
-        tk_info = f"{i + 1}. {tk}: {df.loc[i, 'Name']}, {tk_start}-{tk_end}"
-        ticker_menu_info.update({tk_info: tk})
-        # print(tk_info)
-        # print(f"{i + 1}. {tk}:\t\t{df.loc[i, 'Name']}, {tk_start}-{tk_end}")
+        # tk_info_full = f"{i + 1}. {tk}: {df.loc[i, 'Name']}, {tk_start}, {tk_end}"
+
         df_ticker_info.loc[tk, 'No.'] = i + 1
-        df_ticker_info.loc[tk, 'Name'] = df.loc[i, 'Name']
+        df_ticker_info.loc[tk, 'Ticker'] = tk
+
+        if 'longName' in yf_tk_info.keys():
+            tk_name = yf_tk_info['longName']
+        elif 'shortName' in yf_tk_info.keys():
+            tk_name = yf_tk_info['shortName']
+        else:
+            tk_name = df.loc[i, 'Name']
+        df_ticker_info.loc[tk, 'Name'] = tk_name
+
         df_ticker_info.loc[tk, 'Data Start'] = tk_start
         df_ticker_info.loc[tk, 'Data End'] = tk_end
+
+        tk_info = f"{tk}: {tk_name}"
+        ticker_menu_info.update({tk_info: tk})
+
     else:
-        print(f'SORRY: Cannot get data for {tk}')
+        print(f'WARNING: Cannot get data for {tk} at the moment, try again later')
 
 tickers = list(df['Symbol'])
 tk = tickers[0]
@@ -109,15 +128,118 @@ else:
     if tk_market not in tickers_org:
         tickers = tickers[:-1]  # if added by download_data, tk_market would be in the last position
 
+##############
+
+df_ticker_info.insert(0, ' ', '⬜')
+
+table = html.Div([
+    dash_table.DataTable(
+        columns = [{'name': i, 'id': i} for i in df_ticker_info.columns],
+        data = df_ticker_info.to_dict('records'),
+        editable = False,
+        style_as_list_view = True,
+        # style_data_conditional = [
+        #     {'if': {'state': 'active'},'backgroundColor': 'white', 'border': '1px solid white'},
+        #     {'if': {'column_id': 'Name'}, 'textAlign': 'left', 'text-indent': '10px', 'width': 300},
+        # ],
+        fixed_rows = {'headers': True},
+        id = 'ticker-table',
+        style_header = {
+            'font-family': 'Helvetica',
+            'font-size' : '13px',
+            'font-weight' : 'bold',
+            'width': '15px',
+            'background': 'white',
+            'text-align': 'left'
+            # 'text-align': 'center'
+        },
+        style_data = {
+            'font-family': 'Helvetica',
+            'font-size' : '13px',
+            'width': '15px',
+            'background': 'white',
+            'text-align': 'left'
+            # 'text-align': 'center'
+        },
+    )
+])
+
+
 ###########################################################################################
 
 app = dash.Dash(__name__, external_stylesheets = [dbc.themes.YETI])
 
+select_ticker_left_css = {
+    'background-color': 'rgba(0, 126, 255, .08)',
+    'border-top-left-radius': '2px',
+    'border-bottom-left-radius': '2px',
+    'border': '1px solid rgba(0, 126, 255, .24)',
+    'border-right': '0px',
+    'color': '#007eff',
+    'display': 'inline-block',
+    'cursor': 'pointer',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+    'line-height': '1.5',
+    'padding-left': '5px',
+    'padding-right': '5px',
+    'margin-top': '5px',
+    'vertical-align': 'center'
+}
+select_ticker_right_css = {
+    'background-color': 'rgba(0, 126, 255, .08)',
+    'border-top-right-radius': '2px',
+    'border-bottom-right-radius': '2px',
+    'border': '1px solid rgba(0, 126, 255, .24)',
+    'color': '#007eff',
+    'display': 'inline-block',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+    'line-height': '1.5',
+    'padding-left': '5px',
+    'padding-right': '5px',
+    'margin-top': '5px',
+    'vertical-align': 'center'
+}
+
 app.layout = html.Div([
-    
+
+    html.Div([
+            html.Div(html.Span('x'), id = 'select-ticker-icon', style = select_ticker_left_css),
+            html.Div(children = [
+                # html.B(ticker_menu_info[ticker_menu_info_list[0]], id = 'select-ticker-label-tk'),  # ticker corresponding to the first menu item
+                # html.Span(f': {ticker_menu_info_list[0].split(": ")[1]}', id = 'select-ticker-label-name')  # the first menu item
+                html.B(id = 'select-ticker-label-tk', style = {'margin-right': '10px'}),
+                html.Span(id = 'select-ticker-label-name')
+                ],
+                id = 'select-ticker-label',
+                style = select_ticker_right_css
+            ),
+        ],
+        id = 'select-ticker',
+        hidden = True,
+        style = {
+            # 'width': '400px',
+            'border': '1px solid rgba(0, 126, 255, .24)',
+            'border-radius': '2px',
+            'margin-right': '5px'
+        }
+    ),
+
+    html.Div(
+        table,
+        style = {
+            'width': '500px',
+            'font-family': 'Helvetica',
+            'font-size' : '13px',
+        }
+    ),
+
     ##### BEGIN TEMPLATE CONTROLS
 
     html.Div([
+
+        html.H4(id='ticker-message'),
 
         # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/
         html.Div(
@@ -133,7 +255,7 @@ app.layout = html.Div([
                     'text-align': 'left',
                     'font-family': 'Helvetica',
                     'font-weight': 'bold',
-                    'width': '250px'
+                    'width': '300px'
                 }
             )
         ),
@@ -146,19 +268,24 @@ app.layout = html.Div([
                 children = [
 
                     html.Div([
-                        html.Div('Ticker', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Ticker', style = {'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id='tickers-dropdown',
-                            options = tickers,
-                            value = tickers[0],
-                            clearable = False,
-                            style = {'width': '180px'}
+                            # options = tickers,
+                            # value = tickers[0],
+                            options = ticker_menu_info_list,
+                            # value = ticker_menu_info_list[0],
+                            # clearable = False,
+                            clearable = True,
+                            multi = True,
+                            # style = {'width': '180px'}
+                            style = {'width': '450px', 'font-size': '15px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Theme', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Theme', style = {'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id = 'theme-dropdown',
                             options = ['Dark', 'Light'],
@@ -167,11 +294,11 @@ app.layout = html.Div([
                             clearable = False,
                             style = {'width': '90px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Deck Type', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Deck Type', style = {'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id='deck-type-dropdown',
                             options = deck_types,
@@ -179,11 +306,11 @@ app.layout = html.Div([
                             clearable = False,
                             style = {'width': '110px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Sec Y', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),        
+                        html.Div('Sec Y', style = {'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id='secondary-y-dropdown',
                             options = ['No', 'Yes'],
@@ -191,11 +318,11 @@ app.layout = html.Div([
                             clearable = False,
                             style = {'width': '80px', 'font-color': 'black'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Plot Width', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Plot Width', style = {'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dbc.Input(
                             id = 'width-input',
                             type = 'number',
@@ -203,13 +330,13 @@ app.layout = html.Div([
                             min = 800,
                             max = 1800,
                             step = 50,
-                            style = {'width': '100px', 'height': '36px', 'vertical-align': 'bottom', 'font-color': 'black'}
+                            style = {'width': '100px', 'height': '36px', 'font-color': 'black'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Upper Deck Height', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Upper Deck Height', style = {'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dbc.Input(
                             id = 'upper-height-input',
                             type = 'number',
@@ -217,13 +344,13 @@ app.layout = html.Div([
                             min = 250,
                             max = 1000,
                             step = 50,
-                            style = {'width': '160px', 'height': '36px', 'vertical-align': 'bottom', 'font-color': 'black'}
+                            style = {'width': '160px', 'height': '36px', 'font-color': 'black'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Lower Deck Height', style = {'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('Lower Deck Height', style = {'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dbc.Input(
                             id = 'lower-height-input',
                             type = 'number',
@@ -231,10 +358,11 @@ app.layout = html.Div([
                             min = 100,
                             max = 300,
                             step = 50,
-                            style = {'width': '160px', 'height': '36px', 'vertical-align': 'bottom', 'font-color': 'black'}
+                            style = {'width': '160px', 'height': '36px', 'font-color': 'black'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'bottom', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
+
                 ]  # 'ticker_selection' children
             ),  # html.Div id 'ticker_selection'
                     
@@ -246,6 +374,41 @@ app.layout = html.Div([
 
 
 ])  # app.layout
+
+####################################################################
+
+@app.callback(
+    Output('ticker-message', 'children'),
+    Output('ticker-table', 'data'),
+    Input('ticker-table', 'active_cell'),
+    State('ticker-table', 'data')
+)
+def update_tickers(cell, data):
+    
+    # If there is no selection:
+    if not cell:
+        raise PreventUpdate
+    else:
+        # 3) If the user select a box of the "Select" column:
+        if cell['column_id'] == 'Select':
+            # takes info for some columns in the row selected
+            ticker_selected = data[cell['row']]['Symbol']
+            name_selected = data[cell['row']]['Name']
+            message = f'Selected ticker: {ticker_selected} ({name_selected})'
+            
+            # 4) Change the figure of the box selected
+            if data[cell['row']]['Select'] == '⬜':
+                data[cell['row']]['Select'] = '✅'
+            else:
+                # 5) if the user unselect the selected box:
+                data[cell['row']]['Select'] = '⬜'
+                message = f'Ticker {ticker_selected} ({name_selected}) has been unselected'
+        
+        # if other column is selected do nothing:
+        else:
+             raise PreventUpdate
+
+        return message, data
 
 
 @app.callback(
@@ -262,3 +425,7 @@ def toggle_collapse_tickers(n, is_open):
         return label, not is_open
     else:
         return f'► {title}', is_open
+    
+
+if __name__ == '__main__':
+    app.run_server(debug=True, port=8053)
