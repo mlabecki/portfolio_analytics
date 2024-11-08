@@ -138,10 +138,16 @@ table = html.Div([
         data = df_ticker_info.to_dict('records'),
         editable = False,
         style_as_list_view = True,
-        # style_data_conditional = [
-        #     {'if': {'state': 'active'},'backgroundColor': 'white', 'border': '1px solid white'},
-        #     {'if': {'column_id': 'Name'}, 'textAlign': 'left', 'text-indent': '10px', 'width': 300},
-        # ],
+        style_data_conditional = [
+            # {'if': {'state': 'active'},'backgroundColor': 'white', 'border': '1px solid white'},
+            {'if': {
+                'state': 'active'},
+                'backgroundColor': 'white',
+                'border-top': '1px solid rgb(211, 211, 211)',
+                'border-bottom': '1px solid rgb(211, 211, 211)'},
+            {'if': {'column_id': ' '}, 'cursor': 'pointer'},
+            # {'if': {'column_id': 'Name'}, 'textAlign': 'left', 'text-indent': '10px', 'width': 300},
+        ],
         fixed_rows = {'headers': True},
         id = 'ticker-table',
         style_header = {
@@ -154,11 +160,14 @@ table = html.Div([
             # 'text-align': 'center'
         },
         style_data = {
+            # 'cursor': 'pointer',
             'font-family': 'Helvetica',
             'font-size' : '13px',
             'width': '15px',
             'background': 'white',
-            'text-align': 'left'
+            'text-align': 'left',
+            'border-top': '1px solid rgb(211, 211, 211)',
+            'border-bottom': '1px solid rgb(211, 211, 211)'
             # 'text-align': 'center'
         },
     )
@@ -229,7 +238,7 @@ app.layout = html.Div([
     html.Div(
         table,
         style = {
-            'width': '500px',
+            'width': '550px',
             'font-family': 'Helvetica',
             'font-size' : '13px',
         }
@@ -378,7 +387,7 @@ app.layout = html.Div([
 ####################################################################
 
 @app.callback(
-    Output('ticker-message', 'children'),
+    # Output('ticker-message', 'children'),
     Output('ticker-table', 'data'),
     Input('ticker-table', 'active_cell'),
     State('ticker-table', 'data')
@@ -388,27 +397,28 @@ def update_tickers(cell, data):
     # If there is no selection:
     if not cell:
         raise PreventUpdate
+    
     else:
-        # 3) If the user select a box of the "Select" column:
-        if cell['column_id'] == 'Select':
+        if cell['column_id'] == ' ':
             # takes info for some columns in the row selected
-            ticker_selected = data[cell['row']]['Symbol']
-            name_selected = data[cell['row']]['Name']
-            message = f'Selected ticker: {ticker_selected} ({name_selected})'
+            # ticker_selected = data[cell['row']]['Ticker']
+            # name_selected = data[cell['row']]['Name']
+            # message = f'Selected ticker: {ticker_selected} ({name_selected})'
             
             # 4) Change the figure of the box selected
-            if data[cell['row']]['Select'] == '⬜':
-                data[cell['row']]['Select'] = '✅'
+            if data[cell['row']][' '] == '⬜':
+                data[cell['row']][' '] = '✅'
             else:
                 # 5) if the user unselect the selected box:
-                data[cell['row']]['Select'] = '⬜'
-                message = f'Ticker {ticker_selected} ({name_selected}) has been unselected'
+                data[cell['row']][' '] = '⬜'
+                # message = f'Ticker {ticker_selected} ({name_selected}) has been unselected'
         
         # if other column is selected do nothing:
         else:
              raise PreventUpdate
 
-        return message, data
+        return data
+        # return message, data
 
 
 @app.callback(
