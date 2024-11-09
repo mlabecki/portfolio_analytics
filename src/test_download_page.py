@@ -130,6 +130,39 @@ else:
 
 ##############
 
+select_ticker_left_css = {
+    'background-color': 'rgba(0, 126, 255, .08)',
+    'border-top-left-radius': '2px',
+    'border-bottom-left-radius': '2px',
+    'border': '1px solid rgba(0, 126, 255, .24)',
+    'border-right': '0px',
+    'color': '#007eff',
+    'display': 'inline-block',
+    'cursor': 'pointer',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+    'line-height': '1.5',
+    'padding-left': '5px',
+    'padding-right': '5px',
+    'margin-top': '5px',
+    'vertical-align': 'center'
+}
+select_ticker_right_css = {
+    'background-color': 'rgba(0, 126, 255, .08)',
+    'border-top-right-radius': '2px',
+    'border-bottom-right-radius': '2px',
+    'border': '1px solid rgba(0, 126, 255, .24)',
+    'color': '#007eff',
+    'display': 'inline-block',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+    'line-height': '1.5',
+    'padding-left': '5px',
+    'padding-right': '5px',
+    'margin-top': '5px',
+    'vertical-align': 'center'
+}
+
 table = html.Div([
     dash_table.DataTable(
         columns = [{'name': i, 'id': i} for i in df_ticker_info.columns],
@@ -213,27 +246,38 @@ select_ticker_right_css = {
 
 app.layout = html.Div([
 
-    html.Div([
-            html.Div(html.Span('x'), id = 'select-ticker-icon', style = select_ticker_left_css),
-            html.Div(children = [
-                html.B(ticker_menu_info[ticker_menu_info_list[0]], id = 'select-ticker-label-tk'),  # ticker corresponding to the first menu item
-                html.Span(f': {ticker_menu_info_list[0].split(": ")[1]}', id = 'select-ticker-label-name')  # the first menu item
-                # html.B(id = 'select-ticker-label-tk', style = {'margin-right': '10px'}),
-                # html.Span(id = 'select-ticker-label-name')
-                ],
-                id = 'select-ticker-label',
-                style = select_ticker_right_css
-            ),
+    html.Div(
+
+        id = 'select-ticker-container',
+        hidden = True,
+        children = [
+
+        #     html.Div(
+        #         id = 'select-ticker',
+        #         hidden = False,
+        #         children = [
+        #             html.Div(html.Span('x'), id = 'select-ticker-icon', style = select_ticker_left_css),
+        #             html.Div(children = [
+        #                 # html.B(ticker_menu_info[ticker_menu_info_list[0]], id = 'select-ticker-label-tk'),  # ticker corresponding to the first menu item
+        #                 # html.Span(f': {ticker_menu_info_list[0].split(": ")[1]}', id = 'select-ticker-label-name')  # the first menu item
+        #                 html.B(id = 'select-ticker-label-tk', style = {'margin-right': '8px'}),
+        #                 html.Span(id = 'select-ticker-label-name')
+        #                 ],
+        #                 id = 'select-ticker-label',
+        #                 style = select_ticker_right_css
+        #             )
+        #         ]
+        #     ),
+
         ],
-        id = 'select-ticker',
-        # hidden = True,
-        hidden = False,
         style = {
             # 'width': '400px',
+            'display': 'inline-block',
             'border': '1px solid rgba(0, 126, 255, .24)',
             'border-radius': '2px',
-            'margin-right': '5px',
-            'margin-bottom': '5px'
+            # 'margin-right': '5px',
+            'margin-bottom': '5px',
+            'padding-left': '5px'
         }
     ),
 
@@ -250,7 +294,7 @@ app.layout = html.Div([
 
     html.Div([
 
-        html.H4(id='ticker-message'),
+        html.Div(id = 'ticker-output'),
 
         # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/
         html.Div(
@@ -293,10 +337,10 @@ app.layout = html.Div([
                             # options = tickers,
                             # value = tickers[0],
                             options = ticker_menu_info_list,
-                            # value = ticker_menu_info_list[0],
+                            value = ticker_menu_info_list[0],
                             # clearable = False,
                             clearable = True,
-                            multi = True,
+                            # multi = True,
                             style = {
                                 'width': '450px',
                                 'height': '32px',
@@ -339,29 +383,57 @@ app.layout = html.Div([
 ####################################################################
 
 @app.callback(
-    Output('select-ticker-label-tk', 'children'),
-    Output('select-ticker-label-name', 'children'),
-    # Output('select-ticker', 'hidden'),
-    Input('tickers-dropdown', 'value'),
-    # State('select-ticker', 'hidden')
-    # Input('select-ticker-icon', 'n_clicks')
+    # Output('ticker_output_tk', 'children'),
+    # Output('ticker_output_name', 'children'),
+    # Output('select-ticker-label-tk', 'children'),
+    # Output('select-ticker-label-name', 'children'),
+    Output('select-ticker-container', 'children'),
+    Output('select-ticker-container', 'hidden'),
+    Input('ticker-table', 'data'),
+    Input('ticker-table', 'selected_rows')
 )
-def add_ticker_select(tk_info):
-    tk = ticker_menu_info[tk_info]
-    name = tk_info.split(': ')[1]
-    return tk, name
+def output_ticker_rows(data, rows):
 
-@app.callback(
-    # Output('select-ticker_label', 'children'),
-    Output('select-ticker', 'hidden'),
-    # Input('tickers-dropdown', 'value'),
-    Input('select-ticker-icon', 'n_clicks')
-)
-def remove_ticker_select(n):
-    if n:
-        return True
+    ticker_divs = []
+    if rows == []:
+        hide_ticker_container = True
+        # raise PreventUpdate
+
     else:
-        return False
+        for row_id in rows:
+            tk = data[row_id]['Ticker']
+            name = data[row_id]['Name']
+            tk_div = html.Div(
+                id = f'select-ticker-{tk}',
+                hidden = False,
+                children = [
+                    html.Div(html.Span('x'), id = f'select-ticker-icon-{tk}', style = select_ticker_left_css),
+                    html.Div(children = [
+                        html.B(tk, id = f'select-ticker-label-tk-{tk}', style = {'margin-right': '8px'}),
+                        html.Span(name, id = f'select-ticker-label-name-{tk}')
+                        ],
+                        id = f'select-ticker-label{tk}',
+                        style = select_ticker_right_css
+                    )
+                ],
+                style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px'}
+            )
+            ticker_divs.append(tk_div)
+            hide_ticker_container = False
+
+    return ticker_divs, hide_ticker_container
+
+# @app.callback(
+#     # Output('select-ticker_label', 'children'),
+#     Output('select-ticker', 'hidden'),
+#     # Input('tickers-dropdown', 'value'),
+#     Input('select-ticker-icon', 'n_clicks')
+# )
+# def remove_ticker_select(n):
+#     if n:
+#         return True
+#     else:
+#         return False
 
 
 @app.callback(
