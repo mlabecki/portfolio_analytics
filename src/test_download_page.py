@@ -206,6 +206,17 @@ table = html.Div([
     )
 ])
 
+ticker_div_title = html.Div(
+    'YOUR PORTFOLIO:',
+    style = {
+        'font-family': 'Helvetica',
+        'font-size': '14px',
+        'font-weight': 'bold',
+        'color': 'rgb(0, 126, 255)',
+        'margin-top': '6px',
+        'margin-right': '5px'
+    }
+)
 
 ###########################################################################################
 
@@ -249,35 +260,14 @@ app.layout = html.Div([
     html.Div(
 
         id = 'select-ticker-container',
-        hidden = True,
-        children = [
-
-        #     html.Div(
-        #         id = 'select-ticker',
-        #         hidden = False,
-        #         children = [
-        #             html.Div(html.Span('x'), id = 'select-ticker-icon', style = select_ticker_left_css),
-        #             html.Div(children = [
-        #                 # html.B(ticker_menu_info[ticker_menu_info_list[0]], id = 'select-ticker-label-tk'),  # ticker corresponding to the first menu item
-        #                 # html.Span(f': {ticker_menu_info_list[0].split(": ")[1]}', id = 'select-ticker-label-name')  # the first menu item
-        #                 html.B(id = 'select-ticker-label-tk', style = {'margin-right': '8px'}),
-        #                 html.Span(id = 'select-ticker-label-name')
-        #                 ],
-        #                 id = 'select-ticker-label',
-        #                 style = select_ticker_right_css
-        #             )
-        #         ]
-        #     ),
-
-        ],
+        hidden = False,
+        children = [],
         style = {
-            # 'width': '400px',
             'display': 'inline-block',
             'border': '1px solid rgba(0, 126, 255, .24)',
             'border-radius': '2px',
-            # 'margin-right': '5px',
             'margin-bottom': '5px',
-            'padding-left': '5px'
+            'padding-left': '5px',
         }
     ),
 
@@ -383,10 +373,6 @@ app.layout = html.Div([
 ####################################################################
 
 @app.callback(
-    # Output('ticker_output_tk', 'children'),
-    # Output('ticker_output_name', 'children'),
-    # Output('select-ticker-label-tk', 'children'),
-    # Output('select-ticker-label-name', 'children'),
     Output('select-ticker-container', 'children'),
     Output('select-ticker-container', 'hidden'),
     Input('ticker-table', 'data'),
@@ -394,10 +380,9 @@ app.layout = html.Div([
 )
 def output_ticker_rows(data, rows):
 
-    ticker_divs = []
+    ticker_divs = [ticker_div_title]
     if rows == []:
         hide_ticker_container = True
-        # raise PreventUpdate
 
     else:
         for row_id in rows:
@@ -409,7 +394,7 @@ def output_ticker_rows(data, rows):
                 children = [
                     html.Div(html.Span('x'), id = f'select-ticker-icon-{tk}', style = select_ticker_left_css),
                     html.Div(children = [
-                        html.B(tk, id = f'select-ticker-label-tk-{tk}', style = {'margin-right': '8px'}),
+                        html.B(tk, id = f'select-ticker-label-tk-{tk}', style = {'margin-right': '7px'}),
                         html.Span(name, id = f'select-ticker-label-name-{tk}')
                         ],
                         id = f'select-ticker-label{tk}',
