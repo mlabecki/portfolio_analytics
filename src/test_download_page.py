@@ -130,13 +130,13 @@ else:
 
 ##############
 
-df_ticker_info.insert(0, ' ', '⬜')
-
 table = html.Div([
     dash_table.DataTable(
         columns = [{'name': i, 'id': i} for i in df_ticker_info.columns],
         data = df_ticker_info.to_dict('records'),
         editable = False,
+        row_selectable = 'multi',
+        selected_rows=[],
         style_as_list_view = True,
         style_data_conditional = [
             # {'if': {'state': 'active'},'backgroundColor': 'white', 'border': '1px solid white'},
@@ -152,7 +152,7 @@ table = html.Div([
         id = 'ticker-table',
         style_header = {
             'font-family': 'Helvetica',
-            'font-size' : '13px',
+            'font-size' : '14px',
             'font-weight' : 'bold',
             'width': '15px',
             'background': 'white',
@@ -162,7 +162,7 @@ table = html.Div([
         style_data = {
             # 'cursor': 'pointer',
             'font-family': 'Helvetica',
-            'font-size' : '13px',
+            'font-size' : '14px',
             'width': '15px',
             'background': 'white',
             'text-align': 'left',
@@ -216,31 +216,33 @@ app.layout = html.Div([
     html.Div([
             html.Div(html.Span('x'), id = 'select-ticker-icon', style = select_ticker_left_css),
             html.Div(children = [
-                # html.B(ticker_menu_info[ticker_menu_info_list[0]], id = 'select-ticker-label-tk'),  # ticker corresponding to the first menu item
-                # html.Span(f': {ticker_menu_info_list[0].split(": ")[1]}', id = 'select-ticker-label-name')  # the first menu item
-                html.B(id = 'select-ticker-label-tk', style = {'margin-right': '10px'}),
-                html.Span(id = 'select-ticker-label-name')
+                html.B(ticker_menu_info[ticker_menu_info_list[0]], id = 'select-ticker-label-tk'),  # ticker corresponding to the first menu item
+                html.Span(f': {ticker_menu_info_list[0].split(": ")[1]}', id = 'select-ticker-label-name')  # the first menu item
+                # html.B(id = 'select-ticker-label-tk', style = {'margin-right': '10px'}),
+                # html.Span(id = 'select-ticker-label-name')
                 ],
                 id = 'select-ticker-label',
                 style = select_ticker_right_css
             ),
         ],
         id = 'select-ticker',
-        hidden = True,
+        # hidden = True,
+        hidden = False,
         style = {
             # 'width': '400px',
             'border': '1px solid rgba(0, 126, 255, .24)',
             'border-radius': '2px',
-            'margin-right': '5px'
+            'margin-right': '5px',
+            'margin-bottom': '5px'
         }
     ),
 
     html.Div(
         table,
         style = {
-            'width': '550px',
+            'width': '600px',
             'font-family': 'Helvetica',
-            'font-size' : '13px',
+            'font-size' : '14px',
         }
     ),
 
@@ -277,7 +279,15 @@ app.layout = html.Div([
                 children = [
 
                     html.Div([
-                        html.Div('Ticker', style = {'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        html.Div('Ticker',
+                            style = {
+                                # 'font-family': 'Helvetica',
+                                'font-size': '15px',
+                                'font-weight': 'bold',
+                                'vertical-align': 'top',
+                                'margin-bottom': '0px'
+                            }
+                        ),
                         dcc.Dropdown(
                             id='tickers-dropdown',
                             # options = tickers,
@@ -287,89 +297,31 @@ app.layout = html.Div([
                             # clearable = False,
                             clearable = True,
                             multi = True,
+                            style = {
+                                'width': '450px',
+                                'height': '32px',
+                                # 'display': 'inline-block',
+                                'margin-top': '0px',
+                                'margin-bottom': '0px',
+                                # 'margin-right': '5px',
+                                'vertical-align': 'top',
+                                # 'font-family': 'Helvetica',
+                                'font-size': '14px'
+                            }                            
                             # style = {'width': '180px'}
-                            style = {'width': '450px', 'font-size': '15px'}
+                            # style = {'width': '450px', 'height': '24px', 'font-size': '14px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                    ),
-
-                    html.Div([
-                        html.Div('Theme', style = {'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
-                        dcc.Dropdown(
-                            id = 'theme-dropdown',
-                            options = ['Dark', 'Light'],
-                            value = 'Dark',
-                            disabled = False,
-                            clearable = False,
-                            style = {'width': '90px'}
-                        )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                    ),
-
-                    html.Div([
-                        html.Div('Deck Type', style = {'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
-                        dcc.Dropdown(
-                            id='deck-type-dropdown',
-                            options = deck_types,
-                            value = 'Single',
-                            clearable = False,
-                            style = {'width': '110px'}
-                        )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                    ),
-
-                    html.Div([
-                        html.Div('Sec Y', style = {'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
-                        dcc.Dropdown(
-                            id='secondary-y-dropdown',
-                            options = ['No', 'Yes'],
-                            value = 'No',
-                            clearable = False,
-                            style = {'width': '80px', 'font-color': 'black'}
-                        )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                    ),
-
-                    html.Div([
-                        html.Div('Plot Width', style = {'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
-                        dbc.Input(
-                            id = 'width-input',
-                            type = 'number',
-                            value = 1450,
-                            min = 800,
-                            max = 1800,
-                            step = 50,
-                            style = {'width': '100px', 'height': '36px', 'font-color': 'black'}
-                        )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                    ),
-
-                    html.Div([
-                        html.Div('Upper Deck Height', style = {'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
-                        dbc.Input(
-                            id = 'upper-height-input',
-                            type = 'number',
-                            value = 750,
-                            min = 250,
-                            max = 1000,
-                            step = 50,
-                            style = {'width': '160px', 'height': '36px', 'font-color': 'black'}
-                        )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                    ),
-
-                    html.Div([
-                        html.Div('Lower Deck Height', style = {'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
-                        dbc.Input(
-                            id = 'lower-height-input',
-                            type = 'number',
-                            value = 150,
-                            min = 100,
-                            max = 300,
-                            step = 50,
-                            style = {'width': '160px', 'height': '36px', 'font-color': 'black'}
-                        )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                        style = {
+                            'width': '450px',
+                            # 'height': '32px',
+                            'display': 'inline-block',
+                            # 'margin-top': '0px',
+                            # 'margin-bottom': '0px',
+                            'margin-right': '5px',
+                            # 'vertical-align': 'top',
+                            'font-family': 'Helvetica',
+                            # 'font-size': '14px'
+                        }
                     ),
 
                 ]  # 'ticker_selection' children
@@ -387,38 +339,29 @@ app.layout = html.Div([
 ####################################################################
 
 @app.callback(
-    # Output('ticker-message', 'children'),
-    Output('ticker-table', 'data'),
-    Input('ticker-table', 'active_cell'),
-    State('ticker-table', 'data')
+    Output('select-ticker-label-tk', 'children'),
+    Output('select-ticker-label-name', 'children'),
+    # Output('select-ticker', 'hidden'),
+    Input('tickers-dropdown', 'value'),
+    # State('select-ticker', 'hidden')
+    # Input('select-ticker-icon', 'n_clicks')
 )
-def update_tickers(cell, data):
-    
-    # If there is no selection:
-    if not cell:
-        raise PreventUpdate
-    
-    else:
-        if cell['column_id'] == ' ':
-            # takes info for some columns in the row selected
-            # ticker_selected = data[cell['row']]['Ticker']
-            # name_selected = data[cell['row']]['Name']
-            # message = f'Selected ticker: {ticker_selected} ({name_selected})'
-            
-            # 4) Change the figure of the box selected
-            if data[cell['row']][' '] == '⬜':
-                data[cell['row']][' '] = '✅'
-            else:
-                # 5) if the user unselect the selected box:
-                data[cell['row']][' '] = '⬜'
-                # message = f'Ticker {ticker_selected} ({name_selected}) has been unselected'
-        
-        # if other column is selected do nothing:
-        else:
-             raise PreventUpdate
+def add_ticker_select(tk_info):
+    tk = ticker_menu_info[tk_info]
+    name = tk_info.split(': ')[1]
+    return tk, name
 
-        return data
-        # return message, data
+@app.callback(
+    # Output('select-ticker_label', 'children'),
+    Output('select-ticker', 'hidden'),
+    # Input('tickers-dropdown', 'value'),
+    Input('select-ticker-icon', 'n_clicks')
+)
+def remove_ticker_select(n):
+    if n:
+        return True
+    else:
+        return False
 
 
 @app.callback(

@@ -205,18 +205,36 @@ table = html.Div([
         data = df_ticker_info.to_dict('records'),
         editable = False,
         style_as_list_view = True,
-        # style_data_conditional = [
-        #     {'if': {'state': 'active'},'backgroundColor': 'white', 'border': '1px solid white'},
-        #     {'if': {'column_id': 'Name'}, 'textAlign': 'left', 'text-indent': '10px', 'width': 300},
-        # ],
+        style_data_conditional = [
+            # {'if': {'state': 'active'},'backgroundColor': 'white', 'border': '1px solid white'},
+            {'if': {
+                'state': 'active'},
+                'backgroundColor': 'white',
+                'border-top': '1px solid rgb(211, 211, 211)',
+                'border-bottom': '1px solid rgb(211, 211, 211)'},
+            {'if': {'column_id': ' '}, 'cursor': 'pointer'},
+            # {'if': {'column_id': 'Name'}, 'textAlign': 'left', 'text-indent': '10px', 'width': 300},
+        ],
         fixed_rows = {'headers': True},
-        id = 'table',
+        id = 'ticker-table',
+        style_header = {
+            'font-family': 'Helvetica',
+            'font-size' : '13px',
+            'font-weight' : 'bold',
+            'width': '15px',
+            'background': 'white',
+            'text-align': 'left'
+            # 'text-align': 'center'
+        },
         style_data = {
+            # 'cursor': 'pointer',
             'font-family': 'Helvetica',
             'font-size' : '13px',
             'width': '15px',
             'background': 'white',
-            'text-align': 'left'
+            'text-align': 'left',
+            'border-top': '1px solid rgb(211, 211, 211)',
+            'border-bottom': '1px solid rgb(211, 211, 211)'
             # 'text-align': 'center'
         },
     )
@@ -289,7 +307,7 @@ app.layout = html.Div([
     html.Div(
         table,
         style = {
-            'width': '300px',
+            'width': '550px',
             'font-family': 'Helvetica',
             'font-size' : '13px',
         }
@@ -335,9 +353,9 @@ app.layout = html.Div([
                             value = ticker_menu_info_list[0],
                             clearable = False,
                             # clearable = True,
-                            multi = True,
+                            # multi = True,
                             # style = {'width': '180px'}
-                            style = {'width': '450px', 'font-size': '15px'}
+                            style = {'width': '450px', 'font-size': '15px', 'border-radius': '5px', 'vertical-align': 'top', 'margin-bottom': '0px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -350,7 +368,7 @@ app.layout = html.Div([
                             value = 'Dark',
                             disabled = False,
                             clearable = False,
-                            style = {'width': '90px', 'font-size': '15px'}
+                            style = {'width': '90px', 'font-size': '15px', 'border-radius': '5px', 'vertical-align': 'top', 'margin-bottom': '0px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -361,8 +379,8 @@ app.layout = html.Div([
                             id='deck-type-dropdown',
                             options = deck_types,
                             value = 'Single',
-                            clearable = False,
-                            style = {'width': '110px', 'font-size': '15px'}
+                            clearable = False, 
+                            style = {'width': '110px', 'font-size': '15px', 'border-radius': '5px', 'vertical-align': 'top', 'margin-bottom': '0px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -374,7 +392,7 @@ app.layout = html.Div([
                             options = ['No', 'Yes'],
                             value = 'No',
                             clearable = False,
-                            style = {'width': '80px', 'font-size': '15px'}
+                            style = {'width': '80px', 'font-size': '15px', 'border-radius': '5px', 'vertical-align': 'top', 'margin-bottom': '0px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -388,7 +406,7 @@ app.layout = html.Div([
                             min = 800,
                             max = 1800,
                             step = 50,
-                            style = {'width': '100px', 'height': '36px', 'font-size': '15px', 'vertical-align': 'top', 'font-color': 'black'}
+                            style = {'width': '100px', 'height': '36px', 'font-size': '15px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'vertical-align': 'top'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -402,9 +420,9 @@ app.layout = html.Div([
                             min = 250,
                             max = 1000,
                             step = 50,
-                            style = {'width': '160px', 'height': '36px', 'font-size': '15px', 'vertical-align': 'top', 'font-color': 'black'}
+                            style = {'width': '160px', 'height': '36px', 'font-size': '15px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'vertical-align': 'top'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'border-radius': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
@@ -416,7 +434,7 @@ app.layout = html.Div([
                             min = 100,
                             max = 300,
                             step = 50,
-                            style = {'width': '160px', 'height': '36px', 'font-size': '15px', 'vertical-align': 'top', 'font-color': 'black'}
+                            style = {'width': '160px', 'height': '36px', 'font-size': '15px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'vertical-align': 'top', 'font-color': 'black'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -434,7 +452,9 @@ app.layout = html.Div([
                             size = 'sm',
                             style = {
                                 'display': 'inline-block',
-                                'height': '37px',
+                                'height': '36px',
+                                'border-color': 'rgb(192, 192, 192)', 
+                                'border-radius': '5px',
                                 'margin-bottom': '0px',
                                 'margin-top': 'auto',
                                 'text-align': 'center',
@@ -445,7 +465,6 @@ app.layout = html.Div([
                         )],
                         style = {
                             'float': 'right',
-                            # 'vertical-align': 'top',
                             'vertical-align': 'top',
                             'margin-bottom': '0px',
                             'margin-top': 'auto'
@@ -493,18 +512,20 @@ app.layout = html.Div([
                 children = [
 
                     html.Div([
-                        html.Div('Top DD Number', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),        
-                        dcc.Dropdown(
-                            id='drawdowns-number-dropdown',
+                        html.Div('Top DD Number', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dbc.Input(
+                            id='drawdowns-number-input',
+                            type = 'number',
                             value = 5,
-                            clearable = False,
-                            style = {'width': '130px', 'font-size': '15px'}
+                            min = 1,
+                            step = 1,
+                            style = {'width': '130px', 'height': '36px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'font-size': '15px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Top DD By', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),        
+                        html.Div('Top DD By', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id='drawdowns-topby-dropdown',
                             options = ['% Depth', 'Total Length'],
@@ -512,11 +533,11 @@ app.layout = html.Div([
                             clearable = False,
                             style = {'width': '130px', 'font-size': '15px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('DD Display', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),        
+                        html.Div('DD Display', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id='drawdowns-display-dropdown',
                             options = ['Peak To Trough', 'Peak To Recovery'],
@@ -524,11 +545,11 @@ app.layout = html.Div([
                             clearable = False,
                             style = {'width': '170px', 'font-size': '15px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('DD Color', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),        
+                        html.Div('DD Color', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id='drawdowns-color-dropdown',
                             options = drawdown_colors,
@@ -536,11 +557,11 @@ app.layout = html.Div([
                             clearable = False,
                             style = {'width': '100px', 'font-size': '15px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Price Color Theme', style = {'font-size': '15px', 'font-weight': 'bold', 'margin-bottom': '0px'}),        
+                        html.Div('Price Color Theme', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id='drawdowns-price-color-dropdown',
                             options = overlay_color_themes,
@@ -548,13 +569,13 @@ app.layout = html.Div([
                             clearable = False,
                             style = {'width': '150px', 'font-size': '15px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     ### ADD RESET AXES BUTTON
 
                     html.Div([
-                        html.Div('_', style = {'color': 'white', 'font-weight': 'bold', 'margin-bottom': '0px'}),
+                        html.Div('_', style = {'color': 'white', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dbc.Button(
                             'Reset Axes',
                             id = 'reset-axes-drawdowns',
@@ -564,7 +585,9 @@ app.layout = html.Div([
                             size = 'sm',
                             style = {
                                 'display': 'inline-block',
-                                'height': '37px',
+                                'height': '36px',
+                                'border-color': 'rgb(192, 192, 192)',
+                                'border-radius': '5px',
                                 'margin-bottom': '0px',
                                 'margin-top': 'auto',
                                 'text-align': 'center',
@@ -644,7 +667,7 @@ app.layout = html.Div([
                             min = 1,
                             max = 100,
                             step = 1,
-                            style = {'width': '120px', 'height': '36px', 'font-size': '15px', 'font-color': 'black'}
+                            style = {'width': '120px', 'height': '36px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'font-size': '15px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -658,7 +681,7 @@ app.layout = html.Div([
                             min = 0,
                             max = 10,
                             step = 0.1,
-                            style = {'width': '130px', 'height': '36px', 'font-size': '15px', 'font-color': 'black'}
+                            style = {'width': '130px', 'height': '36px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'font-size': '15px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -672,7 +695,7 @@ app.layout = html.Div([
                             min = 1,
                             max = 5,
                             step = 1,
-                            style = {'width': '140px', 'height': '36px', 'font-size': '15px', 'font-color': 'black'}
+                            style = {'width': '140px', 'height': '36px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'font-size': '15px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -702,7 +725,9 @@ app.layout = html.Div([
                             size = 'sm',
                             style = {
                                 'display': 'inline-block',
-                                'height': '37px',
+                                'height': '36px',
+                                'border-color': 'rgb(192, 192, 192)',                                
+                                'border-radius': '5px',
                                 'margin-bottom': '0px',
                                 'margin-top': 'auto',
                                 'text-align': 'center',
@@ -824,17 +849,20 @@ def toggle_collapse_bollinger(n, is_open):
         return f'► {title}', is_open
 
 @app.callback(
-    Output(component_id = 'drawdowns-number-dropdown', component_property = 'options'),
-    Output(component_id = 'drawdowns-number-dropdown', component_property = 'value'),
+    # Output(component_id = 'drawdowns-number-dropdown', component_property = 'options'),
+    # Output(component_id = 'drawdowns-number-dropdown', component_property = 'value'),
+    Output(component_id = 'drawdowns-number-input', component_property = 'max'),
+    Output(component_id = 'drawdowns-number-input', component_property = 'value'),
     Input(component_id = 'tickers-dropdown', component_property = 'value'),
-    Input(component_id = 'drawdowns-number-dropdown', component_property = 'value')
+    Input(component_id = 'drawdowns-number-input', component_property = 'value')
 )
 def update_drawdowns_number_dropdown(tk_menu_info, dd_number):
     tk = ticker_menu_info[tk_menu_info]
     n_drawdowns = portfolio_drawdown_data[tk]['Total Drawdowns']
-    dd_number_options = [x for x in range(n_drawdowns + 1)][1:]
+    # dd_number_options = [x for x in range(n_drawdowns + 1)][1:]
     dd_number_value = min(dd_number, n_drawdowns)
-    return dd_number_options, dd_number_value
+    return n_drawdowns, dd_number_value
+    # return dd_number_options, dd_number_value
 
 @app.callback(
 
@@ -860,7 +888,7 @@ def update_drawdowns_number_dropdown(tk_menu_info, dd_number):
     Input(component_id = 'lower-height-input', component_property = 'value'),
     
     # drawdowns options
-    Input(component_id = 'drawdowns-number-dropdown', component_property = 'value'),
+    Input(component_id = 'drawdowns-number-input', component_property = 'value'),
     Input(component_id = 'drawdowns-topby-dropdown', component_property = 'value'),
     Input(component_id = 'drawdowns-display-dropdown', component_property = 'value'),
     Input(component_id = 'drawdowns-color-dropdown', component_property = 'value'),
