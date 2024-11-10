@@ -38,7 +38,7 @@ print(ticker_categories)
 # 'nasdaq100', 'sp500', 'dow_jones', 'biggest_companies',
 # 'biggest_etfs', 'crypto_etfs', 'cryptos_yf', 'cryptos', 'futures'
 
-max_tickers = 10
+max_tickers = 5
 ticker_category = 'crypto_etfs'
 df = hist_data.download_from_url(ticker_category, max_tickers)
 
@@ -257,11 +257,14 @@ select_ticker_right_css = {
 
 app.layout = html.Div([
 
-    html.Div(
+    html.Div(id = 'ticker-output', style = {'font-size' : '14px'}),
 
+    html.Div(id = 'select-ticker-list', hidden = True),
+
+    html.Div(
+        children = [],
         id = 'select-ticker-container',
         hidden = False,
-        children = [],
         style = {
             'display': 'inline-block',
             'border': '1px solid rgba(0, 126, 255, .24)',
@@ -273,6 +276,7 @@ app.layout = html.Div([
 
     html.Div(
         table,
+        id = 'data-table-container',
         style = {
             'width': '600px',
             'font-family': 'Helvetica',
@@ -283,8 +287,6 @@ app.layout = html.Div([
     ##### BEGIN TEMPLATE CONTROLS
 
     html.Div([
-
-        html.Div(id = 'ticker-output'),
 
         # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/
         html.Div(
@@ -375,38 +377,97 @@ app.layout = html.Div([
 @app.callback(
     Output('select-ticker-container', 'children'),
     Output('select-ticker-container', 'hidden'),
+    Output('ticker-table', 'selected_rows'),
+    Output('ticker-output', 'children'),
     Input('ticker-table', 'data'),
-    Input('ticker-table', 'selected_rows')
+    Input('ticker-table', 'selected_rows'),
+    # Input('select-ticker-list', 'children')  -- This would create a circular reference
+    # Input('select-ticker-container', 'children')
 )
 def output_ticker_rows(data, rows):
 
-    ticker_divs = [ticker_div_title]
+    ctx = dash.callback_context
+    if ctx.triggered:
+        # trig_id = ctx.triggered[0]['prop_id'].split('.')[0]
+        trig_id = ctx.triggered_id
+    else:
+        trig_id = 'Nothing triggered'
+
+    ticker_divs = [ticker_div_title] # if ticker_divs == [] else ticker_divs
+
+    # trig_id = ctx.triggered_id
+
     if rows == []:
         hide_ticker_container = True
 
     else:
         for row_id in rows:
-            tk = data[row_id]['Ticker']
-            name = data[row_id]['Name']
-            tk_div = html.Div(
-                id = f'select-ticker-{tk}',
-                hidden = False,
-                children = [
-                    html.Div(html.Span('x'), id = f'select-ticker-icon-{tk}', style = select_ticker_left_css),
-                    html.Div(children = [
-                        html.B(tk, id = f'select-ticker-label-tk-{tk}', style = {'margin-right': '7px'}),
-                        html.Span(name, id = f'select-ticker-label-name-{tk}')
-                        ],
-                        id = f'select-ticker-label{tk}',
-                        style = select_ticker_right_css
-                    )
-                ],
-                style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px'}
-            )
-            ticker_divs.append(tk_div)
-            hide_ticker_container = False
 
-    return ticker_divs, hide_ticker_container
+            tk = data[row_id]['Ticker']
+            tk_id = f'select-ticker-{tk}'
+            tk_icon_id = f'select-ticker-icon-{tk}'
+
+            if (tk_icon_id != trig_id): # & (trig_id not in ticker_ids):
+                name = data[row_id]['Name']
+                tk_div = html.Div(
+                    id = tk_id,
+                    hidden = False,
+                    children = [
+                        html.Div('x', id = tk_icon_id, style = select_ticker_left_css),
+                        html.Div(children = [
+                            html.B(tk, id = f'select-ticker-label-tk-{tk}', style = {'margin-right': '6px'}),
+                            html.Span(name, id = f'select-ticker-label-name-{tk}')
+                            ],
+                            id = f'select-ticker-label-{tk}',
+                            style = select_ticker_right_css
+                        )
+                    ],
+                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px'}
+                )
+                ticker_divs.append(tk_div)
+
+            else:
+                rows.remove(row_id)
+
+        hide_ticker_container = True if len(ticker_divs) == 1 else False
+
+    n_tk_div = len(ticker_divs) - 1
+    # for k in range(1, n_tk_div):
+    #     print(f"END\n{ticker_divs[k]['props']['children'][0]['props']['id']}")
+    
+    # trig_id = ticker_divs[n_tk_div]  # ['props']['children']
+    # trig_id = str(ctx.inputs_list[n_tk_div]['value'][-1]['props']['children'][0]['props']['id']) if n_tk_div > 1 else 'Nothing'
+    ####### trig_id = str(ctx.inputs_list[-1]['value'][-1]['props']['children'][0]['props']['id']) if n_tk_div > 1 else 'Nothing'
+    # trig_id = str(ctx.inputs_list)
+
+    # print(app.callback_map)
+
+    return ticker_divs, hide_ticker_container, rows, trig_id
+
+# 
+# @app.callback(
+# 
+#     # Output('ticker-table', 'selected_rows'),
+#     Output('ticker-output', 'children'),
+#     [Input(f'select-ticker-icon-{tk}', 'n_clicks') for tk in tickers]
+#     # [Input(tk_id, 'n_clicks') for tk_id in Input('select-ticker-list', 'children')]
+# )
+# def update_selected_tickers([tk_id for tk_id in get_selected_tickers(_)]):
+#     
+#     return
+
+# @app.callback(
+#     Output('select-ticker-list', 'children'),
+#     Input('select-ticker-container', 'children')
+#     # Input('select-ticker-icon', 'n_clicks')
+# )
+# def get_selected_tickers(ticker_divs):
+#     ctx = dash.callback_context
+#     n_tk_div = len(ticker_divs) - 1
+#     tk_div_list = []
+#     for k in range(1, n_tk_div):
+#         tk_div_list.append(ctx.inputs_list[k]['value'][-1]['props']['children'][0]['props']['id'])
+#     return tk_div_list
 
 # @app.callback(
 #     # Output('select-ticker_label', 'children'),
