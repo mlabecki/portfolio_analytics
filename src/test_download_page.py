@@ -80,6 +80,8 @@ for i, tk in enumerate(df['Symbol']):
     else:
         print(f'WARNING: Cannot get data for {tk} at the moment, try again later')
 
+ticker_names = pd.Series(index = df_ticker_info.index, data = df_ticker_info['Name'])
+
 tickers = list(df['Symbol'])
 tk = tickers[0]
 ticker_menu_info_list = list(ticker_menu_info.keys())
@@ -89,9 +91,6 @@ print(f'tickers_org = {tickers_org}')
 
 # We don't want the benchmark ticker in the app menus at this point (for example, 
 # the drawdown data will not generated) unless tk_market is explicitly selected.
-
-if tk_market not in tickers_org:
-    tickers = tickers[:-1]  # if added by download_data, tk_market would be in the last position
 
 downloaded_data = hist_data.download_yh_data(start_date, end_date, tickers, tk_market)
 error_msg = downloaded_data['error_msg']
@@ -128,6 +127,8 @@ else:
     if tk_market not in tickers_org:
         tickers = tickers[:-1]  # if added by download_data, tk_market would be in the last position
 
+    print(tickers)
+
 ##############
 
 select_ticker_left_css = {
@@ -162,6 +163,35 @@ select_ticker_right_css = {
     'margin-top': '5px',
     'vertical-align': 'center'
 }
+
+def create_ticker_divs(ticker_names: pd.Series):
+
+    ticker_divs = []
+    for tk in ticker_names.index:
+        name = ticker_names[tk]
+        tk_id = f'select-ticker-{tk}'
+        tk_icon_id = f'select-ticker-icon-{tk}'
+        tk_div = html.Div(
+            id = tk_id,
+            hidden = True,
+            children = [
+                html.Div('x', id = tk_icon_id, n_clicks = 0, style = select_ticker_left_css),
+                html.Div(children = [
+                    html.B(tk, id = f'select-ticker-label-tk-{tk}', style = {'margin-right': '6px'}),
+                    html.Span(name, id = f'select-ticker-label-name-{tk}')
+                    ],
+                    id = f'select-ticker-label-{tk}',
+                    style = select_ticker_right_css
+                )
+            ],
+            style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px'}
+        )
+        ticker_divs.append(tk_div)
+
+    return ticker_divs
+
+
+ticker_divs = create_ticker_divs(ticker_names)
 
 table = html.Div([
     dash_table.DataTable(
@@ -262,7 +292,7 @@ app.layout = html.Div([
     html.Div(id = 'select-ticker-list', hidden = True),
 
     html.Div(
-        children = [],
+        ticker_divs,
         id = 'select-ticker-container',
         hidden = False,
         style = {
@@ -378,13 +408,14 @@ app.layout = html.Div([
     Output('select-ticker-container', 'children'),
     Output('select-ticker-container', 'hidden'),
     Output('ticker-table', 'selected_rows'),
-    Output('ticker-output', 'children'),
+    # Output('ticker-output', 'children'),
     Input('ticker-table', 'data'),
     Input('ticker-table', 'selected_rows'),
-    # Input('select-ticker-list', 'children')  -- This would create a circular reference
+    Input('select-ticker-list', 'children')  # This might create a circular reference
     # Input('select-ticker-container', 'children')
+    # suppress_callback_exceptions = True
 )
-def output_ticker_rows(data, rows):
+def output_ticker_rows(data, rows, removed_tk):
 
     ctx = dash.callback_context
     if ctx.triggered:
@@ -394,67 +425,93 @@ def output_ticker_rows(data, rows):
         trig_id = 'Nothing triggered'
 
     ticker_divs = [ticker_div_title] # if ticker_divs == [] else ticker_divs
+    ticker_divs_visible = [ticker_div_title]
 
-    # trig_id = ctx.triggered_id
+    tickers_to_remove = removed_tk
+    
+    hide_ticker_container = False
 
     if rows == []:
         hide_ticker_container = True
 
     else:
-        for row_id in rows:
+        # for row_id in rows:
+        for row_id in range(len(data)):  # All rows
 
             tk = data[row_id]['Ticker']
             tk_id = f'select-ticker-{tk}'
             tk_icon_id = f'select-ticker-icon-{tk}'
 
-            if (tk_icon_id != trig_id): # & (trig_id not in ticker_ids):
-                name = data[row_id]['Name']
-                tk_div = html.Div(
-                    id = tk_id,
-                    hidden = False,
-                    children = [
-                        html.Div('x', id = tk_icon_id, style = select_ticker_left_css),
-                        html.Div(children = [
-                            html.B(tk, id = f'select-ticker-label-tk-{tk}', style = {'margin-right': '6px'}),
-                            html.Span(name, id = f'select-ticker-label-name-{tk}')
-                            ],
-                            id = f'select-ticker-label-{tk}',
-                            style = select_ticker_right_css
-                        )
-                    ],
-                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px'}
-                )
-                ticker_divs.append(tk_div)
-
+            if tk_icon_id in removed_tk:
+                is_hidden = True
+                if row_id in rows:
+                    rows.remove(row_id)
             else:
-                rows.remove(row_id)
+                if row_id in rows:
+                    is_hidden = False
+                else:
+                    is_hidden = True
 
-        hide_ticker_container = True if len(ticker_divs) == 1 else False
+            name = data[row_id]['Name']
+            tk_div = html.Div(
+                id = tk_id,
+                hidden = is_hidden,
+                children = [
+                    html.Div('x', id = tk_icon_id, n_clicks = 0, style = select_ticker_left_css),
+                    html.Div(children = [
+                        html.B(tk, id = f'select-ticker-label-tk-{tk}', style = {'margin-right': '6px'}),
+                        html.Span(name, id = f'select-ticker-label-name-{tk}')
+                        ],
+                        id = f'select-ticker-label-{tk}',
+                        style = select_ticker_right_css
+                    )
+                ],
+                style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px'}
+            )
+            ticker_divs.append(tk_div)
+            if row_id in rows:
+                ticker_divs_visible.append(tk_div)
 
-    n_tk_div = len(ticker_divs) - 1
+        hide_ticker_container = True if len(ticker_divs_visible) == 1 else False
+
+    # n_tk_div = len(ticker_divs) - 1
     # for k in range(1, n_tk_div):
     #     print(f"END\n{ticker_divs[k]['props']['children'][0]['props']['id']}")
     
     # trig_id = ticker_divs[n_tk_div]  # ['props']['children']
     # trig_id = str(ctx.inputs_list[n_tk_div]['value'][-1]['props']['children'][0]['props']['id']) if n_tk_div > 1 else 'Nothing'
-    ####### trig_id = str(ctx.inputs_list[-1]['value'][-1]['props']['children'][0]['props']['id']) if n_tk_div > 1 else 'Nothing'
-    # trig_id = str(ctx.inputs_list)
+    # trig_id = str(ctx.inputs_list[-1]['value'][-1]['props']['children'][0]['props']['id']) if n_tk_div > 1 else 'Nothing'
+    trig_id = str(ctx.inputs_list)
 
     # print(app.callback_map)
 
-    return ticker_divs, hide_ticker_container, rows, trig_id
+    return ticker_divs, hide_ticker_container, rows  #, trig_id
+    # return hide_ticker_container, rows  #, trig_id
 
-# 
-# @app.callback(
-# 
-#     # Output('ticker-table', 'selected_rows'),
-#     Output('ticker-output', 'children'),
-#     [Input(f'select-ticker-icon-{tk}', 'n_clicks') for tk in tickers]
-#     # [Input(tk_id, 'n_clicks') for tk_id in Input('select-ticker-list', 'children')]
-# )
-# def update_selected_tickers([tk_id for tk_id in get_selected_tickers(_)]):
-#     
-#     return
+
+@app.callback(
+    # Output('ticker-table', 'selected_rows'),
+    # Output('ticker-output', 'children'),
+    Output('select-ticker-list', 'children'),
+    [Input(f'select-ticker-icon-{tk}', 'n_clicks') for tk in tickers],
+    # suppress_callback_exceptions = True
+    # [Input(tk_id, 'n_clicks') for tk_id in Input('select-ticker-list', 'children')]
+)
+def update_selected_tickers(*args):
+    if args:
+        ctx = dash.callback_context
+        if ctx.triggered:
+            # trig_id_list = [ctx.triggered_id]
+            trig_value_list = [ctx.triggered[k] for k in range(len(ctx.triggered))]
+            trig_id_list = [ctx.triggered[k]['prop_id'].split('.')[0] for k in range(len(ctx.triggered)) if ctx.triggered[k]['value']]
+            # return f'{trig_id}, args = {args}'
+            return trig_id_list
+        else:
+            return []
+            # return f'Not triggered, args = {args}'
+    else: 
+        return []
+        # return 'No args'
 
 # @app.callback(
 #     Output('select-ticker-list', 'children'),
