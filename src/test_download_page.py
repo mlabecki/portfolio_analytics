@@ -1,5 +1,5 @@
 import dash
-from dash import Dash, dcc, html, Input, Output, State, callback, dash_table
+from dash import Dash, dcc, html, Input, Output, State, callback, dash_table, ALL, MATCH
 from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 
@@ -28,23 +28,25 @@ deck_types = ['Single', 'Double', 'Triple']
 
 hist_data = DownloadData(end_date, start_date)
 
-# tk_market = '^GSPC'
-tk_market = 'BTC-USD'
-tk = 'BTC-USD'
+tk_market = '^GSPC'
+# tk_market = 'BTC-USD'
 
 ticker_categories = [x for x in url_settings.keys() if x != 'global']
 print(ticker_categories)
 # Ticker categories:
 # 'nasdaq100', 'sp500', 'dow_jones', 'biggest_companies',
-# 'biggest_etfs', 'crypto_etfs', 'cryptos_yf', 'cryptos', 'futures'
+# 'biggest_etfs', 'crypto_etfs', 'cryptos', 'cryptos_coin360', 'futures'
 
 max_tickers = 5
-ticker_category = 'crypto_etfs'
+# ticker_category = 'crypto_etfs'
+ticker_category = 'biggest_companies'
+# ticker_category = 'cryptos'
 df = hist_data.download_from_url(ticker_category, max_tickers)
 
 category_name = url_settings[ticker_category]['category_name']
 category_sort_by = url_settings[ticker_category]['sort_by']
 title_prefix = 'Top ' if not ('Biggest' in category_name) else ''
+table_title = f'{max_tickers} {title_prefix}{category_name} by {category_sort_by}'
 print(f'\n{title_prefix}{category_name} by {category_sort_by}\n')
 
 df_ticker_info = pd.DataFrame(index = df['Symbol'], columns = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End'])
@@ -142,6 +144,7 @@ select_ticker_left_css = {
     'cursor': 'pointer',
     'font-family': 'Helvetica',
     'font-size': '14px',
+    'font-weight': 'bold',
     'line-height': '1.5',
     'padding-left': '5px',
     'padding-right': '5px',
@@ -287,32 +290,61 @@ select_ticker_right_css = {
 
 app.layout = html.Div([
 
-    html.Div(id = 'ticker-output', style = {'font-size' : '14px'}),
+    html.Div(id = 'ticker-output', hidden = True, style = {'font-size' : '14px'}),
 
-    html.Div(id = 'select-ticker-list', hidden = True),
+    html.B('remove-ticker-list'),
+    html.Div(id = 'remove-ticker-list', hidden = False),
+
+    html.B('select-ticker-list'),
+    html.Div(id = 'select-ticker-list', hidden = False),
+
+    html.B('updated-ticker-list'),
+    html.Div(id = 'updated-ticker-list', hidden = False),
+
+    # html.Div(id = 'select-ticker-dummy', n_clicks = 0, hidden = True),
 
     html.Div(
-        ticker_divs,
+        # ticker_divs,
         id = 'select-ticker-container',
         hidden = False,
         style = {
             'display': 'inline-block',
             'border': '1px solid rgba(0, 126, 255, .24)',
             'border-radius': '2px',
+            'margin-top': '5px',            
             'margin-bottom': '5px',
+            'margin-left': '5px',            
             'padding-left': '5px',
         }
     ),
 
-    html.Div(
-        table,
+    html.Div([
+        html.Div(
+            children = table_title,
+            id = 'table-title',
+            style = {
+                'font-family': 'Helvetica',
+                'font-size': '18px',
+                'font-weight': 'bold',
+                'padding': '5px'
+            }
+        ),
+        table
+    ],
         id = 'data-table-container',
         style = {
-            'width': '600px',
+            'width': '700px',
+            # 'height': '650px',
             'font-family': 'Helvetica',
             'font-size' : '14px',
+            'border': '1px solid rgb(211, 211, 211)',
+            'margin-top': '5px',
+            'margin-left': '5px'
+            # 'border-radius': '2px'            
         }
     ),
+    
+    html.Br(),
 
     ##### BEGIN TEMPLATE CONTROLS
 
@@ -357,12 +389,12 @@ app.layout = html.Div([
                         dcc.Dropdown(
                             id='tickers-dropdown',
                             # options = tickers,
-                            # value = tickers[0],
+                            value = '',
                             options = ticker_menu_info_list,
-                            value = ticker_menu_info_list[0],
+                            # value = ticker_menu_info_list[0],
                             # clearable = False,
                             clearable = True,
-                            # multi = True,
+                            multi = True,
                             style = {
                                 'width': '450px',
                                 'height': '32px',
@@ -408,27 +440,26 @@ app.layout = html.Div([
     Output('select-ticker-container', 'children'),
     Output('select-ticker-container', 'hidden'),
     Output('ticker-table', 'selected_rows'),
+    # Output('remove-ticker-list', 'children', allow_duplicate = True),
     # Output('ticker-output', 'children'),
     Input('ticker-table', 'data'),
     Input('ticker-table', 'selected_rows'),
-    Input('select-ticker-list', 'children')  # This might create a circular reference
+    Input({'index': ALL, 'type': 'ticker_div'}, 'hidden'),
+    # Input('select-ticker-list', 'children'),
+    # Input('remove-ticker-list', 'children'),  # This might create a circular reference
+    # prevent_initial_call = True
     # Input('select-ticker-container', 'children')
     # suppress_callback_exceptions = True
 )
 def output_ticker_rows(data, rows, removed_tk):
 
-    ctx = dash.callback_context
-    if ctx.triggered:
-        # trig_id = ctx.triggered[0]['prop_id'].split('.')[0]
-        trig_id = ctx.triggered_id
-    else:
-        trig_id = 'Nothing triggered'
+    # ctx = dash.callback_context
 
     ticker_divs = [ticker_div_title] # if ticker_divs == [] else ticker_divs
     ticker_divs_visible = [ticker_div_title]
+  
+    # selected_tickers = []
 
-    tickers_to_remove = removed_tk
-    
     hide_ticker_container = False
 
     if rows == []:
@@ -452,12 +483,23 @@ def output_ticker_rows(data, rows, removed_tk):
                 else:
                     is_hidden = True
 
+            # if not is_hidden:
+            #     selected_tickers.append(tk)
+
             name = data[row_id]['Name']
             tk_div = html.Div(
-                id = tk_id,
+                id = {'index': tk_id, 'type': 'ticker_div'},
+                # id = {'index': 'n_clicks', 'type': 'ticker_div'},
                 hidden = is_hidden,
                 children = [
-                    html.Div('x', id = tk_icon_id, n_clicks = 0, style = select_ticker_left_css),
+                    html.Div(
+                        'x',
+                        id = {'index': tk_id, 'type': 'ticker_icon'},
+                        # id = {'index': tk_icon_id, 'type': 'ticker_icon'},
+                        # id = {'index': 'n_clicks', 'type': 'ticker_icon'},
+                        n_clicks = 0,
+                        style = select_ticker_left_css
+                    ),
                     html.Div(children = [
                         html.B(tk, id = f'select-ticker-label-tk-{tk}', style = {'margin-right': '6px'}),
                         html.Span(name, id = f'select-ticker-label-name-{tk}')
@@ -474,44 +516,55 @@ def output_ticker_rows(data, rows, removed_tk):
 
         hide_ticker_container = True if len(ticker_divs_visible) == 1 else False
 
-    # n_tk_div = len(ticker_divs) - 1
-    # for k in range(1, n_tk_div):
-    #     print(f"END\n{ticker_divs[k]['props']['children'][0]['props']['id']}")
-    
-    # trig_id = ticker_divs[n_tk_div]  # ['props']['children']
-    # trig_id = str(ctx.inputs_list[n_tk_div]['value'][-1]['props']['children'][0]['props']['id']) if n_tk_div > 1 else 'Nothing'
-    # trig_id = str(ctx.inputs_list[-1]['value'][-1]['props']['children'][0]['props']['id']) if n_tk_div > 1 else 'Nothing'
-    trig_id = str(ctx.inputs_list)
+    return ticker_divs, hide_ticker_container, rows  #, []  # , selected_tickers
 
-    # print(app.callback_map)
 
-    return ticker_divs, hide_ticker_container, rows  #, trig_id
-    # return hide_ticker_container, rows  #, trig_id
+# @app.callback(
+#     Output('select-ticker-list', 'children'),
+#     Input('updated-ticker-list', 'children')
+# )
+# def update_selected_tickers(*args):
+#     return args
+
+
+# selected_tickers = update_selected_tickers()
 
 
 @app.callback(
-    # Output('ticker-table', 'selected_rows'),
-    # Output('ticker-output', 'children'),
-    Output('select-ticker-list', 'children'),
-    [Input(f'select-ticker-icon-{tk}', 'n_clicks') for tk in tickers],
-    # suppress_callback_exceptions = True
-    # [Input(tk_id, 'n_clicks') for tk_id in Input('select-ticker-list', 'children')]
+    Output({'index': MATCH, 'type': 'ticker_div'}, 'hidden'),  #  must match id based on what got triggered
+    # Output('remove-ticker-list', 'children'),
+    # Input({'index': ALL, 'type': 'ticker_icon'}, 'n_clicks'),
+    Input({'index': MATCH, 'type': 'ticker_icon'}, 'n_clicks'),
+    # State({'index': MATCH, 'type': 'ticker_icon'}, 'id')
+    # prevent_initial_call = 'initial_duplicate'
+    # Input('select-ticker-dummy', 'n_clicks')
 )
-def update_selected_tickers(*args):
-    if args:
-        ctx = dash.callback_context
-        if ctx.triggered:
-            # trig_id_list = [ctx.triggered_id]
-            trig_value_list = [ctx.triggered[k] for k in range(len(ctx.triggered))]
-            trig_id_list = [ctx.triggered[k]['prop_id'].split('.')[0] for k in range(len(ctx.triggered)) if ctx.triggered[k]['value']]
-            # return f'{trig_id}, args = {args}'
-            return trig_id_list
-        else:
-            return []
-            # return f'Not triggered, args = {args}'
+# def remove_selected_ticker(n_clicks, tk_icon_id):
+def remove_selected_ticker(n_clicks):
+    # if args:
+    # if 1 in n_clicks:  # args = ([0, 0, 0, 0, 0],)
+    if n_clicks:
+        return True
+        # ctx = dash.callback_context
+        # if ctx.triggered:
+        #     # trig_id = ctx.triggered_id  # This is incorrectly set to ctx.triggered[0]['prop_id'].split('.')[0]
+        #     trig_value_list = [ctx.triggered[k] for k in range(len(ctx.triggered))]
+        #     trig_id_str_list = [ctx.triggered[k]['prop_id'].split('.')[0] for k in range(len(ctx.triggered)) if ctx.triggered[k]['value']]
+        #     if len(trig_id_str_list) > 0:
+        #         trig_id_str = trig_id_str_list[0]  # this is a stringified dictionary with whitespaces removed
+        #         trig_id_list = [trig_id_str.split('{"index":"')[1].split('","type"')[0]]  # select-ticker-icon-{tk}
+        #         # trig_id_list = [trig_id_str.split('{"index":"')[1].split('","type"')[0].remove('-icon')]  # select-ticker-{tk}
+        #         return trig_id_list  # or the value of 'hidden' if select-ticker-{tk} is used 
+        #     else:
+        #         # return []
+        #         return False
+        # else:
+        #     # return []
+        #     return False
     else: 
-        return []
-        # return 'No args'
+        # return []
+        return False
+
 
 # @app.callback(
 #     Output('select-ticker-list', 'children'),
@@ -557,3 +610,4 @@ def toggle_collapse_tickers(n, is_open):
 
 if __name__ == '__main__':
     app.run_server(debug=True, port=8053)
+

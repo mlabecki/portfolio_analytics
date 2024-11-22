@@ -64,7 +64,7 @@ class DownloadData():
         tickers_to_be_removed = []
         for tk in tickers_market:
 
-            data = yf.download(tk, start=start_date, end=end_date)
+            data = yf.download(tk, start=start_date, end=end_date, progress = False)
 
             if tk in yf.shared._ERRORS.keys():
                 print(f'WARNING: Data is unavailable for {tk}, ticker will be removed from the portfolio')
@@ -252,7 +252,7 @@ class DownloadData():
         for tk, tk_desc in risk_free_treasury_tickers.items():
             
             dict_mean_risk_free_rate = {}
-            df_risk_free_rate[tk_desc] = yf.download(tk, start=start_date, end=end_date)['Adj Close']
+            df_risk_free_rate[tk_desc] = yf.download(tk, start=start_date, end=end_date, progress = False)['Adj Close']
             dict_mean_risk_free_rate.update({tk_desc: np.mean(df_risk_free_rate[tk_desc])})
         
         # Get the mean risk-free rate over the historical period
@@ -281,7 +281,7 @@ class DownloadData():
             
             try:
                 custom_risk_free_instrument = yf.Ticker(tk).info['shortName']
-                df_risk_free_rate[custom_risk_free_instrument] = yf.download(tk, start=start_date, end=end_date)['Adj Close']
+                df_risk_free_rate[custom_risk_free_instrument] = yf.download(tk, start=start_date, end=end_date, progress = False)['Adj Close']
                 custom_risk_free_rate = np.mean(df_risk_free_rate[tk_desc])
                 custom_risk_free_rate /= 100
 
