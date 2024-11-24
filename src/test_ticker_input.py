@@ -37,7 +37,7 @@ print(ticker_categories)
 # 'nasdaq100', 'sp500', 'dow_jones', 'biggest_companies',
 # 'biggest_etfs', 'crypto_etfs', 'cryptos', 'cryptos_coin360', 'futures'
 
-max_tickers = 25
+max_tickers = 5
 # ticker_category = 'crypto_etfs'
 ticker_category = 'biggest_companies'
 # ticker_category = 'cryptos'
@@ -152,7 +152,7 @@ select_ticker_left_css = {
     'line-height': '1.5',
     'padding-left': '5px',
     'padding-right': '5px',
-    'margin-top': '5px',
+    'margin-top': '0px',
     'vertical-align': 'center'
 }
 select_ticker_right_css = {
@@ -167,7 +167,7 @@ select_ticker_right_css = {
     'line-height': '1.5',
     'padding-left': '5px',
     'padding-right': '5px',
-    'margin-top': '5px',
+    'margin-top': '0px',
     'vertical-align': 'center'
 }
 
@@ -178,8 +178,10 @@ ticker_div_title = html.Div(
         'font-size': '14px',
         'font-weight': 'bold',
         'color': 'rgb(0, 126, 255)',
-        'margin-top': '6px',
-        'margin-right': '5px'
+        'margin-top': '5px',
+        'margin-bottom': '3px',
+        'margin-left': '3px',
+        'margin-right': '8px'
     }
 )
 
@@ -204,7 +206,14 @@ def create_ticker_divs(ticker_names: pd.Series, ticker_div_title):
                     style = select_ticker_right_css
                 )
             ],
-            style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px'}
+            style = {
+                'display': 'inline-block',
+                'margin-right': '5px',
+                'margin-bottom': '5px',
+                # 'margin-top': '0px',
+                'line-height': '1',
+                'vertical-align': 'top'
+            }
         )
         ticker_divs.append(tk_div)
 
@@ -216,6 +225,14 @@ ticker_divs = create_ticker_divs(ticker_names, ticker_div_title)
 ###########################################################################################
 
 app = dash.Dash(__name__, external_stylesheets = [dbc.themes.YETI])
+
+select_ticker_css = {
+    'display': 'inline-block',
+    'margin-right': '5px',
+    'margin-bottom': '5px',
+    'line-height': '1',
+    'vertical-align': 'top'
+}
 
 select_ticker_left_css = {
     'background-color': 'rgba(0, 126, 255, .08)',
@@ -231,7 +248,7 @@ select_ticker_left_css = {
     'line-height': '1.5',
     'padding-left': '5px',
     'padding-right': '5px',
-    'margin-top': '5px',
+    'margin-top': '0px',
     'vertical-align': 'center'
 }
 select_ticker_right_css = {
@@ -246,7 +263,7 @@ select_ticker_right_css = {
     'line-height': '1.5',
     'padding-left': '5px',
     'padding-right': '5px',
-    'margin-top': '5px',
+    'margin-top': '0px',
     'vertical-align': 'center'
 }
 
@@ -267,7 +284,7 @@ app.layout = html.Div([
             'display': 'inline-block',
             'border': '1px solid rgba(0, 126, 255, .24)',
             'border-radius': '2px',
-            'margin-top': '5px',            
+            'margin-top': '0px',
             'margin-bottom': '5px',
             'margin-left': '5px',            
             'padding-left': '5px',
@@ -366,7 +383,7 @@ def output_custom_tickers(
                     style = select_ticker_right_css
                 )
             ],
-            style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px'}
+            style = select_ticker_css
         )
         ticker_divs.append(tk_div)
 
@@ -377,3 +394,4 @@ def output_custom_tickers(
 
 if __name__ == '__main__':
     app.run_server(debug = True, port = 8055)
+
