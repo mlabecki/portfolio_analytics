@@ -300,6 +300,17 @@ app.layout = html.Div([
             debounce = True,
             placeholder = '',
             style = {'width': '120px', 'height': '36px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'font-size': '15px'}
+        ),
+        html.Div(
+            id = 'ticker-input-message',
+            hidden = True,
+            style = {
+                'font-size': '14px',
+                'font-weight': 'bold',
+                'vertical-align': 'top',
+                'margin-top': '5px',
+                'margin-bottom': '5px',
+            }
         )],
         style = {'display': 'block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
     ),
@@ -315,6 +326,8 @@ app.layout = html.Div([
     Output('select-ticker-container', 'hidden'),
     Output('select-ticker-list', 'children'),
     Output('custom-ticker-input', 'value'),
+    Output('ticker-input-message', 'hidden'),
+    Output('ticker-input-message', 'children'),
     # Output('ticker-table', 'selected_rows'),
     # Output('ticker-output', 'children'),
     # Input('ticker-table', 'data'),
@@ -352,20 +365,40 @@ def output_custom_tickers(
     updated_tickers = selected_tickers
 
     hide_ticker_container = False if len(updated_tickers) > 0 else True
+    hide_tk_input_message = True
+    tk_input_message = ''
+
+    tickers_info = {}
 
     if (tk_input != '') & (tk_input not in selected_tickers):
-        updated_tickers.append(tk_input)
+        _ = yf.download(tk_input, progress = False)
+        if tk_input in yf.shared._ERRORS.keys():
+            tk_input_message = f"ERROR: Invalid ticker '{tk_input}'"
+            hide_tk_input_message = False
+        else:
+            updated_tickers.append(tk_input)
+            tk_info = yf.Ticker(tk_input).info
+            if 'longName' in tk_info.keys():
+                tk_name = tk_info['longName']
+            elif 'shortName' in yf_tk_info.keys():
+                tk_name = tk_info['shortName']
+            else:
+                tk_name = tk_input
+            if tk_input not in tickers_info.keys():
+                tickers_info.update({tk_input: tk_name})
 
     elif (tk_input == '') & (remove_tk != ''):
+        hide_tk_input_message = True
         for tk in selected_tickers:
             if tk == remove_tk:
-                updated_tickers.remove(tk)    
+                updated_tickers.remove(tk)
 
     for tk in updated_tickers:
         
         tk_id = f'select-ticker-{tk}'
         tk_icon_id = f'select-ticker-icon-{tk}'
-        name = tk
+        name = tickers_info[tk] if tk in tickers_info.keys() is not None else tk
+        # name = tickers_info[tk]
         tk_div = html.Div(
             id = tk_id,
             children = [
@@ -387,9 +420,16 @@ def output_custom_tickers(
         )
         ticker_divs.append(tk_div)
 
-        hide_ticker_container = True if len(updated_tickers) == 0 else False
+    hide_ticker_container = True if len(updated_tickers) == 0 else False
 
-    return ticker_divs, hide_ticker_container, updated_tickers, ''
+    return (
+        ticker_divs,
+        hide_ticker_container,
+        updated_tickers,
+        '',
+        hide_tk_input_message,
+        tk_input_message
+    )
 
 
 if __name__ == '__main__':
