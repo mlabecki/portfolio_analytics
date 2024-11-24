@@ -64,7 +64,11 @@ class DownloadData():
         tickers_to_be_removed = []
         for tk in tickers_market:
 
-            data = yf.download(tk, start=start_date, end=end_date, progress = False)
+            data = yf.download(tk, start = start_date, end = end_date, progress = False)
+            # NOTE:
+            # Maybe use yf.history() instead, which would allow to extract adjusted ohlc, not just adj_close.
+            # This would then require downloading both adjusted and unadjusted data, and creating two versions
+            # of the dollar volume.
 
             if tk in yf.shared._ERRORS.keys():
                 print(f'WARNING: Data is unavailable for {tk}, ticker will be removed from the portfolio')

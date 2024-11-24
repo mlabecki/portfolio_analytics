@@ -222,6 +222,8 @@ def create_ticker_divs(ticker_names: pd.Series, ticker_div_title):
 
 ticker_divs = create_ticker_divs(ticker_names, ticker_div_title)
 
+tickers_info = {}
+
 ###########################################################################################
 
 app = dash.Dash(__name__, external_stylesheets = [dbc.themes.YETI])
@@ -312,7 +314,13 @@ app.layout = html.Div([
                 'margin-bottom': '5px',
             }
         )],
-        style = {'display': 'block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+        style = {
+            'display': 'block',
+            'margin-right': '5px',
+            'margin-left': '5px',
+            'vertical-align': 'top',
+            'font-family': 'Helvetica'
+        }
     ),
 
     html.Br()
@@ -367,11 +375,12 @@ def output_custom_tickers(
     hide_ticker_container = False if len(updated_tickers) > 0 else True
     hide_tk_input_message = True
     tk_input_message = ''
-
-    tickers_info = {}
+    tk_input = tk_input.upper()
 
     if (tk_input != '') & (tk_input not in selected_tickers):
-        _ = yf.download(tk_input, progress = False)
+        
+        _ = yf.download(tk_input, progress = False)  
+        # Unfortunately a failure of yf.Ticker(tk).info query does not add tk to yf.shared._ERRORS
         if tk_input in yf.shared._ERRORS.keys():
             tk_input_message = f"ERROR: Invalid ticker '{tk_input}'"
             hide_tk_input_message = False
