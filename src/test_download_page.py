@@ -16,6 +16,7 @@ from operator import itemgetter
 from mapping_plot_attributes import *
 from mapping_portfolio_downloads import *
 from mapping_tickers import *
+from css_portfolio_analytics import *
 from utils import *
 from download_data import DownloadData
 from analyze_prices import AnalyzePrices
@@ -133,40 +134,6 @@ else:
 
 ##############
 
-select_ticker_left_css = {
-    'background-color': 'rgba(0, 126, 255, .08)',
-    'border-top-left-radius': '2px',
-    'border-bottom-left-radius': '2px',
-    'border': '1px solid rgba(0, 126, 255, .24)',
-    'border-right': '0px',
-    'color': '#007eff',
-    'display': 'inline-block',
-    'cursor': 'pointer',
-    'font-family': 'Helvetica',
-    'font-size': '14px',
-    'font-weight': 'bold',
-    'line-height': '1.5',
-    'padding-left': '5px',
-    'padding-right': '5px',
-    'margin-top': '5px',
-    'vertical-align': 'center'
-}
-select_ticker_right_css = {
-    'background-color': 'rgba(0, 126, 255, .08)',
-    'border-top-right-radius': '2px',
-    'border-bottom-right-radius': '2px',
-    'border': '1px solid rgba(0, 126, 255, .24)',
-    'color': '#007eff',
-    'display': 'inline-block',
-    'font-family': 'Helvetica',
-    'font-size': '14px',
-    'line-height': '1.5',
-    'padding-left': '5px',
-    'padding-right': '5px',
-    'margin-top': '5px',
-    'vertical-align': 'center'
-}
-
 def create_ticker_divs(ticker_names: pd.Series):
 
     ticker_divs = []
@@ -216,39 +183,14 @@ table = html.Div([
         ],
         fixed_rows = {'headers': True},
         id = 'ticker-table',
-        style_header = {
-            'font-family': 'Helvetica',
-            'font-size' : '14px',
-            'font-weight' : 'bold',
-            'width': '15px',
-            'background': 'white',
-            'text-align': 'left'
-            # 'text-align': 'center'
-        },
-        style_data = {
-            # 'cursor': 'pointer',
-            'font-family': 'Helvetica',
-            'font-size' : '14px',
-            'width': '15px',
-            'background': 'white',
-            'text-align': 'left',
-            'border-top': '1px solid rgb(211, 211, 211)',
-            'border-bottom': '1px solid rgb(211, 211, 211)'
-            # 'text-align': 'center'
-        },
+        style_header = input_table_header_css,
+        style_data = input_table_data_css,
     )
 ])
 
 ticker_div_title = html.Div(
     'YOUR PORTFOLIO:',
-    style = {
-        'font-family': 'Helvetica',
-        'font-size': '14px',
-        'font-weight': 'bold',
-        'color': 'rgb(0, 126, 255)',
-        'margin-top': '6px',
-        'margin-right': '5px'
-    }
+    style = select_ticker_title_css
 )
 
 ###########################################################################################
@@ -307,15 +249,7 @@ app.layout = html.Div([
         # ticker_divs,
         id = 'select-ticker-container',
         hidden = False,
-        style = {
-            'display': 'inline-block',
-            'border': '1px solid rgba(0, 126, 255, .24)',
-            'border-radius': '2px',
-            'margin-top': '5px',            
-            'margin-bottom': '5px',
-            'margin-left': '5px',            
-            'padding-left': '5px',
-        }
+        style = select_ticker_container_css
     ),
 
     html.Div([
@@ -332,16 +266,7 @@ app.layout = html.Div([
         table
     ],
         id = 'data-table-container',
-        style = {
-            'width': '700px',
-            # 'height': '650px',
-            'font-family': 'Helvetica',
-            'font-size' : '14px',
-            'border': '1px solid rgb(211, 211, 211)',
-            'margin-top': '5px',
-            'margin-left': '5px'
-            # 'border-radius': '2px'            
-        }
+        style = input_table_data_css
     ),
     
     html.Br(),

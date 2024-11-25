@@ -16,6 +16,7 @@ from operator import itemgetter
 from mapping_plot_attributes import *
 from mapping_portfolio_downloads import *
 from mapping_tickers import *
+from css_portfolio_analytics import *
 from utils import *
 from download_data import DownloadData
 from analyze_prices import AnalyzePrices
@@ -228,47 +229,6 @@ tickers_info = {}
 
 app = dash.Dash(__name__, external_stylesheets = [dbc.themes.YETI])
 
-select_ticker_css = {
-    'display': 'inline-block',
-    'margin-right': '5px',
-    'margin-bottom': '5px',
-    'line-height': '1',
-    'vertical-align': 'top'
-}
-
-select_ticker_left_css = {
-    'background-color': 'rgba(0, 126, 255, .08)',
-    'border-top-left-radius': '2px',
-    'border-bottom-left-radius': '2px',
-    'border': '1px solid rgba(0, 126, 255, .24)',
-    'border-right': '0px',
-    'color': '#007eff',
-    'display': 'inline-block',
-    'cursor': 'pointer',
-    'font-family': 'Helvetica',
-    'font-size': '14px',
-    'line-height': '1.5',
-    'padding-left': '5px',
-    'padding-right': '5px',
-    'margin-top': '0px',
-    'vertical-align': 'center'
-}
-select_ticker_right_css = {
-    'background-color': 'rgba(0, 126, 255, .08)',
-    'border-top-right-radius': '2px',
-    'border-bottom-right-radius': '2px',
-    'border': '1px solid rgba(0, 126, 255, .24)',
-    'color': '#007eff',
-    'display': 'inline-block',
-    'font-family': 'Helvetica',
-    'font-size': '14px',
-    'line-height': '1.5',
-    'padding-left': '5px',
-    'padding-right': '5px',
-    'margin-top': '0px',
-    'vertical-align': 'center'
-}
-
 app.layout = html.Div([
 
     html.Div(id = 'ticker-output', hidden = True, style = {'font-size' : '14px'}),
@@ -276,21 +236,13 @@ app.layout = html.Div([
     # html.Div(id = 'remove-ticker-list', hidden = False),
 
     # html.B('select-ticker-list'),
-    html.Div(id = 'select-ticker-list', hidden = False),
+    html.Div(id = 'select-ticker-list', hidden = True),
 
     html.Div(
         # children = [], # ticker_divs,
         id = 'select-ticker-container',
         hidden = True,
-        style = {
-            'display': 'inline-block',
-            'border': '1px solid rgba(0, 126, 255, .24)',
-            'border-radius': '2px',
-            'margin-top': '0px',
-            'margin-bottom': '5px',
-            'margin-left': '5px',            
-            'padding-left': '5px',
-        }
+        style = select_ticker_container_css
     ),
 
     html.Div([
@@ -425,7 +377,7 @@ def output_custom_tickers(
                     style = select_ticker_right_css
                 )
             ],
-            style = select_ticker_css
+            style = select_ticker_div_css
         )
         ticker_divs.append(tk_div)
 

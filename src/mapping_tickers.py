@@ -31,7 +31,7 @@ stock_index_tickers = {
     '^RUT': 'Russell 2000',
     '^HSI': 'HANG SENG INDEX',
     '^N225': 'Nikkei 225',
-    '^FTSE': 'FTSE 100',  # based on 100 largest blue chips sttocks listed on London Stock Exchange
+    '^FTSE': 'FTSE 100',  # based on 100 largest blue chips stocks listed on London Stock Exchange
     '^GDAXI': 'DAX PERFORMANCE-INDEX',
     '^IBEX': 'IBEX 35...',  # tracking 35 Spanish companish on Bolsa De Madrid
     '^FCHI': 'CAC 40',  # benchmark French stock index
@@ -83,9 +83,59 @@ treasury_3m_ticker = '^IRX'
 # CBOE Interest Rate 10 Year Treasury Note
 treasury_10y_ticker = '^TNX'
 
-bond_fund_tickers = {
+# Bond tickers based on Asset Under Management
+# Source: https://etfdb.com/etfdb-category/total-bond-market/
+bond_etf_tickers = {
+    'AGG': 'iShares Core U.S. Aggregate Bond ETF',
     'BND': 'Vanguard Total Bond Market Index Fund',
-    'AGG': 'iShares Core U.S. Aggregate Bond ETF'
+    'BNDX': 'Vanguard Total International Bond ETF',
+    'BSV': 'Vanguard Short Term Bond ETF',
+    'IUSB': 'iShares Core Total USD Bond Market ETF',
+    'BIV': 'Vanguard Intermediate-Term Bond ETF',
+    'FBND': 'Fidelity Total Bond ETF',
+    'MINT': 'PIMCO Enhanced Short Maturity Active Exchange-Traded Fund',
+    'PULS': 'PGIM Ultra Short Bond ETF',
+    'SCHZ': 'Schwab U.S. Aggregate Bond ETF',
+    'SPAB': 'SPDR Portfolio Aggregate Bond ETF',
+    'IAGG': 'iShares Core International Aggregate Bond ETF',
+    'FTSM': 'First Trust Enhanced Short Maturity ETF',
+    'DFCF': 'Dimensional Core Fixed Income ETF',
+    'BLV': 'Vanguard Long-Term Bond ETF',
+    'FIXD': 'First Trust TCW Opportunistic Fixed Income ETF',
+    'BOND': 'PIMCO Active Bond Exchange-Traded Fund',
+    'JCPB': 'JPMorgan Core Plus Bond ETF',
+    'ISTB': 'iShares Core 1-5 Year USD Bond ETF',
+    'CGCP': 'Capital Group Core Plus Income ETF',
+    'EAGG': 'iShares ESG Aware US Aggregate Bond ETF',
+    'GVI': 'iShares Intermediate Government/Credit Bond ETF',
+    'TOTL': 'SPDR DoubleLine Total Return Tactical ETF',
+    'UCON': 'First Trust TCW Unconstrained Plus Bond ETF',
+    'NEAR': 'iShares Short Duration Bond Active ETF',
+    'JMST': 'JPMorgan Ultra-Short Municipal Income ETF',
+    'UITB': 'VictoryShares Core Intermediate Bond ETF',
+    'FLCB': 'Franklin U.S. Core Bond ETF',
+    'JPIE': 'JPMorgan Income ETF',
+    'PYLD': 'PIMCO Multisector Bond Active Exchange-Traded Fund',
+    'BKAG': 'BNY Mellon Core Bond ETF',
+    'JMUB': 'JPMorgan Municipal ETF',
+    'HTRB': 'Hartford Total Return Bond ETF',
+    'GTO': 'Invesco Total Return Bond ETF',
+    'BBAG': 'JPMorgan BetaBuilders U.S. Aggregate Bond ETF',
+    'RAVI': 'FlexShares Ultra-Short Income Fund',
+    'VRIG': 'Invesco Variable Rate Investment Grade ETF',
+    'AVIG': 'Avantis Core Fixed Income ETF',
+    'AGGY': 'WisdomTree Yield Enhanced U.S. Aggregate Bond Fund',
+    'BNDW': 'Vanguard Total World Bond ETF',
+    'LDUR': 'PIMCO Enhanced Low Duration Active ETF',
+    'PCEF': 'Invesco CEF Income Composite ETF',
+    'USTB': 'VictoryShares Short-Term Bond ETF',
+    'AGZ': 'iShares Agency Bond ETF',
+    'EUSB': 'iShares ESG Advanced Total USD Bond Market ETF',
+    'ILTB': 'iShares Core 10+ Year USD Bond ETF',
+    'JSCP': 'JPMorgan Short Duration Core Plus ETF',
+    'AVSF': 'Avantis Short-Term Fixed Income ETF',
+    'ULST': 'SPDR SSgA Ultra Short Term Bond ETF',
+    'JPIB': 'JPMorgan International Bond Opportunities ETF'
 }
 
 ### PRECIOUS METALS ###
