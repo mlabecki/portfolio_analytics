@@ -387,10 +387,10 @@ def output_custom_tickers(
         else:
             updated_tickers.append(tk_input)
             tk_info = yf.Ticker(tk_input).info
-            if 'longName' in tk_info.keys():
-                tk_name = tk_info['longName']
-            elif 'shortName' in yf_tk_info.keys():
+            if 'shortName' in tk_info.keys():
                 tk_name = tk_info['shortName']
+            elif 'longName' in tk_info.keys():
+                tk_name = tk_info['longName']
             else:
                 tk_name = tk_input
             if tk_input not in tickers_info.keys():
