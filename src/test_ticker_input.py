@@ -226,7 +226,7 @@ app.layout = html.Div([
     html.Div(id = 'ticker-output', hidden = True, style = {'font-size' : '14px'}),
 
     html.Div(
-        'Add tickers to your portfolio by typing in the box below or selecting from the tables',
+        'Add tickers to your portfolio by typing in the box or selecting from the lists below',
         id = 'ticker-main-title',
         hidden = False,
         style = ticker_main_title_css
@@ -314,19 +314,10 @@ app.layout = html.Div([
 
     Input('table-bond-etfs', 'data'),
     Input('table-bond-etfs', 'selected_rows'),
-
-    # Output('ticker-table', 'selected_rows'),
-    # Output('ticker-output', 'children'),
-    # Input('ticker-table', 'data'),
-    # Input('ticker-table', 'selected_rows'),
-
     Input('select-ticker-list', 'children'),
     Input('select-ticker-container', 'children'),
     Input('custom-ticker-input', 'value'),
     Input({'index': ALL, 'type': 'ticker_icon'}, 'n_clicks')
-    # Input('remove-ticker-list', 'children')  # This might create a circular reference
-    # Input('select-ticker-container', 'children')
-    # suppress_callback_exceptions = True
 )
 def output_custom_tickers(
     table_bond_etfs_data,
@@ -343,7 +334,6 @@ def output_custom_tickers(
 
     if 1 in n_clicks:
         if ctx.triggered:
-            # trig_value_list = [ctx.triggered[k] for k in range(len(ctx.triggered))]
             trig_id_str_list = [ctx.triggered[k]['prop_id'].split('.')[0] for k in range(len(ctx.triggered)) if ctx.triggered[k]['value']]
             if len(trig_id_str_list) > 0:
                 trig_id_str = trig_id_str_list[0]  # this is a stringified dictionary with whitespaces removed
@@ -375,10 +365,10 @@ def output_custom_tickers(
         else:
             updated_tickers.append(tk_input)
             tk_info = yf.Ticker(tk_input).info
-            if 'shortName' in tk_info.keys():
-                tk_name = tk_info['shortName']
-            elif 'longName' in tk_info.keys():
+            if 'longName' in tk_info.keys():
                 tk_name = tk_info['longName']
+            elif 'shortName' in tk_info.keys():
+                tk_name = tk_info['shortName']
             else:
                 tk_name = tk_input
             if tk_input not in tickers_info.keys():

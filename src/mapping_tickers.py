@@ -83,6 +83,7 @@ treasury_3m_ticker = '^IRX'
 # CBOE Interest Rate 10 Year Treasury Note
 treasury_10y_ticker = '^TNX'
 
+### BOND ETFS ###
 # Bond tickers based on Asset Under Management
 # Source: https://etfdb.com/etfdb-category/total-bond-market/
 bond_etf_tickers = {
@@ -139,7 +140,6 @@ bond_etf_tickers = {
 }
 
 ### PRECIOUS METALS ###
-
 precious_metal_futures = {
     'GC=F': 'Gold (CMX)',
     'SI=F': 'Silver (CMX)',
@@ -149,7 +149,6 @@ precious_metal_futures = {
 }
 
 ### COMMODITIES ###
-
 commodity_etf_tickers = {
     'GLD':      'SPDR Gold Shares',
     'IAU':      'iShares Gold Trust',
@@ -165,8 +164,21 @@ commodity_etf_tickers = {
     'DBA':      'Invesco DB Agriculture Fund'
 }
 
-### CRYPTOS ###
+### NON-CRYPTO CURRENCY ETFS ###
+# Source: https://etfdb.com/etfdb-category/currency/
+currency_etf_tickers = {
+    'FXY': 'Invesco Currencyshares Japanese Yen Trust',
+    'UUP': 'Invesco DB US Dollar Index Bullish Fund',
+    'USDU': 'WisdomTree Bloomberg U.S. Dollar Bullish Fund',
+    'FXE': 'Invesco CurrencyShares Euro Trust',
+    'FXF': 'Invesco CurrencyShares Swiss Franc Trust',
+    'FXC': 'Invesco CurrencyShares Canadian Dollar Trust',
+    'FXA': 'Invesco CurrencyShares Australian Dollar Trust',
+    'FXB': 'Invesco CurrencyShares British Pound Sterling Trust',
+    'UDN': 'Invesco DB US Dollar Index Bearish Fund'
+}
 
+### CRYPTOS ###
 # Crypto market benchmarks
 crypto_benchmark_tickers = {
     'BITW': 'Bitwise 10 Crypto Index Fund',
