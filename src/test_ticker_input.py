@@ -387,7 +387,7 @@ def output_custom_tickers(
     # Map tk_input to row_id and add the latter to selected_rows in all relevant tables
 
     table_bond_etfs_selected_tickers = [tk for tk in row_ticker_map_bond_etfs.keys() if row_ticker_map_bond_etfs[tk] in table_bond_etfs_selected_rows]
-    if (tk_input != '') & (tk_input not in table_bond_etfs_selected_tickers):
+    if (tk_input != '') & (tk_input in row_ticker_map_bond_etfs.keys()) & (tk_input not in table_bond_etfs_selected_tickers):
         table_bond_etfs_selected_rows.append(row_ticker_map_bond_etfs[tk_input])
 
     # Read in tickers from table_bond_etfs
