@@ -212,7 +212,8 @@ table_bond_etfs = html.Div([
     )
 ])
 
-table_bond_etfs_title = 'Top Bond ETFs by Total Assets'
+# table_bond_etfs_title = 'Top Bond ETFs by Total Assets'
+table_bond_etfs_title = 'TOP BOND ETFs by Total Assets Under Management'
 
 tickers_info = {}
 
@@ -224,12 +225,17 @@ app.layout = html.Div([
 
     html.Div(id = 'ticker-output', hidden = True, style = {'font-size' : '14px'}),
 
-    # html.Div(id = 'remove-ticker-list', hidden = False),
+    html.Div(
+        'Add tickers to your portfolio by typing in the box below or selecting from the tables',
+        id = 'ticker-main-title',
+        hidden = False,
+        style = ticker_main_title_css
+    ),
 
-    # html.B('select-ticker-list'),
     html.Div(id = 'select-ticker-list', hidden = True),
 
     html.Div(
+        # YOUR PORTFOLIO
         id = 'select-ticker-container',
         hidden = True,
         style = select_ticker_container_css
@@ -239,7 +245,7 @@ app.layout = html.Div([
         id = 'custom-ticker-input-container',
         children = [
         html.Div(
-            'Type In Ticker',
+            'Ticker',
             id = 'custom-ticker-input-title',
             style = custom_ticker_input_title_css
         ),
@@ -259,7 +265,7 @@ app.layout = html.Div([
         style = custom_ticker_input_container
     ),
 
-html.Div([
+    html.Div([
         # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/
         html.Div(
             dbc.Button(

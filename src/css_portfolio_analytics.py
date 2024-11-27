@@ -1,3 +1,14 @@
+# Ticker selection - main title
+ticker_main_title_css = {
+    'font-family': 'Helvetica',
+    'font-size' : '18px',
+    'font-weight': 'bold',
+    'color': 'navy',
+    'padding': '5px',
+    'border-bottom': '1px solid navy',
+    'margin-bottom': '5px'
+}
+
 # Input data table
 input_table_container_css = {
     'width': '800px',
@@ -12,7 +23,7 @@ input_table_container_css = {
 input_table_header_css = {
     'font-family': 'Helvetica',
     'font-size' : '14px',
-    'font-weight' : 'bold',
+    'font-weight': 'bold',
     'background': 'white',
     'text-align': 'left'
 }
@@ -26,8 +37,9 @@ input_table_data_css = {
 }
 input_table_title_css = {
     'font-family': 'Helvetica',
-    'font-size': '16px',
+    'font-size': '14px',
     'font-weight': 'bold',
+    'color': 'rgb(0, 98, 140)',
     'padding': '5px'
 }
 
