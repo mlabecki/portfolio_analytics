@@ -1,6 +1,6 @@
 # Input data table
 input_table_container_css = {
-    'width': '700px',
+    'width': '800px',
     # 'height': '650px',
     'font-family': 'Helvetica',
     'font-size' : '14px',
@@ -13,18 +13,63 @@ input_table_header_css = {
     'font-family': 'Helvetica',
     'font-size' : '14px',
     'font-weight' : 'bold',
-    'width': '15px',
     'background': 'white',
     'text-align': 'left'
 }
 input_table_data_css = {
     'font-family': 'Helvetica',
     'font-size' : '14px',
-    'width': '15px',
     'background': 'white',
     'text-align': 'left',
     'border-top': '1px solid rgb(211, 211, 211)',
     'border-bottom': '1px solid rgb(211, 211, 211)'
+}
+input_table_title_css = {
+    'font-family': 'Helvetica',
+    'font-size': '16px',
+    'font-weight': 'bold',
+    'padding': '5px'
+}
+
+# Custom ticker input
+custom_ticker_input_container = {
+    'display': 'block',
+    'margin-right': '5px',
+    'margin-left': '5px',
+    'vertical-align': 'top',
+    'font-family': 'Helvetica'
+}
+custom_ticker_input_title_css = {
+    'font-size': '15px',
+    'font-weight': 'bold',
+    'vertical-align': 'top',
+    'margin-bottom': '0px'
+ }
+custom_ticker_input_css = {
+    'width': '120px',
+    'height': '36px',
+    'border-color': 'rgb(204, 204, 204)',
+    'border-radius': '5px',
+    'font-size': '15px'
+}
+custom_ticker_input_message_css = {
+    'font-size': '14px',
+    'font-weight': 'bold',
+    'vertical-align': 'top',
+    'margin-top': '5px',
+    'margin-bottom': '5px'
+}
+
+# Collapse button
+collapse_button_table_css = {
+    'display': 'inline-block',
+    'margin-top': '5px',
+    'margin-left': '5px',
+    'margin-right': '5px',
+    'text-align': 'left',
+    'font-family': 'Helvetica',
+    'font-weight': 'bold',
+    'width': '800px'
 }
 
 # Selected tickers elements
@@ -42,7 +87,8 @@ select_ticker_title_css = {
     'font-size': '14px',
     'font-weight': 'bold',
     'color': 'rgb(0, 126, 255)',
-    'margin-top': '6px',
+    'margin-top': '5px',
+    'margin-bottom': '3px',
     'margin-right': '5px'
 }
 select_ticker_div_css = {
@@ -67,7 +113,7 @@ select_ticker_left_css = {
     'line-height': '1.5',
     'padding-left': '5px',
     'padding-right': '5px',
-    'margin-top': '5px',
+    # 'margin-top': '5px',
     'vertical-align': 'center'
 }
 select_ticker_right_css = {
@@ -82,6 +128,6 @@ select_ticker_right_css = {
     'line-height': '1.5',
     'padding-left': '5px',
     'padding-right': '5px',
-    'margin-top': '5px',
+    # 'margin-top': '5px',
     'vertical-align': 'center'
 }

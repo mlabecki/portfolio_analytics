@@ -197,39 +197,6 @@ ticker_div_title = html.Div(
 
 app = dash.Dash(__name__, external_stylesheets = [dbc.themes.YETI])
 
-select_ticker_left_css = {
-    'background-color': 'rgba(0, 126, 255, .08)',
-    'border-top-left-radius': '2px',
-    'border-bottom-left-radius': '2px',
-    'border': '1px solid rgba(0, 126, 255, .24)',
-    'border-right': '0px',
-    'color': '#007eff',
-    'display': 'inline-block',
-    'cursor': 'pointer',
-    'font-family': 'Helvetica',
-    'font-size': '14px',
-    'line-height': '1.5',
-    'padding-left': '5px',
-    'padding-right': '5px',
-    'margin-top': '5px',
-    'vertical-align': 'center'
-}
-select_ticker_right_css = {
-    'background-color': 'rgba(0, 126, 255, .08)',
-    'border-top-right-radius': '2px',
-    'border-bottom-right-radius': '2px',
-    'border': '1px solid rgba(0, 126, 255, .24)',
-    'color': '#007eff',
-    'display': 'inline-block',
-    'font-family': 'Helvetica',
-    'font-size': '14px',
-    'line-height': '1.5',
-    'padding-left': '5px',
-    'padding-right': '5px',
-    'margin-top': '5px',
-    'vertical-align': 'center'
-}
-
 app.layout = html.Div([
 
     html.Div(id = 'ticker-output', hidden = True, style = {'font-size' : '14px'}),
@@ -264,7 +231,7 @@ app.layout = html.Div([
             }
         ),
         table
-    ],
+        ],
         id = 'data-table-container',
         style = input_table_data_css
     ),
@@ -278,19 +245,12 @@ app.layout = html.Div([
         # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/
         html.Div(
             dbc.Button(
-                id = 'collapse-button-tickers',
+                id = 'collapse-button-table-bond-etfs',
                 class_name = 'ma-1',
                 color = 'primary',
                 size = 'sm',
                 n_clicks = 0,
-                style = {
-                    'display': 'inline-block',
-                    'margin-right': '5px',
-                    'text-align': 'left',
-                    'font-family': 'Helvetica',
-                    'font-weight': 'bold',
-                    'width': '300px'
-                }
+                style = collapse_button_table_css
             )
         ),
 
@@ -365,8 +325,6 @@ app.layout = html.Div([
     Output('select-ticker-container', 'children'),
     Output('select-ticker-container', 'hidden'),
     Output('ticker-table', 'selected_rows'),
-    # Output('remove-ticker-list', 'children', allow_duplicate = True),
-    # Output('ticker-output', 'children'),
     Input('ticker-table', 'data'),
     Input('ticker-table', 'selected_rows'),
     Input({'index': ALL, 'type': 'ticker_div'}, 'hidden'),
