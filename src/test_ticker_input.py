@@ -379,16 +379,30 @@ def output_custom_tickers(
                 tickers_info.update({tk_input: tk_name})
 
     elif (tk_input == '') & (remove_tk != ''):
+    # if (tk_input == '') & (remove_tk != ''):
         hide_tk_input_message = True
         for tk in selected_tickers:
             if tk == remove_tk:
                 updated_tickers.remove(tk)
 
-    # Map tk_input to row_id and add the latter to selected_rows in all relevant tables
+    # Map tk_input to the corresponding row_id and add the latter to selected_rows in all relevant tables
 
     table_bond_etfs_selected_tickers = [tk for tk in row_ticker_map_bond_etfs.keys() if row_ticker_map_bond_etfs[tk] in table_bond_etfs_selected_rows]
     if (tk_input != '') & (tk_input in row_ticker_map_bond_etfs.keys()) & (tk_input not in table_bond_etfs_selected_tickers):
         table_bond_etfs_selected_rows.append(row_ticker_map_bond_etfs[tk_input])
+
+    # Remove tickers that are not selected in the table
+    
+    table_bond_etfs_nonselected_tickers = [tk for tk in row_ticker_map_bond_etfs.keys() if row_ticker_map_bond_etfs[tk] not in table_bond_etfs_selected_rows]
+    table_tickers_remove = []  # This should suffice for all tables
+    for tk in updated_tickers:
+        if tk in table_bond_etfs_nonselected_tickers:
+            if tk not in table_tickers_remove:
+                table_tickers_remove.append(tk)
+    
+    for tk in table_tickers_remove:
+        # if tk in updated_tickers:  # -- this shouldn't be necessary
+        updated_tickers.remove(tk)
 
     # Read in tickers from table_bond_etfs
 
@@ -404,7 +418,7 @@ def output_custom_tickers(
                 if tk in updated_tickers:
                     updated_tickers.remove(tk)
 
-            if tk not in updated_tickers:
+            elif tk not in updated_tickers:
                 updated_tickers.append(tk)
                 if tk not in tickers_info.keys():
                     tickers_info.update({tk: tk_name})
