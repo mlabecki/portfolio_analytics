@@ -45,7 +45,8 @@ input_table_title_css = {
 
 # Custom ticker input
 custom_ticker_input_container = {
-    'display': 'block',
+    # 'display': 'block',
+    'display': 'inline-block',
     'margin-right': '5px',
     'margin-left': '5px',
     'vertical-align': 'top',
@@ -65,6 +66,7 @@ custom_ticker_input_css = {
     'font-size': '15px'
 }
 custom_ticker_input_message_css = {
+    'display': 'inline-block',
     'font-size': '14px',
     'font-weight': 'bold',
     'vertical-align': 'top',

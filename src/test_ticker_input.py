@@ -70,6 +70,8 @@ df_info_tickers_risk_free_treasury = pd.DataFrame(index = tickers_risk_free_trea
 df_info_tickers_volatility_indices = pd.DataFrame(index = tickers_volatility_indices, columns = input_table_columns)
 
 # ticker_menu_info = {}
+ticker_name_dates_info = {}  # To help user decide on tickers based on the name and data start and end dates
+
 row_ticker_map_bond_etfs = {}
 for i, tk in enumerate(tickers_bond_etfs):
     
@@ -97,6 +99,13 @@ for i, tk in enumerate(tickers_bond_etfs):
 
         row_ticker_map_bond_etfs.update({tk: i})
 
+        ticker_name_dates_info.update({
+            tk: {
+                'name': tk_name,
+                'start': tk_start,
+                'end': tk_end
+            }
+        })
         # tk_info = f"{tk}: {tk_name}"
         # ticker_menu_info.update({tk_info: tk})
 
@@ -215,8 +224,6 @@ table_bond_etfs = html.Div([
 # table_bond_etfs_title = 'Top Bond ETFs by Total Assets'
 table_bond_etfs_title = 'TOP BOND ETFs by Total Assets Under Management'
 
-tickers_info = {}
-
 ###########################################################################################
 
 app = dash.Dash(__name__, external_stylesheets = [dbc.themes.YETI])
@@ -242,28 +249,99 @@ app.layout = html.Div([
     ),
 
     html.Div(
-        id = 'custom-ticker-input-container',
+        id = 'custom-ticker-all-container',
         children = [
-        html.Div(
-            'Ticker',
-            id = 'custom-ticker-input-title',
-            style = custom_ticker_input_title_css
-        ),
-        dbc.Input(
-            id = 'custom-ticker-input',
-            type = 'text',
-            value = '',
-            debounce = True,
-            placeholder = '',
-            style = custom_ticker_input_css
-        ),
-        html.Div(
-            id = 'custom-ticker-input-message',
-            hidden = True,
-            style = custom_ticker_input_message_css
-        )],
-        style = custom_ticker_input_container
+
+            html.Div(
+                id = 'custom-ticker-input-container',
+                children = [
+                    html.Div([
+                        html.Div(
+                            'Ticker',
+                            id = 'custom-ticker-input-title',
+                            style = custom_ticker_input_title_css
+                        ),
+                        dbc.Input(
+                            id = 'custom-ticker-input',
+                            type = 'text',
+                            value = '',
+                            debounce = True,
+                            placeholder = '',
+                            style = custom_ticker_input_css
+                        )
+                    ]),
+                ],
+                style = custom_ticker_input_container
+            ),
+            html.Div(
+                id = 'custom-ticker-info-container',
+                children = [
+                    # Change to datatable
+                    html.Div(
+                        id = 'custom-ticker-input-message',
+                        hidden = True,
+                        style = custom_ticker_input_message_css
+                    ),
+                    html.Div(
+                        id = 'custom-ticker-info-buttons',
+                        hidden = True,
+                        children = [
+                            dbc.Button(
+                                'Add',
+                                n_clicks = 0,
+                                class_name = 'ma-1',
+                                color = 'light',
+                                size = 'sm',
+                                style = {
+                                    'display': 'inline-block',
+                                    'height': '30px',
+                                    'border-color': 'rgb(192, 192, 192)',                                
+                                    'border-radius': '5px',
+                                    'margin-left': '5px',
+                                    'margin-bottom': '0px',
+                                    'margin-top': 'auto',
+                                    'text-align': 'center',
+                                    'font-family': 'Helvetica',
+                                    'font-size': '14px',
+                                    'width': '75px'
+                                }
+                            ),
+                            dbc.Button(
+                                'Cancel',
+                                n_clicks = 0,
+                                class_name = 'ma-1',
+                                color = 'light',
+                                size = 'sm',
+                                style = {
+                                    'display': 'inline-block',
+                                    'height': '30px',
+                                    'border-color': 'rgb(192, 192, 192)',                                
+                                    'border-radius': '5px',
+                                    'margin-left': '5px',
+                                    'margin-bottom': '0px',
+                                    'margin-top': 'auto',
+                                    'text-align': 'center',
+                                    'font-family': 'Helvetica',
+                                    'font-size': '14px',
+                                    'width': '75px'
+                                }
+                            )
+                        ]
+                    )
+                ],
+                style = {
+                    'display': 'inline-block',
+                    'vertical-align': 'bottom',
+                    'padding': '5px'
+                }
+            )
+        ],
+        style = {
+            'display': 'block'
+        }
     ),
+
+    ################
 
     html.Div([
         # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/
@@ -356,26 +434,37 @@ def output_custom_tickers(
     tk_input = tk_input.upper()
 
     if (tk_input != '') & (tk_input not in selected_tickers):
-        
-        _ = yf.download(tk_input, progress = False)  
+        # _ = yf.download(tk_input, progress = False)
+        tk_hist = yf.Ticker(tk_input).history()
         # Unfortunately a failure of yf.Ticker(tk).info query does not add tk to yf.shared._ERRORS
+        # yf.Ticker().history() does, but unlike yf.download keeps adding invalid tickers to _ERRORS.keys()
         if tk_input in yf.shared._ERRORS.keys():
             tk_input_message = f"ERROR: Invalid ticker '{tk_input}'"
             hide_tk_input_message = False
         else:
             updated_tickers.append(tk_input)
-            tk_info = yf.Ticker(tk_input).info
-            if 'longName' in tk_info.keys():
-                tk_name = tk_info['longName']
-            elif 'shortName' in tk_info.keys():
-                tk_name = tk_info['shortName']
-            else:
-                tk_name = tk_input
-            if tk_input not in tickers_info.keys():
-                tickers_info.update({tk_input: tk_name})
-
+            if tk_input not in ticker_name_dates_info.keys():
+                tk_start, tk_end = str(tk_hist.index[0].date()), str(yf_tk_hist.index[-1].date())
+                tk_info = yf.Ticker(tk_input).info
+                if 'longName' in tk_info.keys():
+                    tk_name = tk_info['longName']
+                elif 'shortName' in tk_info.keys():
+                    tk_name = tk_info['shortName']
+                else:
+                    tk_name = tk_input
+                ticker_name_dates_info.update({
+                    tk_input: {
+                        'name': tk_name,
+                        'start': tk_start,
+                        'end': tk_end
+                    }
+                })
+            tk_name = ticker_name_dates_info[tk_input]['name']
+            tk_start = ticker_name_dates_info[tk_input]['start']
+            tk_end = ticker_name_dates_info[tk_input]['end']
+            tk_input_message = f'{tk_input}\t{tk_name}\t{tk_start}\t{tk_end}'
+                
     elif (tk_input == '') & (remove_tk != ''):
-    # if (tk_input == '') & (remove_tk != ''):
         hide_tk_input_message = True
         for tk in selected_tickers:
             if tk == remove_tk:
@@ -416,8 +505,8 @@ def output_custom_tickers(
 
             elif tk not in updated_tickers:
                 updated_tickers.append(tk)
-                if tk not in tickers_info.keys():
-                    tickers_info.update({tk: tk_name})
+                # if tk not in ticker_name_dates_info.keys():
+                #     ticker_name_dates_info.update({tk: tk_name})
 
     #######
 
@@ -425,8 +514,7 @@ def output_custom_tickers(
         
         tk_id = f'select-ticker-{tk}'
         tk_icon_id = f'select-ticker-icon-{tk}'
-        name = tickers_info[tk] if tk in tickers_info.keys() is not None else tk
-        # name = tickers_info[tk]
+        name = ticker_name_dates_info[tk]['name'] if tk in ticker_name_dates_info.keys() is not None else tk
         tk_div = html.Div(
             id = tk_id,
             children = [
@@ -455,7 +543,8 @@ def output_custom_tickers(
         hide_ticker_container,
         updated_tickers,
         '',
-        hide_tk_input_message,
+        # hide_tk_input_message,
+        False,
         tk_input_message,
         table_bond_etfs_selected_rows
     )
