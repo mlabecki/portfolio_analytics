@@ -49,7 +49,7 @@ custom_ticker_input_container = {
     'display': 'inline-block',
     'margin-right': '5px',
     'margin-left': '5px',
-    'vertical-align': 'top',
+    'vertical-align': 'center',
     'font-family': 'Helvetica'
 }
 custom_ticker_input_title_css = {
@@ -59,7 +59,7 @@ custom_ticker_input_title_css = {
     'margin-bottom': '0px'
  }
 custom_ticker_input_css = {
-    'width': '120px',
+    'width': '100px',
     'height': '36px',
     'border-color': 'rgb(204, 204, 204)',
     'border-radius': '5px',
@@ -69,9 +69,38 @@ custom_ticker_input_message_css = {
     'display': 'inline-block',
     'font-size': '14px',
     'font-weight': 'bold',
-    'vertical-align': 'top',
+    'vertical-align': 'center',
+    'margin-left': '5px',
     'margin-top': '5px',
     'margin-bottom': '5px'
+}
+table_custom_ticker_info_css = {
+    'display': 'inline-block',
+    'width': '685px',
+    'font-size': '14px',
+    # 'font-weight': 'bold',
+    'vertical-align': 'top',
+    # 'margin-top': '5px',
+    # 'margin-bottom': '5px'
+}
+table_custom_ticker_header_css = {
+    'max-height': '22px',
+    'font-family': 'Helvetica',
+    'font-size' : '14px',
+    'font-weight': 'bold',
+    'background': 'white',
+    'text-align': 'left',
+    'border': 'none'
+}
+table_custom_ticker_data_css = {
+    'max-height': '22px',
+    'font-family': 'Helvetica',
+    'font-size' : '14px',
+    'background': 'white',
+    'text-align': 'left',
+    'border': 'none',
+    'border-top': '1px solid rgb(211, 211, 211)',
+    # 'border-bottom': '1px solid rgb(211, 211, 211)'
 }
 
 # Collapse button

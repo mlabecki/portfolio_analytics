@@ -58,6 +58,7 @@ tickers_risk_free_treasury = list(risk_free_treasury_tickers.keys())
 tickers_volatility_indices = list(volatility_tickers.keys())
 
 input_table_columns = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End']
+custom_ticker_table_columns = ['Ticker', 'Name', 'Data Start', 'Data End']
 
 # df_ticker_info = pd.DataFrame(index = df['Symbol'], columns = input_table_columns)
 df_info_tickers_bond_etfs = pd.DataFrame(index = tickers_bond_etfs, columns = input_table_columns)
@@ -221,6 +222,7 @@ table_bond_etfs = html.Div([
     )
 ])
 
+
 # table_bond_etfs_title = 'Top Bond ETFs by Total Assets'
 table_bond_etfs_title = 'TOP BOND ETFs by Total Assets Under Management'
 
@@ -273,14 +275,22 @@ app.layout = html.Div([
                 ],
                 style = custom_ticker_input_container
             ),
+
+            html.Div(
+                id = 'custom-ticker-input-message',
+                hidden = True,
+                style = custom_ticker_input_message_css
+            ),
+
             html.Div(
                 id = 'custom-ticker-info-container',
+                hidden = False,
                 children = [
                     # Change to datatable
                     html.Div(
-                        id = 'custom-ticker-input-message',
-                        hidden = True,
-                        style = custom_ticker_input_message_css
+                        id = 'table-custom-ticker-info',
+                        # hidden = False,
+                        style = table_custom_ticker_info_css
                     ),
                     html.Div(
                         id = 'custom-ticker-info-buttons',
@@ -326,18 +336,25 @@ app.layout = html.Div([
                                     'width': '75px'
                                 }
                             )
-                        ]
+                        ],
+                        style = {
+                            'display': 'inline-block',
+                            'vertical-align': 'bottom',
+                            # 'padding': '5px'
+                        }
                     )
                 ],
                 style = {
                     'display': 'inline-block',
                     'vertical-align': 'bottom',
-                    'padding': '5px'
+                    'margin-left': '5px'
+                    # 'padding': '5px'
                 }
             )
         ],
         style = {
-            'display': 'block'
+            'display': 'block',
+            'margin-bottom': '5px'
         }
     ),
 
@@ -387,7 +404,9 @@ app.layout = html.Div([
     Output('select-ticker-list', 'children'),
     Output('custom-ticker-input', 'value'),
     Output('custom-ticker-input-message', 'hidden'),
+    Output('custom-ticker-info-container', 'hidden'),
     Output('custom-ticker-input-message', 'children'),
+    Output('table-custom-ticker-info', 'children'),
     Output('table-bond-etfs', 'selected_rows'),
 
     Input('table-bond-etfs', 'data'),
@@ -430,7 +449,10 @@ def output_custom_tickers(
     # Read in ticker from input button
 
     hide_tk_input_message = True
+    hide_custom_ticker_info = True
     tk_input_message = ''
+    # custom_ticker_info = ''
+    table_custom_ticker_info = []
     tk_input = tk_input.upper()
 
     if (tk_input != '') & (tk_input not in selected_tickers):
@@ -439,7 +461,7 @@ def output_custom_tickers(
         # Unfortunately a failure of yf.Ticker(tk).info query does not add tk to yf.shared._ERRORS
         # yf.Ticker().history() does, but unlike yf.download keeps adding invalid tickers to _ERRORS.keys()
         if tk_input in yf.shared._ERRORS.keys():
-            tk_input_message = f"ERROR: Invalid ticker '{tk_input}'"
+            tk_input_message = f'ERROR: Invalid ticker {tk_input}'
             hide_tk_input_message = False
         else:
             updated_tickers.append(tk_input)
@@ -462,7 +484,16 @@ def output_custom_tickers(
             tk_name = ticker_name_dates_info[tk_input]['name']
             tk_start = ticker_name_dates_info[tk_input]['start']
             tk_end = ticker_name_dates_info[tk_input]['end']
-            tk_input_message = f'{tk_input}\t{tk_name}\t{tk_start}\t{tk_end}'
+            
+            hide_custom_ticker_info = False
+
+            table_custom_ticker_info = dash_table.DataTable(
+                columns = [{'name': i, 'id': i} for i in custom_ticker_table_columns],
+                data = [{'Ticker': tk_input, 'Name': tk_name, 'Data Start': tk_start, 'Data End': tk_end}],
+                id = 'table-custom-ticker',
+                style_header = table_custom_ticker_header_css,
+                style_data = table_custom_ticker_data_css
+            )
                 
     elif (tk_input == '') & (remove_tk != ''):
         hide_tk_input_message = True
@@ -543,9 +574,11 @@ def output_custom_tickers(
         hide_ticker_container,
         updated_tickers,
         '',
-        # hide_tk_input_message,
-        False,
+        hide_tk_input_message,
+        hide_custom_ticker_info,
         tk_input_message,
+        # custom_ticker_info,
+        table_custom_ticker_info,
         table_bond_etfs_selected_rows
     )
 
