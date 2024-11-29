@@ -259,7 +259,7 @@ app.layout = html.Div([
                 children = [
                     html.Div([
                         html.Div(
-                            'Ticker',
+                            'Add Ticker:',
                             id = 'custom-ticker-input-title',
                             style = custom_ticker_input_title_css
                         ),
@@ -344,12 +344,7 @@ app.layout = html.Div([
                         }
                     )
                 ],
-                style = {
-                    'display': 'inline-block',
-                    'vertical-align': 'bottom',
-                    'margin-left': '5px'
-                    # 'padding': '5px'
-                }
+                style = custom_ticker_info_container_css
             )
         ],
         style = {
@@ -457,7 +452,7 @@ def output_custom_tickers(
 
     if (tk_input != '') & (tk_input not in selected_tickers):
         # _ = yf.download(tk_input, progress = False)
-        tk_hist = yf.Ticker(tk_input).history()
+        tk_hist = yf.Ticker(tk_input).history(period = 'max')
         # Unfortunately a failure of yf.Ticker(tk).info query does not add tk to yf.shared._ERRORS
         # yf.Ticker().history() does, but unlike yf.download keeps adding invalid tickers to _ERRORS.keys()
         if tk_input in yf.shared._ERRORS.keys():

@@ -53,7 +53,7 @@ custom_ticker_input_container = {
     'font-family': 'Helvetica'
 }
 custom_ticker_input_title_css = {
-    'font-size': '15px',
+    'font-size': '14px',
     'font-weight': 'bold',
     'vertical-align': 'top',
     'margin-bottom': '0px'
@@ -69,19 +69,22 @@ custom_ticker_input_message_css = {
     'display': 'inline-block',
     'font-size': '14px',
     'font-weight': 'bold',
+    'color': 'darkred',
     'vertical-align': 'center',
     'margin-left': '5px',
     'margin-top': '5px',
     'margin-bottom': '5px'
 }
+custom_ticker_info_container_css = {
+    'display': 'inline-block',
+    'vertical-align': 'bottom',
+    'margin-left': '10px'
+}
 table_custom_ticker_info_css = {
     'display': 'inline-block',
     'width': '685px',
     'font-size': '14px',
-    # 'font-weight': 'bold',
-    'vertical-align': 'top',
-    # 'margin-top': '5px',
-    # 'margin-bottom': '5px'
+    'vertical-align': 'top'
 }
 table_custom_ticker_header_css = {
     'max-height': '22px',
