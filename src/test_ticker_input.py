@@ -235,7 +235,7 @@ app.layout = html.Div([
     html.Div(id = 'ticker-output', hidden = True, style = {'font-size' : '14px'}),
 
     html.Div(
-        'Add tickers to your portfolio by typing in the box or selecting from the lists below',
+        'Add tickers to your portfolio by typing in the Add Ticker box or selecting from the lists below',
         id = 'ticker-main-title',
         hidden = False,
         style = ticker_main_title_css
@@ -349,7 +349,8 @@ app.layout = html.Div([
         ],
         style = {
             'display': 'block',
-            'margin-bottom': '5px'
+            'margin-bottom': '5px',
+            'margin-top': '10px'
         }
     ),
 

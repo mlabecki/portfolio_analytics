@@ -6,7 +6,7 @@ ticker_main_title_css = {
     'color': 'navy',
     'padding': '5px',
     'border-bottom': '1px solid navy',
-    'margin-bottom': '5px'
+    'margin-bottom': '10px'
 }
 
 # Input data table
@@ -60,10 +60,11 @@ custom_ticker_input_title_css = {
  }
 custom_ticker_input_css = {
     'width': '100px',
-    'height': '36px',
+    'height': '32px',
     'border-color': 'rgb(204, 204, 204)',
     'border-radius': '5px',
-    'font-size': '15px'
+    'font-size': '15px',
+    'margin-bottom': '5px'
 }
 custom_ticker_input_message_css = {
     'display': 'inline-block',
@@ -124,7 +125,7 @@ select_ticker_container_css = {
     'border': '1px solid rgba(0, 126, 255, .24)',
     'border-radius': '2px',
     'margin-top': '5px',            
-    'margin-bottom': '5px',
+    # 'margin-bottom': '5px',
     'margin-left': '5px',            
     'padding-left': '5px',
 }
