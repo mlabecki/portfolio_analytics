@@ -11,7 +11,7 @@ ticker_main_title_css = {
 
 # Input data table
 input_table_container_css = {
-    'width': '800px',
+    'width': '1000px',
     # 'height': '650px',
     'font-family': 'Helvetica',
     'font-size' : '14px',
@@ -44,6 +44,11 @@ input_table_title_css = {
 }
 
 # Custom ticker input
+custom_ticker_all_container_css = {
+    'display': 'block',
+    'margin-bottom': '5px',
+    'margin-top': '10px'
+}
 custom_ticker_input_container = {
     # 'display': 'block',
     'display': 'inline-block',
@@ -83,7 +88,7 @@ custom_ticker_info_container_css = {
 }
 table_custom_ticker_info_css = {
     'display': 'inline-block',
-    'width': '685px',
+    'width': '885px',
     'font-size': '14px',
     'vertical-align': 'top'
 }
@@ -116,7 +121,7 @@ collapse_button_table_css = {
     'text-align': 'left',
     'font-family': 'Helvetica',
     'font-weight': 'bold',
-    'width': '800px'
+    'width': '1000px'
 }
 
 # Selected tickers elements
