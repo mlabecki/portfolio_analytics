@@ -130,7 +130,7 @@ select_ticker_container_css = {
     'border': '1px solid rgba(0, 126, 255, .24)',
     'border-radius': '2px',
     'margin-top': '5px',            
-    # 'margin-bottom': '5px',
+    'margin-right': '5px',
     'margin-left': '5px',            
     'padding-left': '5px',
 }
@@ -175,6 +175,7 @@ select_ticker_right_css = {
     'border': '1px solid rgba(0, 126, 255, .24)',
     'color': '#007eff',
     'display': 'inline-block',
+    'cursor': 'context-menu',
     'font-family': 'Helvetica',
     'font-size': '14px',
     'line-height': '1.5',
@@ -182,4 +183,26 @@ select_ticker_right_css = {
     'padding-right': '5px',
     # 'margin-top': '5px',
     'vertical-align': 'center'
+}
+
+# Popover
+popover_select_ticker_css = {
+    'font-family': 'Helvetica',
+    'font-size': '14px',                        
+    'border-radius': '5px'                    
+}
+popover_select_ticker_header = {
+    'color': 'rgb(0, 126, 255)',
+    'font-size': '16px'
+}
+popover_select_ticker_left_css = {
+    'width': '90px',
+    'padding-left': '5px',
+    'padding-right': '5px',
+    'display': 'inline-block'
+}
+popover_select_ticker_right_css = {
+    'width': '85px',
+    'padding-left': '5px',
+    'display': 'inline-block'
 }

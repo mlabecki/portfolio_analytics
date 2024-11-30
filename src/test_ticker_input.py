@@ -58,8 +58,8 @@ tickers_risk_free_treasury = list(risk_free_treasury_tickers.keys())
 tickers_volatility_indices = list(volatility_tickers.keys())
 tickers_currency_etfs = list(currency_etf_tickers.keys())
 
-input_table_columns = ['No.', 'Ticker', 'Name', 'Type', 'Exchange', 'Currency', 'Data Start', 'Data End']
-custom_ticker_table_columns = ['Ticker', 'Name', 'Type', 'Exchange', 'Currency', 'Data Start', 'Data End']
+input_table_columns = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Exchange', 'Currency']
+custom_ticker_table_columns = ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Exchange', 'Currency']
 
 # df_ticker_info = pd.DataFrame(index = df['Symbol'], columns = input_table_columns)
 df_info_tickers_bond_etfs = pd.DataFrame(index = tickers_bond_etfs, columns = input_table_columns)
@@ -214,6 +214,7 @@ table_bond_etfs = html.Div([
         data = df_info_tickers_bond_etfs.to_dict('records'),
         editable = False,
         row_selectable = 'multi',
+        column_selectable = 'multi',
         selected_rows=[],
         style_as_list_view = True,
         style_data_conditional = [
@@ -223,10 +224,17 @@ table_bond_etfs = html.Div([
                 'backgroundColor': 'white',
                 'border-top': '1px solid rgb(211, 211, 211)',
                 'border-bottom': '1px solid rgb(211, 211, 211)'},
-            {'if': {'column_id': ' '}, 'cursor': 'pointer'},
-            # {'if': {'column_id': 'Name'}, 'textAlign': 'left', 'text-indent': '10px', 'width': 300},
+            # {'if': {'column_id': ' '}, 'cursor': 'pointer'},
+            # {'if': {'column_id': 'Currency'}, 'textAlign': 'left', 'text-indent': '10px', 'width': 100},
+            {'if': {'column_id': 'Ticker'}, 'width': 45},
+            {'if': {'column_id': 'Type'}, 'width': 38},
+            {'if': {'column_id': 'Currency'}, 'width': 70},
+            {'if': {'column_id': 'Exchange'}, 'width': 72},
+            {'if': {'column_id': 'Data Start'}, 'width': 85},
+            {'if': {'column_id': 'Data End'}, 'width': 85},
         ],
         # fixed_rows = {'headers': True},
+        # fixed_columns = {'headers': True},
         id = 'table-bond-etfs',
         style_header = input_table_header_css,
         style_data = input_table_data_css,
@@ -240,6 +248,7 @@ table_bond_etfs_title = 'TOP BOND ETFs by Total Assets Under Management'
 ###########################################################################################
 
 app = dash.Dash(__name__, external_stylesheets = [dbc.themes.YETI])
+# app = dash.Dash(__name__, external_stylesheets = [dbc.themes.BOOTSTRAP])
 
 app.layout = html.Div([
 
@@ -536,7 +545,37 @@ def output_custom_tickers(
                     ],
                     id = f'select-ticker-label-{tk}',
                     style = select_ticker_right_css
-                )
+                ),
+                dbc.Popover(
+                    [
+                        html.Div(
+                            [
+                                html.B(tk, style = popover_select_ticker_header), html.Br(),
+                                html.B('Data Start:'), html.Br(),
+                                html.B('Data End:'), html.Br(),
+                                html.B('Type:'), html.Br(),
+                                html.B('Exchange:'), html.Br(),
+                                html.B('Currency:')
+                            ],
+                            style = popover_select_ticker_left_css
+                        ),
+                        html.Div(
+                            [
+                                html.Span(), html.Br(),
+                                html.Span(f"{ticker_info[tk]['start']}"), html.Br(),
+                                html.Span(f"{ticker_info[tk]['end']}"), html.Br(),
+                                html.Span(f"{ticker_info[tk]['type']}"), html.Br(),
+                                html.Span(f"{ticker_info[tk]['exchange']}"), html.Br(),
+                                html.Span(f"{ticker_info[tk]['currency']}")
+                            ],
+                            style = popover_select_ticker_right_css
+                        )
+                    ],
+                    target = f'select-ticker-label-{tk}',
+                    body = True,
+                    trigger = 'hover',
+                    style = popover_select_ticker_css
+                ),
             ],
             style = select_ticker_div_css
         )
