@@ -557,6 +557,7 @@ def output_custom_tickers(
                                 html.B('Exchange:'), html.Br(),
                                 html.B('Currency:')
                             ],
+                            id = 'popover-select-ticker-left',
                             style = popover_select_ticker_left_css
                         ),
                         html.Div(
@@ -568,9 +569,17 @@ def output_custom_tickers(
                                 html.Span(f"{ticker_info[tk]['exchange']}"), html.Br(),
                                 html.Span(f"{ticker_info[tk]['currency']}")
                             ],
+                            id = 'popover-select-ticker-right',
                             style = popover_select_ticker_right_css
+                        ),
+                        html.Br(),
+                        html.Div(
+                            f"{ticker_info[tk]['summary']}",
+                            id = 'popover-select-ticker-summary',
+                            style = popover_select_ticker_summary
                         )
                     ],
+                    id = 'popover-select-ticker',
                     target = f'select-ticker-label-{tk}',
                     body = True,
                     trigger = 'hover',

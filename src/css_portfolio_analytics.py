@@ -206,3 +206,8 @@ popover_select_ticker_right_css = {
     'padding-left': '5px',
     'display': 'inline-block'
 }
+popover_select_ticker_summary = {
+    'font-size': '12px',
+    'padding-top': '10px',
+    'padding-left': '5px'
+}
