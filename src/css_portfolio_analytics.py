@@ -11,7 +11,7 @@ ticker_main_title_css = {
 
 # Input data table
 input_table_container_css = {
-    'width': '1000px',
+    'width': '1050px',
     # 'height': '650px',
     'font-family': 'Helvetica',
     'font-size' : '14px',
@@ -64,11 +64,11 @@ custom_ticker_input_title_css = {
     'margin-bottom': '0px'
  }
 custom_ticker_input_css = {
-    'width': '100px',
+    'width': '145px',
     'height': '32px',
     'border-color': 'rgb(204, 204, 204)',
     'border-radius': '5px',
-    'font-size': '15px',
+    'font-size': '13px',
     'margin-bottom': '5px'
 }
 custom_ticker_input_message_css = {
@@ -88,7 +88,7 @@ custom_ticker_info_container_css = {
 }
 table_custom_ticker_info_css = {
     'display': 'inline-block',
-    'width': '885px',
+    'width': '890px',
     'font-size': '14px',
     'vertical-align': 'top'
 }
@@ -121,7 +121,7 @@ collapse_button_table_css = {
     'text-align': 'left',
     'font-family': 'Helvetica',
     'font-weight': 'bold',
-    'width': '1000px'
+    'width': '1050px'
 }
 
 # Selected tickers elements
@@ -192,22 +192,27 @@ popover_select_ticker_css = {
     'border-radius': '5px'                    
 }
 popover_select_ticker_header = {
+    'width': '230px',
+    'padding-left': '5px',
+    'margin-bottom': '6px',
     'color': 'rgb(0, 126, 255)',
-    'font-size': '16px'
+    'font-size': '16px',
+    'display': 'block'
 }
 popover_select_ticker_left_css = {
     'width': '90px',
     'padding-left': '5px',
-    'padding-right': '5px',
+    # 'padding-right': '5px',
     'display': 'inline-block'
 }
 popover_select_ticker_right_css = {
-    'width': '85px',
-    'padding-left': '5px',
+    'width': '140px',
+    # 'padding-left': '5px',
     'display': 'inline-block'
 }
 popover_select_ticker_summary = {
     'font-size': '12px',
-    'padding-top': '10px',
-    'padding-left': '5px'
+    'padding-top': '8px',
+    'padding-left': '5px',
+    'display': 'block'
 }

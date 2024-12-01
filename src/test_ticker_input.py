@@ -390,7 +390,7 @@ def output_custom_tickers(
 
     if 1 in n_clicks:
         if ctx.triggered:
-            trig_id_str_list = [ctx.triggered[k]['prop_id'].split('.')[0] for k in range(len(ctx.triggered)) if ctx.triggered[k]['value']]
+            trig_id_str_list = [ctx.triggered[k]['prop_id'].split('.n_clicks')[0] for k in range(len(ctx.triggered)) if ctx.triggered[k]['value']]
             if len(trig_id_str_list) > 0:
                 trig_id_str = trig_id_str_list[0]  # this is a stringified dictionary with whitespaces removed
                 remove_tk = trig_id_str.split('{"index":"')[1].split('","type"')[0].replace('select-ticker-icon-', '')  # {tk}
@@ -410,7 +410,6 @@ def output_custom_tickers(
     hide_tk_input_message = True
     hide_custom_ticker_info = True
     tk_input_message = ''
-    # custom_ticker_info = ''
     table_custom_ticker_info = []
     tk_input = tk_input.upper()
 
@@ -548,31 +547,36 @@ def output_custom_tickers(
                 ),
                 dbc.Popover(
                     [
-                        html.Div(
-                            [
-                                html.B(tk, style = popover_select_ticker_header), html.Br(),
-                                html.B('Data Start:'), html.Br(),
-                                html.B('Data End:'), html.Br(),
-                                html.B('Type:'), html.Br(),
-                                html.B('Exchange:'), html.Br(),
-                                html.B('Currency:')
+                        html.B(tk, style = popover_select_ticker_header), 
+                        html.Div([
+                            html.Div(
+                                [
+                                    # html.B(tk, style = popover_select_ticker_header), html.Br(),
+                                    html.B('Data Start:'), html.Br(),
+                                    html.B('Data End:'), html.Br(),
+                                    html.B('Type:'), html.Br(),
+                                    html.B('Exchange:'), html.Br(),
+                                    html.B('Currency:')
+                                ],
+                                id = 'popover-select-ticker-left',
+                                style = popover_select_ticker_left_css
+                            ),
+                            html.Div(
+                                [
+                                    # html.Span(), html.Br(),
+                                    html.Span(f"{ticker_info[tk]['start']}"), html.Br(),
+                                    html.Span(f"{ticker_info[tk]['end']}"), html.Br(),
+                                    html.Span(f"{ticker_info[tk]['type']}"), html.Br(),
+                                    html.Span(f"{ticker_info[tk]['exchange']}"), html.Br(),
+                                    html.Span(f"{ticker_info[tk]['currency']}")
+                                ],
+                                id = 'popover-select-ticker-right',
+                                style = popover_select_ticker_right_css
+                            )
                             ],
-                            id = 'popover-select-ticker-left',
-                            style = popover_select_ticker_left_css
+                            style = {'display': 'block'}
                         ),
-                        html.Div(
-                            [
-                                html.Span(), html.Br(),
-                                html.Span(f"{ticker_info[tk]['start']}"), html.Br(),
-                                html.Span(f"{ticker_info[tk]['end']}"), html.Br(),
-                                html.Span(f"{ticker_info[tk]['type']}"), html.Br(),
-                                html.Span(f"{ticker_info[tk]['exchange']}"), html.Br(),
-                                html.Span(f"{ticker_info[tk]['currency']}")
-                            ],
-                            id = 'popover-select-ticker-right',
-                            style = popover_select_ticker_right_css
-                        ),
-                        html.Br(),
+                        # html.Br(),
                         html.Div(
                             f"{ticker_info[tk]['summary']}",
                             id = 'popover-select-ticker-summary',
