@@ -98,7 +98,12 @@ for i, tk in enumerate(tickers_bond_etfs):
         tk_type = yf_tk_info['quoteType'] if 'quoteType' in yf_tk_info.keys() else ''
         tk_exchange = yf_tk_info['exchange'] if 'exchange' in yf_tk_info.keys() else ''
         tk_currency = yf_tk_info['currency'] if 'currency' in yf_tk_info.keys() else ''
-        tk_summary = yf_tk_info['longBusinessSummary'] if 'longBusinessSummary' in yf_tk_info.keys() else ''
+        if 'longBusinessSummary' in yf_tk_info.keys():
+            tk_summary = yf_tk_info['longBusinessSummary']
+        elif 'description' in yf_tk_info.keys():
+            tk_summary = yf_tk_info['description']
+        else: 
+            tk_summary = ''
 
         df_info_tickers_bond_etfs.at[tk, 'Name'] = tk_name
         df_info_tickers_bond_etfs.at[tk, 'Data Start'] = tk_start
@@ -438,7 +443,12 @@ def output_custom_tickers(
                 tk_type = tk_info['quoteType'] if 'quoteType' in tk_info.keys() else ''
                 tk_exchange = tk_info['exchange'] if 'exchange' in tk_info.keys() else ''
                 tk_currency = tk_info['currency'] if 'currency' in tk_info.keys() else ''
-                tk_summary = tk_info['longBusinessSummary'] if 'longBusinessSummary' in tk_info.keys() else ''
+                if 'longBusinessSummary' in tk_info.keys():
+                    tk_summary = tk_info['longBusinessSummary']
+                elif 'description' in tk_info.keys():
+                    tk_summary = tk_info['description']
+                else: 
+                    tk_summary = ''
 
                 ticker_info.update({
                     tk_input: {
