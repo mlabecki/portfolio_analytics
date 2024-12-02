@@ -47,9 +47,9 @@ url_settings = {
         'category_name': 'Biggest ETFs',
         'url': 'https://8marketcap.com/etfs/',
         'cols': ['Symbol', 'Name', 'Market Cap'],
-        'cols_final': ['Symbol', 'Name', 'Market Cap ($B)'],
-        # 'cols_final': ['Symbol', 'Fund Name', 'Market Cap ($B)'],
-        'sort_by': 'Market Cap ($B)',
+        'cols_final': ['Symbol', 'Name', 'Assets ($B)'],
+        # NOTE: YF ETF's totalAssets are equivalent of Market Cap on this page
+        'sort_by': 'Assets ($B)',
         'sort_by_factor': 1e9,
         'sort_by_type': float
     },
@@ -58,6 +58,34 @@ url_settings = {
         'url': 'https://stockanalysis.com/list/crypto-etfs/',
         'cols': ['Symbol', 'Fund Name', 'Assets'],
         # 'cols_final': ['Symbol', 'Fund Name', 'Assets ($MM)'],
+        'cols_final': ['Symbol', 'Name', 'Assets ($MM)'],
+        'sort_by': 'Assets ($MM)',
+        'sort_by_factor': 1e6,
+        'sort_by_type': float
+    },
+    # NOTE: The Total Assets on page below do not agree with YF totalAssets
+    # 'bond_etfs': {
+        # 'category_name': 'Bond ETFs',
+        # 'url': 'https://etfdb.com/etfdb-category/total-bond-market/',
+        # 'cols': [' Symbol ', ' ETF Name ', ' Total Assets '],
+        # 'cols_final': ['Symbol', 'Name', 'Assets ($MM)'],
+        # 'sort_by': 'Assets ($MM)',
+        # 'sort_by_factor': 1e6,
+        # 'sort_by_type': float
+    # },
+    'fixed_income_etfs': {
+        'category_name': 'Fixed Income ETFs',
+        'url': 'https://stockanalysis.com/list/fixed-income-etfs/',
+        'cols': ['Symbol', 'Fund Name', 'Assets'],
+        'cols_final': ['Symbol', 'Name', 'Assets ($MM)'],
+        'sort_by': 'Assets ($MM)',
+        'sort_by_factor': 1e6,
+        'sort_by_type': float
+    },
+    'ai_etfs': {
+        'category_name': 'Artificial Intelligence ETFs',
+        'url': 'https://stockanalysis.com/list/artificial-intelligence-etfs/',
+        'cols': ['Symbol', 'Fund Name', 'Assets'],
         'cols_final': ['Symbol', 'Name', 'Assets ($MM)'],
         'sort_by': 'Assets ($MM)',
         'sort_by_factor': 1e6,
@@ -72,15 +100,15 @@ url_settings = {
         'sort_by_factor': 1e9,
         'sort_by_type': float
     },
-    'cryptos_coin360': {
-        'category_name': 'Cryptos Coin360',
-        'url': 'https://coin360.com/coin',
-        'cols': ['Symbol', 'Name', 'Market Cap (USD)'],
-        'cols_final': ['Symbol', 'Name', 'Market Cap ($B)'],
-        'sort_by': 'Market Cap ($B)',
-        'sort_by_factor': 1e9,
-        'sort_by_type': float
-    },
+    # 'cryptos_coin360': {
+        # 'category_name': 'Cryptos Coin360',
+        # 'url': 'https://coin360.com/coin',
+        # 'cols': ['Symbol', 'Name', 'Market Cap (USD)'],
+        # 'cols_final': ['Symbol', 'Name', 'Market Cap ($B)'],
+        # 'sort_by': 'Market Cap ($B)',
+        # 'sort_by_factor': 1e9,
+        # 'sort_by_type': float
+    # },
     'futures': {
         'category_name': 'Futures',
         'url': 'https://finance.yahoo.com/commodities/',
@@ -88,8 +116,17 @@ url_settings = {
         'cols_final': ['Symbol', 'Name', 'Volume', 'Open Interest'],
         'sort_by': 'Open Interest',
         'sort_by_factor': 1,
-        'sort_by_type': int
+        'sort_by_type': float
     }
+    # 'forex': {
+        # 'category_name': 'Forex',
+        # 'url': 'https://www.centralcharts.com/en/price-list-ranking/ALL/desc/ts_48-forex-128-currency-pairs--qc_1-alphabetical-order',
+        # 'cols': ['Financial instrument', 'Current price', 'Volume'],
+        # 'cols_final': ['Symbol', 'Price', 'Volume'],
+        # 'sort_by': 'Volume',
+        # 'sort_by_factor': 1,
+        # 'sort_by_type': float
+    # }
 }
 
 # Ticker info

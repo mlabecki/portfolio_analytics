@@ -53,7 +53,6 @@ tickers_magnificent_seven = list(magnificent_7_tickers.keys())
 tickers_precious_metal_futures = list(precious_metal_futures.keys())
 tickers_bond_etfs = list(bond_etf_tickers.keys())
 tickers_commodity_etfs = list(commodity_etf_tickers.keys())
-tickers_crypto_benchmarks = list(crypto_benchmark_tickers.keys())
 tickers_risk_free_treasury = list(risk_free_treasury_tickers.keys())
 tickers_volatility_indices = list(volatility_tickers.keys())
 tickers_currency_etfs = list(currency_etf_tickers.keys())
@@ -68,11 +67,13 @@ custom_ticker_table_columns_futures = ['Ticker', 'Name', 'Data Start', 'Data End
 custom_ticker_table_columns_equities = ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Industry', 'Sector', 'Exchange', 'Currency']
 custom_ticker_table_columns_etfs = ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Category', 'Exchange', 'Currency']
 
+# NOTE: The ticker categories and the number of tickers to download the info of in each of them will be specified by the user
+#       on the page preceding the ticker selection page.
+
 df_info_tickers_bond_etfs = pd.DataFrame(index = tickers_bond_etfs, columns = input_table_columns_etfs)
 df_info_tickers_stock_indices = pd.DataFrame(index = tickers_stock_indices, columns = input_table_columns_indices)
 df_info_tickers_magnificent_seven = pd.DataFrame(index = tickers_magnificent_seven, columns = input_table_columns_equities)
 df_info_tickers_commodity_etfs = pd.DataFrame(index = tickers_commodity_etfs, columns = input_table_columns_etfs)
-df_info_tickers_crypto_benchmarks = pd.DataFrame(index = tickers_crypto_benchmarks, columns = input_table_columns_etfs)
 df_info_tickers_precious_metal_futures = pd.DataFrame(index = tickers_precious_metal_futures, columns = input_table_columns_futures)
 df_info_tickers_risk_free_treasury = pd.DataFrame(index = tickers_risk_free_treasury, columns = input_table_columns_indices)
 df_info_tickers_volatility_indices = pd.DataFrame(index = tickers_volatility_indices, columns = input_table_columns_indices)
@@ -82,7 +83,6 @@ row_ticker_map_bond_etfs = {}
 row_ticker_map_stock_indices = {}
 row_ticker_map_magnificent_seven = {}
 row_ticker_map_commodity_etfs = {}
-row_ticker_map_crypto_benchmarks = {}
 row_ticker_map_precious_metal_futures = {}
 row_ticker_map_risk_free_treasury = {}
 row_ticker_map_volatility_indices = {}
@@ -92,51 +92,69 @@ ticker_category_info_map = {
     'bond_etfs': {
         'df': df_info_tickers_bond_etfs,
         'row': row_ticker_map_bond_etfs,
-        'dict': bond_etf_tickers
+        'dict': bond_etf_tickers,
+        'sort_by': 'totalAssets',
+        'table_id': 'table-bond-etfs',
+        'table_title': 'TOP BOND ETFs by Total Assets'
     },
     'stock_indices': {
         'df': df_info_tickers_stock_indices,
         'row': row_ticker_map_stock_indices,
-        'dict': stock_index_tickers
+        'dict': stock_index_tickers,
+        'sort_by': '',  # Only some indices have 'volume' in info
+        'table_id': 'table-stock-indices',
+        'table_title': 'SELECTED STOCK INDICES'
     },
     'magnificent_seven': {
         'df': df_info_tickers_magnificent_seven,
         'row': row_ticker_map_magnificent_seven,
-        'dict': magnificent_7_tickers
+        'dict': magnificent_7_tickers,
+        'sort_by': 'marketCap',
+        'table_id': 'table-magnificent-seven',
+        'table_title': 'MAGNIFICENT SEVEN sorted by Market Cap'
     },
     'commodity_etfs': {
         'df': df_info_tickers_commodity_etfs,
         'row': row_ticker_map_commodity_etfs,
-        'dict': commodity_etf_tickers
-    },
-    'crypto_benchmarks': {
-        'df': df_info_tickers_crypto_benchmarks,
-        'row': row_ticker_map_crypto_benchmarks,
-        'dict': crypto_benchmark_tickers
+        'dict': commodity_etf_tickers,
+        'sort_by': 'totalAssets',
+        'table_id': 'table-commodity-etfs',
+        'table_title': 'SELECTED COMMODITY ETFs sorted by Total Assets'
     },
     'precious_metal_futures': {
         'df': df_info_tickers_precious_metal_futures,
         'row': row_ticker_map_precious_metal_futures,
-        'dict': precious_metal_futures
+        'dict': precious_metal_futures,
+        'sort_by': 'openInterest',
+        'table_id': 'table-precious-metals',
+        'table_title': 'PRECIOUS METALS sorted by Open Interest'
     },
     'risk_free_treasury': {
         'df': df_info_tickers_risk_free_treasury,
         'row': row_ticker_map_risk_free_treasury,
-        'dict': risk_free_treasury_tickers
+        'dict': risk_free_treasury_tickers,
+        'sort_by': '',  # No 'volume' in info
+        'table_id': 'table-risk-free-treasury-indices',
+        'table_title': 'RISK-FREE TREASURY INDICES'
     },
     'volatility_indices': {
         'df': df_info_tickers_volatility_indices,
         'row': row_ticker_map_volatility_indices,
-        'dict': volatility_tickers
+        'dict': volatility_tickers,
+        'sort_by': '',  # No 'volume' in info
+        'table_id': 'table-volatility-indices',
+        'table_title': 'VOLATILITY INDICES'
     },
     'currency_etfs': {
         'df': df_info_tickers_currency_etfs,
         'row': row_ticker_map_currency_etfs,
-        'dict': currency_etf_tickers
+        'dict': currency_etf_tickers,
+        'sort_by': 'totalAssets',
+        'table_id': 'table-currency-etfs',
+        'table_title': 'SELECTED CURRENCY ETFs sorted by Total Assets'
     }
 }
 
-# ticker_menu_info = {}
 ticker_info = {}  # To help user decide on tickers based on the name and data start and end dates
 
 def create_input_table(category):
@@ -144,9 +162,18 @@ def create_input_table(category):
     df_info_tickers = ticker_category_info_map[category]['df']
     row_ticker_map = ticker_category_info_map[category]['row']
     dict_info_tickers = ticker_category_info_map[category]['dict']
+    tk_sort_by = ticker_category_info_map[category]['sort_by']
+    
     category_tickers = list(dict_info_tickers.keys())
+    category_tickers_sorted = category_tickers
 
-    for i, tk in enumerate(category_tickers):
+    # Sort ticker list by marketCap (equities), totalAssets (ETFs) or openInterest (futures)
+    if tk_sort_by != '':
+        dict_tickers_values = {tk: yf.Ticker(tk).info[tk_sort_by] for tk in category_tickers}
+        category_tickers_sorted = [i[0] for i in sorted(dict_tickers_values.items(), key=itemgetter(1), reverse=True)]
+        df_info_tickers.index = category_tickers_sorted  
+
+    for i, tk in enumerate(category_tickers_sorted):
 
         if tk not in ticker_info.keys():
             
@@ -245,8 +272,8 @@ for category in ticker_category_info_map.keys():
     print(ticker_category_info_map[category]['df'])
     print(ticker_category_info_map[category]['row'])
 
-
-print(df_info_tickers_magnificent_seven)
+print(f'\nTotal tickers: {len(ticker_info)}')
+# print(df_info_tickers_magnificent_seven)
 
 import sys
 sys.exit()
@@ -388,38 +415,44 @@ ticker_div_title = html.Div(
 
 # ticker_divs = create_ticker_divs(ticker_names, ticker_div_title)
 
-table_bond_etfs = html.Div([
-    dash_table.DataTable(
-        columns = [{'name': i, 'id': i} for i in input_table_columns],
-        data = df_info_tickers_bond_etfs.to_dict('records'),
-        editable = False,
-        row_selectable = 'multi',
-        column_selectable = 'multi',
-        selected_rows=[],
-        style_as_list_view = True,
-        style_data_conditional = [
-            # {'if': {'state': 'active'},'backgroundColor': 'white', 'border': '1px solid white'},
-            {'if': {
-                'state': 'active'},
-                'backgroundColor': 'white',
-                'border-top': '1px solid rgb(211, 211, 211)',
-                'border-bottom': '1px solid rgb(211, 211, 211)'},
-            # {'if': {'column_id': ' '}, 'cursor': 'pointer'},
-            # {'if': {'column_id': 'Currency'}, 'textAlign': 'left', 'text-indent': '10px', 'width': 100},
-            {'if': {'column_id': 'Ticker'}, 'width': 45},
-            {'if': {'column_id': 'Type'}, 'width': 38},
-            {'if': {'column_id': 'Currency'}, 'width': 70},
-            {'if': {'column_id': 'Exchange'}, 'width': 72},
-            {'if': {'column_id': 'Data Start'}, 'width': 85},
-            {'if': {'column_id': 'Data End'}, 'width': 85},
-        ],
-        # fixed_rows = {'headers': True},
-        # fixed_columns = {'headers': True},
-        id = 'table-bond-etfs',
-        style_header = input_table_header_css,
-        style_data = input_table_data_css,
-    )
-])
+input_table = {}  # A dictionary mapping ticker category to the corresponding input table
+
+for category in ticker_category_info_map.keys():
+    
+    input_table[category] = html.Div([
+        dash_table.DataTable(
+            columns = [{'name': i, 'id': i} for i in ticker_category_info_map[category]['df'].columns],
+            data = ticker_category_info_map['df'].to_dict('records'),
+            editable = False,
+            row_selectable = 'multi',
+            # column_selectable = 'multi',
+            selected_rows = [],
+            style_as_list_view = True,
+            style_data_conditional = [
+                # {'if': {'state': 'active'},'backgroundColor': 'white', 'border': '1px solid white'},
+                {'if': {
+                    'state': 'active'},
+                    'backgroundColor': 'white',
+                    'border-top': '1px solid rgb(211, 211, 211)',
+                    'border-bottom': '1px solid rgb(211, 211, 211)'},
+                # {'if': {'column_id': ' '}, 'cursor': 'pointer'},
+                {'if': {'column_id': 'Ticker'}, 'width': 45},
+                # {'if': {'column_id': 'Type'}, 'width': 38},
+                {'if': {'column_id': 'Currency'}, 'width': 70},
+                {'if': {'column_id': 'Exchange'}, 'width': 72},
+                {'if': {'column_id': 'Data Start'}, 'width': 85},
+                {'if': {'column_id': 'Data End'}, 'width': 85},
+                {'if': {'column_id': 'Category'}, 'width': 125},
+                {'if': {'column_id': 'Industry'}, 'width': 125},
+                {'if': {'column_id': 'Sector'}, 'width': 125},
+            ],
+            # fixed_rows = {'headers': True},
+            # fixed_columns = {'headers': True},
+            id = ticker_category_info_map[category]['id'],
+            style_header = input_table_header_css,
+            style_data = input_table_data_css,
+        )
+    ])
 
 
 # table_bond_etfs_title = 'Top Bond ETFs by Total Assets'

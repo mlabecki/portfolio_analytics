@@ -87,8 +87,8 @@ treasury_10y_ticker = '^TNX'
 # Bond tickers based on Asset Under Management
 # Source: https://etfdb.com/etfdb-category/total-bond-market/
 bond_etf_tickers = {
-    'AGG': 'iShares Core U.S. Aggregate Bond ETF',
     'BND': 'Vanguard Total Bond Market Index Fund',
+    'AGG': 'iShares Core U.S. Aggregate Bond ETF',
     'BNDX': 'Vanguard Total International Bond ETF',
     'BSV': 'Vanguard Short Term Bond ETF',
     'IUSB': 'iShares Core Total USD Bond Market ETF',
@@ -181,7 +181,9 @@ currency_etf_tickers = {
 ### CRYPTOS ###
 # Crypto market benchmarks
 crypto_benchmark_tickers = {
-    'BITW': 'Bitwise 10 Crypto Index Fund',
+    # 'BITW': 'Bitwise 10 Crypto Index Fund',  
+    # NOTE: BITW is traded on OTC markets, so Yahoo categorizes it as EQUITY but info does not
+    # include industry and sector. See also https://bitwiseinvestments.com/crypto-funds/bitw
     'GBTC': 'Grayscale Bitcoin Trust ETF (BTC)'
 }
 
