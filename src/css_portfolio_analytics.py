@@ -11,7 +11,7 @@ ticker_main_title_css = {
 
 # Input data table
 input_table_container_css = {
-    'width': '1050px',
+    'width': '1100px',
     # 'height': '650px',
     'font-family': 'Helvetica',
     'font-size' : '14px',
@@ -88,7 +88,7 @@ custom_ticker_info_container_css = {
 }
 table_custom_ticker_info_css = {
     'display': 'inline-block',
-    'width': '890px',
+    'width': '940px',
     'font-size': '14px',
     'vertical-align': 'top'
 }
@@ -121,7 +121,7 @@ collapse_button_table_css = {
     'text-align': 'left',
     'font-family': 'Helvetica',
     'font-weight': 'bold',
-    'width': '1050px'
+    'width': '1100px'
 }
 
 # Selected tickers elements
@@ -187,31 +187,32 @@ select_ticker_right_css = {
 
 # Popover
 popover_select_ticker_css = {
+    'max-width': '400px',
     'font-family': 'Helvetica',
     'font-size': '14px',                        
     'border-radius': '5px'                    
 }
 popover_select_ticker_header = {
-    'width': '230px',
+    'width': '250px',
     'padding-left': '5px',
     'margin-bottom': '6px',
     'color': 'rgb(0, 126, 255)',
     'font-size': '16px',
     'display': 'block'
 }
-popover_select_ticker_left_css = {
+popover_select_ticker_keys_css = {
     'width': '90px',
     'padding-left': '5px',
     # 'padding-right': '5px',
     'display': 'inline-block'
 }
-popover_select_ticker_right_css = {
-    'width': '140px',
+popover_select_ticker_values_css = {
+    'width': '250px',
     # 'padding-left': '5px',
     'display': 'inline-block'
 }
 popover_select_ticker_summary = {
-    'font-size': '12px',
+    'font-size': '13px',
     'padding-top': '8px',
     'padding-left': '5px',
     'display': 'block'

@@ -73,6 +73,8 @@ volatility_tickers = {
 
 # NOTE: The lower of the two ticker rates will be used 
 risk_free_treasury_tickers = {
+    '^GSPC': 'S&P 500 Index',  # for testing only
+    '^IXIC': 'NASDAQ Composite',  # for testing only
     '^TNX': '10-Year US Treasury Note',
     '^IRX': '3-Month US Treasury Bill'
 }
@@ -87,6 +89,9 @@ treasury_10y_ticker = '^TNX'
 # Bond tickers based on Asset Under Management
 # Source: https://etfdb.com/etfdb-category/total-bond-market/
 bond_etf_tickers = {
+    'USO':      'United States Oil Fund',  # for testing only
+    'UNG':      'United States Natural Gas Fund',  # for testing only
+
     'BND': 'Vanguard Total Bond Market Index Fund',
     'AGG': 'iShares Core U.S. Aggregate Bond ETF',
     'BNDX': 'Vanguard Total International Bond ETF',
@@ -139,8 +144,8 @@ bond_etf_tickers = {
     'JPIB': 'JPMorgan International Bond Opportunities ETF'
 }
 
-### PRECIOUS METALS ###
-precious_metal_futures = {
+### PRECIOUS METALS SPOT/FUTURES ###
+precious_metals = {
     'GC=F': 'Gold (CMX)',
     'SI=F': 'Silver (CMX)',
     'HG=F': 'Copper (CMX)',
@@ -167,6 +172,8 @@ commodity_etf_tickers = {
 ### NON-CRYPTO CURRENCY ETFS ###
 # Source: https://etfdb.com/etfdb-category/currency/
 currency_etf_tickers = {
+    'GLD':      'SPDR Gold Shares',  # for testing only
+    'IAU':      'iShares Gold Trust',  # for testing only
     'FXY': 'Invesco Currencyshares Japanese Yen Trust',
     'UUP': 'Invesco DB US Dollar Index Bullish Fund',
     'USDU': 'WisdomTree Bloomberg U.S. Dollar Bullish Fund',
