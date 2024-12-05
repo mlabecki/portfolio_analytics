@@ -845,30 +845,34 @@ def output_custom_tickers(
 
     # table_selected_tickers = {}
     # table_nonselected_tickers = {}
-    table_tickers_remove = []  # This should suffice for all tables
-
+    
     for category in ticker_category_info_map.keys():
-        
-        row_map = ticker_category_info_map[category]['row']
 
+        # Must check updated_tickers for tk_input, add it to table_selected_rows if absent    
+        row_map = ticker_category_info_map[category]['row']
         if tk_input != '': 
-            if (tk_input in row_map[tk_input].keys()) & (tk_input not in table_selected_tickers[category]):
+            if (tk_input in row_map.keys()) & (tk_input not in table_selected_tickers[category]):
                 table_selected_rows[category].append(row_map[tk_input])
                 table_selected_tickers[category] = [tk for tk in row_map.keys() if row_map[tk] in table_selected_rows[category]]
-                table_nonselected_tickers[category] = [tk for tk in row_map.keys() if row_map[tk] not in table_selected_rows[category]]
+    ###
+    ###    # table_bond_etfs_selected_tickers = [tk for tk in row_ticker_map_bond_etfs.keys() if row_ticker_map_bond_etfs[tk] in table_bond_etfs_selected_rows]
+    ###    # if (tk_input != '') & (tk_input in row_ticker_map_bond_etfs.keys()) & (tk_input not in table_bond_etfs_selected_tickers):
+    ###    #     table_bond_etfs_selected_rows.append(row_ticker_map_bond_etfs[tk_input])
+    ###    # Remove tickers that are not selected in the table
+    ###    # table_bond_etfs_nonselected_tickers = [tk for tk in row_ticker_map_bond_etfs.keys() if row_ticker_map_bond_etfs[tk] not in table_bond_etfs_selected_rows]
+    ###    
 
-        # table_bond_etfs_selected_tickers = [tk for tk in row_ticker_map_bond_etfs.keys() if row_ticker_map_bond_etfs[tk] in table_bond_etfs_selected_rows]
-        # if (tk_input != '') & (tk_input in row_ticker_map_bond_etfs.keys()) & (tk_input not in table_bond_etfs_selected_tickers):
-        #     table_bond_etfs_selected_rows.append(row_ticker_map_bond_etfs[tk_input])
-        # Remove tickers that are not selected in the table
-        # table_bond_etfs_nonselected_tickers = [tk for tk in row_ticker_map_bond_etfs.keys() if row_ticker_map_bond_etfs[tk] not in table_bond_etfs_selected_rows]
-        
-        for tk in updated_tickers:
-            if tk in table_nonselected_tickers[category]:
-            # if tk in table_bond_etfs_nonselected_tickers:
-                if tk not in table_tickers_remove:
-                    table_tickers_remove.append(tk)
-    
+
+    table_tickers_remove = []  # This should suffice for all tables
+    for tk in updated_tickers:
+        for category in ticker_category_info_map.keys():
+            row_map = ticker_category_info_map[category]['row']
+            if tk in row_map.keys():
+                table_nonselected_tickers[category] = [tk for tk in row_map.keys() if row_map[tk] not in table_selected_rows[category]]
+                if tk in table_nonselected_tickers[category]:
+                    if tk not in table_tickers_remove:
+                        table_tickers_remove.append(tk)
+#     
     for tk in table_tickers_remove:
         # if tk in updated_tickers:  # -- this shouldn't be necessary
         updated_tickers.remove(tk)
@@ -880,7 +884,7 @@ def output_custom_tickers(
         for row_id in range(len(table_data[category])):  # All rows
 
             tk = table_data[category][row_id]['Ticker']
-            tk_name = table_data[category][row_id]['Name']
+            # tk_name = table_data[category][row_id]['Name']
 
             if row_id in table_selected_rows[category]:
 
@@ -893,6 +897,9 @@ def output_custom_tickers(
                     updated_tickers.append(tk)
                     # if tk not in ticker_info.keys():
                     #     ticker_info.update({tk: tk_name})
+
+    #######
+
 
     #######
 
