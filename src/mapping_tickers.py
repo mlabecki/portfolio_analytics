@@ -32,7 +32,7 @@ stock_index_tickers = {
     '^HSI': 'HANG SENG INDEX',
     '^N225': 'Nikkei 225',
     '^FTSE': 'FTSE 100',  # based on 100 largest blue chips stocks listed on London Stock Exchange
-    '^GDAXI': 'DAX PERFORMANCE-INDEX',
+    '^GDAXI': 'DAX PERFORMANCE-INDEX',  # Berlin
     '^IBEX': 'IBEX 35...',  # tracking 35 Spanish companish on Bolsa De Madrid
     '^FCHI': 'CAC 40',  # benchmark French stock index
     '^STOXX': 'STXE 600 PR.EUR',  # Index of stocks from 17 European exchanges
@@ -73,8 +73,6 @@ volatility_tickers = {
 
 # NOTE: The lower of the two ticker rates will be used 
 risk_free_treasury_tickers = {
-    '^GSPC': 'S&P 500 Index',  # for testing only
-    '^IXIC': 'NASDAQ Composite',  # for testing only
     '^TNX': '10-Year US Treasury Note',
     '^IRX': '3-Month US Treasury Bill'
 }
@@ -89,9 +87,6 @@ treasury_10y_ticker = '^TNX'
 # Bond tickers based on Asset Under Management
 # Source: https://etfdb.com/etfdb-category/total-bond-market/
 bond_etf_tickers = {
-    'USO':      'United States Oil Fund',  # for testing only
-    'UNG':      'United States Natural Gas Fund',  # for testing only
-
     'BND': 'Vanguard Total Bond Market Index Fund',
     'AGG': 'iShares Core U.S. Aggregate Bond ETF',
     'BNDX': 'Vanguard Total International Bond ETF',
@@ -172,8 +167,6 @@ commodity_etf_tickers = {
 ### NON-CRYPTO CURRENCY ETFS ###
 # Source: https://etfdb.com/etfdb-category/currency/
 currency_etf_tickers = {
-    'GLD':      'SPDR Gold Shares',  # for testing only
-    'IAU':      'iShares Gold Trust',  # for testing only
     'FXY': 'Invesco Currencyshares Japanese Yen Trust',
     'UUP': 'Invesco DB US Dollar Index Bullish Fund',
     'USDU': 'WisdomTree Bloomberg U.S. Dollar Bullish Fund',

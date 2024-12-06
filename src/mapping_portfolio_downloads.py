@@ -1,7 +1,7 @@
 # Dictionaries
 url_settings = {
     'global': {
-        'headers': {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'}
+        'headers': {'user-agent': 'Mozilla/5.0 (compatible; Windows NT 10.0; Win64; x64; MSIE 6.0; .NET CLR 1.0.3705) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'}
     },
     'nasdaq100': {
         'category_name': 'NASDAQ 100 Companies',
@@ -63,15 +63,16 @@ url_settings = {
         'sort_by_factor': 1e6,
         'sort_by_type': float
     },
-    # NOTE: The Total Assets on page below do not agree with YF totalAssets
-    # 'bond_etfs': {
-        # 'category_name': 'Bond ETFs',
-        # 'url': 'https://etfdb.com/etfdb-category/total-bond-market/',
-        # 'cols': [' Symbol ', ' ETF Name ', ' Total Assets '],
-        # 'cols_final': ['Symbol', 'Name', 'Assets ($MM)'],
-        # 'sort_by': 'Assets ($MM)',
-        # 'sort_by_factor': 1e6,
-        # 'sort_by_type': float
+    # NOTE: The Total Assets on the VettaFi page below do not agree with YF totalAssets.
+    # This source is only included for comparison with fixed_income_etfs from Stock Analysis.
+    # 'bond_etfs_vettafi': {
+    #     'category_name': 'Bond ETFs VettaFi',
+    #     'url': 'https://etfdb.com/etfdb-category/total-bond-market/',
+    #     'cols': [' Symbol ', ' ETF Name ', ' Total Assets* '],
+    #     'cols_final': ['Symbol', 'Name', 'Assets ($MM)'],
+    #     'sort_by': 'Assets ($MM)',
+    #     'sort_by_factor': 1e6,
+    #     'sort_by_type': float
     # },
     'fixed_income_etfs': {
         'category_name': 'Fixed Income ETFs',
