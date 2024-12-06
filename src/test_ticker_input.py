@@ -561,6 +561,9 @@ app.layout = html.Div([
 
     html.Div(id = 'select-ticker-list', hidden = True),
 
+    # html.Div(children = [], id = 'prev-table-selected-rows', hidden = True),
+    dcc.Store(data = {}, id = 'prev-table-selected-rows'),
+
     # YOUR PORTFOLIO
     html.Div(
         id = 'select-ticker-container',
@@ -654,6 +657,7 @@ app.layout = html.Div([
     Output('custom-ticker-info-container', 'hidden'),
     Output('custom-ticker-input-message', 'children'),
     Output('table-custom-ticker-info', 'children'),
+    Output('prev-table-selected-rows', 'data'),
 
     Output('table-biggest-companies', 'selected_rows'),
     Output('table-sp500', 'selected_rows'),
@@ -707,6 +711,7 @@ app.layout = html.Div([
     Input('table-risk-free-treasury', 'selected_rows'),
 
     Input('select-ticker-list', 'children'),
+    Input('prev-table-selected-rows', 'data'),
     Input('select-ticker-container', 'children'),
     Input('custom-ticker-input', 'value'),
     Input({'index': ALL, 'type': 'ticker_icon'}, 'n_clicks')
@@ -748,6 +753,7 @@ def output_custom_tickers(
     table_risk_free_treasury_selected_rows,
 
     selected_tickers,
+    prev_table_selected_rows,
     ticker_divs,
     tk_input,
     n_clicks
@@ -790,6 +796,10 @@ def output_custom_tickers(
         'risk_free_treasury': table_risk_free_treasury_data
     }
 
+    if prev_table_selected_rows == {}:
+        for category in ticker_category_info_map.keys():
+            prev_table_selected_rows[category] = []
+
     table_selected_tickers = {}
     table_nonselected_tickers = {}
     for category in ticker_category_info_map.keys():
@@ -798,16 +808,16 @@ def output_custom_tickers(
         table_nonselected_tickers[category] = [tk for tk in row_map.keys() if row_map[tk] not in table_selected_rows[category]]
 
     ctx = dash.callback_context
-    # if tk_input is None:
-    #     tk_input = ''
-    remove_tk = ''
+
+    added_ticker = ''
+    removed_ticker = ''
 
     if 1 in n_clicks:
         if ctx.triggered:
             trig_id_str_list = [ctx.triggered[k]['prop_id'].split('.n_clicks')[0] for k in range(len(ctx.triggered)) if ctx.triggered[k]['value']]
             if len(trig_id_str_list) > 0:
                 trig_id_str = trig_id_str_list[0]  # this is a stringified dictionary with whitespaces removed
-                remove_tk = trig_id_str.split('{"index":"')[1].split('","type"')[0].replace('select-ticker-icon-', '')  # {tk}
+                removed_ticker = trig_id_str.split('{"index":"')[1].split('","type"')[0].replace('select-ticker-icon-', '')  # {tk}
 
     ticker_divs = [ticker_div_title]
 
@@ -818,8 +828,8 @@ def output_custom_tickers(
 
     hide_ticker_container = False if len(updated_tickers) > 0 else True
 
-    #####
-    # Read in ticker from input button
+    ##### INPUT BUTTON
+    # Read in custom-specified ticker from input button
 
     hide_tk_input_message = True
     hide_custom_ticker_info = True
@@ -960,59 +970,59 @@ def output_custom_tickers(
                 style_data = table_custom_ticker_data_css
             )
                 
-    elif (tk_input == '') & (remove_tk != ''):
+    elif (tk_input == '') & (removed_ticker != ''):
         hide_tk_input_message = True
         for tk in selected_tickers:
-            if tk == remove_tk:
+            if tk == removed_ticker:
                 updated_tickers.remove(tk)
 
-    # Map tk_input to the corresponding row_id and add the latter to selected_rows in all relevant tables
-
+    # Add tk_input to selected_rows in all relevant tables if not there yet
     for category in ticker_category_info_map.keys():
-
-        # Must check updated_tickers for tk_input, add it to table_selected_rows if absent    
         row_map = ticker_category_info_map[category]['row']
         if tk_input != '': 
             if (tk_input in row_map.keys()) & (tk_input not in table_selected_tickers[category]):
                 table_selected_rows[category].append(row_map[tk_input])
                 table_selected_tickers[category] = [tk for tk in row_map.keys() if row_map[tk] in table_selected_rows[category]]
 
-    table_tickers_remove = []  # This should suffice for all tables
-    for tk in updated_tickers:
-        for category in ticker_category_info_map.keys():
-            row_map = ticker_category_info_map[category]['row']
-            if tk in row_map.keys():
-                table_nonselected_tickers[category] = [tk for tk in row_map.keys() if row_map[tk] not in table_selected_rows[category]]
-                if tk in table_nonselected_tickers[category]:
-                    if tk not in table_tickers_remove:
-                        table_tickers_remove.append(tk)
-#     
-    for tk in table_tickers_remove:
-        # if tk in updated_tickers:  # -- this shouldn't be necessary
-        updated_tickers.remove(tk)
-
-    # Read in tickers from all tables
+    ##### INPUT TABLES
+    # Check whether a ticker was added to or removed from any table
 
     for category in ticker_category_info_map.keys():
-        
-        for row_id in range(len(table_data[category])):  # All rows
+        row_map = ticker_category_info_map[category]['row']
+        df_info = ticker_category_info_map[category]['df']
+        selected_rows = [k for k in table_selected_rows[category] if k not in prev_table_selected_rows[category]]
+        if len(selected_rows) > 0:
+            added_ticker = df_info.index[df_info['No.'] == 1 + selected_rows[0]][0]
+            if added_ticker not in updated_tickers:
+                updated_tickers.append(added_ticker)
+            break
+        else:
+            unselected_rows = [k for k in prev_table_selected_rows[category] if k not in table_selected_rows[category]]
+            if len(unselected_rows) > 0:
+                removed_ticker = df_info.index[df_info['No.'] == 1 + unselected_rows[0]][0]
+                if removed_ticker in updated_tickers:
+                    updated_tickers.remove(removed_ticker)
+                break
 
-            tk = table_data[category][row_id]['Ticker']
+    # Make sure added_ticker is selected in all tables and removed_ticker is removed from all tables
+    if added_ticker != '':
+        for category in ticker_category_info_map.keys():
+            df_info = ticker_category_info_map[category]['df']
+            if added_ticker in df_info['Ticker']:
+                row_map = ticker_category_info_map[category]['row']
+                if row_map[added_ticker] not in table_selected_rows[category]:
+                    table_selected_rows[category].append(row_map[added_ticker])
 
-            if row_id in table_selected_rows[category]:
+    if removed_ticker != '':
+        for category in ticker_category_info_map.keys():
+            df_info = ticker_category_info_map[category]['df']
+            if removed_ticker in df_info['Ticker']:
+                row_map = ticker_category_info_map[category]['row']
+                if row_map[removed_ticker] in table_selected_rows[category]:
+                    table_selected_rows[category].remove(row_map[removed_ticker])
 
-                if tk == remove_tk:
-                    table_selected_rows[category].remove(row_id)
-                    if tk in updated_tickers:
-                        updated_tickers.remove(tk)
-
-                elif tk not in updated_tickers:
-                    updated_tickers.append(tk)
-
-    #######
-
-
-    #######
+    ##### SELECTED TICKERS
+    # Set up selected tickers divs and popovers
 
     for tk in updated_tickers:
         
@@ -1107,12 +1117,12 @@ def output_custom_tickers(
         ticker_divs,
         hide_ticker_container,
         updated_tickers,
-        '',
+        '',  # Clear custom ticker input button value
         hide_tk_input_message,
         hide_custom_ticker_info,
         tk_input_message,
-        # custom_ticker_info,
         table_custom_ticker_info,
+        table_selected_rows,
 
         table_selected_rows['biggest_companies'],
         table_selected_rows['sp500'],
