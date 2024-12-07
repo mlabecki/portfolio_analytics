@@ -5,6 +5,182 @@ url_to_yf_ticker_map = {
     'BRK.B': 'BRK-B'
 }
 
+indices_custom_info = {
+    '^GSPC': {
+        'category': 'Large Cap Stock',
+        'description': 
+            """
+            The Standard and Poor's 500, or simply the S&P 500, is a stock market index tracking the stock
+            performance of 500 of the largest companies listed on stock exchanges in the United States. It is 
+            one of the most commonly followed equity indices and includes approximately 80% of the total market
+            cap of U.S. public companies, with more than $50 trillion aggregate market cap as of December 2024.
+            """
+    },
+    '^GSPTSE': {
+        'category': 'Large Cap Stock',
+        'description': 
+        """
+        The S&P/TSX Composite Index has provided investors with a premier indicator of market activity for Canadian 
+        equity markets since its launch in 1977. With approximately 95% coverage of the Canadian equities market, 
+        it is the primary gauge for Canadian-based, Toronto Stock Exchange (TSX) listed companies, representing roughly 
+        70% of the total market capitalization on the TSX. It is designed to serve a dual purpose, offering both the 
+        representation of a broad benchmark index while maintaining the liquidity characteristics of narrower indices. 
+        This unique combination makes the S&P/TSX Composite Index ideal for portfolio management and index replication.
+        """
+    },
+    '^DJI': {
+        'category': 'Large Cap Stock',
+        'description': 
+        """
+        The Dow Jones Industrial Average, Dow Jones, or simply the Dow, is a stock market index of 30 publicly-owned companies
+        listed on the NASDAQ or the New York Stock Exchange (NYSE). The DJIA is one of the oldest and most commonly followed equity indexes,
+        created in 1896 by the Dow & Jones Company founder and Wall Street Journal editor Charles Dow. Initially comprised of only 12 US 
+        industrial companies, it has changed over the years, now including companies in other sectors such as technology, health, and retail. 
+        The index is price-weighted, unlike other common indexes such as the Nasdaq Composite or S&P 500, which use market capitalization.
+        """
+    },
+    '^IXIC': {
+        'category': 'Large Cap Stock',
+        'description': 
+        """
+        The NASDAQ Composite is a stock market index that includes over 3,000 stocks listed on the Nasdaq stock exchange. 
+        Its composition is heavily weighted towards companies in the technology sector, which represent almost half of its total market cap.
+        Consumer services rank second, with close to 20% market cap, while health care is third at almost 10%. Next in the weightage order
+        are consumer goods, financials, and industrials, with allocations of 7.61%, 6.61%, and 6.09%, respectively. Industries such as 
+        utilities, oil & gas, basic materials, and telecommunications each have weights of less than 1%. In terms of the number of companies
+        from a specific industry, health care clearly dominates with more than 900 companies.
+        """
+    },
+    '^NDX': {
+        'category': 'Large Cap Stock',
+        'description': 
+        """
+        The NASDAQ 100 is a stock market index made up of equity securities issued by 100 of the largest non-financial companies listed on the 
+        Nasdaq stock exchange. It was launched in 1985 by the National Associate of Securities Dealers (NASD), alongside its sister index
+        NASDAQ Financial 100. It includes companies in areas such as industrial, technology, retail, telecommunication, biotechnology, health care, 
+        transportation, and media.
+        """
+    },
+    '^IXF': {
+        'category': 'Large Cap Stock',
+        'description': 
+        """
+        The NASDAQ Financial 100 is a stock market index made up of equity securities issued by 100 of the largest financial companies listed on the 
+        Nasdaq stock exchange. It was launched in 1985 by the National Associate of Securities Dealers (NASD), alongside its more widely followed 
+        sister index NASDAQ 100. NASDAQ Financial 100 covers areas such as banking, insurance, mortgages and securities trading.
+        """
+    },
+    '^NYA': {
+        'category': 'Large Cap Stock',
+        'description': 
+        """
+        The NYSE Composite is a stock market index covering all common stock listed on the New York Stock Exchange, including American depositary receipts (ADRs),
+        real estate investment trusts, tracking stocks, and foreign listings. It covers over 2,000 stocks, of which over 1,600 are from the U.S. corporations and 
+        over 360 are foreign listings. However, foreign companies constitute over a half of the largest companies in the index by market capitalization. 
+        The index uses free-float market cap weighting.
+        """
+    },
+    '^RUT': {
+        'category': 'Small Cap Stock',
+        'description': 
+        """
+        The Russell 2000 Index is a U.S. stock market index that makes up the smallest 2,000 stocks in the Russell Index. It was started
+        in 1984 by the Frank Russell Company and is maintained by FTSE Russell, a subsidiary of the London Stock Exchange Group (LSEG). 
+        Russell 2000 is by far the most common benchmark for small-cap mutual funds and is the most widely quoted measure of the overall 
+        performance of small- to mid-cap company shares. It is commonly considered an indicator of the condition of the U.S. economy because of
+        its focus on small companies in the U.S. market. Russell 2000 represents approximately 7% of the total market cap of the Russell 3000 Index.
+        """
+    },
+    '^HSI': {
+        'category': '',
+        'description': ''
+    },
+    '^N225': {
+        'category': '',
+        'description': ''
+    },
+    '^FTSE': {
+        'category': '',
+        'description': ''
+    },
+    '^GDAXI': {
+        'category': '',
+        'description': ''
+    },
+    '^IBEX': {
+        'category': '',
+        'description': ''
+    },
+    '^FCHI': {
+        'category': '',
+        'description': ''
+    },
+    '^STOXX': {
+        'category': '',
+        'description': ''
+    },
+    '^AXJO': {
+        'category': '',
+        'description': ''
+    },
+    '000001.SS': {
+        'category': '',
+        'description': ''
+    },
+    '^KS11': {
+        'category': '',
+        'description': ''
+    },
+    '^BSESN': {
+        'category': '',
+        'description': ''
+    },
+    '^VIX': {
+        'category': '',
+        'description': ''
+    },
+    '^VXD': {
+        'category': '',
+        'description': ''
+    },
+    '^VXN': {
+        'category': '',
+        'description': ''
+    },
+    '^MOVE': {
+        'category': '',
+        'description': ''
+    },
+    '^GVZ': {
+        'category': '',
+        'description': ''
+    },
+    '^SPGSCI': {
+        'category': 'Commodity',
+        'description': 
+        """
+        The S&P GSCI, originally developed in 1991 by Goldman Sachs, serves as a benchmark for investment in the commodity markets
+        and as a measure of commodity performance over time. It is the first major investable commodity index, designed that way 
+        by including the most liquid commodity futures and providing diversification with low correlations to other asset classes.
+        The index currently comprises 24 commodities from all commodity sectors - energy products, industrial metals, agricultural 
+        products, livestock products and precious metals. It contains a much higher exposure to energy than other commodity price 
+        indices such as the Bloomberg Commodity Index (BCOM). S&P GSCI is being traded at the Chicago Mercantile Exchange (CME).
+        """
+    },
+    '^BCOM': {
+        'category': '',
+        'description': ''
+    },
+    '^TNX': {
+        'category': '',
+        'description': ''
+    },
+    '^IRX': {
+        'category': '',
+        'description': ''
+    }
+}
+
 ### BENCHMARKS ###
 
 benchmark_tickers = {
@@ -52,6 +228,7 @@ stock_index_tickers = {
     '^DJI': 'Dow Jones Industrial Average',
     '^IXIC': 'NASDAQ Composite',
     '^NDX': 'NASDAQ 100',
+    '^IXF': 'NASDAQ Financial 100',
     '^NYA': 'NYSE COMPOSITE (DJ)',
     '^RUT': 'Russell 2000',
     '^HSI': 'HANG SENG INDEX',

@@ -36,7 +36,7 @@ max_tickers = {
     'crypto_etfs': 10,
     'futures': 10,
     'precious_metals': 5,
-    'stock_indices': 18,
+    'stock_indices': 19,
     'volatility_indices': 5,
     'benchmarks': 20
 }
