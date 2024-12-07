@@ -5,6 +5,31 @@ url_to_yf_ticker_map = {
     'BRK.B': 'BRK-B'
 }
 
+### BENCHMARKS ###
+
+benchmark_tickers = {
+    '^GSPC':    'S&P 500 Index',
+    '^DJI':     'Dow Jones Industrial Average',
+    '^IXIC':    'NASDAQ Composite',
+    '^RUT':     'Russell 2000',
+    'VTI':      'Vanguard Total Stock Market Index Fund ETF Shares',
+    'VOO':      'Vanguard S&P 500 ETF',
+    'SPY':      'SPDR S&P 500 ETF Trust',
+    '^VIX':     'CBOE Volatility Index',
+    '^MOVE':    'ICE BofAML MOVE (Merrill Lynch Option Volatility Estimate) Index',
+    '^SPGSCI':  'S&P GSCI Index',
+    '^BCOM':    'BBG Commodity',
+    'GLD':      'SPDR Gold Shares',
+    'DBC':      'Invesco DB Commodity Index Tracking Fund',
+    'GSG':      'iShares S&P GSCI Commodity-Indexed Trust',
+    'BND':      'Vanguard Total Bond Market Index Fund',
+    'AGG':      'iShares Core U.S. Aggregate Bond ETF',    
+    '^TNX':     '10-Year US Treasury Note',
+    '^IRX':     '3-Month US Treasury Bill',
+    'IBIT':     'iShares Bitcoin Trust',
+    'GBTC':     'Grayscale Bitcoin Trust ETF (BTC)'
+}
+
 ### STOCKS ###
 
 # Stock market benchmarks
@@ -161,7 +186,10 @@ commodity_etf_tickers = {
     'DBC':      'Invesco DB Commodity Index Tracking Fund',
     'USO':      'United States Oil Fund',
     'UNG':      'United States Natural Gas Fund',
-    'DBA':      'Invesco DB Agriculture Fund'
+    'DBA':      'Invesco DB Agriculture Fund',
+    'BOIL':     'ProShares Ultra Bloomberg Natural Gas',
+    'UCO':      'ProShares Ultra Bloomberg Crude Oil',
+    'DJP':      'iPath Bloomberg Commodity Index'
 }
 
 ### NON-CRYPTO CURRENCY ETFS ###

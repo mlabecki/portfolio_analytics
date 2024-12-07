@@ -17,6 +17,10 @@ from css_portfolio_analytics import *
 from utils import *
 from download_info import DownloadInfo
 
+end_date = datetime.today()
+hist_years, hist_months, hist_days = 1, 0, 0
+start_date = datetime(end_date.year - hist_years, end_date.month - hist_months, end_date.day - hist_days)
+
 hist_info = DownloadInfo()
 
 tk_market = '^GSPC'
@@ -30,7 +34,7 @@ max_tickers = {
     'biggest_etfs': 10,
     'fixed_income_etfs': 10,
     'ai_etfs': 30,
-    'commodity_etfs': 15,
+    'commodity_etfs': 12,
     'currency_etfs': 10,
     'cryptos': 10, 
     'crypto_etfs': 10,
@@ -38,7 +42,7 @@ max_tickers = {
     'precious_metals': 5,
     'stock_indices': 18,
     'volatility_indices': 5,
-    'benchmarks': 20
+    'risk_free_treasury': 2
 }
 etf_categories = [
     'biggest_etfs',
@@ -95,14 +99,12 @@ tickers_commodity_etfs = list(commodity_etf_tickers.keys())
 tickers_risk_free_treasury = list(risk_free_treasury_tickers.keys())
 tickers_volatility_indices = list(volatility_tickers.keys())
 tickers_currency_etfs = list(currency_etf_tickers.keys())
-tickers_benchmarks = list(benchmark_tickers.keys())
 
 input_table_columns_indices = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Exchange', 'Currency']
 input_table_columns_futures = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Exchange', 'Currency']
 input_table_columns_equities = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Industry', 'Sector', 'Exchange', 'Currency']
 input_table_columns_etfs = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Category', 'Exchange', 'Currency']
 input_table_columns_cryptos = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Exchange', 'Currency']
-input_table_columns_benchmarks = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Category', 'Exchange', 'Currency']
 
 custom_ticker_table_columns = {
     'INDEX': ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Exchange', 'Currency'],
@@ -132,7 +134,6 @@ df_info_tickers_precious_metals = pd.DataFrame(index = tickers_precious_metals, 
 df_info_tickers_risk_free_treasury = pd.DataFrame(index = tickers_risk_free_treasury, columns = input_table_columns_indices)
 df_info_tickers_volatility_indices = pd.DataFrame(index = tickers_volatility_indices, columns = input_table_columns_indices)
 df_info_tickers_currency_etfs = pd.DataFrame(index = tickers_currency_etfs, columns = input_table_columns_etfs)
-df_info_tickers_benchmarks = pd.DataFrame(index = tickers_benchmarks, columns = input_table_columns_benchmarks)
 
 row_ticker_map_biggest_companies = {}
 row_ticker_map_sp500 = {}
@@ -149,7 +150,7 @@ row_ticker_map_futures = {}
 row_ticker_map_precious_metals = {}
 row_ticker_map_stock_indices = {}
 row_ticker_map_volatility_indices = {}
-row_ticker_map_benchmarks = {}
+row_ticker_map_risk_free_treasury = {}
 
 ticker_category_info_map = {
     'biggest_companies': {
@@ -272,13 +273,13 @@ ticker_category_info_map = {
         'id_string': 'volatility-indices',
         'collapse_title': 'VOLATILITY INDICES'
     },
-    'benchmarks': {
-        'df': df_info_tickers_benchmarks,
-        'row': row_ticker_map_benchmarks,
-        'dict': benchmark_tickers,
+    'risk_free_treasury': {
+        'df': df_info_tickers_risk_free_treasury,
+        'row': row_ticker_map_risk_free_treasury,
+        'dict': risk_free_treasury_tickers,
         'sort_by': '',  # No 'volume' in info
-        'id_string': 'benchmarks',
-        'collapse_title': 'BENCHMARKS'
+        'id_string': 'risk-free-treasury',
+        'collapse_title': 'RISK-FREE INDICES'
     }
 }
 
@@ -356,9 +357,6 @@ def create_input_table(category):
                 df_info_tickers.at[tk, 'Exchange'] = tk_exchange
                 df_info_tickers.at[tk, 'Currency'] = tk_currency
 
-                if category == 'benchmarks':
-                    df_info_tickers.at[tk, 'Type'] = tk_type
-
                 if tk_type == 'ETF':
                     df_info_tickers.at[tk, 'Category'] = tk_category
                 elif tk_type == 'EQUITY':
@@ -392,10 +390,6 @@ def create_input_table(category):
             df_info_tickers.at[tk, 'Data End'] = ticker_info[tk]['end']
             df_info_tickers.at[tk, 'Exchange'] = ticker_info[tk]['exchange']
             df_info_tickers.at[tk, 'Currency'] = ticker_info[tk]['currency']
-
-            if category == 'benchmarks':
-                df_info_tickers.at[tk, 'Type'] = ticker_info[tk]['type']
-
             if ticker_info[tk]['type'] == 'ETF':
                 df_info_tickers.at[tk, 'Category'] = ticker_info[tk]['category']
             elif ticker_info[tk]['type'] == 'EQUITY':
@@ -438,12 +432,8 @@ input_table_titles = {
     'precious_metals': f'{max_tickers["precious_metals"]} PRECIOUS METAL SPOT / FUTURES sorted by Open Interest',
     'stock_indices': f'{max_tickers["stock_indices"]} STOCK INDICES',
     'volatility_indices': f'{max_tickers["volatility_indices"]} VOLATILITY INDICES',
-    'benchmarks': f'{max_tickers["benchmarks"]} BENCHMARKS'
+    'risk_free_treasury': f'{max_tickers["risk_free_treasury"]} RISK-FREE US TREASURY INDICES'
 }
-# NOTE:
-# After the preliminary selection on the preceding page, the above titles will be changed to something like:
-# f'{pre_n_tickers} PRE-SELECTED COMMODITY FUTURES sorted by Open Interest'
-# 
 
 print(f'\nTotal tickers: {len(ticker_info)}')
 
@@ -668,7 +658,7 @@ app.layout = html.Div([
     Output('table-precious-metals', 'selected_rows'),
     Output('table-stock-indices', 'selected_rows'),
     Output('table-volatility-indices', 'selected_rows'),
-    Output('table-benchmarks', 'selected_rows'),
+    Output('table-risk-free-treasury', 'selected_rows'),
 
     Input('table-biggest-companies', 'data'),
     Input('table-sp500', 'data'),
@@ -685,7 +675,7 @@ app.layout = html.Div([
     Input('table-precious-metals', 'data'),
     Input('table-stock-indices', 'data'),
     Input('table-volatility-indices', 'data'),
-    Input('table-benchmarks', 'data'),
+    Input('table-risk-free-treasury', 'data'),
 
     Input('table-biggest-companies', 'selected_rows'),
     Input('table-sp500', 'selected_rows'),
@@ -702,7 +692,7 @@ app.layout = html.Div([
     Input('table-precious-metals', 'selected_rows'),
     Input('table-stock-indices', 'selected_rows'),
     Input('table-volatility-indices', 'selected_rows'),
-    Input('table-benchmarks', 'selected_rows'),
+    Input('table-risk-free-treasury', 'selected_rows'),
 
     Input('select-ticker-list', 'children'),
     Input('prev-table-selected-rows', 'data'),
@@ -727,7 +717,7 @@ def output_custom_tickers(
     table_precious_metals_data,
     table_stock_indices_data,
     table_volatility_indices_data,
-    table_benchmarks_data,
+    table_risk_free_treasury_data,
 
     table_biggest_companies_selected_rows,
     table_sp500_selected_rows,
@@ -744,7 +734,7 @@ def output_custom_tickers(
     table_precious_metals_selected_rows,
     table_stock_indices_selected_rows,
     table_volatility_indices_selected_rows,
-    table_benchmarks_selected_rows,
+    table_risk_free_treasury_selected_rows,
 
     selected_tickers,
     prev_table_selected_rows,
@@ -769,26 +759,26 @@ def output_custom_tickers(
         'precious_metals': table_precious_metals_selected_rows,
         'stock_indices': table_stock_indices_selected_rows,
         'volatility_indices': table_volatility_indices_selected_rows,
-        'benchmarks': table_benchmarks_selected_rows
+        'risk_free_treasury': table_risk_free_treasury_selected_rows
     }
-    # table_data = {
-    #     'biggest_companies': table_biggest_companies_data,
-    #     'sp500': table_sp500_data,
-    #     'nasdaq100': table_nasdaq100_data,
-    #     'dow_jones': table_dow_jones_data,
-    #     'biggest_etfs': table_biggest_etfs_data,
-    #     'fixed_income_etfs': table_fixed_income_etfs_data,
-    #     'ai_etfs': table_ai_etfs_data,
-    #     'commodity_etfs': table_commodity_etfs_data,
-    #     'currency_etfs': table_currency_etfs_data,
-    #     'cryptos': table_cryptos_data,
-    #     'crypto_etfs': table_crypto_etfs_data,
-    #     'futures': table_futures_data,
-    #     'precious_metals': table_precious_metals_data,
-    #     'stock_indices': table_stock_indices_data,
-    #     'volatility_indices': table_volatility_indices_data,
-    #     'benchmarks': table_benchmarks_data
-    # }
+    table_data = {
+        'biggest_companies': table_biggest_companies_data,
+        'sp500': table_sp500_data,
+        'nasdaq100': table_nasdaq100_data,
+        'dow_jones': table_dow_jones_data,
+        'biggest_etfs': table_biggest_etfs_data,
+        'fixed_income_etfs': table_fixed_income_etfs_data,
+        'ai_etfs': table_ai_etfs_data,
+        'commodity_etfs': table_commodity_etfs_data,
+        'currency_etfs': table_currency_etfs_data,
+        'cryptos': table_cryptos_data,
+        'crypto_etfs': table_crypto_etfs_data,
+        'futures': table_futures_data,
+        'precious_metals': table_precious_metals_data,
+        'stock_indices': table_stock_indices_data,
+        'volatility_indices': table_volatility_indices_data,
+        'risk_free_treasury': table_risk_free_treasury_data
+    }
 
     if prev_table_selected_rows == {}:
         for category in ticker_category_info_map.keys():
@@ -1133,7 +1123,7 @@ def output_custom_tickers(
         table_selected_rows['precious_metals'],
         table_selected_rows['stock_indices'],
         table_selected_rows['volatility_indices'],
-        table_selected_rows['benchmarks']
+        table_selected_rows['risk_free_treasury']
     )
 
 
@@ -1161,6 +1151,5 @@ for category in ticker_category_info_map.keys():
 #######################################################################
 
 if __name__ == '__main__':
-    app.run_server(debug = True, port = 8055)
-    # app.run_server(debug = False, port = 8055)
+    app.run_server(debug = True, port = 8056)
 
