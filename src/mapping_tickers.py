@@ -124,39 +124,76 @@ indices_custom_info = {
         'description': ''
     },
     '000001.SS': {
-        'category': '',
-        'description': ''
+        'category': 'Large Cap Stock',
+        'description': 
+        """
+        The SSE Composite Index is a stock market index of all stocks traded at the Shanghai Stock Exchange (SSE).
+        It is considered to be a broad indicator of the condition of the Chinese economy, assessing its performance 
+        at the level of a variety of sectors and companies.
+        """
     },
     '^KS11': {
-        'category': '',
-        'description': ''
+        'category': 'Large Cap',
+        'description': 
+        """
+        The Korea Composite Stock Price Index (KOSPI) tracks all common stocks traded on the Korea Stock Exchange,
+        similarly to the S&P 500 in the United States. KOSPI was introduced in 1983, replacing the Dow-style Korea
+        Composite Stock Price Index.
+        """
     },
     '^BSESN': {
-        'category': '',
-        'description': ''
+        'category': 'Large Cap Stock',
+        'description': 
+        """
+        The BSE SENSEX, also known as the S&P Bombay Stock Exchange Sensitive Index or simply SENSEX, tracks the performance of 30
+        major companies representative of various industrial sectors of the Indian economy and listed on the Bombay Stock Exchange.
+        """
     },
     '^VIX': {
-        'category': '',
-        'description': ''
+        'category': 'Stock Volatility',
+        'description': 
+        """
+        The CBOE Volatility Index (VIX) is a popular measure of the stock market's expectation of volatility, calculated and disseminated 
+        in real time by CBOE. It is derived from the S&P 500 option prices for the 30 days following the measurement date, with each option price 
+        representing the market's expectation of the 30-day forward-looking volatility. VIX cannot be bought or sold directly; instead, it can be
+        traded and exchanged via derivative contracts, derived ETFs, and ETNs which most commonly track VIX futures indexes.
+        """
     },
     '^VXD': {
-        'category': '',
-        'description': ''
+        'category': 'Stock Volatility',
+        'description': 
+        """
+        The CBOE DJIA Volatility Index is an estimate of the expected 30-day volatility of Dow Jones Industrial Avedrage (DJIA) stock index returns. 
+        Similarly to VIX, VXD is calculated based on the 30-day forward-looking DJIA option prices.
+        """
     },
     '^VXN': {
-        'category': '',
-        'description': ''
+        'category': 'Stock Volatility',
+        'description': 
+        """
+        The CBOE NASDAQ 100 Volatility Index is a key measure of market expectations of near-term volatility conveyed by NASDAQ 100 Index option prices.
+        It measures the market's expectation of 30-day volatility implicit in the prices of near-term NASDAQ 100 options.
+        """
     },
     '^MOVE': {
-        'category': '',
-        'description': ''
+        'category': 'Bond Volatility',
+        'description': 
+        """
+        The Intercontinental Exchange (ICE) Bank of America Merrill Lynch MOVE index is a measure of the expected volatility
+        of US Treasury bonds. It is calculated by taking the weighted average of the implied volatilities of a range of options
+        on US Treasury bonds. The index is expressed in basis points (bps) and is published by ICE Benchmark Administration Ltd.
+        """
     },
     '^GVZ': {
-        'category': '',
-        'description': ''
+        'category': 'Commodity Volatility',
+        'description': 
+        """
+        The CBOE Gold ETF Volatility Index is an estimate of the expected 30-day volatility of returns on the SPDR Gold Shares ETF (GLD). 
+        Similarly to VIX, GVZ is calculated based on the 30-day forward-looking prices of GLD options.
+        """
     },
     '^SPGSCI': {
-        'category': 'Commodity',
+        'category': 'Commodities Broad Basket',
         'description': 
         """
         The S&P GSCI, originally developed in 1991 by Goldman Sachs, serves as a benchmark for investment in the commodity markets
@@ -168,16 +205,31 @@ indices_custom_info = {
         """
     },
     '^BCOM': {
-        'category': '',
-        'description': ''
+        'category': 'Commodities Broad Basket',
+        'description': 
+        """
+        The Bloomberg Commodity Index (BCOM) is a broadly diversified commodity price index tracking prices of futures 
+        contracts on physical commodities. It was originally launched as the Dow Jones-AIG Commodity Index in 1998; later renamed
+        to Dow Jones-UBS Commodity Index in 2009, when UBS acquired it from AIG; and finally rebranded under its current name in 2014. 
+        The BCOM is designed to minimize concentration in any one commodity or sector - it currently includes 23 commodity 
+        futures in six sectors.
+        """
     },
     '^TNX': {
-        'category': '',
-        'description': ''
+        'category': 'Treasury Bond',
+        'description': 
+        """
+        The CBOE Interest Rate 10-Year Treasury Note Index (TNX) is a benchmark index that tracks the yield of U.S. Treasury
+        10-year notes. It is often considered to be a risk-free investment because of its backing by the U.S. government.
+        """
     },
     '^IRX': {
-        'category': '',
-        'description': ''
+        'category': 'Treasury Bond',
+        'description': 
+        """
+        The 13-Week Treasury Bill Index is a benchmark index that tracks the yield of U.S. Treasury 13-week bills.
+        It is often considered a risk-free investment because of its backing by the U.S. government.
+        """
     }
 }
 
@@ -255,16 +307,14 @@ magnificent_7_tickers = {
     'GOOG': 'Alphabet Inc.'
 }
 
-# VOLATILITY ###
+### VOLATILITY ###
 volatility_tickers = {
     '^VIX': 'CBOE Volatility Index',
     '^VXD': 'DJIA VOLATILITY',
     '^VXN': 'CBOE NASDAQ 100 Volatility',
-    '^MOVE': 'ICE BofAML MOVE (Merrill Lynch Option Volatility Estimate) Index',
+    '^MOVE': 'ICE BofAML MOVE Index',  # 'ICE BofAML MOVE (Merrill Lynch Option Volatility Estimate) Index',
     '^GVZ': 'CBOE Gold Volatility Index'
 }
-
-# NOTE: Allow mixing of valatility tickers with any other tickers in the app menu
 
 ### FUTURES
 # NOTE: Add various Index, stocks and commodities futures - it will usually be the next 

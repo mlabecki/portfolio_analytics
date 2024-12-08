@@ -19,7 +19,7 @@ from download_info import DownloadInfo
 
 hist_info = DownloadInfo()
 
-tk_market = '^GSPC'
+# tk_market = '^GSPC'
 # tk_market = 'BTC-USD'
 
 max_tickers = {
@@ -97,7 +97,7 @@ tickers_volatility_indices = list(volatility_tickers.keys())
 tickers_currency_etfs = list(currency_etf_tickers.keys())
 tickers_benchmarks = list(benchmark_tickers.keys())
 
-input_table_columns_indices = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Exchange', 'Currency']
+input_table_columns_indices = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Category', 'Exchange', 'Currency']
 input_table_columns_futures = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Exchange', 'Currency']
 input_table_columns_equities = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Industry', 'Sector', 'Exchange', 'Currency']
 input_table_columns_etfs = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Category', 'Exchange', 'Currency']
@@ -105,7 +105,7 @@ input_table_columns_cryptos = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End'
 input_table_columns_benchmarks = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Category', 'Exchange', 'Currency']
 
 custom_ticker_table_columns = {
-    'INDEX': ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Exchange', 'Currency'],
+    'INDEX': ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Category', 'Exchange', 'Currency'],
     'FUTURE': ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Exchange', 'Currency'],
     'EQUITY': ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Industry', 'Sector', 'Exchange', 'Currency'],
     'ETF': ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Category', 'Exchange', 'Currency'],
@@ -335,6 +335,8 @@ def create_input_table(category):
 
                 if category == 'crypto_etfs':
                     tk_category = 'Digital Assets'
+                elif category in ['stock_indices', 'volatility_indices']:
+                    tk_category = indices_custom_info[tk]['category']
                 else:
                     tk_category = tk_info['category'] if 'category' in tk_info.keys() else ''
 
@@ -347,6 +349,8 @@ def create_input_table(category):
                     tk_summary = tk_info['longBusinessSummary']
                 elif 'description' in tk_info.keys():
                     tk_summary = tk_info['description']
+                elif category in ['stock_indices', 'volatility_indices']:
+                    tk_summary = indices_custom_info[tk]['description']
                 else: 
                     tk_summary = ''
 
@@ -359,7 +363,7 @@ def create_input_table(category):
                 if category == 'benchmarks':
                     df_info_tickers.at[tk, 'Type'] = tk_type
 
-                if tk_type == 'ETF':
+                if tk_type in ['ETF', 'INDEX']:
                     df_info_tickers.at[tk, 'Category'] = tk_category
                 elif tk_type == 'EQUITY':
                     df_info_tickers.at[tk, 'Industry'] = tk_industry
@@ -396,7 +400,7 @@ def create_input_table(category):
             if category == 'benchmarks':
                 df_info_tickers.at[tk, 'Type'] = ticker_info[tk]['type']
 
-            if ticker_info[tk]['type'] == 'ETF':
+            if ticker_info[tk]['type'] in ['ETF', 'INDEX']:
                 df_info_tickers.at[tk, 'Category'] = ticker_info[tk]['category']
             elif ticker_info[tk]['type'] == 'EQUITY':
                 df_info_tickers.at[tk, 'Industry'] = ticker_info[tk]['industry']
@@ -855,15 +859,17 @@ def output_custom_tickers(
                 else:
                     tk_name = tk_input
 
-                if category in etf_categories:
-                    tk_type = 'ETF'
-                else:
-                    tk_type = tk_info['quoteType'] if 'quoteType' in tk_info.keys() else ''
+                # if category in etf_categories:
+                #     tk_type = 'ETF'
+                # else:
+                tk_type = tk_info['quoteType'] if 'quoteType' in tk_info.keys() else ''
 
-                if category == 'crypto_etfs':
-                    tk_category = 'Digital Assets'
-                else:
-                    tk_category = tk_info['category'] if 'category' in tk_info.keys() else ''
+                # if category == 'crypto_etfs':
+                #     tk_category = 'Digital Assets'
+                # elif category in ['stock_indices', 'volatility_indices']:
+                #     tk_category = indices_custom_info[tk_input]['category']                    
+                # else:
+                tk_category = tk_info['category'] if 'category' in tk_info.keys() else ''
 
                 tk_exchange = tk_info['exchange'] if 'exchange' in tk_info.keys() else ''
                 tk_currency = tk_info['currency'] if 'currency' in tk_info.keys() else ''
@@ -874,6 +880,8 @@ def output_custom_tickers(
                     tk_summary = tk_info['longBusinessSummary']
                 elif 'description' in tk_info.keys():
                     tk_summary = tk_info['description']
+                elif category in ['stock_indices', 'volatility_indices']:
+                    tk_summary = indices_custom_info[tk]['description']                    
                 else: 
                     tk_summary = ''
 
@@ -912,6 +920,7 @@ def output_custom_tickers(
                     'Data Start': tk_start,
                     'Data End': tk_end,
                     'Type': tk_type,
+                    'Category': tk_category,
                     'Exchange': tk_exchange,
                     'Currency': tk_currency
                 },
@@ -1048,7 +1057,7 @@ def output_custom_tickers(
             popover_ticker_values.insert(7, html.Br())
             popover_ticker_values.insert(8, html.Span(f"{ticker_info[tk]['sector']}"))
             popover_ticker_values.insert(9, html.Br())
-        elif tk_type == 'ETF':
+        elif tk_type in ['ETF', 'INDEX']:
             popover_ticker_keys.insert(6, html.B('Category:'))
             popover_ticker_keys.insert(7, html.Br())
             popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['category']}"))
