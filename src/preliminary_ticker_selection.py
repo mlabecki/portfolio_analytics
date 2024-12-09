@@ -424,7 +424,8 @@ for category in ticker_category_info_map.keys():
                 id = f'collapse-button-title-{id_string}',
                 hidden = True
             ),
-            html.Div(
+
+            html.Div([
                 dbc.Button(
                     id = f'collapse-button-table-{id_string}',
                     class_name = 'ma-1',
@@ -432,8 +433,16 @@ for category in ticker_category_info_map.keys():
                     size = 'sm',
                     n_clicks = 0,
                     style = collapse_button_pre_table_css
-                )
+                ),
+                html.Div(
+                    f'{max_tickers[category]} selected',
+                    id = f'n-preselected-{id_string}',
+                    hidden = False,
+                    style = {'display': 'inline-block', 'font-size' :'16px', 'font-weight': 'bold', 'vertical-align': 'middle', 'margin-top': '5px'}
+                )],
+                style = {'display': 'inline-block', 'width': '1100px'}
             ),
+
             dbc.Collapse(
                 html.Div(
                     html.Div(
