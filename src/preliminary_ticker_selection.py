@@ -408,7 +408,7 @@ for category in ticker_category_info_map.keys():
         'border': '1px'
     }
     pre_menu_input_css = {
-        'width': '100px',
+        'width': '60px',
         'height': '32px',
         'border-color': 'rgb(204, 204, 204)',
         'border-radius': '5px',
@@ -584,6 +584,8 @@ app.layout = html.Div([
     Output('table-volatility-indices', 'selected_rows'),
     Output('table-benchmarks', 'selected_rows'),
 
+    Input('pre-menu-ai-etfs-select-all-checkbox', 'value'),
+
     Input('table-biggest-companies', 'data'),
     Input('table-sp500', 'data'),
     Input('table-nasdaq100', 'data'),
@@ -624,6 +626,8 @@ app.layout = html.Div([
     Input({'index': ALL, 'type': 'ticker_icon'}, 'n_clicks')
 )
 def output_custom_tickers(
+
+    select_all_ai_etfs,
 
     table_biggest_companies_data,
     table_sp500_data,
@@ -701,6 +705,9 @@ def output_custom_tickers(
     #     'volatility_indices': table_volatility_indices_data,
     #     'benchmarks': table_benchmarks_data
     # }
+
+    if select_all_ai_etfs:
+        table_selected_rows['ai_etfs'] = list(range(len(table_ai_etfs_data)))
 
     if prev_table_selected_rows == {}:
         for category in ticker_category_info_map.keys():
