@@ -335,8 +335,9 @@ def create_input_table(category):
 
                 if category == 'crypto_etfs':
                     tk_category = 'Digital Assets'
-                elif category in ['stock_indices', 'volatility_indices']:
-                    tk_category = indices_custom_info[tk]['category']
+                elif category in ['stock_indices', 'volatility_indices', 'benchmarks']:
+                    if tk_type == 'INDEX':
+                        tk_category = indices_custom_info[tk]['category']
                 else:
                     tk_category = tk_info['category'] if 'category' in tk_info.keys() else ''
 
@@ -349,7 +350,7 @@ def create_input_table(category):
                     tk_summary = tk_info['longBusinessSummary']
                 elif 'description' in tk_info.keys():
                     tk_summary = tk_info['description']
-                elif category in ['stock_indices', 'volatility_indices']:
+                elif category in ['stock_indices', 'volatility_indices', 'benchmarks']:
                     tk_summary = indices_custom_info[tk]['description']
                 else: 
                     tk_summary = ''

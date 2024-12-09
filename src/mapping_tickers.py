@@ -7,7 +7,7 @@ url_to_yf_ticker_map = {
 
 indices_custom_info = {
     '^GSPC': {
-        'category': 'Large Cap Stock',
+        'category': 'Stock Large Cap',
         'description': 
             """
             The Standard and Poor's 500, or simply the S&P 500, is a stock market index tracking the stock
@@ -17,7 +17,7 @@ indices_custom_info = {
             """
     },
     '^GSPTSE': {
-        'category': 'Large Cap Stock',
+        'category': 'Stock Large Cap',
         'description': 
         """
         The S&P/TSX Composite Index has provided investors with a premier indicator of market activity for Canadian 
@@ -29,7 +29,7 @@ indices_custom_info = {
         """
     },
     '^DJI': {
-        'category': 'Large Cap Stock',
+        'category': 'Stock Large Cap',
         'description': 
         """
         The Dow Jones Industrial Average, Dow Jones, or simply the Dow, is a stock market index of 30 publicly-owned companies
@@ -40,19 +40,19 @@ indices_custom_info = {
         """
     },
     '^IXIC': {
-        'category': 'Large Cap Stock',
+        'category': 'Stock Large Cap',
         'description': 
         """
         The NASDAQ Composite is a stock market index that includes over 3,000 stocks listed on the Nasdaq stock exchange. 
         Its composition is heavily weighted towards companies in the technology sector, which represent almost half of its total market cap.
-        Consumer services rank second, with close to 20% market cap, while health care is third at almost 10%. Next in the weightage order
-        are consumer goods, financials, and industrials, with allocations of 7.61%, 6.61%, and 6.09%, respectively. Industries such as 
-        utilities, oil & gas, basic materials, and telecommunications each have weights of less than 1%. In terms of the number of companies
-        from a specific industry, health care clearly dominates with more than 900 companies.
+        Consumer services rank second in the weightage order, with about 20% market cap; health care third with about 10%; consumer goods,
+        financials, and industrials, coming next with allocations of about 6-8%; followed by utilities, oil & gas, basic materials, 
+        and telecommunications, each having weights of less than 1%. In terms of the number of companies from a specific industry, 
+        health care clearly dominates with more than 900 companies.
         """
     },
     '^NDX': {
-        'category': 'Large Cap Stock',
+        'category': 'Stock Large Cap',
         'description': 
         """
         The NASDAQ 100 is a stock market index made up of equity securities issued by 100 of the largest non-financial companies listed on the 
@@ -62,7 +62,7 @@ indices_custom_info = {
         """
     },
     '^IXF': {
-        'category': 'Large Cap Stock',
+        'category': 'Stock Large Cap',
         'description': 
         """
         The NASDAQ Financial 100 is a stock market index made up of equity securities issued by 100 of the largest financial companies listed on the 
@@ -71,7 +71,7 @@ indices_custom_info = {
         """
     },
     '^NYA': {
-        'category': 'Large Cap Stock',
+        'category': 'Stock Large Cap',
         'description': 
         """
         The NYSE Composite is a stock market index covering all common stock listed on the New York Stock Exchange, including American depositary receipts (ADRs),
@@ -92,39 +92,96 @@ indices_custom_info = {
         """
     },
     '^HSI': {
-        'category': '',
-        'description': ''
+        'category': 'Stock Large Cap',
+        'description': 
+        """
+        The Hang Seng Index (HSI) is a market cap weighted stock market index, adjusted for free float, that tracks and records daily changes
+        in the largest companies listed on the Hong Kong Stock Exchange (HKSE). There are 82 constituent companies of the index, representing over 
+        a half of the HKSE market cap. HSI was publicized in 1969 and is currently compiled and maintained by Hang Seng Indexes Company Limited, 
+        a wholly owned subsidiary of Hang Seng Bank, one of the largest banks registered and listed in Hong Kong in terms of market cap.
+        """
     },
     '^N225': {
-        'category': '',
-        'description': ''
+        'category': 'Stock Large Cap',
+        'description': 
+        """
+        The Nikkei 225, or the Nikkei Stock Average, is a stock market index for the Tokyo Stock Exchange (TSE), measuring the performance 
+        of 225 highly capitalized and liquid publicly owned companies in Japan from a wide array of industry sectors. It is a price-weighted index,
+        calculated every five seconds and operating in the Japanese Yen. Its components are reviewed twice a year. 
+        """
     },
     '^FTSE': {
-        'category': '',
-        'description': ''
+        'category': 'Stock Large Cap',
+        'description': 
+        """
+        The Financial Times Stock Exchange 100 Index (FTSE 100 or, informally, 'Footsie') is the UK's best-known stock market index of the 100 
+        most highly capitalized blue chips listed on the London Stock Exchange (LSE). The index consists of 32 sectors, four of which account 
+        for almost a half of the index's market cap - these are pharmaceuticals, oil & gas, metals & mining, and banking services.
+        The major companies, together accounting for approximately 30% of the market cap, are Shell, AstraZeneca, HSBC and Unilever.
+        The FTSE's constituents are reviewed each calendar quarter, with some companies exiting or entering the index.
+        FTSE 100 is calculated in real time and published every second when the market is open.
+        """
     },
     '^GDAXI': {
-        'category': '',
-        'description': ''
+        'category': 'Stock Large Cap',
+        'description': 
+        """
+        The DAX index tracks the performance of the 40 largest companies listed on the Regulated Market of the Frankfurt Stock
+        Exchange (FSE) that fulfill the requirements of being representative of Germany's diversified economy. Constituent 
+        selection is based on free-float market capitalization. The DAX has two versions - the more commonly quoted performance index that 
+        measures total return, thus including dividends; and the price index, which is more similar to commonly quoted indices in other countries.
+        The German benchmark is a popular underlying for ETFs, exchange-traded derivatives and investment certificates.
+        """
     },
     '^IBEX': {
-        'category': '',
-        'description': ''
+        'category': 'Stock Large Cap',
+        'description': 
+        """
+        The IBEX 35 (IBerian IndEX) is the benchmark stock market index of the Bolsa de Madrid, Spain's principal stock exchange. 
+        Initiated in 1992, the index is administered and calculated by Sociedad de Bolsas, a subsidiary of Bolsas y Mercados Españoles
+        (BME), the company which runs Spain's securities markets (including the Bolsa de Madrid). It is a market cap 
+        weighted index comprising the 35 most liquid Spanish stocks traded in the Madrid Stock Exchange General Index and is reviewed 
+        twice annually. Trading on options and futures contracts on the IBEX 35 is provided by MEFF (Mercado Español de Futuros 
+        Financieros), another subsidiary of BME.
+        """
     },
     '^FCHI': {
-        'category': '',
-        'description': ''
+        'category': 'Stock Large Cap',
+        'description': 
+        """
+        CAC 40 is a benchmark French stock market index that tracks the performance of the 40 largest and most active 
+        companies listed on the Euronext Paris stock exchange. Its name - Cotation Assistée en Continu or Continuous 
+        Assisted Quotation - refers to an automation system that is a version of the Toronto-based first ever fully 
+        automated trading system in the world. CAC 40 is a price return index and as such pays no dividends, interest, 
+        rights offerings or similar profit distributions. The index operates every working day from 9:00 am to 5:30 pm 
+        and is updated every 15 seconds. Its composition is reviewed quarterly by an independent Index Steering Committee.
+        """
     },
     '^STOXX': {
-        'category': '',
-        'description': ''
+        'category': 'Stock Large Cap',
+        'description': 
+        """
+        STOXX Europe 600 is an index of European stocks designed and introduced by STOXX Ltd in 1998. It has 
+        a fixed number of 600 components representing large, mid and small capitalization companies among 17 
+        European countries (not limited to the Eurozone) and covers about 90% of the European stock free-float market cap.
+        The major countries of the index, contributing over two-thirds of it, are the UK, France, Switzerland and Germany. 
+        The other participating countries are Austria, Belgium, Denmark, Finland, Ireland, Italy, Luxembourg, 
+        the Netherlands, Norway, Poland, Portugal, Spain, and Sweden. STOXX Europe 600 is available in multiple currency 
+        (AUD, CAD, CHF, EUR, GBP, JPY, USD) and return (Price, Net Return, Gross Return) combinations. 
+        Its composition is reviewed quarterly. 
+        """
     },
     '^AXJO': {
-        'category': '',
-        'description': ''
+        'category': 'Stock all but Micro Cap',
+        'description': 
+        """
+        The S&P/ASX 200 index is a market-capitalisation weighted and float-adjusted stock market index of shares listed on the Australian Securities Exchange (ASX). 
+        It was started in 2000 and has since been maintained by Standard & Poor's. It is based on the 200 largest ASX listed stocks, which together account for more 
+        than 80% of Australia's share market capitalisation. S&P/ASX 200 is considered the benchmark for Australian equity performance. 
+        """
     },
     '000001.SS': {
-        'category': 'Large Cap Stock',
+        'category': 'Stock Large Cap',
         'description': 
         """
         The SSE Composite Index is a stock market index of all stocks traded at the Shanghai Stock Exchange (SSE).
@@ -133,7 +190,7 @@ indices_custom_info = {
         """
     },
     '^KS11': {
-        'category': 'Large Cap',
+        'category': 'Stock Large Cap',
         'description': 
         """
         The Korea Composite Stock Price Index (KOSPI) tracks all common stocks traded on the Korea Stock Exchange,
@@ -142,7 +199,7 @@ indices_custom_info = {
         """
     },
     '^BSESN': {
-        'category': 'Large Cap Stock',
+        'category': 'Stock Large Cap',
         'description': 
         """
         The BSE SENSEX, also known as the S&P Bombay Stock Exchange Sensitive Index or simply SENSEX, tracks the performance of 30
