@@ -9,16 +9,46 @@ ticker_main_title_css = {
     'margin-bottom': '10px'
 }
 
-# Input data table
-input_table_container_css = {
-    'width': '1100px',
-    # 'height': '650px',
+# Pre-selection tables
+pre_category_container_css = {
+    'width': '900px',
     'font-family': 'Helvetica',
     'font-size' : '14px',
     'border': '1px solid rgb(211, 211, 211)',
     'margin-top': '5px',
     'margin-left': '5px'
-    # 'border-radius': '2px'            
+}
+pre_menu_container_css = {
+    'width': '195px',
+    'font-family': 'Helvetica',
+    'font-size' : '14px',
+    'border': '1px solid rgb(211, 211, 211)',
+    'border-radius': '5px',
+    'margin-top': '5px',
+    'margin-left': '5px',
+    'vertical-align': 'top',
+    'display': 'inline-block'
+}
+pre_table_container_css = {
+    'width': '700px',
+    'font-family': 'Helvetica',
+    'font-size' : '14px',
+    'border': '1px solid rgb(211, 211, 211)',
+    'margin-top': '5px',
+    'margin-left': '5px',
+    'vertical-align': 'top',
+    'display': 'inline-block'
+}
+
+# Input data table
+input_table_container_css = {
+    'width': '1100px',
+    'font-family': 'Helvetica',
+    'font-size' : '14px',
+    'border': '1px solid rgb(211, 211, 211)',
+    'margin-top': '5px',
+    'margin-left': '5px'
+
 }
 input_table_header_css = {
     'font-family': 'Helvetica',
@@ -50,7 +80,6 @@ custom_ticker_all_container_css = {
     'margin-top': '10px'
 }
 custom_ticker_input_container = {
-    # 'display': 'block',
     'display': 'inline-block',
     'margin-right': '5px',
     'margin-left': '5px',
@@ -112,7 +141,17 @@ table_custom_ticker_data_css = {
     # 'border-bottom': '1px solid rgb(211, 211, 211)'
 }
 
-# Collapse button
+# Collapse buttons
+collapse_button_pre_table_css = {
+    'display': 'inline-block',
+    'margin-top': '5px',
+    'margin-left': '5px',
+    'margin-right': '5px',
+    'text-align': 'left',
+    'font-family': 'Helvetica',
+    'font-weight': 'bold',
+    'width': '900px'
+}
 collapse_button_table_css = {
     'display': 'inline-block',
     'margin-top': '5px',

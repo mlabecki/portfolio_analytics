@@ -17,32 +17,28 @@ from css_portfolio_analytics import *
 from utils import *
 from download_info import DownloadInfo
 
-end_date = datetime.today()
-hist_years, hist_months, hist_days = 1, 0, 0
-start_date = datetime(end_date.year - hist_years, end_date.month - hist_months, end_date.day - hist_days)
-
 hist_info = DownloadInfo()
 
-tk_market = '^GSPC'
+# tk_market = '^GSPC'
 # tk_market = 'BTC-USD'
 
 max_tickers = {
-    'biggest_companies': 10,
-    'sp500': 10,
-    'nasdaq100': 10,
+    'biggest_companies': 100,
+    'sp500': 100,
+    'nasdaq100': 120,
     'dow_jones': 35,
-    'biggest_etfs': 10,
-    'fixed_income_etfs': 10,
-    'ai_etfs': 30,
-    'commodity_etfs': 12,
+    'biggest_etfs': 100,
+    'fixed_income_etfs': 100,
+    'ai_etfs': 50,
+    'commodity_etfs': 20,
     'currency_etfs': 10,
-    'cryptos': 10, 
-    'crypto_etfs': 10,
-    'futures': 10,
+    'cryptos': 100, 
+    'crypto_etfs': 100,
+    'futures': 100,
     'precious_metals': 5,
-    'stock_indices': 18,
-    'volatility_indices': 5,
-    'risk_free_treasury': 2
+    'stock_indices': 20,
+    'volatility_indices': 10,
+    'benchmarks': 30
 }
 etf_categories = [
     'biggest_etfs',
@@ -99,41 +95,31 @@ tickers_commodity_etfs = list(commodity_etf_tickers.keys())
 tickers_risk_free_treasury = list(risk_free_treasury_tickers.keys())
 tickers_volatility_indices = list(volatility_tickers.keys())
 tickers_currency_etfs = list(currency_etf_tickers.keys())
+tickers_benchmarks = list(benchmark_tickers.keys())
 
-input_table_columns_indices = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Exchange', 'Currency']
-input_table_columns_futures = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Exchange', 'Currency']
-input_table_columns_equities = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Industry', 'Sector', 'Exchange', 'Currency']
-input_table_columns_etfs = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Category', 'Exchange', 'Currency']
-input_table_columns_cryptos = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Exchange', 'Currency']
-
-custom_ticker_table_columns = {
-    'INDEX': ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Exchange', 'Currency'],
-    'FUTURE': ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Exchange', 'Currency'],
-    'EQUITY': ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Industry', 'Sector', 'Exchange', 'Currency'],
-    'ETF': ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Category', 'Exchange', 'Currency'],
-    'CRYPTOCURRENCY': ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Exchange', 'Currency']
-}
+pre_table_columns = ['No.', 'Ticker', 'Name']
 
 # NOTE: The ticker categories and the number of tickers to download the info of in each of them will be specified by the user
 #       on the page preceding the ticker selection page.
 
-df_info_url_biggest_companies = pd.DataFrame(index = tickers_biggest_companies, columns = input_table_columns_equities)
-df_info_url_sp500 = pd.DataFrame(index = tickers_sp500, columns = input_table_columns_equities)
-df_info_url_nasdaq100 = pd.DataFrame(index = tickers_nasdaq100, columns = input_table_columns_equities)
-df_info_url_dow_jones = pd.DataFrame(index = tickers_dow_jones, columns = input_table_columns_equities)
-df_info_url_biggest_etfs = pd.DataFrame(index = tickers_biggest_etfs, columns = input_table_columns_etfs)
-df_info_url_fixed_income_etfs = pd.DataFrame(index = tickers_fixed_income_etfs, columns = input_table_columns_etfs)
-df_info_url_ai_etfs = pd.DataFrame(index = tickers_ai_etfs, columns = input_table_columns_etfs)
-df_info_url_futures = pd.DataFrame(index = tickers_futures, columns = input_table_columns_futures)
-df_info_url_cryptos = pd.DataFrame(index = tickers_cryptos, columns = input_table_columns_cryptos)
-df_info_url_crypto_etfs = pd.DataFrame(index = tickers_crypto_etfs, columns = input_table_columns_etfs)
+df_pre_url_biggest_companies = pd.DataFrame(index = tickers_biggest_companies, columns = pre_table_columns)
+df_pre_url_sp500 = pd.DataFrame(index = tickers_sp500, columns = pre_table_columns)
+df_pre_url_nasdaq100 = pd.DataFrame(index = tickers_nasdaq100, columns = pre_table_columns)
+df_pre_url_dow_jones = pd.DataFrame(index = tickers_dow_jones, columns = pre_table_columns)
+df_pre_url_biggest_etfs = pd.DataFrame(index = tickers_biggest_etfs, columns = pre_table_columns)
+df_pre_url_fixed_income_etfs = pd.DataFrame(index = tickers_fixed_income_etfs, columns = pre_table_columns)
+df_pre_url_ai_etfs = pd.DataFrame(index = tickers_ai_etfs, columns = pre_table_columns)
+df_pre_url_futures = pd.DataFrame(index = tickers_futures, columns = pre_table_columns)
+df_pre_url_cryptos = pd.DataFrame(index = tickers_cryptos, columns = pre_table_columns)
+df_pre_url_crypto_etfs = pd.DataFrame(index = tickers_crypto_etfs, columns = pre_table_columns)
 
-df_info_tickers_stock_indices = pd.DataFrame(index = tickers_stock_indices, columns = input_table_columns_indices)
-df_info_tickers_commodity_etfs = pd.DataFrame(index = tickers_commodity_etfs, columns = input_table_columns_etfs)
-df_info_tickers_precious_metals = pd.DataFrame(index = tickers_precious_metals, columns = input_table_columns_futures)
-df_info_tickers_risk_free_treasury = pd.DataFrame(index = tickers_risk_free_treasury, columns = input_table_columns_indices)
-df_info_tickers_volatility_indices = pd.DataFrame(index = tickers_volatility_indices, columns = input_table_columns_indices)
-df_info_tickers_currency_etfs = pd.DataFrame(index = tickers_currency_etfs, columns = input_table_columns_etfs)
+df_pre_tickers_stock_indices = pd.DataFrame(index = tickers_stock_indices, columns = pre_table_columns)
+df_pre_tickers_commodity_etfs = pd.DataFrame(index = tickers_commodity_etfs, columns = pre_table_columns)
+df_pre_tickers_precious_metals = pd.DataFrame(index = tickers_precious_metals, columns = pre_table_columns)
+df_pre_tickers_risk_free_treasury = pd.DataFrame(index = tickers_risk_free_treasury, columns = pre_table_columns)
+df_pre_tickers_volatility_indices = pd.DataFrame(index = tickers_volatility_indices, columns = pre_table_columns)
+df_pre_tickers_currency_etfs = pd.DataFrame(index = tickers_currency_etfs, columns = pre_table_columns)
+df_pre_tickers_benchmarks = pd.DataFrame(index = tickers_benchmarks, columns = pre_table_columns)
 
 row_ticker_map_biggest_companies = {}
 row_ticker_map_sp500 = {}
@@ -150,11 +136,11 @@ row_ticker_map_futures = {}
 row_ticker_map_precious_metals = {}
 row_ticker_map_stock_indices = {}
 row_ticker_map_volatility_indices = {}
-row_ticker_map_risk_free_treasury = {}
+row_ticker_map_benchmarks = {}
 
 ticker_category_info_map = {
     'biggest_companies': {
-        'df': df_info_url_biggest_companies,
+        'df': df_pre_url_biggest_companies,
         'row': row_ticker_map_biggest_companies,
         'dict': dict_biggest_companies,
         'sort_by': '',
@@ -162,7 +148,7 @@ ticker_category_info_map = {
         'collapse_title': 'BIGGEST COMPANIES'
     },
     'sp500': {
-        'df': df_info_url_sp500,
+        'df': df_pre_url_sp500,
         'row': row_ticker_map_sp500,
         'dict': dict_sp500,
         'sort_by': '',
@@ -170,7 +156,7 @@ ticker_category_info_map = {
         'collapse_title': 'S&P 500 COMPANIES'
     },
     'nasdaq100': {
-        'df': df_info_url_nasdaq100,
+        'df': df_pre_url_nasdaq100,
         'row': row_ticker_map_nasdaq100,
         'dict': dict_nasdaq100,
         'sort_by': '',
@@ -178,7 +164,7 @@ ticker_category_info_map = {
         'collapse_title': 'NASDAQ 100 COMPANIES'
     },
     'dow_jones': {
-        'df': df_info_url_dow_jones,
+        'df': df_pre_url_dow_jones,
         'row': row_ticker_map_dow_jones,
         'dict': dict_dow_jones,
         'sort_by': '',
@@ -186,7 +172,7 @@ ticker_category_info_map = {
         'collapse_title': 'DOW JONES INDUSTRIAL AVERAGE COMPANIES'
     },
     'biggest_etfs': {
-        'df': df_info_url_biggest_etfs,
+        'df': df_pre_url_biggest_etfs,
         'row': row_ticker_map_biggest_etfs,
         'dict': dict_biggest_etfs,
         'sort_by': '',
@@ -194,7 +180,7 @@ ticker_category_info_map = {
         'collapse_title': 'BIGGEST ETFs'
     },
     'fixed_income_etfs': {
-        'df': df_info_url_fixed_income_etfs,
+        'df': df_pre_url_fixed_income_etfs,
         'row': row_ticker_map_fixed_income_etfs,
         'dict': dict_fixed_income_etfs,
         'sort_by': '',
@@ -202,7 +188,7 @@ ticker_category_info_map = {
         'collapse_title': 'FIXED INCOME ETFs'
     },
     'ai_etfs': {
-        'df': df_info_url_ai_etfs,
+        'df': df_pre_url_ai_etfs,
         'row': row_ticker_map_ai_etfs,
         'dict': dict_ai_etfs,
         'sort_by': '',
@@ -210,7 +196,7 @@ ticker_category_info_map = {
         'collapse_title': 'ARTIFICIAL INTELLIGENCE ETFs'
     },
     'commodity_etfs': {
-        'df': df_info_tickers_commodity_etfs,
+        'df': df_pre_tickers_commodity_etfs,
         'row': row_ticker_map_commodity_etfs,
         'dict': commodity_etf_tickers,
         'sort_by': 'totalAssets',
@@ -218,7 +204,7 @@ ticker_category_info_map = {
         'collapse_title': 'COMMODITY ETFs'
     },
     'currency_etfs': {
-        'df': df_info_tickers_currency_etfs,
+        'df': df_pre_tickers_currency_etfs,
         'row': row_ticker_map_currency_etfs,
         'dict': currency_etf_tickers,
         'sort_by': 'totalAssets',
@@ -226,7 +212,7 @@ ticker_category_info_map = {
         'collapse_title': 'CURRENCY ETFs'
     },
     'cryptos': {
-        'df': df_info_url_cryptos,
+        'df': df_pre_url_cryptos,
         'row': row_ticker_map_cryptos,
         'dict': dict_cryptos,
         'sort_by': '',
@@ -234,7 +220,7 @@ ticker_category_info_map = {
         'collapse_title': 'CRYPTOCURRENCIES'
     },
     'crypto_etfs': {
-        'df': df_info_url_crypto_etfs,
+        'df': df_pre_url_crypto_etfs,
         'row': row_ticker_map_crypto_etfs,
         'dict': dict_crypto_etfs,
         'sort_by': '',
@@ -242,7 +228,7 @@ ticker_category_info_map = {
         'collapse_title': 'CRYPTOCURRENCY ETFs'
     },
     'futures': {
-        'df': df_info_url_futures,
+        'df': df_pre_url_futures,
         'row': row_ticker_map_futures,
         'dict': dict_futures,
         'sort_by': '',
@@ -250,7 +236,7 @@ ticker_category_info_map = {
         'collapse_title': 'COMMODITY FUTURES'
     },
     'precious_metals': {
-        'df': df_info_tickers_precious_metals,
+        'df': df_pre_tickers_precious_metals,
         'row': row_ticker_map_precious_metals,
         'dict': precious_metals,
         'sort_by': 'openInterest',
@@ -258,7 +244,7 @@ ticker_category_info_map = {
         'collapse_title': 'PRECIOUS METALS'
     },
     'stock_indices': {
-        'df': df_info_tickers_stock_indices,
+        'df': df_pre_tickers_stock_indices,
         'row': row_ticker_map_stock_indices,
         'dict': stock_index_tickers,
         'sort_by': '',  # Only some indices have 'volume' in info
@@ -266,28 +252,28 @@ ticker_category_info_map = {
         'collapse_title': 'STOCK INDICES'
     },
     'volatility_indices': {
-        'df': df_info_tickers_volatility_indices,
+        'df': df_pre_tickers_volatility_indices,
         'row': row_ticker_map_volatility_indices,
         'dict': volatility_tickers,
         'sort_by': '',  # No 'volume' in info
         'id_string': 'volatility-indices',
         'collapse_title': 'VOLATILITY INDICES'
     },
-    'risk_free_treasury': {
-        'df': df_info_tickers_risk_free_treasury,
-        'row': row_ticker_map_risk_free_treasury,
-        'dict': risk_free_treasury_tickers,
-        'sort_by': '',  # No 'volume' in info
-        'id_string': 'risk-free-treasury',
-        'collapse_title': 'RISK-FREE INDICES'
+    'benchmarks': {
+        'df': df_pre_tickers_benchmarks,
+        'row': row_ticker_map_benchmarks,
+        'dict': benchmark_tickers,
+        'sort_by': '',
+        'id_string': 'benchmarks',
+        'collapse_title': 'BENCHMARKS'
     }
 }
 
-ticker_info = {}  # To help user decide on tickers based on the name and data start and end dates
+ticker_names = {}  # To help user decide on tickers based on the name
 
-def create_input_table(category):
+def create_pre_table(category):
 
-    df_info_tickers = ticker_category_info_map[category]['df']
+    df_pre_tickers = ticker_category_info_map[category]['df']
     row_ticker_map = ticker_category_info_map[category]['row']
     dict_info_tickers = ticker_category_info_map[category]['dict']
     tk_sort_by = ticker_category_info_map[category]['sort_by']
@@ -295,7 +281,7 @@ def create_input_table(category):
     category_tickers = list(dict_info_tickers.keys())
     n_tickers = min(len(category_tickers), max_tickers[category])
     category_tickers = category_tickers[: n_tickers]
-    df_info_tickers = df_info_tickers[: n_tickers]
+    df_pre_tickers = df_pre_tickers[: n_tickers]
     max_tickers[category] = n_tickers
     ### Create a function that takes max_tickers as an argument and returns category table title
 
@@ -305,118 +291,49 @@ def create_input_table(category):
     if tk_sort_by != '':
         dict_tickers_values = {tk: yf.Ticker(tk).info[tk_sort_by] for tk in category_tickers}
         category_tickers_sorted = [i[0] for i in sorted(dict_tickers_values.items(), key=itemgetter(1), reverse=True)]
-        df_info_tickers.index = category_tickers_sorted  
+        df_pre_tickers.index = category_tickers_sorted  
 
     for i, tk in enumerate(category_tickers_sorted):
 
-        if tk not in ticker_info.keys():
+        if tk not in ticker_names.keys():
             
-            tk_hist = yf.Ticker(tk).history(period = 'max')
-            tk_info = yf.Ticker(tk).info
-            # Should also check if ticker is still valid, for now assume they're all valid
-
-            if len(tk_hist.index) > 0:
-
-                tk_start, tk_end = str(tk_hist.index[0].date()), str(tk_hist.index[-1].date())
-
-                df_info_tickers.at[tk, 'No.'] = i + 1
-                df_info_tickers.at[tk, 'Ticker'] = tk
-
-                if 'longName' in tk_info.keys():
-                    tk_name = tk_info['longName']
-                elif 'shortName' in tk_info.keys():
-                    tk_name = tk_info['shortName']
-                else:
-                    tk_name = dict_info_tickers[tk]
-
-                if category in etf_categories:
-                    tk_type = 'ETF'
-                else:
-                    tk_type = tk_info['quoteType'] if 'quoteType' in tk_info.keys() else ''
-
-                if category == 'crypto_etfs':
-                    tk_category = 'Digital Assets'
-                else:
-                    tk_category = tk_info['category'] if 'category' in tk_info.keys() else ''
-
-                tk_exchange = tk_info['exchange'] if 'exchange' in tk_info.keys() else ''
-                tk_currency = tk_info['currency'] if 'currency' in tk_info.keys() else ''
-                tk_industry = tk_info['industry'] if 'industry' in tk_info.keys() else ''
-                tk_sector = tk_info['sector'] if 'sector' in tk_info.keys() else ''
-
-                if 'longBusinessSummary' in tk_info.keys():
-                    tk_summary = tk_info['longBusinessSummary']
-                elif 'description' in tk_info.keys():
-                    tk_summary = tk_info['description']
-                else: 
-                    tk_summary = ''
-
-                df_info_tickers.at[tk, 'Name'] = tk_name
-                df_info_tickers.at[tk, 'Data Start'] = tk_start
-                df_info_tickers.at[tk, 'Data End'] = tk_end
-                df_info_tickers.at[tk, 'Exchange'] = tk_exchange
-                df_info_tickers.at[tk, 'Currency'] = tk_currency
-
-                if tk_type == 'ETF':
-                    df_info_tickers.at[tk, 'Category'] = tk_category
-                elif tk_type == 'EQUITY':
-                    df_info_tickers.at[tk, 'Industry'] = tk_industry
-                    df_info_tickers.at[tk, 'Sector'] = tk_sector
-
-                ticker_info.update({
-                    tk: {
-                        'name': tk_name,
-                        'start': tk_start,
-                        'end': tk_end,
-                        'type': tk_type,
-                        'exchange': tk_exchange,
-                        'currency': tk_currency,
-                        'category': tk_category,
-                        'industry': tk_industry,
-                        'sector': tk_sector,
-                        'summary': tk_summary
-                    }
-                })
-
-            else:
-                print(f'WARNING: Cannot get data for {tk} at the moment, try again later')
+            df_pre_tickers.at[tk, 'No.'] = i + 1
+            df_pre_tickers.at[tk, 'Ticker'] = tk
+            tk_name = dict_info_tickers[tk]
+            df_pre_tickers.at[tk, 'Name'] = tk_name
+            ticker_names.update({tk: tk_name})
     
         else:
 
-            df_info_tickers.at[tk, 'No.'] = i + 1
-            df_info_tickers.at[tk, 'Ticker'] = tk
-            df_info_tickers.at[tk, 'Name'] = ticker_info[tk]['name']
-            df_info_tickers.at[tk, 'Data Start'] = ticker_info[tk]['start']
-            df_info_tickers.at[tk, 'Data End'] = ticker_info[tk]['end']
-            df_info_tickers.at[tk, 'Exchange'] = ticker_info[tk]['exchange']
-            df_info_tickers.at[tk, 'Currency'] = ticker_info[tk]['currency']
-            if ticker_info[tk]['type'] == 'ETF':
-                df_info_tickers.at[tk, 'Category'] = ticker_info[tk]['category']
-            elif ticker_info[tk]['type'] == 'EQUITY':
-                df_info_tickers.at[tk, 'Industry'] = ticker_info[tk]['industry']
-                df_info_tickers.at[tk, 'Sector'] = ticker_info[tk]['sector']
+            df_pre_tickers.at[tk, 'No.'] = i + 1
+            df_pre_tickers.at[tk, 'Ticker'] = tk
+            if tk in bond_etf_tickers.keys():
+                # To avoid corrupt names at https://8marketcap.com/etfs/
+                df_pre_tickers.at[tk, 'Name'] = bond_etf_tickers[tk]
+            else:
+                df_pre_tickers.at[tk, 'Name'] = ticker_names[tk]
 
         row_ticker_map.update({tk: i})
 
-    input_table_data = {
-        'df': df_info_tickers,
+    pre_table_data = {
+        'df': df_pre_tickers,
         'row': row_ticker_map,
         'maxn': n_tickers
     }
 
-    return input_table_data
+    return pre_table_data
 
 
 for category in ticker_category_info_map.keys():
-    print(f'\nProcessing info for {category} ...')
-    input_table_data = create_input_table(category)
-    ticker_category_info_map[category]['df'] = input_table_data['df']
-    ticker_category_info_map[category]['row'] = input_table_data['row']
-    max_tickers.update({category: input_table_data['maxn']})
+    print(f'\nProcessing {category} ...')
+    pre_table_data = create_pre_table(category)
+    ticker_category_info_map[category]['df'] = pre_table_data['df']
+    ticker_category_info_map[category]['row'] = pre_table_data['row']
+    max_tickers.update({category: pre_table_data['maxn']})
     print(ticker_category_info_map[category]['df'])
     print(ticker_category_info_map[category]['row'])
 
-input_table_titles = {
+pre_table_titles = {
     'biggest_companies': f'{max_tickers["biggest_companies"]} BIGGEST COMPANIES by Market Capitalization',
     'sp500': f'TOP {max_tickers["sp500"]} S&P 500 COMPANIES by Market Capitalization',
     'nasdaq100': f'TOP {max_tickers["nasdaq100"]} NASDAQ 100 COMPANIES by Market Capitalization',
@@ -432,10 +349,10 @@ input_table_titles = {
     'precious_metals': f'{max_tickers["precious_metals"]} PRECIOUS METAL SPOT / FUTURES sorted by Open Interest',
     'stock_indices': f'{max_tickers["stock_indices"]} STOCK INDICES',
     'volatility_indices': f'{max_tickers["volatility_indices"]} VOLATILITY INDICES',
-    'risk_free_treasury': f'{max_tickers["risk_free_treasury"]} RISK-FREE US TREASURY INDICES'
+    'benchmarks': f'{max_tickers["benchmarks"]} BENCHMARKS'
 }
 
-print(f'\nTotal tickers: {len(ticker_info)}')
+print(f'\nTotal tickers: {len(ticker_names)}')
 
 ##############
 
@@ -444,15 +361,15 @@ ticker_div_title = html.Div(
     style = select_ticker_title_css
 )
 
-input_table = {}  # A dictionary mapping ticker category to the corresponding input table
-input_table_collapse_div = {}
-static_tables = []
+pre_selection_table = {}  # A dictionary mapping ticker category to the corresponding pre-selection table
+pre_selection_table_collapse_div = {}
+pre_tables = []
 
 for category in ticker_category_info_map.keys():
     
     id_string = ticker_category_info_map[category]['id_string']
 
-    input_table[category] = html.Div([
+    pre_selection_table[category] = html.Div([
         dash_table.DataTable(
             columns = [{'name': i, 'id': i} for i in ticker_category_info_map[category]['df'].columns],
             data = ticker_category_info_map[category]['df'].to_dict('records'),
@@ -472,13 +389,6 @@ for category in ticker_category_info_map.keys():
                 {'if': {'column_id': 'No.'}, 'width': 24},
                 {'if': {'column_id': 'Ticker'}, 'width': 45},
                 # {'if': {'column_id': 'Type'}, 'width': 38},
-                {'if': {'column_id': 'Currency'}, 'width': 70},
-                {'if': {'column_id': 'Exchange'}, 'width': 72},
-                {'if': {'column_id': 'Data Start'}, 'width': 85},
-                {'if': {'column_id': 'Data End'}, 'width': 85},
-                # {'if': {'column_id': 'Category'}, 'width': 125},
-                # {'if': {'column_id': 'Industry'}, 'width': 130},
-                # {'if': {'column_id': 'Sector'}, 'width': 130},
             ],
             id = f'table-{id_string}',
             style_header = input_table_header_css,
@@ -486,7 +396,26 @@ for category in ticker_category_info_map.keys():
         )
     ])
 
-    input_table_collapse_div[category] = html.Div(
+
+    pre_menu_item_css = {
+        'display': 'block',
+        'margin-left': '10px',
+        'margin-top': '8px',
+        'margin-right': '5px',
+        'margin-bottom': '8px',
+        'vertical-align': 'top',
+        'font-family': 'Helvetica',
+        'border': '1px'
+    }
+    pre_menu_input_css = {
+        'width': '100px',
+        'height': '32px',
+        'border-color': 'rgb(204, 204, 204)',
+        'border-radius': '5px',
+        'font-size': '14px'
+    }
+
+    pre_selection_table_collapse_div[category] = html.Div(
         hidden = False,
         children =
         [
@@ -502,22 +431,77 @@ for category in ticker_category_info_map.keys():
                     color = 'primary',
                     size = 'sm',
                     n_clicks = 0,
-                    style = collapse_button_table_css
+                    style = collapse_button_pre_table_css
                 )
             ),
             dbc.Collapse(
                 html.Div(
                     html.Div(
-                        id = f'table-{id_string}-container',
+                        id = f'pre-category-{id_string}-container',
                         children = [
-                        html.Div(
-                            children = input_table_titles[category],
-                            id = f'table-{id_string}-title',
-                            style = input_table_title_css
-                        ),
-                        input_table[category]
+                            
+                            html.Div(
+                                id = f'pre-menu-{id_string}-container',
+                                children = [
+
+                                    html.Div([
+                                        # html.Div('Select All Tickers', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                                        # dbc.RadioItems(
+                                        dcc.Checklist(
+                                            [' SELECT ALL'],
+                                            id = f'pre-menu-{id_string}-select-all-checkbox',
+                                            style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top'}
+                                            # style = {'width': '140px', 'height': '36px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'font-size': '15px'}
+                                        )],
+                                        style = pre_menu_item_css
+                                    ),
+
+                                    html.Div([
+                                        html.Div('Select Number Of Tickers', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                                        dbc.Input(
+                                            id = f'pre-menu-{id_string}-ntickers-input',
+                                            type = 'number',
+                                            value = 1,
+                                            min = 1,
+                                            max = max_tickers[category],
+                                            step = 1,
+                                            style = pre_menu_input_css
+                                        )],
+                                        style = pre_menu_item_css
+                                    ),
+                                    
+                                    html.Div([
+                                        html.Div('Select First Ticker', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                                        dbc.Input(
+                                            id = f'pre-menu-{id_string}-first-ticker-input',
+                                            type = 'number',
+                                            value = 1,
+                                            min = 1,
+                                            max = max_tickers[category],
+                                            step = 1,
+                                            style = pre_menu_input_css
+                                        )],
+                                        style = pre_menu_item_css
+                                    ),
+                                
+                                ],
+                                style = pre_menu_container_css
+                            ),
+
+                            html.Div(
+                                id = f'pre-table-{id_string}-container',
+                                children = [
+                                html.Div(
+                                    children = pre_table_titles[category],
+                                    id = f'pre-table-{id_string}-title',
+                                    style = input_table_title_css
+                                ),
+                                pre_selection_table[category]
+                                ],
+                                style = pre_table_container_css
+                            )
                         ],
-                        style = input_table_container_css
+                        # style = {'display': 'inline-block'}
                     ),
                 ),
                 id = f'collapse-table-{id_string}',
@@ -526,7 +510,7 @@ for category in ticker_category_info_map.keys():
         ]
     )  # html.Div with dbc.Button and dbc.Collapse
 
-    static_tables.append(input_table_collapse_div[category])
+    pre_tables.append(pre_selection_table_collapse_div[category])
 
 ###########################################################################################
 
@@ -538,7 +522,7 @@ app.layout = html.Div([
 
     # MAIN TITLE
     html.Div(
-        'Add tickers to your portfolio by typing in the Add Ticker box or selecting from the lists below',
+        'Pre-select ticker categories or individual tickers to extract more details about',
         id = 'ticker-main-title',
         style = ticker_main_title_css
     ),
@@ -555,58 +539,11 @@ app.layout = html.Div([
         style = select_ticker_container_css
     ),
 
-    html.Div(
-        id = 'custom-ticker-all-container',
-        children = [
-
-            html.Div(
-                id = 'custom-ticker-input-container',
-                children = [
-                    html.Div([
-                        html.Div(
-                            'Add Ticker:',
-                            id = 'custom-ticker-input-title',
-                            style = custom_ticker_input_title_css
-                        ),
-                        dbc.Input(
-                            id = 'custom-ticker-input',
-                            type = 'text',
-                            value = '',
-                            debounce = True,
-                            placeholder = '',
-                            style = custom_ticker_input_css
-                        )
-                    ]),
-                ],
-                style = custom_ticker_input_container
-            ),
-
-            html.Div(
-                id = 'custom-ticker-input-message',
-                hidden = True,
-                style = custom_ticker_input_message_css
-            ),
-
-            html.Div(
-                id = 'custom-ticker-info-container',
-                hidden = False,
-                children = [
-                    html.Div(
-                        id = 'table-custom-ticker-info',
-                        style = table_custom_ticker_info_css
-                    ),
-                ],
-                style = custom_ticker_info_container_css
-            )
-        ],
-        style = custom_ticker_all_container_css
-    ),
-
     ################
 
     html.Div(
         id = 'all-tables-container',
-        children = static_tables
+        children = pre_tables
     ),
 
     html.Br()
@@ -615,32 +552,10 @@ app.layout = html.Div([
 
 ####################################################################
 
-# row_ticker_map_biggest_companies = {}
-# row_ticker_map_sp500 = {}
-# row_ticker_map_nasdaq100 = {}
-# row_ticker_map_dow_jones = {}
-# row_ticker_map_biggest_etfs = {}
-# row_ticker_map_fixed_income_etfs = {}
-# row_ticker_map_ai_etfs = {}
-# row_ticker_map_commodity_etfs = {}
-# row_ticker_map_currency_etfs = {}
-# row_ticker_map_cryptos = {}
-# row_ticker_map_crypto_etfs = {}
-# row_ticker_map_futures = {}
-# row_ticker_map_precious_metals = {}
-# row_ticker_map_stock_indices = {}
-# row_ticker_map_volatility_indices = {}
-# row_ticker_map_risk_free_treasury = {}
-
 @app.callback(
     Output('select-ticker-container', 'children'),
     Output('select-ticker-container', 'hidden'),
     Output('select-ticker-list', 'children'),
-    Output('custom-ticker-input', 'value'),
-    Output('custom-ticker-input-message', 'hidden'),
-    Output('custom-ticker-info-container', 'hidden'),
-    Output('custom-ticker-input-message', 'children'),
-    Output('table-custom-ticker-info', 'children'),
     Output('prev-table-selected-rows', 'data'),
 
     Output('table-biggest-companies', 'selected_rows'),
@@ -658,7 +573,7 @@ app.layout = html.Div([
     Output('table-precious-metals', 'selected_rows'),
     Output('table-stock-indices', 'selected_rows'),
     Output('table-volatility-indices', 'selected_rows'),
-    Output('table-risk-free-treasury', 'selected_rows'),
+    Output('table-benchmarks', 'selected_rows'),
 
     Input('table-biggest-companies', 'data'),
     Input('table-sp500', 'data'),
@@ -675,7 +590,7 @@ app.layout = html.Div([
     Input('table-precious-metals', 'data'),
     Input('table-stock-indices', 'data'),
     Input('table-volatility-indices', 'data'),
-    Input('table-risk-free-treasury', 'data'),
+    Input('table-benchmarks', 'data'),
 
     Input('table-biggest-companies', 'selected_rows'),
     Input('table-sp500', 'selected_rows'),
@@ -692,12 +607,11 @@ app.layout = html.Div([
     Input('table-precious-metals', 'selected_rows'),
     Input('table-stock-indices', 'selected_rows'),
     Input('table-volatility-indices', 'selected_rows'),
-    Input('table-risk-free-treasury', 'selected_rows'),
+    Input('table-benchmarks', 'selected_rows'),
 
     Input('select-ticker-list', 'children'),
     Input('prev-table-selected-rows', 'data'),
     Input('select-ticker-container', 'children'),
-    Input('custom-ticker-input', 'value'),
     Input({'index': ALL, 'type': 'ticker_icon'}, 'n_clicks')
 )
 def output_custom_tickers(
@@ -717,7 +631,7 @@ def output_custom_tickers(
     table_precious_metals_data,
     table_stock_indices_data,
     table_volatility_indices_data,
-    table_risk_free_treasury_data,
+    table_benchmarks_data,
 
     table_biggest_companies_selected_rows,
     table_sp500_selected_rows,
@@ -734,12 +648,11 @@ def output_custom_tickers(
     table_precious_metals_selected_rows,
     table_stock_indices_selected_rows,
     table_volatility_indices_selected_rows,
-    table_risk_free_treasury_selected_rows,
+    table_benchmarks_selected_rows,
 
     selected_tickers,
     prev_table_selected_rows,
     ticker_divs,
-    tk_input,
     n_clicks
 ):
 
@@ -759,26 +672,26 @@ def output_custom_tickers(
         'precious_metals': table_precious_metals_selected_rows,
         'stock_indices': table_stock_indices_selected_rows,
         'volatility_indices': table_volatility_indices_selected_rows,
-        'risk_free_treasury': table_risk_free_treasury_selected_rows
+        'benchmarks': table_benchmarks_selected_rows
     }
-    table_data = {
-        'biggest_companies': table_biggest_companies_data,
-        'sp500': table_sp500_data,
-        'nasdaq100': table_nasdaq100_data,
-        'dow_jones': table_dow_jones_data,
-        'biggest_etfs': table_biggest_etfs_data,
-        'fixed_income_etfs': table_fixed_income_etfs_data,
-        'ai_etfs': table_ai_etfs_data,
-        'commodity_etfs': table_commodity_etfs_data,
-        'currency_etfs': table_currency_etfs_data,
-        'cryptos': table_cryptos_data,
-        'crypto_etfs': table_crypto_etfs_data,
-        'futures': table_futures_data,
-        'precious_metals': table_precious_metals_data,
-        'stock_indices': table_stock_indices_data,
-        'volatility_indices': table_volatility_indices_data,
-        'risk_free_treasury': table_risk_free_treasury_data
-    }
+    # table_data = {
+    #     'biggest_companies': table_biggest_companies_data,
+    #     'sp500': table_sp500_data,
+    #     'nasdaq100': table_nasdaq100_data,
+    #     'dow_jones': table_dow_jones_data,
+    #     'biggest_etfs': table_biggest_etfs_data,
+    #     'fixed_income_etfs': table_fixed_income_etfs_data,
+    #     'ai_etfs': table_ai_etfs_data,
+    #     'commodity_etfs': table_commodity_etfs_data,
+    #     'currency_etfs': table_currency_etfs_data,
+    #     'cryptos': table_cryptos_data,
+    #     'crypto_etfs': table_crypto_etfs_data,
+    #     'futures': table_futures_data,
+    #     'precious_metals': table_precious_metals_data,
+    #     'stock_indices': table_stock_indices_data,
+    #     'volatility_indices': table_volatility_indices_data,
+    #     'benchmarks': table_benchmarks_data
+    # }
 
     if prev_table_selected_rows == {}:
         for category in ticker_category_info_map.keys():
@@ -812,178 +725,22 @@ def output_custom_tickers(
 
     hide_ticker_container = False if len(updated_tickers) > 0 else True
 
-    ##### INPUT BUTTON
-    # Read in custom-specified ticker from input button
-
-    hide_tk_input_message = True
-    hide_custom_ticker_info = True
-    tk_input_message = ''
-    table_custom_ticker_info = []
-    tk_input = tk_input.upper()
-
-    if (tk_input != '') & (tk_input not in selected_tickers):
-        
-        # _ = yf.download(tk_input, progress = False)
-        tk_hist = yf.Ticker(tk_input).history(period = 'max')
-        # Unfortunately a failure of yf.Ticker(tk).info query does not add tk to yf.shared._ERRORS
-        # yf.Ticker().history() does, but unlike yf.download keeps adding invalid tickers to _ERRORS.keys()
-        if tk_input in yf.shared._ERRORS.keys():
-            tk_input_message = f'ERROR: Invalid ticker {tk_input}'
-            hide_tk_input_message = False
-        else:
-            updated_tickers.append(tk_input)
-
-            if tk_input not in ticker_info.keys():
-                
-                tk_start, tk_end = str(tk_hist.index[0].date()), str(tk_hist.index[-1].date())
-                tk_info = yf.Ticker(tk_input).info
-
-                if 'longName' in tk_info.keys():
-                    tk_name = tk_info['longName']
-                elif 'shortName' in tk_info.keys():
-                    tk_name = tk_info['shortName']
-                else:
-                    tk_name = tk_input
-
-                if category in etf_categories:
-                    tk_type = 'ETF'
-                else:
-                    tk_type = tk_info['quoteType'] if 'quoteType' in tk_info.keys() else ''
-
-                if category == 'crypto_etfs':
-                    tk_category = 'Digital Assets'
-                else:
-                    tk_category = tk_info['category'] if 'category' in tk_info.keys() else ''
-
-                tk_exchange = tk_info['exchange'] if 'exchange' in tk_info.keys() else ''
-                tk_currency = tk_info['currency'] if 'currency' in tk_info.keys() else ''
-                tk_industry = tk_info['industry'] if 'industry' in tk_info.keys() else ''
-                tk_sector = tk_info['sector'] if 'sector' in tk_info.keys() else ''
-
-                if 'longBusinessSummary' in tk_info.keys():
-                    tk_summary = tk_info['longBusinessSummary']
-                elif 'description' in tk_info.keys():
-                    tk_summary = tk_info['description']
-                else: 
-                    tk_summary = ''
-
-                ticker_info.update({
-                    tk_input: {
-                        'name': tk_name,
-                        'start': tk_start,
-                        'end': tk_end,
-                        'type': tk_type,
-                        'exchange': tk_exchange,
-                        'currency': tk_currency,
-                        'category': tk_category,
-                        'industry': tk_industry,
-                        'sector': tk_sector,
-                        'summary': tk_summary
-                    }
-                })
-
-            else:
-                tk_name = ticker_info[tk_input]['name']
-                tk_start = ticker_info[tk_input]['start']
-                tk_end = ticker_info[tk_input]['end']
-                tk_type = ticker_info[tk_input]['type']
-                tk_exchange = ticker_info[tk_input]['exchange']
-                tk_currency = ticker_info[tk_input]['currency']
-                tk_category = ticker_info[tk_input]['category']
-                tk_industry = ticker_info[tk_input]['industry']
-                tk_sector = ticker_info[tk_input]['sector']
-            
-            hide_custom_ticker_info = False
-
-            custom_table_data = {
-                'INDEX': {
-                    'Ticker': tk_input,
-                    'Name': tk_name,
-                    'Data Start': tk_start,
-                    'Data End': tk_end,
-                    'Type': tk_type,
-                    'Exchange': tk_exchange,
-                    'Currency': tk_currency
-                },
-                'FUTURE': {
-                    'Ticker': tk_input,
-                    'Name': tk_name,
-                    'Data Start': tk_start,
-                    'Data End': tk_end,
-                    'Type': tk_type,
-                    'Exchange': tk_exchange,
-                    'Currency': tk_currency
-                },
-                'EQUITY': {
-                    'Ticker': tk_input,
-                    'Name': tk_name,
-                    'Data Start': tk_start,
-                    'Data End': tk_end,
-                    'Type': tk_type,
-                    'Industry': tk_industry,
-                    'Sector': tk_sector,
-                    'Exchange': tk_exchange,
-                    'Currency': tk_currency
-                },
-                'ETF': {
-                    'Ticker': tk_input,
-                    'Name': tk_name,
-                    'Data Start': tk_start,
-                    'Data End': tk_end,
-                    'Type': tk_type,
-                    'Category': tk_category,
-                    'Exchange': tk_exchange,
-                    'Currency': tk_currency
-                },
-                'CRYPTOCURRENCY': {
-                    'Ticker': tk_input,
-                    'Name': tk_name,
-                    'Data Start': tk_start,
-                    'Data End': tk_end,
-                    'Type': tk_type,
-                    'Exchange': tk_exchange,
-                    'Currency': tk_currency
-                }
-            }
-
-            table_custom_ticker_info = dash_table.DataTable(
-                columns = [{'name': i, 'id': i} for i in custom_ticker_table_columns[tk_type]],
-                data = [custom_table_data[tk_type]],
-                id = 'table-custom-ticker',
-                style_header = table_custom_ticker_header_css,
-                style_data = table_custom_ticker_data_css
-            )
-                
-    elif (tk_input == '') & (removed_ticker != ''):
-        hide_tk_input_message = True
-        for tk in selected_tickers:
-            if tk == removed_ticker:
-                updated_tickers.remove(tk)
-
-    # Add tk_input to selected_rows in all relevant tables if not there yet
-    for category in ticker_category_info_map.keys():
-        row_map = ticker_category_info_map[category]['row']
-        if tk_input != '': 
-            if (tk_input in row_map.keys()) & (tk_input not in table_selected_tickers[category]):
-                table_selected_rows[category].append(row_map[tk_input])
-                table_selected_tickers[category] = [tk for tk in row_map.keys() if row_map[tk] in table_selected_rows[category]]
-
     ##### INPUT TABLES
     # Check whether a ticker was added to or removed from any table
 
     for category in ticker_category_info_map.keys():
         row_map = ticker_category_info_map[category]['row']
-        df_info = ticker_category_info_map[category]['df']
+        df_pre = ticker_category_info_map[category]['df']
         selected_rows = [k for k in table_selected_rows[category] if k not in prev_table_selected_rows[category]]
         if len(selected_rows) > 0:
-            added_ticker = df_info.index[df_info['No.'] == 1 + selected_rows[0]][0]
+            added_ticker = df_pre.index[df_pre['No.'] == 1 + selected_rows[0]][0]
             if added_ticker not in updated_tickers:
                 updated_tickers.append(added_ticker)
             break
         else:
             unselected_rows = [k for k in prev_table_selected_rows[category] if k not in table_selected_rows[category]]
             if len(unselected_rows) > 0:
-                removed_ticker = df_info.index[df_info['No.'] == 1 + unselected_rows[0]][0]
+                removed_ticker = df_pre.index[df_pre['No.'] == 1 + unselected_rows[0]][0]
                 if removed_ticker in updated_tickers:
                     updated_tickers.remove(removed_ticker)
                 break
@@ -991,58 +748,28 @@ def output_custom_tickers(
     # Make sure added_ticker is selected in all tables and removed_ticker is removed from all tables
     if added_ticker != '':
         for category in ticker_category_info_map.keys():
-            df_info = ticker_category_info_map[category]['df']
-            if added_ticker in df_info['Ticker']:
+            df_pre = ticker_category_info_map[category]['df']
+            if added_ticker in df_pre['Ticker']:
                 row_map = ticker_category_info_map[category]['row']
                 if row_map[added_ticker] not in table_selected_rows[category]:
                     table_selected_rows[category].append(row_map[added_ticker])
 
     if removed_ticker != '':
         for category in ticker_category_info_map.keys():
-            df_info = ticker_category_info_map[category]['df']
-            if removed_ticker in df_info['Ticker']:
+            df_pre = ticker_category_info_map[category]['df']
+            if removed_ticker in df_pre['Ticker']:
                 row_map = ticker_category_info_map[category]['row']
                 if row_map[removed_ticker] in table_selected_rows[category]:
                     table_selected_rows[category].remove(row_map[removed_ticker])
 
     ##### SELECTED TICKERS
-    # Set up selected tickers divs and popovers
+    # Set up selected tickers divs
 
     for tk in updated_tickers:
         
         tk_id = f'select-ticker-{tk}'
         tk_icon_id = f'select-ticker-icon-{tk}'
-        name = ticker_info[tk]['name'] if tk in ticker_info.keys() is not None else tk
-
-        tk_type = ticker_info[tk]['type']
-        popover_ticker_keys = [
-            html.B('Data Start:'), html.Br(),
-            html.B('Data End:'), html.Br(),
-            html.B('Type:'), html.Br(),
-            html.B('Exchange:'), html.Br(),
-            html.B('Currency:')
-        ]
-        popover_ticker_values = [
-            html.Span(f"{ticker_info[tk]['start']}"), html.Br(),
-            html.Span(f"{ticker_info[tk]['end']}"), html.Br(),
-            html.Span(f"{ticker_info[tk]['type']}"), html.Br(),
-            html.Span(f"{ticker_info[tk]['exchange']}"), html.Br(),
-            html.Span(f"{ticker_info[tk]['currency']}")
-        ]
-        if tk_type == 'EQUITY':
-            popover_ticker_keys.insert(6, html.B('Industry:'))
-            popover_ticker_keys.insert(7, html.Br())
-            popover_ticker_keys.insert(8, html.B('Sector:'))
-            popover_ticker_keys.insert(9, html.Br())
-            popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['industry']}"))
-            popover_ticker_values.insert(7, html.Br())
-            popover_ticker_values.insert(8, html.Span(f"{ticker_info[tk]['sector']}"))
-            popover_ticker_values.insert(9, html.Br())
-        elif tk_type == 'ETF':
-            popover_ticker_keys.insert(6, html.B('Category:'))
-            popover_ticker_keys.insert(7, html.Br())
-            popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['category']}"))
-            popover_ticker_values.insert(7, html.Br())
+        name = ticker_names[tk] if tk in ticker_names.keys() is not None else tk
 
         tk_div = html.Div(
             id = tk_id,
@@ -1060,36 +787,6 @@ def output_custom_tickers(
                     id = f'select-ticker-label-{tk}',
                     style = select_ticker_right_css
                 ),
-                dbc.Popover(
-                    [
-                        html.B(tk, style = popover_select_ticker_header), 
-                        html.Div([
-                            html.Div(
-                                popover_ticker_keys,
-                                id = 'popover-select-ticker-keys',
-                                style = popover_select_ticker_keys_css
-                            ),
-                            html.Div(
-                                popover_ticker_values,
-                                id = 'popover-select-ticker-values',
-                                style = popover_select_ticker_values_css
-                            )
-                            ],
-                            style = {'display': 'block'}
-                        ),
-                        # html.Br(),
-                        html.Div(
-                            f"{ticker_info[tk]['summary']}",
-                            id = 'popover-select-ticker-summary',
-                            style = popover_select_ticker_summary
-                        )
-                    ],
-                    id = 'popover-select-ticker',
-                    target = f'select-ticker-label-{tk}',
-                    body = True,
-                    trigger = 'hover',
-                    style = popover_select_ticker_css
-                ),
             ],
             style = select_ticker_div_css
         )
@@ -1101,11 +798,6 @@ def output_custom_tickers(
         ticker_divs,
         hide_ticker_container,
         updated_tickers,
-        '',  # Clear custom ticker input button value
-        hide_tk_input_message,
-        hide_custom_ticker_info,
-        tk_input_message,
-        table_custom_ticker_info,
         table_selected_rows,
 
         table_selected_rows['biggest_companies'],
@@ -1123,7 +815,7 @@ def output_custom_tickers(
         table_selected_rows['precious_metals'],
         table_selected_rows['stock_indices'],
         table_selected_rows['volatility_indices'],
-        table_selected_rows['risk_free_treasury']
+        table_selected_rows['benchmarks']
     )
 
 
@@ -1152,4 +844,5 @@ for category in ticker_category_info_map.keys():
 
 if __name__ == '__main__':
     app.run_server(debug = True, port = 8056)
+    # app.run_server(debug = False, port = 8056)
 

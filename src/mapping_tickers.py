@@ -236,9 +236,9 @@ indices_custom_info = {
         'category': 'Bond Volatility',
         'description': 
         """
-        The Intercontinental Exchange (ICE) Bank of America Merrill Lynch MOVE index is a measure of the expected volatility
-        of US Treasury bonds. It is calculated by taking the weighted average of the implied volatilities of a range of options
-        on US Treasury bonds. The index is expressed in basis points (bps) and is published by ICE Benchmark Administration Ltd.
+        The Intercontinental Exchange (ICE) Bank of America Merrill Lynch Option Volatility Estimate (MOVE) index is a measure of the 
+        expected volatility of US Treasury bonds. It is calculated by taking the weighted average of the implied volatilities of a range of 
+        options on US Treasury bonds. The index is expressed in basis points (bps) and is published by ICE Benchmark Administration Ltd.
         """
     },
     '^GVZ': {
@@ -301,10 +301,10 @@ benchmark_tickers = {
     'VOO':      'Vanguard S&P 500 ETF',
     'SPY':      'SPDR S&P 500 ETF Trust',
     '^VIX':     'CBOE Volatility Index',
-    '^MOVE':    'ICE BofAML MOVE (Merrill Lynch Option Volatility Estimate) Index',
+    '^MOVE':    'ICE BofAML MOVE Index',
     '^SPGSCI':  'S&P GSCI Index',
-    '^BCOM':    'BBG Commodity',
-    'GLD':      'SPDR Gold Shares',
+    '^BCOM':    'BBG Commodity Index',
+    'GLD':      'SPDR Gold Trust',
     'DBC':      'Invesco DB Commodity Index Tracking Fund',
     'GSG':      'iShares S&P GSCI Commodity-Indexed Trust',
     'BND':      'Vanguard Total Bond Market Index Fund',
@@ -312,7 +312,7 @@ benchmark_tickers = {
     '^TNX':     '10-Year US Treasury Note',
     '^IRX':     '3-Month US Treasury Bill',
     'IBIT':     'iShares Bitcoin Trust',
-    'GBTC':     'Grayscale Bitcoin Trust ETF (BTC)'
+    'GBTC':     'Grayscale Bitcoin Trust ETF'
 }
 
 ### STOCKS ###

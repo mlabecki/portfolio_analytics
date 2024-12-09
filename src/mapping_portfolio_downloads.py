@@ -94,7 +94,8 @@ url_settings = {
     },
     'cryptos': {
         'category_name': 'Cryptos',
-        'url': 'https://finance.yahoo.com/markets/crypto/all/?start=0&count=200',
+        # 'url': 'https://finance.yahoo.com/markets/crypto/all/?start=0&count=200',
+        'url': 'https://finance.yahoo.com/markets/crypto/all/?start=0&count=100',
         'cols': ['Symbol', 'Name', 'Market Cap'],
         'cols_final': ['Symbol', 'Name', 'Market Cap ($B)'],
         'sort_by': 'Market Cap ($B)',
