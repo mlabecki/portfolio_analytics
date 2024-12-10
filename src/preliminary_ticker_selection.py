@@ -480,7 +480,7 @@ for category in ticker_category_info_map.keys():
                                     ),
                                     
                                     html.Div([
-                                        html.Div('Select First Ticker', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                                        html.Div('Select First Ticker No.', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                                         dbc.Input(
                                             id = f'pre-menu-{id_string}-first-ticker-input',
                                             type = 'number',
@@ -784,12 +784,18 @@ def output_custom_tickers(
             prev_table_selected_rows[category] = []
 
     for category in ticker_category_info_map.keys():
-        # The second condition is to make sure that no row was unselected from the table
-        if (select_all_box[category] != []) & (len(table_selected_rows[category]) >= len(prev_table_selected_rows[category])):
-            table_selected_rows[category] = list(range(len(table_data[category])))
-        # The second condition is to make sure that no row was selected from the table
-        elif len(table_selected_rows[category]) == len(table_data[category]) & (len(table_selected_rows[category]) == len(prev_table_selected_rows[category])):
-            table_selected_rows[category] = []
+        
+        # The condition below means that the SELECT ALL box is checked
+        if select_all_box[category] != []:
+            # The condition below is to make sure that no row was previously unselected from the table
+            if len(table_selected_rows[category]) >= len(prev_table_selected_rows[category]):
+                table_selected_rows[category] = list(range(len(table_data[category])))
+        else:
+            # The condition below checks if all tickers are checked in the table
+            if len(table_selected_rows[category]) == len(table_data[category]):
+                # The condition below is to make sure that no row was previously selected from the table
+                if len(table_selected_rows[category]) == len(prev_table_selected_rows[category]):
+                    table_selected_rows[category] = []
 
     table_selected_tickers = {}
     table_nonselected_tickers = {}
