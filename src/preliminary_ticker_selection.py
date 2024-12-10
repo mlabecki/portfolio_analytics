@@ -787,8 +787,8 @@ def output_custom_tickers(
         # The second condition is to make sure that no row was unselected from the table
         if (select_all_box[category] != []) & (len(table_selected_rows[category]) >= len(prev_table_selected_rows[category])):
             table_selected_rows[category] = list(range(len(table_data[category])))
-        elif len(table_selected_rows[category]) == len(table_data[category]):           
-        # elif len(table_selected_rows[category]) == len(table_data[category]):
+        # The second condition is to make sure that no row was selected from the table
+        elif len(table_selected_rows[category]) == len(table_data[category]) & (len(table_selected_rows[category]) == len(prev_table_selected_rows[category])):
             table_selected_rows[category] = []
 
     table_selected_tickers = {}
@@ -869,7 +869,7 @@ def output_custom_tickers(
             select_all_box[category] = []
         else:
             select_all_box[category] = [' SELECT ALL']
-            
+
     ##### SELECTED TICKERS
     # Set up selected tickers divs
 
