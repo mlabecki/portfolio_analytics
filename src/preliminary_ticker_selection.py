@@ -567,6 +567,23 @@ app.layout = html.Div([
     Output('select-ticker-list', 'children'),
     Output('prev-table-selected-rows', 'data'),
 
+    Output('pre-menu-biggest-companies-select-all-checkbox', 'value'),
+    Output('pre-menu-sp500-select-all-checkbox', 'value'),
+    Output('pre-menu-nasdaq100-select-all-checkbox', 'value'),
+    Output('pre-menu-dow-jones-select-all-checkbox', 'value'),
+    Output('pre-menu-biggest-etfs-select-all-checkbox', 'value'),
+    Output('pre-menu-fixed-income-etfs-select-all-checkbox', 'value'),
+    Output('pre-menu-ai-etfs-select-all-checkbox', 'value'),
+    Output('pre-menu-commodity-etfs-select-all-checkbox', 'value'),
+    Output('pre-menu-currency-etfs-select-all-checkbox', 'value'),
+    Output('pre-menu-cryptos-select-all-checkbox', 'value'),
+    Output('pre-menu-crypto-etfs-select-all-checkbox', 'value'),
+    Output('pre-menu-futures-select-all-checkbox', 'value'),
+    Output('pre-menu-precious-metals-select-all-checkbox', 'value'),
+    Output('pre-menu-stock-indices-select-all-checkbox', 'value'),
+    Output('pre-menu-volatility-indices-select-all-checkbox', 'value'),
+    Output('pre-menu-benchmarks-select-all-checkbox', 'value'),
+
     Output('table-biggest-companies', 'selected_rows'),
     Output('table-sp500', 'selected_rows'),
     Output('table-nasdaq100', 'selected_rows'),
@@ -584,7 +601,22 @@ app.layout = html.Div([
     Output('table-volatility-indices', 'selected_rows'),
     Output('table-benchmarks', 'selected_rows'),
 
+    Input('pre-menu-biggest-companies-select-all-checkbox', 'value'),
+    Input('pre-menu-sp500-select-all-checkbox', 'value'),
+    Input('pre-menu-nasdaq100-select-all-checkbox', 'value'),
+    Input('pre-menu-dow-jones-select-all-checkbox', 'value'),
+    Input('pre-menu-biggest-etfs-select-all-checkbox', 'value'),
+    Input('pre-menu-fixed-income-etfs-select-all-checkbox', 'value'),
     Input('pre-menu-ai-etfs-select-all-checkbox', 'value'),
+    Input('pre-menu-commodity-etfs-select-all-checkbox', 'value'),
+    Input('pre-menu-currency-etfs-select-all-checkbox', 'value'),
+    Input('pre-menu-cryptos-select-all-checkbox', 'value'),
+    Input('pre-menu-crypto-etfs-select-all-checkbox', 'value'),
+    Input('pre-menu-futures-select-all-checkbox', 'value'),
+    Input('pre-menu-precious-metals-select-all-checkbox', 'value'),
+    Input('pre-menu-stock-indices-select-all-checkbox', 'value'),
+    Input('pre-menu-volatility-indices-select-all-checkbox', 'value'),
+    Input('pre-menu-benchmarks-select-all-checkbox', 'value'),
 
     Input('table-biggest-companies', 'data'),
     Input('table-sp500', 'data'),
@@ -627,7 +659,22 @@ app.layout = html.Div([
 )
 def output_custom_tickers(
 
+    select_all_biggest_companies,
+    select_all_sp500,
+    select_all_nasdaq100,
+    select_all_dow_jones,
+    select_all_biggest_etfs,
+    select_all_fixed_income_etfs,
     select_all_ai_etfs,
+    select_all_commodity_etfs,
+    select_all_currency_etfs,
+    select_all_cryptos,
+    select_all_crypto_etfs,
+    select_all_futures,
+    select_all_precious_metals,
+    select_all_stock_indices,
+    select_all_volatility_indices,
+    select_all_benchmarks,
 
     table_biggest_companies_data,
     table_sp500_data,
@@ -687,31 +734,62 @@ def output_custom_tickers(
         'volatility_indices': table_volatility_indices_selected_rows,
         'benchmarks': table_benchmarks_selected_rows
     }
-    # table_data = {
-    #     'biggest_companies': table_biggest_companies_data,
-    #     'sp500': table_sp500_data,
-    #     'nasdaq100': table_nasdaq100_data,
-    #     'dow_jones': table_dow_jones_data,
-    #     'biggest_etfs': table_biggest_etfs_data,
-    #     'fixed_income_etfs': table_fixed_income_etfs_data,
-    #     'ai_etfs': table_ai_etfs_data,
-    #     'commodity_etfs': table_commodity_etfs_data,
-    #     'currency_etfs': table_currency_etfs_data,
-    #     'cryptos': table_cryptos_data,
-    #     'crypto_etfs': table_crypto_etfs_data,
-    #     'futures': table_futures_data,
-    #     'precious_metals': table_precious_metals_data,
-    #     'stock_indices': table_stock_indices_data,
-    #     'volatility_indices': table_volatility_indices_data,
-    #     'benchmarks': table_benchmarks_data
-    # }
+    table_data = {
+        'biggest_companies': table_biggest_companies_data,
+        'sp500': table_sp500_data,
+        'nasdaq100': table_nasdaq100_data,
+        'dow_jones': table_dow_jones_data,
+        'biggest_etfs': table_biggest_etfs_data,
+        'fixed_income_etfs': table_fixed_income_etfs_data,
+        'ai_etfs': table_ai_etfs_data,
+        'commodity_etfs': table_commodity_etfs_data,
+        'currency_etfs': table_currency_etfs_data,
+        'cryptos': table_cryptos_data,
+        'crypto_etfs': table_crypto_etfs_data,
+        'futures': table_futures_data,
+        'precious_metals': table_precious_metals_data,
+        'stock_indices': table_stock_indices_data,
+        'volatility_indices': table_volatility_indices_data,
+        'benchmarks': table_benchmarks_data
+    }
+    select_all_box = {
+        'biggest_companies': select_all_biggest_companies,
+        'sp500': select_all_sp500,
+        'nasdaq100': select_all_nasdaq100,
+        'dow_jones': select_all_dow_jones,
+        'biggest_etfs': select_all_biggest_etfs,
+        'fixed_income_etfs': select_all_fixed_income_etfs,
+        'ai_etfs': select_all_ai_etfs,
+        'commodity_etfs': select_all_commodity_etfs,
+        'currency_etfs': select_all_currency_etfs,
+        'cryptos': select_all_cryptos,
+        'crypto_etfs': select_all_crypto_etfs,
+        'futures': select_all_futures,
+        'precious_metals': select_all_precious_metals,
+        'stock_indices': select_all_stock_indices,
+        'volatility_indices': select_all_volatility_indices,
+        'benchmarks': select_all_benchmarks
+    }
+    for category in ticker_category_info_map.keys():
+        if select_all_box[category] is None:
+            select_all_box[category] = []
 
-    if select_all_ai_etfs:
-        table_selected_rows['ai_etfs'] = list(range(len(table_ai_etfs_data)))
+    if selected_tickers is None:
+        selected_tickers = []
+
+    updated_tickers = selected_tickers
 
     if prev_table_selected_rows == {}:
         for category in ticker_category_info_map.keys():
             prev_table_selected_rows[category] = []
+
+    for category in ticker_category_info_map.keys():
+        # The second condition is to make sure that no row was unselected from the table
+        if (select_all_box[category] != []) & (len(table_selected_rows[category]) >= len(prev_table_selected_rows[category])):
+            table_selected_rows[category] = list(range(len(table_data[category])))
+        elif len(table_selected_rows[category]) == len(table_data[category]):           
+        # elif len(table_selected_rows[category]) == len(table_data[category]):
+            table_selected_rows[category] = []
 
     table_selected_tickers = {}
     table_nonselected_tickers = {}
@@ -722,22 +800,22 @@ def output_custom_tickers(
 
     ctx = dash.callback_context
 
-    added_ticker = ''
-    removed_ticker = ''
-
+    # Should change to added tickers in this format
+    added_tickers = []
+    removed_tickers = []
     if 1 in n_clicks:
         if ctx.triggered:
             trig_id_str_list = [ctx.triggered[k]['prop_id'].split('.n_clicks')[0] for k in range(len(ctx.triggered)) if ctx.triggered[k]['value']]
             if len(trig_id_str_list) > 0:
                 trig_id_str = trig_id_str_list[0]  # this is a stringified dictionary with whitespaces removed
                 removed_ticker = trig_id_str.split('{"index":"')[1].split('","type"')[0].replace('select-ticker-icon-', '')  # {tk}
+                removed_tickers.append(removed_ticker)
+
+    for removed_ticker in removed_tickers:
+        if removed_ticker in updated_tickers:
+            updated_tickers.remove(removed_ticker)
 
     ticker_divs = [ticker_div_title]
-
-    if selected_tickers is None:
-        selected_tickers = []
-
-    updated_tickers = selected_tickers
 
     hide_ticker_container = False if len(updated_tickers) > 0 else True
 
@@ -749,35 +827,49 @@ def output_custom_tickers(
         df_pre = ticker_category_info_map[category]['df']
         selected_rows = [k for k in table_selected_rows[category] if k not in prev_table_selected_rows[category]]
         if len(selected_rows) > 0:
-            added_ticker = df_pre.index[df_pre['No.'] == 1 + selected_rows[0]][0]
-            if added_ticker not in updated_tickers:
-                updated_tickers.append(added_ticker)
-            break
-        else:
-            unselected_rows = [k for k in prev_table_selected_rows[category] if k not in table_selected_rows[category]]
-            if len(unselected_rows) > 0:
-                removed_ticker = df_pre.index[df_pre['No.'] == 1 + unselected_rows[0]][0]
+            for row in selected_rows:
+                added_ticker = df_pre.index[df_pre['No.'] == row + 1][0]
+                if added_ticker not in added_tickers:
+                    added_tickers.append(added_ticker)
+                if added_ticker not in updated_tickers:
+                    updated_tickers.append(added_ticker)
+            # break
+        unselected_rows = [k for k in prev_table_selected_rows[category] if k not in table_selected_rows[category]]
+        if len(unselected_rows) > 0:
+            for row in unselected_rows:
+                removed_ticker = df_pre.index[df_pre['No.'] == row + 1][0]
+                if removed_ticker not in removed_tickers:
+                    removed_tickers.append(removed_ticker)
                 if removed_ticker in updated_tickers:
                     updated_tickers.remove(removed_ticker)
-                break
+            # break
 
     # Make sure added_ticker is selected in all tables and removed_ticker is removed from all tables
-    if added_ticker != '':
+    if added_tickers != []:
         for category in ticker_category_info_map.keys():
             df_pre = ticker_category_info_map[category]['df']
-            if added_ticker in df_pre['Ticker']:
-                row_map = ticker_category_info_map[category]['row']
-                if row_map[added_ticker] not in table_selected_rows[category]:
-                    table_selected_rows[category].append(row_map[added_ticker])
+            for added_ticker in added_tickers:
+                if added_ticker in df_pre['Ticker']:
+                    row_map = ticker_category_info_map[category]['row']
+                    if row_map[added_ticker] not in table_selected_rows[category]:
+                        table_selected_rows[category].append(row_map[added_ticker])
 
-    if removed_ticker != '':
+    if removed_tickers != []:
         for category in ticker_category_info_map.keys():
             df_pre = ticker_category_info_map[category]['df']
-            if removed_ticker in df_pre['Ticker']:
-                row_map = ticker_category_info_map[category]['row']
-                if row_map[removed_ticker] in table_selected_rows[category]:
-                    table_selected_rows[category].remove(row_map[removed_ticker])
+            for removed_ticker in removed_tickers:
+                if removed_ticker in df_pre['Ticker']:
+                    row_map = ticker_category_info_map[category]['row']
+                    if row_map[removed_ticker] in table_selected_rows[category]:
+                        table_selected_rows[category].remove(row_map[removed_ticker])
 
+
+    for category in ticker_category_info_map.keys():
+        if len(table_selected_rows[category]) != len(table_data[category]):
+            select_all_box[category] = []
+        else:
+            select_all_box[category] = [' SELECT ALL']
+            
     ##### SELECTED TICKERS
     # Set up selected tickers divs
 
@@ -815,6 +907,23 @@ def output_custom_tickers(
         hide_ticker_container,
         updated_tickers,
         table_selected_rows,
+
+        select_all_box['biggest_companies'],
+        select_all_box['sp500'],
+        select_all_box['nasdaq100'],
+        select_all_box['dow_jones'],
+        select_all_box['biggest_etfs'],
+        select_all_box['fixed_income_etfs'],
+        select_all_box['ai_etfs'],
+        select_all_box['commodity_etfs'],
+        select_all_box['currency_etfs'],
+        select_all_box['cryptos'],
+        select_all_box['crypto_etfs'],
+        select_all_box['futures'],
+        select_all_box['precious_metals'],
+        select_all_box['stock_indices'],
+        select_all_box['volatility_indices'],
+        select_all_box['benchmarks'],
 
         table_selected_rows['biggest_companies'],
         table_selected_rows['sp500'],
