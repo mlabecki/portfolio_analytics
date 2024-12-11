@@ -23,7 +23,7 @@ pre_menu_container_css = {
     'font-family': 'Helvetica',
     'font-size' : '14px',
     'border': '1px solid rgb(211, 211, 211)',
-    'border-radius': '5px',
+    # 'border-radius': '5px',
     'margin-top': '5px',
     'margin-left': '5px',
     'vertical-align': 'top',
