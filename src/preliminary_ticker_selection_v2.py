@@ -522,7 +522,7 @@ for category in ticker_category_info_map.keys():
                                         dbc.Input(
                                             id = f'pre-menu-{id_string}-first-ticker-input',
                                             type = 'number',
-                                            value = 1,
+                                            # value = 1,
                                             min = 1,
                                             max = max_tickers[category],
                                             step = 1,
@@ -536,7 +536,7 @@ for category in ticker_category_info_map.keys():
                                         dbc.Input(
                                             id = f'pre-menu-{id_string}-last-ticker-input',
                                             type = 'number',
-                                            value = 1,
+                                            # value = 1,
                                             min = 1,
                                             max = max_tickers[category],
                                             step = 1,
@@ -670,22 +670,22 @@ app.layout = html.Div([
     Output('pre-menu-volatility-indices-first-ticker-input', 'value'),
     Output('pre-menu-benchmarks-first-ticker-input', 'value'),
 
-    Output('pre-menu-biggest-companies-last-ticker-input', 'min'),
-    Output('pre-menu-sp500-last-ticker-input', 'min'),
-    Output('pre-menu-nasdaq100-last-ticker-input', 'min'),
-    Output('pre-menu-dow-jones-last-ticker-input', 'min'),
-    Output('pre-menu-biggest-etfs-last-ticker-input', 'min'),
-    Output('pre-menu-fixed-income-etfs-last-ticker-input', 'min'),
-    Output('pre-menu-ai-etfs-last-ticker-input', 'min'),
-    Output('pre-menu-commodity-etfs-last-ticker-input', 'min'),
-    Output('pre-menu-currency-etfs-last-ticker-input', 'min'),
-    Output('pre-menu-cryptos-last-ticker-input', 'min'),
-    Output('pre-menu-crypto-etfs-last-ticker-input', 'min'),
-    Output('pre-menu-futures-last-ticker-input', 'min'),
-    Output('pre-menu-precious-metals-last-ticker-input', 'min'),
-    Output('pre-menu-stock-indices-last-ticker-input', 'min'),
-    Output('pre-menu-volatility-indices-last-ticker-input', 'min'),
-    Output('pre-menu-benchmarks-last-ticker-input', 'min'),
+    Output('pre-menu-biggest-companies-last-ticker-input', 'value'),
+    Output('pre-menu-sp500-last-ticker-input', 'value'),
+    Output('pre-menu-nasdaq100-last-ticker-input', 'value'),
+    Output('pre-menu-dow-jones-last-ticker-input', 'value'),
+    Output('pre-menu-biggest-etfs-last-ticker-input', 'value'),
+    Output('pre-menu-fixed-income-etfs-last-ticker-input', 'value'),
+    Output('pre-menu-ai-etfs-last-ticker-input', 'value'),
+    Output('pre-menu-commodity-etfs-last-ticker-input', 'value'),
+    Output('pre-menu-currency-etfs-last-ticker-input', 'value'),
+    Output('pre-menu-cryptos-last-ticker-input', 'value'),
+    Output('pre-menu-crypto-etfs-last-ticker-input', 'value'),
+    Output('pre-menu-futures-last-ticker-input', 'value'),
+    Output('pre-menu-precious-metals-last-ticker-input', 'value'),
+    Output('pre-menu-stock-indices-last-ticker-input', 'value'),
+    Output('pre-menu-volatility-indices-last-ticker-input', 'value'),
+    Output('pre-menu-benchmarks-last-ticker-input', 'value'),
 
     Output('table-biggest-companies', 'selected_rows'),
     Output('table-sp500', 'selected_rows'),
@@ -738,22 +738,22 @@ app.layout = html.Div([
     Input('pre-menu-volatility-indices-unselect-all-button', 'n_clicks'),
     Input('pre-menu-benchmarks-unselect-all-button', 'n_clicks'),
 
-    Input('pre-menu-biggest-companies-first-ticker-input', 'value'),
-    Input('pre-menu-sp500-first-ticker-input', 'value'),
-    Input('pre-menu-nasdaq100-first-ticker-input', 'value'),
-    Input('pre-menu-dow-jones-first-ticker-input', 'value'),
-    Input('pre-menu-biggest-etfs-first-ticker-input', 'value'),
-    Input('pre-menu-fixed-income-etfs-first-ticker-input', 'value'),
-    Input('pre-menu-ai-etfs-first-ticker-input', 'value'),
-    Input('pre-menu-commodity-etfs-first-ticker-input', 'value'),
-    Input('pre-menu-currency-etfs-first-ticker-input', 'value'),
-    Input('pre-menu-cryptos-first-ticker-input', 'value'),
-    Input('pre-menu-crypto-etfs-first-ticker-input', 'value'),
-    Input('pre-menu-futures-first-ticker-input', 'value'),
-    Input('pre-menu-precious-metals-first-ticker-input', 'value'),
-    Input('pre-menu-stock-indices-first-ticker-input', 'value'),
-    Input('pre-menu-volatility-indices-first-ticker-input', 'value'),
-    Input('pre-menu-benchmarks-first-ticker-input', 'value'),
+    State('pre-menu-biggest-companies-first-ticker-input', 'value'),
+    State('pre-menu-sp500-first-ticker-input', 'value'),
+    State('pre-menu-nasdaq100-first-ticker-input', 'value'),
+    State('pre-menu-dow-jones-first-ticker-input', 'value'),
+    State('pre-menu-biggest-etfs-first-ticker-input', 'value'),
+    State('pre-menu-fixed-income-etfs-first-ticker-input', 'value'),
+    State('pre-menu-ai-etfs-first-ticker-input', 'value'),
+    State('pre-menu-commodity-etfs-first-ticker-input', 'value'),
+    State('pre-menu-currency-etfs-first-ticker-input', 'value'),
+    State('pre-menu-cryptos-first-ticker-input', 'value'),
+    State('pre-menu-crypto-etfs-first-ticker-input', 'value'),
+    State('pre-menu-futures-first-ticker-input', 'value'),
+    State('pre-menu-precious-metals-first-ticker-input', 'value'),
+    State('pre-menu-stock-indices-first-ticker-input', 'value'),
+    State('pre-menu-volatility-indices-first-ticker-input', 'value'),
+    State('pre-menu-benchmarks-first-ticker-input', 'value'),
 
     Input('pre-menu-biggest-companies-last-ticker-input', 'value'),
     Input('pre-menu-sp500-last-ticker-input', 'value'),
@@ -1029,6 +1029,9 @@ def output_custom_tickers(
         'volatility_indices': select_last_ticker_volatility_indices,
         'benchmarks': select_last_ticker_benchmarks
     }
+    last_ticker_min = {}
+    for category in ticker_category_info_map.keys():
+        last_ticker_min[category] = 1
 
     # for category in ticker_category_info_map.keys():
     #     if select_all_button_nclicks[category] is None:
@@ -1052,16 +1055,28 @@ def output_custom_tickers(
 
         elif unselect_all_button_nclicks[category]:
             table_selected_rows[category] = []
-            select_first_ticker[category] = 1
-            select_last_ticker[category] = 1
+            select_first_ticker[category] = None
+            select_last_ticker[category] = None
 
-        elif select_last_ticker[category] > 0:
-            first_row = select_first_ticker[category] - 1
-            last_row = select_last_ticker[category]
-            rows_range = [k for k in range(first_row, last_row)]
-            for row in rows_range:
-                if row not in table_selected_rows[category]:
-                    table_selected_rows[category].append(row)
+        elif (select_first_ticker[category] is not None):
+            last_ticker_min[category] = select_first_ticker[category]
+            if (select_last_ticker[category] is not None):
+                first_row = select_first_ticker[category] - 1
+                if select_last_ticker[category] < select_first_ticker[category]:
+                    last_row = select_first_ticker[category]
+                else:
+                    last_row = select_last_ticker[category]
+                rows_range = [k for k in range(first_row, last_row)]
+                for row in rows_range:
+                    if row not in table_selected_rows[category]:
+                        table_selected_rows[category].append(row)
+                select_last_ticker[category] = None 
+        else:
+            select_last_ticker[category] = None
+
+        select_last_ticker[category] = None
+
+    #########
 
     table_selected_tickers = {}
     table_nonselected_tickers = {}
@@ -1135,13 +1150,6 @@ def output_custom_tickers(
                     if row_map[removed_ticker] in table_selected_rows[category]:
                         table_selected_rows[category].remove(row_map[removed_ticker])
 
-
-    # for category in ticker_category_info_map.keys():
-    #     if len(table_selected_rows[category]) != len(table_data[category]):
-    #         select_all_box[category] = []
-    #     else:
-    #         select_all_box[category] = [' SELECT ALL']
-
     ##### SELECTED TICKERS
     # Set up selected tickers divs
 
@@ -1185,41 +1193,26 @@ def output_custom_tickers(
         # unselect_all_button_nclicks
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         # select_first_ticker
-        # 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        select_first_ticker['biggest_companies'],
-        select_first_ticker['sp500'],
-        select_first_ticker['nasdaq100'],
-        select_first_ticker['dow_jones'],
-        select_first_ticker['biggest_etfs'],
-        select_first_ticker['fixed_income_etfs'],
-        select_first_ticker['ai_etfs'],
-        select_first_ticker['commodity_etfs'],
-        select_first_ticker['currency_etfs'],
-        select_first_ticker['cryptos'],
-        select_first_ticker['crypto_etfs'],
-        select_first_ticker['futures'],
-        select_first_ticker['precious_metals'],
-        select_first_ticker['stock_indices'],
-        select_first_ticker['volatility_indices'],
-        select_first_ticker['benchmarks'],
+        None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+        # select_last_ticker
+        None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
 
-        # select_last_ticker min
-        select_first_ticker['biggest_companies'],
-        select_first_ticker['sp500'],
-        select_first_ticker['nasdaq100'],
-        select_first_ticker['dow_jones'],
-        select_first_ticker['biggest_etfs'],
-        select_first_ticker['fixed_income_etfs'],
-        select_first_ticker['ai_etfs'],
-        select_first_ticker['commodity_etfs'],
-        select_first_ticker['currency_etfs'],
-        select_first_ticker['cryptos'],
-        select_first_ticker['crypto_etfs'],
-        select_first_ticker['futures'],
-        select_first_ticker['precious_metals'],
-        select_first_ticker['stock_indices'],
-        select_first_ticker['volatility_indices'],
-        select_first_ticker['benchmarks'],
+        # select_first_ticker['biggest_companies'],
+        # select_first_ticker['sp500'],
+        # select_first_ticker['nasdaq100'],
+        # select_first_ticker['dow_jones'],
+        # select_first_ticker['biggest_etfs'],
+        # select_first_ticker['fixed_income_etfs'],
+        # select_first_ticker['ai_etfs'],
+        # select_first_ticker['commodity_etfs'],
+        # select_first_ticker['currency_etfs'],
+        # select_first_ticker['cryptos'],
+        # select_first_ticker['crypto_etfs'],
+        # select_first_ticker['futures'],
+        # select_first_ticker['precious_metals'],
+        # select_first_ticker['stock_indices'],
+        # select_first_ticker['volatility_indices'],
+        # select_first_ticker['benchmarks'],
 
         table_selected_rows['biggest_companies'],
         table_selected_rows['sp500'],
