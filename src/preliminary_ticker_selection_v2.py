@@ -395,7 +395,7 @@ pre_menu_item_css = {
     'width': '80px',
     'margin-top': '0px',
     'margin-right': '6px',
-    'margin-bottom': '8px',
+    'margin-bottom': '0px',
     'margin-left': '2px',
     'vertical-align': 'top',
     'font-family': 'Helvetica',
@@ -508,7 +508,8 @@ for category in ticker_category_info_map.keys():
                                             html.Div(
                                                 id = 'pre-menu-{id_string}-select-first-last-tickers-container',
                                                 children = [
-                                                    html.Div('Select Ticker Range', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '0px'}),
+                                                    # html.Div('Select Ticker Range', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px', 'color': 'darkgreen'}),
+                                                    html.Div('Select Ticker Range', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                                     html.Div([
                                                         html.Div(
                                                             'First No.',
@@ -577,7 +578,8 @@ for category in ticker_category_info_map.keys():
                                             html.Div(
                                                 id = 'pre-menu-{id_string}-unselect-first-last-tickers-container',
                                                 children = [
-                                                    html.Div('Unselect Ticker Range', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '0px'}),
+                                                    # html.Div('Unselect Ticker Range', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px', 'color': 'darkred'}),
+                                                    html.Div('Unselect Ticker Range', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                                     html.Div([
                                                         html.Div(
                                                             'First No.',
