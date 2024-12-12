@@ -408,6 +408,36 @@ pre_menu_input_css = {
     'border-radius': '5px',
     'font-size': '14px'
 }
+n_preselected_category_css = {
+    'display': 'inline-block',
+    'font-family': 'Helvetica',
+    'font-size': '16px',
+    'font-weight': 'bold',
+    'text-align': 'left',
+    'color': 'darkgreen',
+    'vertical-align': 'middle',
+    'margin-top': '5px',
+    'margin-left': '3px'
+}
+n_tickers_category_css = {
+    'display': 'inline-block',
+    'font-family': 'Helvetica',
+    'font-size': '16px',
+    'font-weight': 'bold',
+    'text-align': 'left',
+    'vertical-align': 'middle',
+    'margin-top': '5px',
+    'margin-left': '5px'
+}
+pre_selected_string = {
+    'display': 'inline-block',
+    'font-family': 'Helvetica',
+    'font-size': '15px',
+    'text-align': 'left',
+    'vertical-align': 'middle',
+    'margin-top': '5px',
+    'margin-left': '5px'
+}
 
 ##############
 
@@ -471,13 +501,27 @@ for category in ticker_category_info_map.keys():
                     style = collapse_button_pre_table_css
                 ),
                 html.Div(
-                    f'{max_tickers[category]} selected',
-                    id = f'n-preselected-{id_string}',
-                    hidden = False,
-                    style = {'display': 'inline-block', 'font-size' :'16px', 'font-weight': 'bold', 'vertical-align': 'middle', 'margin-top': '5px'}
-                )],
-                style = {'display': 'inline-block', 'width': '1100px'}
-            ),
+                    id = f'n-preselected-{id_string}-container',
+                    children = [
+                        html.Div(
+                            id = f'n-preselected-{id_string}',
+                            hidden = False,
+                            style = n_preselected_category_css
+                        ),
+                        html.Div(
+                            f'/ {max_tickers[category]}',
+                            hidden = False,
+                            style = n_tickers_category_css
+                        ),
+                        html.Div(
+                            'pre-selected',
+                            hidden = False,
+                            style = pre_selected_string
+                        )
+                    ],
+                    style = {'display': 'inline-block'}
+                )
+            ]),
 
             dbc.Collapse(
                 html.Div(
@@ -500,15 +544,12 @@ for category in ticker_category_info_map.keys():
                                                 n_clicks = 0,
                                                 class_name = 'ma-1',
                                                 color = 'success',
-                                                # outline = True,
                                                 size = 'sm',
                                                 style = pre_menu_select_all_button_css
-                                                # style = pre_menu_item_css
                                             ),
                                             html.Div(
                                                 id = 'pre-menu-{id_string}-select-first-last-tickers-container',
                                                 children = [
-                                                    # html.Div('Select Ticker Range', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px', 'color': 'darkgreen'}),
                                                     html.Div('Select Ticker Range', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                                     html.Div([
                                                         html.Div(
@@ -570,15 +611,12 @@ for category in ticker_category_info_map.keys():
                                                 n_clicks = 0,
                                                 class_name = 'ma-1',
                                                 color = 'danger',
-                                                # outline = True,
                                                 size = 'sm',
                                                 style = pre_menu_select_all_button_css
-                                                # style = pre_menu_item_css
                                             ),
                                             html.Div(
                                                 id = 'pre-menu-{id_string}-unselect-first-last-tickers-container',
                                                 children = [
-                                                    # html.Div('Unselect Ticker Range', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px', 'color': 'darkred'}),
                                                     html.Div('Unselect Ticker Range', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                                     html.Div([
                                                         html.Div(
@@ -682,6 +720,40 @@ app.layout = html.Div([
         hidden = True,
         style = select_ticker_container_css
     ),
+
+    ################
+    html.Div([
+        html.Div(
+            'Total distinct tickers pre-selected:',
+            style = {
+                'display': 'inline-block',
+                'font-family': 'Helvetica',
+                'font-size': '16px',
+                'font-weight': 'bold',
+                'text-align': 'left',
+                'vertical-align': 'middle',
+                # 'margin-top': '5px',
+                'margin-bottom': '5px',
+                'margin-left': '5px'
+            }
+        ),
+        html.Div(
+            id = 'pre-selected-tickers-total',
+            # hidden = True,
+            style = {
+                'display': 'inline-block',
+                'font-family': 'Helvetica',
+                'font-size': '16px',
+                'font-weight': 'bold',
+                'text-align': 'left',
+                'color': 'darkgreen',
+                'vertical-align': 'middle',
+                # 'margin-top': '5px',
+                'margin-bottom': '5px',
+                'margin-left': '5px'
+            }
+        ),
+    ]),
 
     ################
 
@@ -820,6 +892,25 @@ app.layout = html.Div([
     Output('table-stock-indices', 'selected_rows'),
     Output('table-volatility-indices', 'selected_rows'),
     Output('table-benchmarks', 'selected_rows'),
+
+    Output('n-preselected-biggest-companies', 'children'),
+    Output('n-preselected-sp500', 'children'),
+    Output('n-preselected-nasdaq100', 'children'),
+    Output('n-preselected-dow-jones', 'children'),
+    Output('n-preselected-biggest-etfs', 'children'),
+    Output('n-preselected-fixed-income-etfs', 'children'),
+    Output('n-preselected-ai-etfs', 'children'),
+    Output('n-preselected-commodity-etfs', 'children'),
+    Output('n-preselected-currency-etfs', 'children'),
+    Output('n-preselected-cryptos', 'children'),
+    Output('n-preselected-crypto-etfs', 'children'),
+    Output('n-preselected-futures', 'children'),
+    Output('n-preselected-precious-metals', 'children'),
+    Output('n-preselected-stock-indices', 'children'),
+    Output('n-preselected-volatility-indices', 'children'),
+    Output('n-preselected-benchmarks', 'children'),
+
+    Output('pre-selected-tickers-total', 'children'),
 
     Input('pre-menu-biggest-companies-select-all-button', 'n_clicks'),
     Input('pre-menu-sp500-select-all-button', 'n_clicks'),
@@ -1251,6 +1342,8 @@ def output_custom_tickers(
         'benchmarks': unselect_last_ticker_benchmarks
     }
 
+    n_preselected = {}
+
     if selected_tickers is None:
         selected_tickers = []
 
@@ -1406,7 +1499,13 @@ def output_custom_tickers(
         )
         ticker_divs.append(tk_div)
 
-    hide_ticker_container = True if len(updated_tickers) == 0 else False
+    for category in table_selected_rows.keys():
+        n_preselected[category] = len(table_selected_rows[category])
+
+    n_preselected_total = len(updated_tickers)
+
+    # hide_ticker_container = True if len(updated_tickers) == 0 else False
+    hide_ticker_container = True
 
     return (
         ticker_divs,
@@ -1442,7 +1541,26 @@ def output_custom_tickers(
         table_selected_rows['precious_metals'],
         table_selected_rows['stock_indices'],
         table_selected_rows['volatility_indices'],
-        table_selected_rows['benchmarks']
+        table_selected_rows['benchmarks'],
+
+        n_preselected['biggest_companies'],
+        n_preselected['sp500'],
+        n_preselected['nasdaq100'],
+        n_preselected['dow_jones'],
+        n_preselected['biggest_etfs'],
+        n_preselected['fixed_income_etfs'],
+        n_preselected['ai_etfs'],
+        n_preselected['commodity_etfs'],
+        n_preselected['currency_etfs'],
+        n_preselected['cryptos'],
+        n_preselected['crypto_etfs'],
+        n_preselected['futures'],
+        n_preselected['precious_metals'],
+        n_preselected['stock_indices'],
+        n_preselected['volatility_indices'],
+        n_preselected['benchmarks'],
+
+        n_preselected_total
     )
 
 
