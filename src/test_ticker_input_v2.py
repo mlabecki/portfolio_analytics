@@ -29,7 +29,7 @@ max_tickers = {
     'biggest_etfs': 10,
     'fixed_income_etfs': 10,
     'ai_etfs': 30,
-    'commodity_etfs': 15,
+    'commodity_etfs': 20,
     'currency_etfs': 10,
     'cryptos': 10,
     'crypto_etfs': 10,
@@ -873,7 +873,9 @@ def output_custom_tickers(
 
         elif tk_info['quoteType'] not in custom_ticker_table_columns.keys():
             # Info available but quoteType is unknown
-            tk_input_message = f"ERROR: Unknown ticker type {tk_info['quoteType']} for {tk_input}"
+            # tk_input_message = f"ERROR: Unknown ticker type {tk_info['quoteType']} for {tk_input}"
+            # To avoid tickers like 'BOO', which has quoteType MUTUALFUND but only a cryptic name 79110
+            tk_input_message = f'ERROR: Unknown ticker type for {tk_input}'
             hide_tk_input_message = False
 
         else:

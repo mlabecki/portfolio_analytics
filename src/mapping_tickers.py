@@ -469,6 +469,7 @@ commodity_etf_tickers = {
     'FTGC':     'First Trust Global Tactical Commodity Strategy Fund',
     'DBC':      'Invesco DB Commodity Index Tracking Fund',
     'USO':      'United States Oil Fund',
+    'GSG':      'iShares S&P GSCI Commodity-Indexed Trust',    
     'UNG':      'United States Natural Gas Fund',
     'DBA':      'Invesco DB Agriculture Fund',
     'BOIL':     'ProShares Ultra Bloomberg Natural Gas',
