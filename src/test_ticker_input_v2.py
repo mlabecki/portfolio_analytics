@@ -19,26 +19,20 @@ from download_info import DownloadInfo
 
 import requests_cache
 
-session = requests_cache.CachedSession('cache/yfinance.cache')
-session.headers['User-agent'] = url_settings['global']['headers']
-
 hist_info = DownloadInfo()
 
-# tk_market = '^GSPC'
-# tk_market = 'BTC-USD'
-
 max_tickers = {
-    'biggest_companies': 30,
-    'sp500': 30,
-    'nasdaq100': 30,
+    'biggest_companies': 10,
+    'sp500': 10,
+    'nasdaq100': 10,
     'dow_jones': 35,
-    'biggest_etfs': 30,
-    'fixed_income_etfs': 30,
+    'biggest_etfs': 10,
+    'fixed_income_etfs': 10,
     'ai_etfs': 30,
     'commodity_etfs': 15,
     'currency_etfs': 10,
-    'cryptos': 30,
-    'crypto_etfs': 30,
+    'cryptos': 10,
+    'crypto_etfs': 10,
     'futures': 50,
     'precious_metals': 5,
     'stock_indices': 19,
@@ -291,6 +285,9 @@ ticker_info = {}  # To help user decide on tickers based on the name and data st
 
 def create_input_table(category):
 
+    session = requests_cache.CachedSession('cache/yfinance.cache')
+    session.headers['User-agent'] = url_settings['global']['headers']
+
     df_info_tickers = ticker_category_info_map[category]['df']
     row_ticker_map = ticker_category_info_map[category]['row']
     dict_info_tickers = ticker_category_info_map[category]['dict']
@@ -309,7 +306,7 @@ def create_input_table(category):
     if tk_sort_by != '':
         dict_tickers_values = {tk: yf.Ticker(tk, session = session).info[tk_sort_by] for tk in category_tickers}
         category_tickers_sorted = [i[0] for i in sorted(dict_tickers_values.items(), key = itemgetter(1), reverse = True)]
-        df_info_tickers.index = category_tickers_sorted  
+        df_info_tickers.index = category_tickers_sorted
 
     for i, tk in enumerate(category_tickers_sorted):
 
@@ -318,15 +315,20 @@ def create_input_table(category):
             yf_ticker = yf.Ticker(tk, session = session)
 
             # The scraped response will be stored in the cache
-            yf_ticker.actions
+            # yf_ticker.actions
 
             tk_hist = yf_ticker.history(period = 'max')
             tk_info = yf_ticker.info
             # Should also check if ticker is still valid, for now assume they're all valid
 
-            if len(tk_hist.index) > 0:
+            if 'quoteType' in tk_info.keys():
+                # This is meant to indicate a valid ticker
+                # tk_hist may be temporarily empty for a valid ticker
 
-                tk_start, tk_end = str(tk_hist.index[0].date()), str(tk_hist.index[-1].date())
+                if len(tk_hist.index) > 0:
+                    tk_start, tk_end = str(tk_hist.index[0].date()), str(tk_hist.index[-1].date())
+                else:
+                    tk_start, tk_end = 'N/A', 'N/A'
 
                 df_info_tickers.at[tk, 'No.'] = i + 1
                 df_info_tickers.at[tk, 'Ticker'] = tk
@@ -395,8 +397,11 @@ def create_input_table(category):
                     }
                 })
 
+                row_ticker_map.update({tk: i})
+
             else:
                 print(f'WARNING: Cannot get data for {tk} at the moment, try again later')
+                df_info_tickers = df_info_tickers[df_info_tickers.index != tk]
     
         else:
 
@@ -417,7 +422,9 @@ def create_input_table(category):
                 df_info_tickers.at[tk, 'Industry'] = ticker_info[tk]['industry']
                 df_info_tickers.at[tk, 'Sector'] = ticker_info[tk]['sector']
 
-        row_ticker_map.update({tk: i})
+            row_ticker_map.update({tk: i})
+
+    session.cache.clear()
 
     input_table_data = {
         'df': df_info_tickers,
@@ -846,50 +853,60 @@ def output_custom_tickers(
     table_custom_ticker_info = []
     tk_input = tk_input.upper()
 
-    if (tk_input != '') & (tk_input not in selected_tickers):
+    if (tk_input != '') & (tk_input not in updated_tickers):
         
+        session = requests_cache.CachedSession('cache/yfinance.cache')
+        session.headers['User-agent'] = url_settings['global']['headers']
+
         yf_ticker_input = yf.Ticker(tk_input, session = session)
-        yf_ticker_input.actions
+        # yf_ticker_input.actions
 
         # _ = yf.download(tk_input, progress = False)
         tk_hist = yf_ticker_input.history(period = 'max')
+        tk_info = yf_ticker_input.info
         # Unfortunately a failure of yf.Ticker(tk).info query does not add tk to yf.shared._ERRORS
         # yf.Ticker().history() does, but unlike yf.download keeps adding invalid tickers to _ERRORS.keys()
-        if tk_input in yf.shared._ERRORS.keys():
+        if 'quoteType' not in tk_info.keys():
+            # No info, therefore an invalid ticker
             tk_input_message = f'ERROR: Invalid ticker {tk_input}'
             hide_tk_input_message = False
+
+        elif tk_info['quoteType'] not in custom_ticker_table_columns.keys():
+            # Info available but quoteType is unknown
+            tk_input_message = f"ERROR: Unknown ticker type {tk_info['quoteType']} for {tk_input}"
+            hide_tk_input_message = False
+
         else:
+
             updated_tickers.append(tk_input)
+
+            if tk_input in yf.shared._ERRORS.keys():
+                tk_start, tk_end = 'N/A', 'N/A'
+            else:
+                tk_start, tk_end = str(tk_hist.index[0].date()), str(tk_hist.index[-1].date())
 
             if tk_input not in ticker_info.keys():
                 
-                tk_start, tk_end = str(tk_hist.index[0].date()), str(tk_hist.index[-1].date())
-                tk_info = yf_ticker_input.info
-
                 if 'longName' in tk_info.keys():
                     tk_name = tk_info['longName']
                 elif 'shortName' in tk_info.keys():
                     tk_name = tk_info['shortName']
                 else:
                     tk_name = tk_input
-
                 # if category in etf_categories:
                 #     tk_type = 'ETF'
                 # else:
                 tk_type = tk_info['quoteType'] if 'quoteType' in tk_info.keys() else ''
-
                 # if category == 'crypto_etfs':
                 #     tk_category = 'Digital Assets'
                 # elif category in ['stock_indices', 'volatility_indices']:
                 #     tk_category = indices_custom_info[tk_input]['category']                    
                 # else:
                 tk_category = tk_info['category'] if 'category' in tk_info.keys() else ''
-
                 tk_exchange = tk_info['exchange'] if 'exchange' in tk_info.keys() else ''
                 tk_currency = tk_info['currency'] if 'currency' in tk_info.keys() else ''
                 tk_industry = tk_info['industry'] if 'industry' in tk_info.keys() else ''
                 tk_sector = tk_info['sector'] if 'sector' in tk_info.keys() else ''
-
                 if 'longBusinessSummary' in tk_info.keys():
                     tk_summary = tk_info['longBusinessSummary']
                 elif 'description' in tk_info.keys():
@@ -898,7 +915,6 @@ def output_custom_tickers(
                     tk_summary = indices_custom_info[tk]['description']                    
                 else: 
                     tk_summary = ''
-
                 ticker_info.update({
                     tk_input: {
                         'name': tk_name,
@@ -913,7 +929,6 @@ def output_custom_tickers(
                         'summary': tk_summary
                     }
                 })
-
             else:
                 tk_name = ticker_info[tk_input]['name']
                 tk_start = ticker_info[tk_input]['start']
@@ -986,7 +1001,9 @@ def output_custom_tickers(
                 style_header = table_custom_ticker_header_css,
                 style_data = table_custom_ticker_data_css
             )
-                
+
+        session.cache.clear()
+
     elif (tk_input == '') & (removed_ticker != ''):
         hide_tk_input_message = True
         for tk in selected_tickers:
@@ -1184,8 +1201,7 @@ for category in ticker_category_info_map.keys():
 #######################################################################
 
 if __name__ == '__main__':
-    app.run_server(debug = True, port = 8055)
-    # app.run_server(debug = False, port = 8055)
+    app.run_server(debug = True, port = 8056)
+    # app.run_server(debug = False, port = 8056)
 
-    session.cache.clear()
 

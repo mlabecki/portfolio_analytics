@@ -42,7 +42,7 @@ pre_table_container_css = {
 
 # Input data table
 input_table_container_css = {
-    'width': '1100px',
+    'width': '1200px',
     'font-family': 'Helvetica',
     'font-size' : '14px',
     'border': '1px solid rgb(211, 211, 211)',
@@ -117,7 +117,7 @@ custom_ticker_info_container_css = {
 }
 table_custom_ticker_info_css = {
     'display': 'inline-block',
-    'width': '940px',
+    'width': '1040px',
     'font-size': '14px',
     'vertical-align': 'top'
 }
@@ -160,7 +160,7 @@ collapse_button_table_css = {
     'text-align': 'left',
     'font-family': 'Helvetica',
     'font-weight': 'bold',
-    'width': '1100px'
+    'width': '1200px'
 }
 
 # Selected tickers elements

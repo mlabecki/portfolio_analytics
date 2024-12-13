@@ -974,6 +974,6 @@ for category in ticker_category_info_map.keys():
 #######################################################################
 
 if __name__ == '__main__':
-    app.run_server(debug = True, port = 8056)
-    # app.run_server(debug = False, port = 8056)
+    app.run_server(debug = True, port = 8057)
+    # app.run_server(debug = False, port = 8057)
 

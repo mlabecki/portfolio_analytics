@@ -1566,7 +1566,6 @@ def output_custom_tickers(
 
 def toggle_collapse_tickers(title, n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
-    # title = 'TOP BOND ETFs'
     label = f'► {title}' if is_open else f'▼ {title}'
     if n:
         return label, not is_open
@@ -1588,6 +1587,6 @@ for category in ticker_category_info_map.keys():
 #######################################################################
 
 if __name__ == '__main__':
-    app.run_server(debug = True, port = 8057)
-    # app.run_server(debug = False, port = 8056)
+    app.run_server(debug = True, port = 8058)
+    # app.run_server(debug = False, port = 8058)
 
