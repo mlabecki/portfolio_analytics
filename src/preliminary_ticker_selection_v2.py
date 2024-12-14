@@ -19,9 +19,6 @@ from download_info import DownloadInfo
 
 hist_info = DownloadInfo()
 
-# tk_market = '^GSPC'
-# tk_market = 'BTC-USD'
-
 max_tickers = {
     'biggest_companies': 100,
     'sp500': 100,

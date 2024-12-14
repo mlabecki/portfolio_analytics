@@ -491,6 +491,17 @@ for category in ticker_category_info_map.keys():
             editable = False,
             row_selectable = 'multi',
             # column_selectable = 'multi',
+            tooltip_data = [
+                { column: {'value': ticker_info[row['Ticker']]['summary'], 'type': 'markdown' }
+                for column in row.keys() }
+                for row in ticker_category_info_map[category]['df'].to_dict('records')
+            ],
+            css=[{
+                'selector': '.dash-table-tooltip',
+                'rule': 'max-width: 400px; font-size: 12px; font-family: Helvetica; background-color: rgb(227, 255, 237)'
+            }],
+            tooltip_delay = 0,
+            tooltip_duration = None,
             selected_rows = [],
             style_as_list_view = True,
             style_data_conditional = [
