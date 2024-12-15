@@ -22,23 +22,41 @@ import requests_cache
 hist_info = DownloadInfo()
 
 max_tickers = {
-    'biggest_companies': 10,
-    'sp500': 10,
-    'nasdaq100': 10,
-    'dow_jones': 35,
-    'biggest_etfs': 10,
-    'fixed_income_etfs': 10,
-    'ai_etfs': 30,
-    'commodity_etfs': 20,
-    'currency_etfs': 10,
-    'cryptos': 10,
-    'crypto_etfs': 10,
-    'futures': 50,
+    'biggest_companies': 5,
+    'sp500': 5,
+    'nasdaq100': 5,
+    'dow_jones': 5,
+    'biggest_etfs': 5,
+    'fixed_income_etfs': 5,
+    'ai_etfs': 5,
+    'commodity_etfs': 5,
+    'currency_etfs': 5,
+    'cryptos': 5,
+    'crypto_etfs': 5,
+    'futures': 5,
     'precious_metals': 5,
-    'stock_indices': 19,
+    'stock_indices': 5,
     'volatility_indices': 5,
-    'benchmarks': 20
+    'benchmarks': 10
 }
+# max_tickers = {
+#     'biggest_companies': 10,
+#     'sp500': 10,
+#     'nasdaq100': 10,
+#     'dow_jones': 35,
+#     'biggest_etfs': 10,
+#     'fixed_income_etfs': 10,
+#     'ai_etfs': 30,
+#     'commodity_etfs': 20,
+#     'currency_etfs': 10,
+#     'cryptos': 10,
+#     'crypto_etfs': 10,
+#     'futures': 50,
+#     'precious_metals': 5,
+#     'stock_indices': 19,
+#     'volatility_indices': 5,
+#     'benchmarks': 20
+# }
 etf_categories = [
     'biggest_etfs',
     'fixed_income_etfs',
@@ -254,7 +272,7 @@ ticker_category_info_map = {
         'sort_by': 'openInterest',
         'id_string': 'precious-metals',
         'collapse_title': 'PRECIOUS METALS'
-    },
+    },    
     'stock_indices': {
         'df': df_info_tickers_stock_indices,
         'row': row_ticker_map_stock_indices,
@@ -366,7 +384,7 @@ def create_input_table(category):
                     tk_summary = indices_custom_info[tk]['description']
                 else: 
                     tk_summary = ''
-
+                
                 df_info_tickers.at[tk, 'Name'] = tk_name
                 df_info_tickers.at[tk, 'Data Start'] = tk_start
                 df_info_tickers.at[tk, 'Data End'] = tk_end
@@ -496,10 +514,22 @@ for category in ticker_category_info_map.keys():
                 for column in row.keys() }
                 for row in ticker_category_info_map[category]['df'].to_dict('records')
             ],
-            css=[{
+            css=[
+                {
+                'selector': '.dash-tooltip',
+                # 'rule': 'border: None !important;'
+                'rule': 'border: None;'
+                },
+                {
                 'selector': '.dash-table-tooltip',
-                'rule': 'max-width: 400px; font-size: 12px; font-family: Helvetica; background-color: rgb(227, 255, 237)'
-            }],
+                'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(67, 172, 106) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica; background-color: rgb(227, 255, 237);'
+                # 'rule': 'max-width: 500px; width: 500px !important; padding-top: 6px; padding-bottom: -5px; font-size: 12px; font-family: Helvetica;'
+                },
+                # {
+                # 'selector': '.dash-tooltip',
+                # 'rule': 'max-width: 500px; width: 500px !important; border: 5px solid rgb(67, 172, 106) !important; background-color: rgb(67, 172, 106);'
+                # },
+            ],
             tooltip_delay = 0,
             tooltip_duration = None,
             selected_rows = [],

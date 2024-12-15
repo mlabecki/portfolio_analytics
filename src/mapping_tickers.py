@@ -9,8 +9,7 @@ indices_custom_info = {
     '^GSPC': {
         'category': 'Stock Large Cap',
         'description': 
-            """
-            The Standard and Poor's 500, or simply the S&P 500, is a stock market index tracking the stock
+            """The Standard and Poor's 500, or simply the S&P 500, is a stock market index tracking the stock
             performance of 500 of the largest companies listed on stock exchanges in the United States. It is 
             one of the most commonly followed equity indices and includes approximately 80% of the total market
             cap of U.S. public companies, with more than $50 trillion aggregate market cap as of December 2024.
@@ -19,8 +18,7 @@ indices_custom_info = {
     '^GSPTSE': {
         'category': 'Stock Large Cap',
         'description': 
-        """
-        The S&P/TSX Composite Index has provided investors with a premier indicator of market activity for Canadian 
+        """The S&P/TSX Composite Index has provided investors with a premier indicator of market activity for Canadian 
         equity markets since its launch in 1977. With approximately 95% coverage of the Canadian equities market, 
         it is the primary gauge for Canadian-based, Toronto Stock Exchange (TSX) listed companies, representing roughly 
         70% of the total market capitalization on the TSX. It is designed to serve a dual purpose, offering both the 
@@ -31,8 +29,7 @@ indices_custom_info = {
     '^DJI': {
         'category': 'Stock Large Cap',
         'description': 
-        """
-        The Dow Jones Industrial Average, Dow Jones, or simply the Dow, is a stock market index of 30 publicly-owned companies
+        """The Dow Jones Industrial Average, Dow Jones, or simply the Dow, is a stock market index of 30 publicly-owned companies
         listed on the NASDAQ or the New York Stock Exchange (NYSE). The DJIA is one of the oldest and most commonly followed equity indexes,
         created in 1896 by the Dow & Jones Company founder and Wall Street Journal editor Charles Dow. Initially comprised of only 12 US 
         industrial companies, it has changed over the years, now including companies in other sectors such as technology, health, and retail. 
@@ -42,8 +39,7 @@ indices_custom_info = {
     '^IXIC': {
         'category': 'Stock Large Cap',
         'description': 
-        """
-        The NASDAQ Composite is a stock market index that includes over 3,000 stocks listed on the Nasdaq stock exchange. 
+        """The NASDAQ Composite is a stock market index that includes over 3,000 stocks listed on the Nasdaq stock exchange. 
         Its composition is heavily weighted towards companies in the technology sector, which represent almost half of its total market cap.
         Consumer services rank second in the weightage order, with about 20% market cap; health care third with about 10%; consumer goods,
         financials, and industrials, coming next with allocations of about 6-8%; followed by utilities, oil & gas, basic materials, 
@@ -54,8 +50,7 @@ indices_custom_info = {
     '^NDX': {
         'category': 'Stock Large Cap',
         'description': 
-        """
-        The NASDAQ 100 is a stock market index made up of equity securities issued by 100 of the largest non-financial companies listed on the 
+        """The NASDAQ 100 is a stock market index made up of equity securities issued by 100 of the largest non-financial companies listed on the 
         Nasdaq stock exchange. It was launched in 1985 by the National Associate of Securities Dealers (NASD), alongside its sister index
         NASDAQ Financial 100. It includes companies in areas such as industrial, technology, retail, telecommunication, biotechnology, health care, 
         transportation, and media.
@@ -64,8 +59,7 @@ indices_custom_info = {
     '^IXF': {
         'category': 'Stock Large Cap',
         'description': 
-        """
-        The NASDAQ Financial 100 is a stock market index made up of equity securities issued by 100 of the largest financial companies listed on the 
+        """The NASDAQ Financial 100 is a stock market index made up of equity securities issued by 100 of the largest financial companies listed on the 
         Nasdaq stock exchange. It was launched in 1985 by the National Associate of Securities Dealers (NASD), alongside its more widely followed 
         sister index NASDAQ 100. NASDAQ Financial 100 covers areas such as banking, insurance, mortgages and securities trading.
         """
@@ -73,8 +67,7 @@ indices_custom_info = {
     '^NYA': {
         'category': 'Stock Large Cap',
         'description': 
-        """
-        The NYSE Composite is a stock market index covering all common stock listed on the New York Stock Exchange, including American depositary receipts (ADRs),
+        """The NYSE Composite is a stock market index covering all common stock listed on the New York Stock Exchange, including American depositary receipts (ADRs),
         real estate investment trusts, tracking stocks, and foreign listings. It covers over 2,000 stocks, of which over 1,600 are from the U.S. corporations and 
         over 360 are foreign listings. However, foreign companies constitute over a half of the largest companies in the index by market capitalization. 
         The index uses free-float market cap weighting.
@@ -83,8 +76,7 @@ indices_custom_info = {
     '^RUT': {
         'category': 'Small Cap Stock',
         'description': 
-        """
-        The Russell 2000 Index is a U.S. stock market index that makes up the smallest 2,000 stocks in the Russell Index. It was started
+        """The Russell 2000 Index is a U.S. stock market index that makes up the smallest 2,000 stocks in the Russell Index. It was started
         in 1984 by the Frank Russell Company and is maintained by FTSE Russell, a subsidiary of the London Stock Exchange Group (LSEG). 
         Russell 2000 is by far the most common benchmark for small-cap mutual funds and is the most widely quoted measure of the overall 
         performance of small- to mid-cap company shares. It is commonly considered an indicator of the condition of the U.S. economy because of
@@ -94,8 +86,7 @@ indices_custom_info = {
     '^HSI': {
         'category': 'Stock Large Cap',
         'description': 
-        """
-        The Hang Seng Index (HSI) is a market cap weighted stock market index, adjusted for free float, that tracks and records daily changes
+        """The Hang Seng Index (HSI) is a market cap weighted stock market index, adjusted for free float, that tracks and records daily changes
         in the largest companies listed on the Hong Kong Stock Exchange (HKSE). There are 82 constituent companies of the index, representing over 
         a half of the HKSE market cap. HSI was publicized in 1969 and is currently compiled and maintained by Hang Seng Indexes Company Limited, 
         a wholly owned subsidiary of Hang Seng Bank, one of the largest banks registered and listed in Hong Kong in terms of market cap.
@@ -104,8 +95,7 @@ indices_custom_info = {
     '^N225': {
         'category': 'Stock Large Cap',
         'description': 
-        """
-        The Nikkei 225, or the Nikkei Stock Average, is a stock market index for the Tokyo Stock Exchange (TSE), measuring the performance 
+        """The Nikkei 225, or the Nikkei Stock Average, is a stock market index for the Tokyo Stock Exchange (TSE), measuring the performance 
         of 225 highly capitalized and liquid publicly owned companies in Japan from a wide array of industry sectors. It is a price-weighted index,
         calculated every five seconds and operating in the Japanese Yen. Its components are reviewed twice a year. 
         """
@@ -113,8 +103,7 @@ indices_custom_info = {
     '^FTSE': {
         'category': 'Stock Large Cap',
         'description': 
-        """
-        The Financial Times Stock Exchange 100 Index (FTSE 100 or, informally, 'Footsie') is the UK's best-known stock market index of the 100 
+        """The Financial Times Stock Exchange 100 Index (FTSE 100 or, informally, 'Footsie') is the UK's best-known stock market index of the 100 
         most highly capitalized blue chips listed on the London Stock Exchange (LSE). The index consists of 32 sectors, four of which account 
         for almost a half of the index's market cap - these are pharmaceuticals, oil & gas, metals & mining, and banking services.
         The major companies, together accounting for approximately 30% of the market cap, are Shell, AstraZeneca, HSBC and Unilever.
@@ -125,8 +114,7 @@ indices_custom_info = {
     '^GDAXI': {
         'category': 'Stock Large Cap',
         'description': 
-        """
-        The DAX index tracks the performance of the 40 largest companies listed on the Regulated Market of the Frankfurt Stock
+        """The DAX index tracks the performance of the 40 largest companies listed on the Regulated Market of the Frankfurt Stock
         Exchange (FSE) that fulfill the requirements of being representative of Germany's diversified economy. Constituent 
         selection is based on free-float market capitalization. The DAX has two versions - the more commonly quoted performance index that 
         measures total return, thus including dividends; and the price index, which is more similar to commonly quoted indices in other countries.
@@ -136,8 +124,7 @@ indices_custom_info = {
     '^IBEX': {
         'category': 'Stock Large Cap',
         'description': 
-        """
-        The IBEX 35 (IBerian IndEX) is the benchmark stock market index of the Bolsa de Madrid, Spain's principal stock exchange. 
+        """The IBEX 35 (IBerian IndEX) is the benchmark stock market index of the Bolsa de Madrid, Spain's principal stock exchange. 
         Initiated in 1992, the index is administered and calculated by Sociedad de Bolsas, a subsidiary of Bolsas y Mercados Españoles
         (BME), the company which runs Spain's securities markets (including the Bolsa de Madrid). It is a market cap 
         weighted index comprising the 35 most liquid Spanish stocks traded in the Madrid Stock Exchange General Index and is reviewed 
@@ -148,8 +135,7 @@ indices_custom_info = {
     '^FCHI': {
         'category': 'Stock Large Cap',
         'description': 
-        """
-        CAC 40 is a benchmark French stock market index that tracks the performance of the 40 largest and most active 
+        """CAC 40 is a benchmark French stock market index that tracks the performance of the 40 largest and most active 
         companies listed on the Euronext Paris stock exchange. Its name - Cotation Assistée en Continu or Continuous 
         Assisted Quotation - refers to an automation system that is a version of the Toronto-based first ever fully 
         automated trading system in the world. CAC 40 is a price return index and as such pays no dividends, interest, 
@@ -160,8 +146,7 @@ indices_custom_info = {
     '^STOXX': {
         'category': 'Stock Large Cap',
         'description': 
-        """
-        STOXX Europe 600 is an index of European stocks designed and introduced by STOXX Ltd in 1998. It has 
+        """STOXX Europe 600 is an index of European stocks designed and introduced by STOXX Ltd in 1998. It has 
         a fixed number of 600 components representing large, mid and small capitalization companies among 17 
         European countries (not limited to the Eurozone) and covers about 90% of the European stock free-float market cap.
         The major countries of the index, contributing over two-thirds of it, are the UK, France, Switzerland and Germany. 
@@ -174,8 +159,7 @@ indices_custom_info = {
     '^AXJO': {
         'category': 'Stock all but Micro Cap',
         'description': 
-        """
-        The S&P/ASX 200 index is a market-capitalisation weighted and float-adjusted stock market index of shares listed on the Australian Securities Exchange (ASX). 
+        """The S&P/ASX 200 index is a market-capitalisation weighted and float-adjusted stock market index of shares listed on the Australian Securities Exchange (ASX). 
         It was started in 2000 and has since been maintained by Standard & Poor's. It is based on the 200 largest ASX listed stocks, which together account for more 
         than 80% of Australia's share market capitalisation. S&P/ASX 200 is considered the benchmark for Australian equity performance. 
         """
@@ -183,8 +167,7 @@ indices_custom_info = {
     '000001.SS': {
         'category': 'Stock Large Cap',
         'description': 
-        """
-        The SSE Composite Index is a stock market index of all stocks traded at the Shanghai Stock Exchange (SSE).
+        """The SSE Composite Index is a stock market index of all stocks traded at the Shanghai Stock Exchange (SSE).
         It is considered to be a broad indicator of the condition of the Chinese economy, assessing its performance 
         at the level of a variety of sectors and companies.
         """
@@ -192,8 +175,7 @@ indices_custom_info = {
     '^KS11': {
         'category': 'Stock Large Cap',
         'description': 
-        """
-        The Korea Composite Stock Price Index (KOSPI) tracks all common stocks traded on the Korea Stock Exchange,
+        """The Korea Composite Stock Price Index (KOSPI) tracks all common stocks traded on the Korea Stock Exchange,
         similarly to the S&P 500 in the United States. KOSPI was introduced in 1983, replacing the Dow-style Korea
         Composite Stock Price Index.
         """
@@ -201,16 +183,14 @@ indices_custom_info = {
     '^BSESN': {
         'category': 'Stock Large Cap',
         'description': 
-        """
-        The BSE SENSEX, also known as the S&P Bombay Stock Exchange Sensitive Index or simply SENSEX, tracks the performance of 30
+        """The BSE SENSEX, also known as the S&P Bombay Stock Exchange Sensitive Index or simply SENSEX, tracks the performance of 30
         major companies representative of various industrial sectors of the Indian economy and listed on the Bombay Stock Exchange.
         """
     },
     '^VIX': {
         'category': 'Stock Volatility',
         'description': 
-        """
-        The CBOE Volatility Index (VIX) is a popular measure of the stock market's expectation of volatility, calculated and disseminated 
+        """The CBOE Volatility Index (VIX) is a popular measure of the stock market's expectation of volatility, calculated and disseminated 
         in real time by CBOE. It is derived from the S&P 500 option prices for the 30 days following the measurement date, with each option price 
         representing the market's expectation of the 30-day forward-looking volatility. VIX cannot be bought or sold directly; instead, it can be
         traded and exchanged via derivative contracts, derived ETFs, and ETNs which most commonly track VIX futures indexes.
@@ -219,24 +199,21 @@ indices_custom_info = {
     '^VXD': {
         'category': 'Stock Volatility',
         'description': 
-        """
-        The CBOE DJIA Volatility Index is an estimate of the expected 30-day volatility of Dow Jones Industrial Avedrage (DJIA) stock index returns. 
+        """The CBOE DJIA Volatility Index is an estimate of the expected 30-day volatility of Dow Jones Industrial Avedrage (DJIA) stock index returns. 
         Similarly to VIX, VXD is calculated based on the 30-day forward-looking DJIA option prices.
         """
     },
     '^VXN': {
         'category': 'Stock Volatility',
         'description': 
-        """
-        The CBOE NASDAQ 100 Volatility Index is a key measure of market expectations of near-term volatility conveyed by NASDAQ 100 Index option prices.
+        """The CBOE NASDAQ 100 Volatility Index is a key measure of market expectations of near-term volatility conveyed by NASDAQ 100 Index option prices.
         It measures the market's expectation of 30-day volatility implicit in the prices of near-term NASDAQ 100 options.
         """
     },
     '^MOVE': {
         'category': 'Bond Volatility',
         'description': 
-        """
-        The Intercontinental Exchange (ICE) Bank of America Merrill Lynch Option Volatility Estimate (MOVE) index is a measure of the 
+        """The Intercontinental Exchange (ICE) Bank of America Merrill Lynch Option Volatility Estimate (MOVE) index is a measure of the 
         expected volatility of US Treasury bonds. It is calculated by taking the weighted average of the implied volatilities of a range of 
         options on US Treasury bonds. The index is expressed in basis points (bps) and is published by ICE Benchmark Administration Ltd.
         """
@@ -244,16 +221,14 @@ indices_custom_info = {
     '^GVZ': {
         'category': 'Commodity Volatility',
         'description': 
-        """
-        The CBOE Gold ETF Volatility Index is an estimate of the expected 30-day volatility of returns on the SPDR Gold Shares ETF (GLD). 
+        """The CBOE Gold ETF Volatility Index is an estimate of the expected 30-day volatility of returns on the SPDR Gold Shares ETF (GLD). 
         Similarly to VIX, GVZ is calculated based on the 30-day forward-looking prices of GLD options.
         """
     },
     '^SPGSCI': {
         'category': 'Commodities Broad Basket',
         'description': 
-        """
-        The S&P GSCI, originally developed in 1991 by Goldman Sachs, serves as a benchmark for investment in the commodity markets
+        """The S&P GSCI, originally developed in 1991 by Goldman Sachs, serves as a benchmark for investment in the commodity markets
         and as a measure of commodity performance over time. It is the first major investable commodity index, designed that way 
         by including the most liquid commodity futures and providing diversification with low correlations to other asset classes.
         The index currently comprises 24 commodities from all commodity sectors - energy products, industrial metals, agricultural 
@@ -264,8 +239,7 @@ indices_custom_info = {
     '^BCOM': {
         'category': 'Commodities Broad Basket',
         'description': 
-        """
-        The Bloomberg Commodity Index (BCOM) is a broadly diversified commodity price index tracking prices of futures 
+        """The Bloomberg Commodity Index (BCOM) is a broadly diversified commodity price index tracking prices of futures 
         contracts on physical commodities. It was originally launched as the Dow Jones-AIG Commodity Index in 1998; later renamed
         to Dow Jones-UBS Commodity Index in 2009, when UBS acquired it from AIG; and finally rebranded under its current name in 2014. 
         The BCOM is designed to minimize concentration in any one commodity or sector - it currently includes 23 commodity 
@@ -275,16 +249,14 @@ indices_custom_info = {
     '^TNX': {
         'category': 'Treasury Bond',
         'description': 
-        """
-        The CBOE Interest Rate 10-Year Treasury Note Index (TNX) is a benchmark index that tracks the yield of U.S. Treasury
+        """The CBOE Interest Rate 10-Year Treasury Note Index (TNX) is a benchmark index that tracks the yield of U.S. Treasury
         10-year notes. It is often considered to be a risk-free investment because of its backing by the U.S. government.
         """
     },
     '^IRX': {
         'category': 'Treasury Bond',
         'description': 
-        """
-        The 13-Week Treasury Bill Index is a benchmark index that tracks the yield of U.S. Treasury 13-week bills.
+        """The 13-Week Treasury Bill Index is a benchmark index that tracks the yield of U.S. Treasury 13-week bills.
         It is often considered a risk-free investment because of its backing by the U.S. government.
         """
     }
