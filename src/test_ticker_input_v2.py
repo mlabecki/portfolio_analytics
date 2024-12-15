@@ -514,7 +514,7 @@ for category in ticker_category_info_map.keys():
                 for column in row.keys() }
                 for row in ticker_category_info_map[category]['df'].to_dict('records')
             ],
-            css=[
+            css = [
                 {
                 'selector': '.dash-tooltip',
                 'rule': 'border: None;'
@@ -1035,6 +1035,12 @@ def output_custom_tickers(
                 columns = [{'name': i, 'id': i} for i in custom_ticker_table_columns[tk_type]],
                 data = [custom_table_data[tk_type]],
                 id = 'table-custom-ticker',
+                css = [
+                    { 
+                    'selector': '.dash-spreadsheet tr:hover td.dash-cell',
+                     'rule': 'background-color: white !important; border-bottom: None !important; border-top: 1px solid rgb(211, 211, 211) !important; color: black !important;'
+                    }
+                ],
                 style_header = table_custom_ticker_header_css,
                 style_data = table_custom_ticker_data_css
             )
