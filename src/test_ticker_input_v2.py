@@ -517,18 +517,12 @@ for category in ticker_category_info_map.keys():
             css=[
                 {
                 'selector': '.dash-tooltip',
-                # 'rule': 'border: None !important;'
                 'rule': 'border: None;'
                 },
                 {
                 'selector': '.dash-table-tooltip',
                 'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(67, 172, 106) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica; background-color: rgb(227, 255, 237);'
-                # 'rule': 'max-width: 500px; width: 500px !important; padding-top: 6px; padding-bottom: -5px; font-size: 12px; font-family: Helvetica;'
-                },
-                # {
-                # 'selector': '.dash-tooltip',
-                # 'rule': 'max-width: 500px; width: 500px !important; border: 5px solid rgb(67, 172, 106) !important; background-color: rgb(67, 172, 106);'
-                # },
+                }
             ],
             tooltip_delay = 0,
             tooltip_duration = None,
