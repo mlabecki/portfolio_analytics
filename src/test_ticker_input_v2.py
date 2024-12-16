@@ -530,12 +530,12 @@ for category in ticker_category_info_map.keys():
             style_as_list_view = True,
             style_data_conditional = [
                 # {'if': {'state': 'active'},'backgroundColor': 'white', 'border': '1px solid white'},
-                {'if': {
-                    'state': 'active'},
+                {'if': 
+                    { 'state': 'active'},
                     'backgroundColor': 'white',
                     'border-top': '1px solid rgb(211, 211, 211)',
                     'border-bottom': '1px solid rgb(211, 211, 211)'},
-                # {'if': {'column_id': ' '}, 'cursor': 'pointer'},
+                # {'if': {'column-type': 'boolean'}, 'cursor': 'pointer'},
                 {'if': {'column_id': 'No.'}, 'width': 24},
                 {'if': {'column_id': 'Ticker'}, 'width': 45},
                 # {'if': {'column_id': 'Type'}, 'width': 38},
