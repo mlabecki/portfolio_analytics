@@ -2,6 +2,7 @@ import dash
 from dash import Dash, dcc, html, Input, Output, State, ALL, MATCH, callback, dash_table
 from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
+import dash_loading_spinners as dls
 
 from dash import register_page
 
@@ -244,6 +245,9 @@ input_table_divs = initialize_input_table_divs(ticker_category_info_map)
 
 layout = html.Div([
 
+    # LOADING WRAPPER
+    dcc.Loading([
+    
     dcc.Store(data = {}, id = 'ticker-category-info-map', storage_type = 'session'),
 
     dcc.Store(data = {}, id = 'ticker-info', storage_type = 'session'),
@@ -320,7 +324,24 @@ layout = html.Div([
     html.Div(
         id = 'all-tables-container',
         children = input_table_divs
+    )
+
+    ],
+    
+    id = 'ticker-input-loading-wrapper',
+    custom_spinner = html.H2([
+        'Loading Ticker Info',
+        html.Br(),
+        html.Br(),
+        dls.Fade(color = 'midnightblue', debounce = 5000),
+        html.Br(),
+        'Please Wait ...'
+    ],
+    style = {'font-family': 'Helvetica', 'font-size': 26, 'font-weight': 'bold', 'color': 'midnightblue', 'text-align': 'center'}
     ),
+    overlay_style = {'visibility': 'visible', 'opacity': 0.25, 'filter': 'blur(3px)'},
+    
+    ),  # Loading
 
     html.Br()
 
