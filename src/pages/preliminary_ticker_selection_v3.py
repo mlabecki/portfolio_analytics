@@ -2,6 +2,7 @@ import dash
 from dash import Dash, dcc, html, Input, Output, State, ALL, MATCH, callback, dash_table
 from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
+import dash_loading_spinners as dls
 
 from dash import register_page
 
@@ -707,6 +708,9 @@ for category in ticker_category_info_map.keys():
 # app.layout = html.Div([
 layout = html.Div([
 
+    # LOADING WRAPPER
+    dcc.Loading([
+
     html.Div(id = 'ticker-output', hidden = True, style = {'font-size' : '14px'}),
 
     # MAIN TITLE
@@ -769,6 +773,25 @@ layout = html.Div([
         id = 'pre-all-tables-container',
         children = pre_tables
     ),
+
+],
+    
+    id = 'ticker-input-loading-wrapper',
+    custom_spinner = html.Div([
+        'Loading Ticker Categories',
+        html.Br(),
+        html.Br(),
+        dls.Fade(color = 'midnightblue'),
+        html.Br(),
+        'Please Wait ...'
+    ],
+    style = {'font-family': 'Helvetica', 'font-size': 26, 'font-weight': 'bold', 'color': 'midnightblue', 'text-align': 'center'}
+    ),
+    overlay_style = {'visibility': 'visible', 'opacity': 0.25, 'filter': 'blur(3px)'},
+    delay_show = 1000,
+    delay_hide = 1000
+
+    ),  # Loading
 
     html.Br(),
 

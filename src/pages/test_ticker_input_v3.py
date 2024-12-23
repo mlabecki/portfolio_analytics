@@ -329,17 +329,19 @@ layout = html.Div([
     ],
     
     id = 'ticker-input-loading-wrapper',
-    custom_spinner = html.H2([
+    custom_spinner = html.Div([
         'Loading Ticker Info',
         html.Br(),
         html.Br(),
-        dls.Fade(color = 'midnightblue', debounce = 5000),
+        dls.Fade(color = 'midnightblue'),
         html.Br(),
         'Please Wait ...'
     ],
     style = {'font-family': 'Helvetica', 'font-size': 26, 'font-weight': 'bold', 'color': 'midnightblue', 'text-align': 'center'}
     ),
     overlay_style = {'visibility': 'visible', 'opacity': 0.25, 'filter': 'blur(3px)'},
+    delay_show = 1000,
+    delay_hide = 1000
     
     ),  # Loading
 
