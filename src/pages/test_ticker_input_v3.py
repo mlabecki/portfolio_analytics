@@ -732,6 +732,7 @@ def read_preselected_tickers(
     Output('custom-ticker-info-container', 'hidden'),
     Output('custom-ticker-input-message', 'children'),
     Output('table-custom-ticker-info', 'children'),
+    Output('ticker-info', 'data', allow_duplicate = True),
     Output('prev-table-selected-rows', 'data'),
 
     Output('dash-table-biggest-companies', 'selected_rows'),
@@ -777,6 +778,7 @@ def read_preselected_tickers(
     Input('custom-ticker-input', 'value'),
     Input({'index': ALL, 'type': 'ticker_icon'}, 'n_clicks'),
 
+    prevent_initial_call=True,
     suppress_callback_exceptions = True
 )
 def output_custom_tickers(
@@ -1175,6 +1177,7 @@ def output_custom_tickers(
         hide_custom_ticker_info,
         tk_input_message,
         table_custom_ticker_info,
+        ticker_info,
         table_selected_rows,
 
         table_selected_rows['biggest_companies'],
