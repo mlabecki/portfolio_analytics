@@ -251,6 +251,8 @@ layout = html.Div([
     dcc.Store(data = {}, id = 'ticker-category-info-map', storage_type = 'session'),
 
     dcc.Store(data = {}, id = 'ticker-info', storage_type = 'session'),
+
+    html.Div(id = 'excluded-tickers-list', hidden = True),
     
     html.Div(id = 'ticker-output', hidden = True, style = {'font-size' : '14px'}),
 
@@ -269,6 +271,14 @@ layout = html.Div([
     html.Div(
         id = 'select-ticker-container',
         hidden = True,
+        children = [
+            html.Div(
+                id = 'select-ticker-divs-container'
+            ),
+            html.Div(
+                id = 'select-ticker-portfolio-summary'
+            ),
+        ],
         style = select_ticker_container_css
     ),
 
@@ -446,6 +456,10 @@ layout = html.Div([
 
     Output('ticker-category-info-map', 'data'),
     Output('ticker-info', 'data'),
+    Output('custom-ticker-input-message', 'hidden'),
+    Output('custom-ticker-info-container', 'hidden'),
+    Output('custom-ticker-input-message', 'children'),
+    Output('excluded-tickers-list', 'children'),
 
     Input('n-preselected-stored', 'data'),              # from main app page
     Input('preselected-ticker-tables-stored', 'data'),   # from main app page
@@ -460,6 +474,7 @@ def read_preselected_tickers(
     # preselected_ticker_tables = {}  # {category: [{tk: tk_name}]}
     ticker_info = {}
     dash_input_tables = {}
+    excluded_tickers = []
 
     for category in n_preselected_stored.keys():
     
@@ -483,14 +498,11 @@ def read_preselected_tickers(
                     tk_info = yf_ticker.info
                     # Should also check if ticker is still valid, for now assume they're all valid
 
-                    if 'quoteType' in tk_info.keys():
-                        # This is meant to indicate a valid ticker
-                        # tk_hist may be temporarily empty for a valid ticker
-
-                        if len(tk_hist.index) > 0:
-                            tk_start, tk_end = str(tk_hist.index[0].date()), str(tk_hist.index[-1].date())
-                        else:
-                            tk_start, tk_end = 'N/A', 'N/A'
+                    if ('quoteType' in tk_info.keys()) & (len(tk_hist.index) > 0):
+                        # - quoteType is meant to indicate a valid ticker
+                        # - tk_hist may be temporarily empty for a valid ticker, but then it must also be excluded
+                        
+                        tk_start, tk_end = str(tk_hist.index[0].date()), str(tk_hist.index[-1].date())
 
                         df_info_tickers.at[tk, 'No.'] = i + 1
                         df_info_tickers.at[tk, 'Ticker'] = tk
@@ -526,6 +538,8 @@ def read_preselected_tickers(
                             tk_summary = tk_info['description']
                         elif category in ['stock_indices', 'volatility_indices', 'benchmarks']:
                             tk_summary = indices_custom_info[tk]['description']
+                        elif len(tk_hist.index) == 0:
+                            tk_summary = f'WARNING: No historical data available for {tk}, ticker cannot be added to portfolio'
                         else: 
                             tk_summary = ''
 
@@ -562,7 +576,8 @@ def read_preselected_tickers(
                         row_ticker_map.update({tk: i})
 
                     else:
-                        print(f'WARNING: Cannot get data for {tk} at the moment, try again later')
+                        
+                        excluded_tickers.append(tk)
                         df_info_tickers = df_info_tickers[df_info_tickers.index != tk]
 
                 else:
@@ -610,6 +625,17 @@ def read_preselected_tickers(
             for row in dash_table_data  # e.g. {'No.': 1, 'Ticker': 'AAPL', ...} etc.
         ]
     
+    if len(excluded_tickers) > 0:
+        excluded_tickers_str = ", ".join(excluded_tickers)
+        plural_adjustment = 'ticker has' if len(excluded_tickers) == 1 else 'tickers have'
+        excluded_tickers_message = f'WARNING: No historical data available for {excluded_tickers_str} — {plural_adjustment} been removed from list'
+        hide_tk_input_message = False
+        hide_custom_ticker_info = True
+    else:
+        excluded_tickers_message = ''
+        hide_tk_input_message = True
+        hide_custom_ticker_info = False
+
     #################################
 
     preselected_table_titles = {
@@ -718,19 +744,24 @@ def read_preselected_tickers(
         ticker_category_info_map['benchmarks']['hidden'],
 
         ticker_category_info_map,
-        ticker_info
+        ticker_info,
+        hide_tk_input_message,
+        hide_custom_ticker_info,
+        excluded_tickers_message,
+        excluded_tickers
     )
 
 ###################################################################
 
 @callback(
-    Output('select-ticker-container', 'children'),
+    Output('select-ticker-divs-container', 'children'),
     Output('select-ticker-container', 'hidden'),
     Output('select-ticker-list', 'children'),
+    Output('select-ticker-portfolio-summary', 'children'),
     Output('custom-ticker-input', 'value'),
-    Output('custom-ticker-input-message', 'hidden'),
-    Output('custom-ticker-info-container', 'hidden'),
-    Output('custom-ticker-input-message', 'children'),
+    Output('custom-ticker-input-message', 'hidden', allow_duplicate = True),
+    Output('custom-ticker-info-container', 'hidden', allow_duplicate = True),
+    Output('custom-ticker-input-message', 'children', allow_duplicate = True),
     Output('table-custom-ticker-info', 'children'),
     Output('ticker-info', 'data', allow_duplicate = True),
     Output('prev-table-selected-rows', 'data'),
@@ -754,6 +785,7 @@ def read_preselected_tickers(
 
     Input('ticker-category-info-map', 'data'),
     Input('ticker-info', 'data'),
+    Input('excluded-tickers-list', 'children'),
 
     Input('dash-table-biggest-companies', 'selected_rows'),
     Input('dash-table-sp500', 'selected_rows'),
@@ -774,17 +806,18 @@ def read_preselected_tickers(
 
     Input('select-ticker-list', 'children'),
     Input('prev-table-selected-rows', 'data'),
-    Input('select-ticker-container', 'children'),
+    Input('select-ticker-divs-container', 'children'),
     Input('custom-ticker-input', 'value'),
     Input({'index': ALL, 'type': 'ticker_icon'}, 'n_clicks'),
 
-    prevent_initial_call=True,
+    prevent_initial_call = True,
     suppress_callback_exceptions = True
 )
 def output_custom_tickers(
 
     ticker_category_info_map,
     ticker_info,
+    excluded_tickers,
 
     table_biggest_companies_selected_rows,
     table_sp500_selected_rows,
@@ -1047,17 +1080,22 @@ def output_custom_tickers(
         df_info = ticker_category_info_map[category]['df']  ## This is a dictionary !!!
         selected_rows = [k for k in table_selected_rows[category] if k not in prev_table_selected_rows[category]]
         if len(selected_rows) > 0:
-            added_ticker = df_info['Ticker'][[tk for tk in df_info['No.'].keys() if df_info['No.'][tk] == 1 + selected_rows[0]][0]]
-            if added_ticker not in updated_tickers:
-                updated_tickers.append(added_ticker)
-            break
+            for tk in df_info['No.'].keys():
+                # if (df_info['Data Start'][tk] != 'N/A') & (df_info['No.'][tk] == 1 + selected_rows[0]):
+                if df_info['No.'][tk] == 1 + selected_rows[0]:
+                    added_ticker = df_info['Ticker'][tk]
+                    if added_ticker not in updated_tickers:
+                        updated_tickers.append(added_ticker)
+                    break
         else:
             unselected_rows = [k for k in prev_table_selected_rows[category] if k not in table_selected_rows[category]]
             if len(unselected_rows) > 0:
-                removed_ticker = df_info['Ticker'][[tk for tk in df_info['No.'].keys() if df_info['No.'][tk] == 1 + unselected_rows[0]][0]]
-                if removed_ticker in updated_tickers:
-                    updated_tickers.remove(removed_ticker)
-                break
+                unselected_ticker_list =  [tk for tk in df_info['No.'].keys() if df_info['No.'][tk] == 1 + unselected_rows[0]]
+                if len(unselected_ticker_list) > 0:
+                    removed_ticker = df_info['Ticker'][unselected_ticker_list[0]]
+                    if (removed_ticker in updated_tickers) & (removed_ticker not in excluded_tickers):
+                        updated_tickers.remove(removed_ticker)
+                    break
 
     # Make sure added_ticker is selected in all tables and removed_ticker is removed from all tables
     if added_ticker != '':
@@ -1084,94 +1122,152 @@ def output_custom_tickers(
         tk_id = f'select-ticker-{tk}'
         tk_icon_id = f'select-ticker-icon-{tk}'
         name = ticker_info[tk]['name'] if tk in ticker_info.keys() is not None else tk
+        tk_start = ticker_info[tk]['start']
+        tk_end = ticker_info[tk]['end']
 
-        tk_type = ticker_info[tk]['type']
-        popover_ticker_keys = [
-            html.B('Data Start:'), html.Br(),
-            html.B('Data End:'), html.Br(),
-            html.B('Type:'), html.Br(),
-            html.B('Exchange:'), html.Br(),
-            html.B('Currency:')
-        ]
-        popover_ticker_values = [
-            html.Span(f"{ticker_info[tk]['start']}"), html.Br(),
-            html.Span(f"{ticker_info[tk]['end']}"), html.Br(),
-            html.Span(f"{ticker_info[tk]['type']}"), html.Br(),
-            html.Span(f"{ticker_info[tk]['exchange']}"), html.Br(),
-            html.Span(f"{ticker_info[tk]['currency']}")
-        ]
-        if tk_type == 'EQUITY':
-            popover_ticker_keys.insert(6, html.B('Industry:'))
-            popover_ticker_keys.insert(7, html.Br())
-            popover_ticker_keys.insert(8, html.B('Sector:'))
-            popover_ticker_keys.insert(9, html.Br())
-            popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['industry']}"))
-            popover_ticker_values.insert(7, html.Br())
-            popover_ticker_values.insert(8, html.Span(f"{ticker_info[tk]['sector']}"))
-            popover_ticker_values.insert(9, html.Br())
-        elif tk_type in ['ETF', 'INDEX']:
-            popover_ticker_keys.insert(6, html.B('Category:'))
-            popover_ticker_keys.insert(7, html.Br())
-            popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['category']}"))
-            popover_ticker_values.insert(7, html.Br())
+        if (tk_start != 'N/A') & (tk_end != 'N/A'):
+            tk_type = ticker_info[tk]['type']
+            popover_ticker_keys = [
+                html.B('Data Start:'), html.Br(),
+                html.B('Data End:'), html.Br(),
+                html.B('Type:'), html.Br(),
+                html.B('Exchange:'), html.Br(),
+                html.B('Currency:')
+            ]
+            popover_ticker_values = [
+                html.Span(f"{ticker_info[tk]['start']}"), html.Br(),
+                html.Span(f"{ticker_info[tk]['end']}"), html.Br(),
+                html.Span(f"{ticker_info[tk]['type']}"), html.Br(),
+                html.Span(f"{ticker_info[tk]['exchange']}"), html.Br(),
+                html.Span(f"{ticker_info[tk]['currency']}")
+            ]
+            if tk_type == 'EQUITY':
+                popover_ticker_keys.insert(6, html.B('Industry:'))
+                popover_ticker_keys.insert(7, html.Br())
+                popover_ticker_keys.insert(8, html.B('Sector:'))
+                popover_ticker_keys.insert(9, html.Br())
+                popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['industry']}"))
+                popover_ticker_values.insert(7, html.Br())
+                popover_ticker_values.insert(8, html.Span(f"{ticker_info[tk]['sector']}"))
+                popover_ticker_values.insert(9, html.Br())
+            elif tk_type in ['ETF', 'INDEX']:
+                popover_ticker_keys.insert(6, html.B('Category:'))
+                popover_ticker_keys.insert(7, html.Br())
+                popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['category']}"))
+                popover_ticker_values.insert(7, html.Br())
 
-        tk_div = html.Div(
-            id = tk_id,
-            children = [
-                html.Div(
-                    'x',
-                    id = {'index': tk_icon_id, 'type': 'ticker_icon'},
-                    n_clicks = 0,
-                    style = select_ticker_left_css
-                ),
-                html.Div(children = [
-                    html.B(tk, id = f'select-ticker-label-tk-{tk}', style = {'margin-right': '6px'}),
-                    html.Span(name, id = f'select-ticker-label-name-{tk}')
-                    ],
-                    id = f'select-ticker-label-{tk}',
-                    style = select_ticker_right_css
-                ),
-                dbc.Popover(
-                    [
-                        html.B(tk, style = popover_select_ticker_header), 
-                        html.Div([
-                            html.Div(
-                                popover_ticker_keys,
-                                id = 'popover-select-ticker-keys',
-                                style = popover_select_ticker_keys_css
+            tk_div = html.Div(
+                id = tk_id,
+                children = [
+                    html.Div(
+                        'x',
+                        id = {'index': tk_icon_id, 'type': 'ticker_icon'},
+                        n_clicks = 0,
+                        style = select_ticker_left_css
+                    ),
+                    html.Div(children = [
+                        html.B(tk, id = f'select-ticker-label-tk-{tk}', style = {'margin-right': '6px'}),
+                        html.Span(name, id = f'select-ticker-label-name-{tk}')
+                        ],
+                        id = f'select-ticker-label-{tk}',
+                        style = select_ticker_right_css
+                    ),
+                    dbc.Popover(
+                        [
+                            html.B(tk, style = popover_select_ticker_header), 
+                            html.Div([
+                                html.Div(
+                                    popover_ticker_keys,
+                                    id = 'popover-select-ticker-keys',
+                                    style = popover_select_ticker_keys_css
+                                ),
+                                html.Div(
+                                    popover_ticker_values,
+                                    id = 'popover-select-ticker-values',
+                                    style = popover_select_ticker_values_css
+                                )
+                                ],
+                                style = {'display': 'block'}
                             ),
+                            # html.Br(),
                             html.Div(
-                                popover_ticker_values,
-                                id = 'popover-select-ticker-values',
-                                style = popover_select_ticker_values_css
+                                f"{ticker_info[tk]['summary']}",
+                                id = 'popover-select-ticker-summary',
+                                style = popover_select_ticker_summary
                             )
-                            ],
-                            style = {'display': 'block'}
-                        ),
-                        # html.Br(),
-                        html.Div(
-                            f"{ticker_info[tk]['summary']}",
-                            id = 'popover-select-ticker-summary',
-                            style = popover_select_ticker_summary
-                        )
-                    ],
-                    id = 'popover-select-ticker',
-                    target = f'select-ticker-label-{tk}',
-                    body = True,
-                    trigger = 'hover',
-                    style = popover_select_ticker_css
-                ),
-            ],
-            style = select_ticker_div_css
-        )
-        ticker_divs.append(tk_div)
+                        ],
+                        id = 'popover-select-ticker',
+                        target = f'select-ticker-label-{tk}',
+                        body = True,
+                        trigger = 'hover',
+                        style = popover_select_ticker_css
+                    ),
+                ],
+                style = select_ticker_div_css
+            )
+            ticker_divs.append(tk_div)
+    
+    ################################
 
-    hide_ticker_container = True if len(updated_tickers) == 0 else False
+    n_tickers = len(updated_tickers)
+
+    if n_tickers > 0:
+        
+        hide_ticker_container = False
+
+        portfolio_data_start = f"{min([ticker_info[tk]['start'] for tk in updated_tickers if ticker_info[tk]['start'] != 'N/A'])}"
+        portfolio_data_end = f"{max([ticker_info[tk]['end'] for tk in updated_tickers if ticker_info[tk]['end'] != 'N/A'])}"
+        portfolio_overlap_data_start = f"{max([ticker_info[tk]['start'] for tk in updated_tickers if ticker_info[tk]['start'] != 'N/A'])}"
+        portfolio_overlap_data_end = f"{min([ticker_info[tk]['end'] for tk in updated_tickers if ticker_info[tk]['end'] != 'N/A'])}"
+        no_overlap_message = 'No Overlapping Data Available'
+        if portfolio_overlap_data_start <= portfolio_overlap_data_end:
+            portfolio_overlap_data_start_message = portfolio_overlap_data_start
+            portfolio_overlap_data_end_message = portfolio_overlap_data_end
+        else: 
+            portfolio_overlap_data_start = portfolio_overlap_data_end = no_overlap_message
+
+        portfolio_summary_keys = [
+            html.B('Portfolio Ticker Count:'), html.Br(),
+            html.B('Portfolio Overlapping Data Start:'), html.Br(),
+            html.B('Portfolio Overlapping Data End:'), html.Br(),
+            html.B('Portfolio Earliest Data Start:'), html.Br(),
+            html.B('Portfolio Latest End:'), html.Br()
+        ]
+
+        portfolio_summary_values = [
+            html.Span(f'{n_tickers}'), html.Br(),
+            html.Span(portfolio_overlap_data_start_message), html.Br(),
+            html.Span(portfolio_overlap_data_end_message), html.Br(),
+            html.Span(portfolio_data_start), html.Br(),
+            html.Span(portfolio_data_end), html.Br()
+        ]
+
+        select_ticker_portfolio_summary = html.Div(
+            [
+            html.Div(
+                portfolio_summary_keys,
+                id = 'portfolio-summary-keys',
+                style = portfolio_summary_keys_css
+            ),
+            html.Div(
+                portfolio_summary_values,
+                id = 'portfolio-summary-values',
+                style = portfolio_summary_values_css
+            )
+            ],
+            style = {'display': 'block'}
+        )
+
+    else:
+        
+        select_ticker_portfolio_summary = html.Div([])
+        hide_ticker_container = True
 
     return (
         ticker_divs,
         hide_ticker_container,
         updated_tickers,
+        select_ticker_portfolio_summary,
         '',  # Clear custom ticker input button value
         hide_tk_input_message,
         hide_custom_ticker_info,
