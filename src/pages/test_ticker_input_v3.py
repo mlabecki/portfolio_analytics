@@ -1241,15 +1241,12 @@ def output_custom_tickers(
 
         portfolio_data_start = f"{min([ticker_info[tk]['start'] for tk in updated_tickers])}"
         portfolio_data_end = f"{max([ticker_info[tk]['end'] for tk in updated_tickers])}"
-        portfolio_data_start_date = datetime.strptime(portfolio_data_start, '%Y-%m-%d').date()
-        portfolio_data_end_date = datetime.strptime(portfolio_data_end, '%Y-%m-%d').date()
-        portfolio_data_length = f'{portfolio_data_end_date - portfolio_data_start_date + timedelta(1)} days'.split(',')[0]
+        portfolio_data_length = f'{len(pd.bdate_range(portfolio_data_start, portfolio_data_end))} business days'
 
         portfolio_overlap_data_start = f"{max([ticker_info[tk]['start'] for tk in updated_tickers])}"
         portfolio_overlap_data_end = f"{min([ticker_info[tk]['end'] for tk in updated_tickers])}"
-        portfolio_overlap_data_start_date = datetime.strptime(portfolio_overlap_data_start, '%Y-%m-%d').date()
-        portfolio_overlap_data_end_date = datetime.strptime(portfolio_overlap_data_end, '%Y-%m-%d').date()
-        portfolio_overlap_data_length = f'{portfolio_overlap_data_end_date - portfolio_overlap_data_start_date + timedelta(1)}'.split(',')[0]
+        portfolio_overlap_data_length = f'{len(pd.bdate_range(portfolio_overlap_data_start, portfolio_overlap_data_end))} business days'
+
         no_overlap_message = 'WARNING: No overlapping dates in the selection'
 
         portfolio_summary_keys = [

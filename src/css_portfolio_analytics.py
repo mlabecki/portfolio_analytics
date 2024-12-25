@@ -253,7 +253,7 @@ portfolio_summary_values_length_key_css = {
     'font-size': '14px',
 }
 portfolio_summary_values_length_value_css = {
-    'width': '77px',
+    'width': '135px',
     'display': 'inline-block',
     'text-align': 'right',
     'margin-right': '12px',
