@@ -225,19 +225,39 @@ select_ticker_right_css = {
     'vertical-align': 'center'
 }
 portfolio_summary_keys_css = {
-    'width': '250px',
+    'width': '225px',
     'padding-left': '5px',
-    # 'padding-right': '5px',
     'display': 'inline-block',
     'color': '#007eff',
     'font-family': 'Helvetica',
     'font-size': '14px',
 }
-portfolio_summary_values_css = {
-    'width': '200px',
-    # 'padding-left': '5px',
+portfolio_summary_values_from_css = {
+    'width': '145px',
     'display': 'inline-block',
-        'color': '#007eff',
+    'color': '#007eff',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+}
+portfolio_summary_values_to_css = {
+    'width': '130px',
+    'display': 'inline-block',
+    'color': '#007eff',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+}
+portfolio_summary_values_length_key_css = {
+    'display': 'inline-block',
+    'color': '#007eff',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+}
+portfolio_summary_values_length_value_css = {
+    'width': '77px',
+    'display': 'inline-block',
+    'text-align': 'right',
+    'margin-right': '12px',
+    'color': '#007eff',
     'font-family': 'Helvetica',
     'font-size': '14px',
 }
