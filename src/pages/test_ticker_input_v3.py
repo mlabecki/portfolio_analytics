@@ -349,7 +349,7 @@ layout = html.Div([
     ],
     style = {'font-family': 'Helvetica', 'font-size': 26, 'font-weight': 'bold', 'color': 'midnightblue', 'text-align': 'center'}
     ),
-    overlay_style = {'visibility': 'visible', 'opacity': 0.25, 'filter': 'blur(3px)'},
+    overlay_style = {'visibility': 'visible', 'opacity': 0.35, 'filter': 'blur(3px)'},
     delay_show = 1000,
     delay_hide = 1000
     
@@ -467,8 +467,8 @@ layout = html.Div([
     suppress_callback_exceptions = True
 )
 def read_preselected_tickers(
-    n_preselected_stored,
-    preselected_ticker_tables_stored
+    n_preselected,
+    preselected_ticker_tables
 ):
 
     # preselected_ticker_tables = {}  # {category: [{tk: tk_name}]}
@@ -476,14 +476,14 @@ def read_preselected_tickers(
     dash_input_tables = {}
     excluded_tickers = []
 
-    for category in n_preselected_stored.keys():
+    for category in n_preselected.keys():
     
-        if n_preselected_stored[category] != 0:
+        if n_preselected[category] != 0:
     
             session = requests_cache.CachedSession('cache/yfinance.cache')
             session.headers['User-agent'] = url_settings['global']['headers']
 
-            category_tickers = list(preselected_ticker_tables_stored[category][0].keys())  # {category: [{tk: tk_name}]}
+            category_tickers = list(preselected_ticker_tables[category][0].keys())  # {category: [{tk: tk_name}]}
 
             df_info_tickers = pd.DataFrame(index = category_tickers, columns = ticker_category_info_map[category]['columns'])
             row_ticker_map = {}
@@ -512,7 +512,7 @@ def read_preselected_tickers(
                         elif 'shortName' in tk_info.keys():
                             tk_name = tk_info['shortName']
                         else:
-                            tk_name = preselected_ticker_tables_stored[category][0][tk]
+                            tk_name = preselected_ticker_tables[category][0][tk]
 
                         if category in etf_categories:
                             tk_type = 'ETF'
@@ -578,7 +578,9 @@ def read_preselected_tickers(
                     else:
                         
                         excluded_tickers.append(tk)
+                        n_preselected[category] -= 1
                         df_info_tickers = df_info_tickers[df_info_tickers.index != tk]
+                        # MUST FIX INDEX HERE !!!
 
                 else:
 
@@ -631,6 +633,7 @@ def read_preselected_tickers(
         excluded_tickers_message = f'WARNING: No historical data available for {excluded_tickers_str} — {plural_adjustment} been removed from list'
         hide_tk_input_message = False
         hide_custom_ticker_info = True
+        # hide_custom_ticker_info = False
     else:
         excluded_tickers_message = ''
         hide_tk_input_message = True
@@ -639,22 +642,22 @@ def read_preselected_tickers(
     #################################
 
     preselected_table_titles = {
-        'biggest_companies': f'{n_preselected_stored["biggest_companies"]} PRE-SELECTED BIGGEST COMPANIES by Market Capitalization',
-        'sp500': f'{n_preselected_stored["sp500"]} PRE-SELECTED S&P 500 COMPANIES by Market Capitalization',
-        'nasdaq100': f'{n_preselected_stored["nasdaq100"]} PRE-SELECTED NASDAQ 100 COMPANIES by Market Capitalization',
-        'dow_jones': f'{n_preselected_stored["dow_jones"]} PRE-SELECTED DOW JONES INDUSTRIAL AVERAGE COMPANIES by Market Capitalization',
-        'biggest_etfs': f'{n_preselected_stored["biggest_etfs"]} PRE-SELECTED BIGGEST ETFs by Total Assets Under Management',
-        'fixed_income_etfs': f'{n_preselected_stored["fixed_income_etfs"]} PRE-SELECTED FIXED INCOME ETFs by Total Assets Under Management',
-        'ai_etfs': f'{n_preselected_stored["ai_etfs"]} PRE-SELECTED ARTIFICIAL INTELLIGENCE ETFs by Total Assets Under Management',
-        'commodity_etfs': f'{n_preselected_stored["commodity_etfs"]} PRE-SELECTED COMMODITY ETFs sorted by Total Assets Under Management',
-        'currency_etfs': f'{n_preselected_stored["currency_etfs"]} PRE-SELECTED CURRENCY ETFs sorted by Total Assets Under Management',
-        'cryptos': f'{n_preselected_stored["cryptos"]} PRE-SELECTED CRYPTOCURRENCIES by Market Capitalization',
-        'crypto_etfs': f'{n_preselected_stored["crypto_etfs"]} PRE-SELECTED CRYPTOCURRENCY ETFs by Total Assets Under Management',
-        'futures': f'{n_preselected_stored["futures"]} PRE-SELECTED COMMODITY FUTURES by Open Interest',
-        'precious_metals': f'{n_preselected_stored["precious_metals"]} PRE-SELECTED PRECIOUS METAL SPOT / FUTURES sorted by Open Interest',
-        'stock_indices': f'{n_preselected_stored["stock_indices"]} PRE-SELECTED STOCK INDICES',
-        'volatility_indices': f'{n_preselected_stored["volatility_indices"]} PRE-SELECTED VOLATILITY INDICES',
-        'benchmarks': f'{n_preselected_stored["benchmarks"]} PRE-SELECTED BENCHMARKS'
+        'biggest_companies': f'{n_preselected["biggest_companies"]} PRE-SELECTED BIGGEST COMPANIES by Market Capitalization',
+        'sp500': f'{n_preselected["sp500"]} PRE-SELECTED S&P 500 COMPANIES by Market Capitalization',
+        'nasdaq100': f'{n_preselected["nasdaq100"]} PRE-SELECTED NASDAQ 100 COMPANIES by Market Capitalization',
+        'dow_jones': f'{n_preselected["dow_jones"]} PRE-SELECTED DOW JONES INDUSTRIAL AVERAGE COMPANIES by Market Capitalization',
+        'biggest_etfs': f'{n_preselected["biggest_etfs"]} PRE-SELECTED BIGGEST ETFs by Total Assets Under Management',
+        'fixed_income_etfs': f'{n_preselected["fixed_income_etfs"]} PRE-SELECTED FIXED INCOME ETFs by Total Assets Under Management',
+        'ai_etfs': f'{n_preselected["ai_etfs"]} PRE-SELECTED ARTIFICIAL INTELLIGENCE ETFs by Total Assets Under Management',
+        'commodity_etfs': f'{n_preselected["commodity_etfs"]} PRE-SELECTED COMMODITY ETFs sorted by Total Assets Under Management',
+        'currency_etfs': f'{n_preselected["currency_etfs"]} PRE-SELECTED CURRENCY ETFs sorted by Total Assets Under Management',
+        'cryptos': f'{n_preselected["cryptos"]} PRE-SELECTED CRYPTOCURRENCIES by Market Capitalization',
+        'crypto_etfs': f'{n_preselected["crypto_etfs"]} PRE-SELECTED CRYPTOCURRENCY ETFs by Total Assets Under Management',
+        'futures': f'{n_preselected["futures"]} PRE-SELECTED COMMODITY FUTURES by Open Interest',
+        'precious_metals': f'{n_preselected["precious_metals"]} PRE-SELECTED PRECIOUS METAL SPOT / FUTURES sorted by Open Interest',
+        'stock_indices': f'{n_preselected["stock_indices"]} PRE-SELECTED STOCK INDICES',
+        'volatility_indices': f'{n_preselected["volatility_indices"]} PRE-SELECTED VOLATILITY INDICES',
+        'benchmarks': f'{n_preselected["benchmarks"]} PRE-SELECTED BENCHMARKS'
     }
    
     return (
@@ -809,6 +812,7 @@ def read_preselected_tickers(
     Input('select-ticker-divs-container', 'children'),
     Input('custom-ticker-input', 'value'),
     Input({'index': ALL, 'type': 'ticker_icon'}, 'n_clicks'),
+    Input('custom-ticker-input-message', 'children'),
 
     prevent_initial_call = True,
     suppress_callback_exceptions = True
@@ -840,7 +844,8 @@ def output_custom_tickers(
     prev_table_selected_rows,
     ticker_divs,
     tk_input,
-    n_clicks
+    n_clicks,
+    tk_input_message
 ):
 
     table_selected_rows = {
@@ -897,9 +902,13 @@ def output_custom_tickers(
     ##### INPUT BUTTON
     # Read in custom-specified ticker from input button
 
-    hide_tk_input_message = True
     hide_custom_ticker_info = True
-    tk_input_message = ''
+    if tk_input_message is None:
+        tk_input_message = ''
+        hide_tk_input_message = True
+    else:
+        hide_tk_input_message = False
+
     table_custom_ticker_info = []
     tk_input = tk_input.upper()
 
@@ -932,6 +941,8 @@ def output_custom_tickers(
 
             updated_tickers.append(tk_input)
 
+            hide_tk_input_message = True
+            
             if tk_input in yf.shared._ERRORS.keys():
                 tk_start, tk_end = 'N/A', 'N/A'
             else:

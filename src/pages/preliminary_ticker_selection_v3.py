@@ -787,7 +787,7 @@ layout = html.Div([
     ],
     style = {'font-family': 'Helvetica', 'font-size': 26, 'font-weight': 'bold', 'color': 'midnightblue', 'text-align': 'center'}
     ),
-    overlay_style = {'visibility': 'visible', 'opacity': 0.25, 'filter': 'blur(3px)'},
+    overlay_style = {'visibility': 'visible', 'opacity': 0.35, 'filter': 'blur(3px)'},
     delay_show = 1000,
     delay_hide = 1000
 
