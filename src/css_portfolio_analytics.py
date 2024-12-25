@@ -172,6 +172,7 @@ select_ticker_container_css = {
     'margin-right': '5px',
     'margin-left': '5px',            
     'padding-left': '5px',
+    'padding-bottom': '5px'
 }
 select_ticker_title_css = {
     'font-family': 'Helvetica',
@@ -222,6 +223,23 @@ select_ticker_right_css = {
     'padding-right': '5px',
     # 'margin-top': '5px',
     'vertical-align': 'center'
+}
+portfolio_summary_keys_css = {
+    'width': '250px',
+    'padding-left': '5px',
+    # 'padding-right': '5px',
+    'display': 'inline-block',
+    'color': '#007eff',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+}
+portfolio_summary_values_css = {
+    'width': '200px',
+    # 'padding-left': '5px',
+    'display': 'inline-block',
+        'color': '#007eff',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
 }
 
 # Popover

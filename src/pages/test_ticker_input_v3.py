@@ -603,8 +603,14 @@ def read_preselected_tickers(
 
                     row_ticker_map.update({tk: i})
 
-            ticker_category_info_map[category]['df'] = df_info_tickers.to_dict()  # Dictionary !!!
-            dash_table_data = df_info_tickers.to_dict('records')  # A list of dictionaries
+            # Update df_info_tickers and row_ticker_map to acccount for excluded tickers
+            for i, tk in enumerate(df_info_tickers.index):
+                df_info_tickers.at[tk, 'No.'] = i + 1
+                row_ticker_map.update({tk: i})
+            
+            # Update ticker_category_info_map
+            ticker_category_info_map[category]['df'] = df_info_tickers.to_dict()  # Dictionary !
+            dash_table_data = df_info_tickers.to_dict('records')  # List of dictionaries !
             ticker_category_info_map[category]['row'] = row_ticker_map
             ticker_category_info_map[category]['hidden'] = False
 
