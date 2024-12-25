@@ -939,14 +939,14 @@ def output_custom_tickers(
 
         else:
 
-            updated_tickers.append(tk_input)
-
             hide_tk_input_message = True
-            
+            tk_input_message = ''
+
             if tk_input in yf.shared._ERRORS.keys():
                 tk_start, tk_end = 'N/A', 'N/A'
             else:
                 tk_start, tk_end = str(tk_hist.index[0].date()), str(tk_hist.index[-1].date())
+                updated_tickers.append(tk_input)
 
             if tk_input not in ticker_info.keys():
                 
@@ -1060,7 +1060,7 @@ def output_custom_tickers(
                 css = [
                     { 
                     'selector': '.dash-spreadsheet tr:hover td.dash-cell',
-                     'rule': 'background-color: white !important; border-bottom: None !important; border-top: 1px solid rgb(211, 211, 211) !important; color: black !important;'
+                    'rule': 'background-color: white !important; border-bottom: None !important; border-top: 1px solid rgb(211, 211, 211) !important; color: black !important;'
                     }
                 ],
                 style_header = table_custom_ticker_header_css,
@@ -1071,7 +1071,8 @@ def output_custom_tickers(
 
     elif (tk_input == '') & (removed_ticker != ''):
         hide_tk_input_message = True
-        for tk in selected_tickers:
+        # for tk in selected_tickers:
+        for tk in updated_tickers:
             if tk == removed_ticker:
                 updated_tickers.remove(tk)
 
@@ -1101,12 +1102,13 @@ def output_custom_tickers(
         else:
             unselected_rows = [k for k in prev_table_selected_rows[category] if k not in table_selected_rows[category]]
             if len(unselected_rows) > 0:
-                unselected_ticker_list =  [tk for tk in df_info['No.'].keys() if df_info['No.'][tk] == 1 + unselected_rows[0]]
-                if len(unselected_ticker_list) > 0:
-                    removed_ticker = df_info['Ticker'][unselected_ticker_list[0]]
-                    if (removed_ticker in updated_tickers) & (removed_ticker not in excluded_tickers):
-                        updated_tickers.remove(removed_ticker)
-                    break
+                for tk in df_info['No.'].keys():
+                    if df_info['No.'][tk] == 1 + unselected_rows[0]:
+                        removed_ticker = df_info['Ticker'][tk]
+                        # if (removed_ticker in updated_tickers) & (removed_ticker not in excluded_tickers):
+                        if (removed_ticker in updated_tickers):
+                            updated_tickers.remove(removed_ticker)
+                        break
 
     # Make sure added_ticker is selected in all tables and removed_ticker is removed from all tables
     if added_ticker != '':
