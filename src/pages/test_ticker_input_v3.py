@@ -53,6 +53,8 @@ custom_ticker_table_columns = {
     'CRYPTOCURRENCY': ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Exchange', 'Currency']
 }
 
+table_selected_tickers_columns = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Length*', 'Type', 'Category', 'Industry', 'Sector', 'Exchange', 'Currency']
+
 ticker_category_info_map = {
     'biggest_companies': {
         'columns': input_table_columns_equities,
@@ -355,7 +357,13 @@ layout = html.Div([
     
     ),  # Loading
 
-    html.Br()
+    html.Br(),
+
+    dcc.Link('Home Page', href='/'),
+    html.Br(),
+    dcc.Link('Start Over Preliminary Ticker Selection', href='/preliminary_ticker_selection_v3'),
+    html.Br(),
+    dcc.Link('Continue to Date Range Selection', href='/test_dates_selection')
 
 ])  # layout
 
@@ -498,7 +506,10 @@ def read_preselected_tickers(
                     tk_info = yf_ticker.info
                     # Should also check if ticker is still valid, for now assume they're all valid
 
-                    if ('quoteType' in tk_info.keys()) & (len(tk_hist.index) > 0):
+                    tk_hist_length = len(tk_hist.index)
+                    tk_length = f'{tk_hist_length} bd'
+
+                    if ('quoteType' in tk_info.keys()) & ( tk_hist_length > 0):
                         # - quoteType is meant to indicate a valid ticker
                         # - tk_hist may be temporarily empty for a valid ticker, but then it must also be excluded
                         
@@ -563,6 +574,7 @@ def read_preselected_tickers(
                                 'name': tk_name,
                                 'start': tk_start,
                                 'end': tk_end,
+                                'length': tk_length,
                                 'type': tk_type,
                                 'exchange': tk_exchange,
                                 'currency': tk_currency,
@@ -580,7 +592,6 @@ def read_preselected_tickers(
                         excluded_tickers.append(tk)
                         n_preselected[category] -= 1
                         df_info_tickers = df_info_tickers[df_info_tickers.index != tk]
-                        # MUST FIX INDEX HERE !!!
 
                 else:
 
@@ -792,6 +803,8 @@ def read_preselected_tickers(
     Output('dash-table-volatility-indices', 'selected_rows'),
     Output('dash-table-benchmarks', 'selected_rows'),
 
+    Output('table-selected-tickers-stored', 'data'),
+
     Input('ticker-category-info-map', 'data'),
     Input('ticker-info', 'data'),
     Input('excluded-tickers-list', 'children'),
@@ -950,9 +963,11 @@ def output_custom_tickers(
 
             if tk_input in yf.shared._ERRORS.keys():
                 tk_start, tk_end = 'N/A', 'N/A'
+                tk_length = 0
             else:
                 tk_start, tk_end = str(tk_hist.index[0].date()), str(tk_hist.index[-1].date())
                 updated_tickers.append(tk_input)
+                tk_length = len(tk_hist.index)
 
             if tk_input not in ticker_info.keys():
                 
@@ -984,6 +999,7 @@ def output_custom_tickers(
                         'name': tk_name,
                         'start': tk_start,
                         'end': tk_end,
+                        'length': tk_length,
                         'type': tk_type,
                         'exchange': tk_exchange,
                         'currency': tk_currency,
@@ -1134,98 +1150,169 @@ def output_custom_tickers(
                     table_selected_rows[category].remove(row_map[removed_ticker])
 
     ##### SELECTED TICKERS
-    # Set up selected tickers divs and popovers
+    # Set up selected tickers divs, popovers and table
 
-    for tk in updated_tickers:
-        
+    table_selected_tickers = pd.DataFrame(index = updated_tickers, columns = table_selected_tickers_columns)
+
+    for i, tk in enumerate(updated_tickers):
+
         tk_id = f'select-ticker-{tk}'
         tk_icon_id = f'select-ticker-icon-{tk}'
         name = ticker_info[tk]['name'] if tk in ticker_info.keys() is not None else tk
         tk_start = ticker_info[tk]['start']
         tk_end = ticker_info[tk]['end']
 
-        if (tk_start != 'N/A') & (tk_end != 'N/A'):
-            tk_type = ticker_info[tk]['type']
-            popover_ticker_keys = [
-                html.B('Data Start:'), html.Br(),
-                html.B('Data End:'), html.Br(),
-                html.B('Type:'), html.Br(),
-                html.B('Exchange:'), html.Br(),
-                html.B('Currency:')
-            ]
-            popover_ticker_values = [
-                html.Span(f"{ticker_info[tk]['start']}"), html.Br(),
-                html.Span(f"{ticker_info[tk]['end']}"), html.Br(),
-                html.Span(f"{ticker_info[tk]['type']}"), html.Br(),
-                html.Span(f"{ticker_info[tk]['exchange']}"), html.Br(),
-                html.Span(f"{ticker_info[tk]['currency']}")
-            ]
-            if tk_type == 'EQUITY':
-                popover_ticker_keys.insert(6, html.B('Industry:'))
-                popover_ticker_keys.insert(7, html.Br())
-                popover_ticker_keys.insert(8, html.B('Sector:'))
-                popover_ticker_keys.insert(9, html.Br())
-                popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['industry']}"))
-                popover_ticker_values.insert(7, html.Br())
-                popover_ticker_values.insert(8, html.Span(f"{ticker_info[tk]['sector']}"))
-                popover_ticker_values.insert(9, html.Br())
-            elif tk_type in ['ETF', 'INDEX']:
-                popover_ticker_keys.insert(6, html.B('Category:'))
-                popover_ticker_keys.insert(7, html.Br())
-                popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['category']}"))
-                popover_ticker_values.insert(7, html.Br())
+        tk_type = ticker_info[tk]['type']
+        popover_ticker_keys = [
+            html.B('Data Start:'), html.Br(),
+            html.B('Data End:'), html.Br(),
+            html.B('Type:'), html.Br(),
+            html.B('Exchange:'), html.Br(),
+            html.B('Currency:')
+        ]
+        popover_ticker_values = [
+            html.Span(f"{ticker_info[tk]['start']}"), html.Br(),
+            html.Span(f"{ticker_info[tk]['end']}"), html.Br(),
+            html.Span(f"{ticker_info[tk]['type']}"), html.Br(),
+            html.Span(f"{ticker_info[tk]['exchange']}"), html.Br(),
+            html.Span(f"{ticker_info[tk]['currency']}")
+        ]
+        if tk_type == 'EQUITY':
+            popover_ticker_keys.insert(6, html.B('Industry:'))
+            popover_ticker_keys.insert(7, html.Br())
+            popover_ticker_keys.insert(8, html.B('Sector:'))
+            popover_ticker_keys.insert(9, html.Br())
+            popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['industry']}"))
+            popover_ticker_values.insert(7, html.Br())
+            popover_ticker_values.insert(8, html.Span(f"{ticker_info[tk]['sector']}"))
+            popover_ticker_values.insert(9, html.Br())
+        elif tk_type in ['ETF', 'INDEX']:
+            popover_ticker_keys.insert(6, html.B('Category:'))
+            popover_ticker_keys.insert(7, html.Br())
+            popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['category']}"))
+            popover_ticker_values.insert(7, html.Br())
 
-            tk_div = html.Div(
-                id = tk_id,
-                children = [
-                    html.Div(
-                        'x',
-                        id = {'index': tk_icon_id, 'type': 'ticker_icon'},
-                        n_clicks = 0,
-                        style = select_ticker_left_css
-                    ),
-                    html.Div(children = [
-                        html.B(tk, id = f'select-ticker-label-tk-{tk}', style = {'margin-right': '6px'}),
-                        html.Span(name, id = f'select-ticker-label-name-{tk}')
-                        ],
-                        id = f'select-ticker-label-{tk}',
-                        style = select_ticker_right_css
-                    ),
-                    dbc.Popover(
-                        [
-                            html.B(tk, style = popover_select_ticker_header), 
-                            html.Div([
-                                html.Div(
-                                    popover_ticker_keys,
-                                    id = 'popover-select-ticker-keys',
-                                    style = popover_select_ticker_keys_css
-                                ),
-                                html.Div(
-                                    popover_ticker_values,
-                                    id = 'popover-select-ticker-values',
-                                    style = popover_select_ticker_values_css
-                                )
-                                ],
-                                style = {'display': 'block'}
-                            ),
-                            # html.Br(),
+        tk_div = html.Div(
+            id = tk_id,
+            children = [
+                html.Div(
+                    'x',
+                    id = {'index': tk_icon_id, 'type': 'ticker_icon'},
+                    n_clicks = 0,
+                    style = select_ticker_left_css
+                ),
+                html.Div(children = [
+                    html.B(tk, id = f'select-ticker-label-tk-{tk}', style = {'margin-right': '6px'}),
+                    html.Span(name, id = f'select-ticker-label-name-{tk}')
+                    ],
+                    id = f'select-ticker-label-{tk}',
+                    style = select_ticker_right_css
+                ),
+                dbc.Popover(
+                    [
+                        html.B(tk, style = popover_select_ticker_header), 
+                        html.Div([
                             html.Div(
-                                f"{ticker_info[tk]['summary']}",
-                                id = 'popover-select-ticker-summary',
-                                style = popover_select_ticker_summary
+                                popover_ticker_keys,
+                                id = 'popover-select-ticker-keys',
+                                style = popover_select_ticker_keys_css
+                            ),
+                            html.Div(
+                                popover_ticker_values,
+                                id = 'popover-select-ticker-values',
+                                style = popover_select_ticker_values_css
                             )
-                        ],
-                        id = 'popover-select-ticker',
-                        target = f'select-ticker-label-{tk}',
-                        body = True,
-                        trigger = 'hover',
-                        style = popover_select_ticker_css
-                    ),
-                ],
-                style = select_ticker_div_css
-            )
-            ticker_divs.append(tk_div)
-    
+                            ],
+                            style = {'display': 'block'}
+                        ),
+                        # html.Br(),
+                        html.Div(
+                            f"{ticker_info[tk]['summary']}",
+                            id = 'popover-select-ticker-summary',
+                            style = popover_select_ticker_summary
+                        )
+                    ],
+                    id = 'popover-select-ticker',
+                    target = f'select-ticker-label-{tk}',
+                    body = True,
+                    trigger = 'hover',
+                    style = popover_select_ticker_css
+                ),
+            ],
+            style = select_ticker_div_css
+        )
+        ticker_divs.append(tk_div)
+
+        ##########################
+
+        table_selected_tickers.at[tk, 'No.'] = i + 1
+        table_selected_tickers.at[tk, 'Ticker'] = tk
+        table_selected_tickers.at[tk, 'Name'] = name
+        table_selected_tickers.at[tk, 'Data Start'] = tk_start
+        table_selected_tickers.at[tk, 'Data End'] = tk_end
+        table_selected_tickers.at[tk, 'Length*'] = ticker_info[tk]['length']
+        table_selected_tickers.at[tk, 'Type'] = tk_type
+        table_selected_tickers.at[tk, 'Category'] = ticker_info[tk]['category']
+        table_selected_tickers.at[tk, 'Industry'] = ticker_info[tk]['industry']
+        table_selected_tickers.at[tk, 'Sector'] = ticker_info[tk]['sector']
+        table_selected_tickers.at[tk, 'Exchange'] = ticker_info[tk]['exchange']
+        table_selected_tickers.at[tk, 'Currency'] = ticker_info[tk]['currency']
+
+    ########################
+
+    dash_table_selected_tickers_data = table_selected_tickers.to_dict('records')
+
+    dash_table_selected_tickers = dash_table.DataTable(
+        columns = [{'name': i, 'id': i} for i in table_selected_tickers_columns],
+        data = dash_table_selected_tickers_data,
+        editable = False,
+        row_deletable = True,
+        tooltip_data = [
+            { column: {'value': ticker_info[row['Ticker']]['summary'], 'type': 'markdown' }
+            for column in row.keys() }
+            for row in dash_table_selected_tickers_data  # e.g. {'No.': 1, 'Ticker': 'AAPL', ...} etc.
+        ],
+        css = [
+            # {
+            # 'selector': '.dash-tooltip',
+            # 'rule': 'border: None;'
+            # },
+            # {
+            # 'selector': '.dash-tooltip:before',
+            # 'rule': 'border-top-color: rgb(172, 67, 106) !important; border-bottom-color: rgb(172, 67, 106) !important;'
+            # },
+            # {
+            # 'selector': '.dash-tooltip:after',
+            # 'rule': 'border-top-color: rgb(172, 67, 106) !important; border-bottom-color: rgb(172, 67, 106) !important;'
+            # },
+            {
+            'selector': '.dash-table-tooltip',
+            # 'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(172, 67, 106) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica; background-color: rgb(255, 227, 237);'
+            'rule': 'max-width: 500px; width: 500px !important; border: 1px solid !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica;'
+            }
+        ],
+        tooltip_delay = 0,
+        tooltip_duration = None,
+        style_as_list_view = True,
+        style_data_conditional = [
+            {'if': 
+                { 'state': 'active'},
+                'backgroundColor': 'white',
+                'border-top': '1px solid rgb(211, 211, 211)',
+                'border-bottom': '1px solid rgb(211, 211, 211)'},
+            {'if': {'column_id': 'No.'}, 'width': 24},
+            {'if': {'column_id': 'Ticker'}, 'width': 45},
+            {'if': {'column_id': 'Currency'}, 'width': 70},
+            {'if': {'column_id': 'Exchange'}, 'width': 72},
+            {'if': {'column_id': 'Data Start'}, 'width': 85},
+            {'if': {'column_id': 'Data End'}, 'width': 85},
+            {'if': {'column_id': 'Length*'}, 'width': 80},
+        ],
+        id = f'dash-table-selected-tickers',
+        style_header = input_table_header_css,
+        style_data = input_table_data_css,
+    )
+
     ################################
 
     n_tickers = len(updated_tickers)
@@ -1241,11 +1328,14 @@ def output_custom_tickers(
 
         portfolio_data_start = f"{min([ticker_info[tk]['start'] for tk in updated_tickers])}"
         portfolio_data_end = f"{max([ticker_info[tk]['end'] for tk in updated_tickers])}"
-        portfolio_data_length = f'{len(pd.bdate_range(portfolio_data_start, portfolio_data_end))} business days'
+        # portfolio_data_length = f'{len(pd.bdate_range(portfolio_data_start, portfolio_data_end))} business days'
 
         portfolio_overlap_data_start = f"{max([ticker_info[tk]['start'] for tk in updated_tickers])}"
         portfolio_overlap_data_end = f"{min([ticker_info[tk]['end'] for tk in updated_tickers])}"
-        portfolio_overlap_data_length = f'{len(pd.bdate_range(portfolio_overlap_data_start, portfolio_overlap_data_end))} business days'
+        # portfolio_overlap_data_length = f'{len(pd.bdate_range(portfolio_overlap_data_start, portfolio_overlap_data_end))} business days'
+
+        # test_max_length = max([ticker_info[tk]['length'] for tk in updated_tickers])
+        # test_overlap_length = min([ticker_info[tk]['length'] for tk in updated_tickers])
 
         no_overlap_message = 'WARNING: No overlapping dates in the selection'
 
@@ -1267,16 +1357,18 @@ def output_custom_tickers(
                 html.B('To: '), html.Span(portfolio_overlap_data_end), html.Br(),
                 html.B('To: '), html.Span(portfolio_data_end), html.Br()
             ]
-            portfolio_summary_values_length_key = [
-                html.Br(),
-                html.B('Length: '), html.Br(),
-                html.B('Length: '), html.Br()
-            ]
-            portfolio_summary_values_length_value = [
-                html.Br(),
-                html.Span(portfolio_overlap_data_length), html.Br(),
-                html.Span(portfolio_data_length), html.Br()
-            ]
+        #    portfolio_summary_values_length_key = [
+        #        html.Br(),
+        #        html.B('Length: '), html.Br(),
+        #        html.B('Length: '), html.Br()
+        #    ]
+        #    portfolio_summary_values_length_value = [
+        #        html.Br(),
+        #        # html.Span(f'{test_overlap_length} business days'), html.Br(),
+        #        # html.Span(f'{test_max_length} business days'), html.Br()
+        #        # html.Span(portfolio_overlap_data_length), html.Br(),
+        #        # html.Span(portfolio_data_length), html.Br()
+        #    ]
 
         else:
             portfolio_summary_values_from = [
@@ -1289,16 +1381,16 @@ def output_custom_tickers(
                 html.Br(),
                 html.B('To: '), html.Span(portfolio_data_end), html.Br()
             ]
-            portfolio_summary_values_length_key = [
-                html.Br(),
-                html.B('Length: '), html.Br(),
-                html.B('Length: '), html.Br()
-            ]
-            portfolio_summary_values_length_value = [
-                html.Br(),
-                html.Span(portfolio_data_length), html.Br(),
-                html.Span(portfolio_data_length), html.Br()
-            ]
+        #    portfolio_summary_values_length_key = [
+        #        html.Br(),
+        #        html.B('Length: '), html.Br(),
+        #        html.B('Length: '), html.Br()
+        #    ]
+        #    portfolio_summary_values_length_value = [
+        #        html.Br(),
+        #        html.Span(portfolio_data_length), html.Br(),
+        #        html.Span(portfolio_data_length), html.Br()
+        #    ]
 
         select_ticker_portfolio_summary = html.Div(
             [
@@ -1317,16 +1409,16 @@ def output_custom_tickers(
                 id = 'portfolio-summary-values-to',
                 style = portfolio_summary_values_to_css
             ),
-            html.Div(
-                portfolio_summary_values_length_key,
-                id = 'portfolio-summary-values-length',
-                style = portfolio_summary_values_length_key_css
-            ),
-            html.Div(
-                portfolio_summary_values_length_value,
-                id = 'portfolio-summary-values-length',
-                style = portfolio_summary_values_length_value_css
-            )
+            # html.Div(
+            #     portfolio_summary_values_length_key,
+            #     id = 'portfolio-summary-values-length',
+            #     style = portfolio_summary_values_length_key_css
+            # ),
+            # html.Div(
+            #     portfolio_summary_values_length_value,
+            #     id = 'portfolio-summary-values-length',
+            #     style = portfolio_summary_values_length_value_css
+            # )
             ],
             style = {'display': 'block'}
         )
@@ -1364,7 +1456,9 @@ def output_custom_tickers(
         table_selected_rows['precious_metals'],
         table_selected_rows['stock_indices'],
         table_selected_rows['volatility_indices'],
-        table_selected_rows['benchmarks']
+        table_selected_rows['benchmarks'],
+
+        dash_table_selected_tickers
     )
 
 

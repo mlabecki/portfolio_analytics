@@ -724,7 +724,7 @@ layout = html.Div([
     html.Div(id = 'pre-select-ticker-list-check', hidden = False),
 
     # html.Div(children = [], id = 'prev-table-selected-rows', hidden = True),
-    dcc.Store(data = [], id = 'pre-prev-table-selected-rows', storage_type = 'session'),
+    dcc.Store(data = {}, id = 'pre-prev-table-selected-rows', storage_type = 'session'),
 
     # YOUR PORTFOLIO
     html.Div(
@@ -795,9 +795,9 @@ layout = html.Div([
 
     html.Br(),
 
-    dcc.Link('Go to Home Page', href='/'),
+    dcc.Link('Home Page', href='/'),
     html.Br(),
-    dcc.Link('Go to Ticker Info & Portfolio Selection', href='/test_ticker_input_v3')
+    dcc.Link('Continue to Ticker Info & Portfolio Selection', href='/test_ticker_input_v3')
     # dcc.Link('Go to Page 2', href='/page2')
 
 ])  # app.layout
@@ -1088,7 +1088,9 @@ layout = html.Div([
     Input('pre-select-ticker-list', 'children'),
     Input('pre-prev-table-selected-rows', 'data'),
     Input('pre-select-ticker-container', 'children'),
-    Input({'index': ALL, 'type': 'ticker_icon'}, 'n_clicks')
+    Input({'index': ALL, 'type': 'ticker_icon'}, 'n_clicks'),
+
+    suppress_callback_exceptions = True
 )
 def output_custom_tickers(
 
@@ -1476,16 +1478,17 @@ def output_custom_tickers(
                     added_tickers.append(added_ticker)
                 if added_ticker not in updated_tickers:
                     updated_tickers.append(added_ticker)
-            # break
-        unselected_rows = [k for k in prev_table_selected_rows[category] if k not in table_selected_rows[category]]
-        if len(unselected_rows) > 0:
-            for row in unselected_rows:
-                removed_ticker = df_pre.index[df_pre['No.'] == row + 1][0]
-                if removed_ticker not in removed_tickers:
-                    removed_tickers.append(removed_ticker)
-                if removed_ticker in updated_tickers:
-                    updated_tickers.remove(removed_ticker)
-            # break
+                break
+        else:
+            unselected_rows = [k for k in prev_table_selected_rows[category] if k not in table_selected_rows[category]]
+            if len(unselected_rows) > 0:
+                for row in unselected_rows:
+                    removed_ticker = df_pre.index[df_pre['No.'] == row + 1][0]
+                    if removed_ticker not in removed_tickers:
+                        removed_tickers.append(removed_ticker)
+                    if removed_ticker in updated_tickers:
+                        updated_tickers.remove(removed_ticker)
+                break
 
     # Make sure added_ticker is selected in all tables and removed_ticker is removed from all tables
     if added_tickers != []:

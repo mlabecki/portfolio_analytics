@@ -31,6 +31,10 @@ app.layout = html.Div([
     # dcc.Store(data = [], id = 'preselected-updated-tickers', storage_type = 'session'),
     dcc.Store(data = [], id = 'n-preselected-stored', storage_type = 'session'),
     dcc.Store(data = [], id = 'preselected-ticker-tables-stored', storage_type = 'session'),
+
+    # dcc.Store(data = [], id = 'selected-tickers-stored', storage_type = 'session'),
+    dcc.Store(data = [], id = 'table-selected-tickers-stored', storage_type = 'session'),
+
     # html.Div(id = 'preselected-output-list')
 ])
 
