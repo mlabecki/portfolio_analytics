@@ -170,6 +170,10 @@ def initialize_input_table_divs(
                 {
                 'selector': '.dash-table-tooltip',
                 'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(67, 172, 106) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica; background-color: rgb(227, 255, 237);'
+                },
+                {
+                'selector': '.dash-tooltip:before, .dash-tooltip:after',
+                'rule': 'border-top-color: #43ac6a !important; border-bottom-color: #43ac6a !important;'
                 }
             ],
             tooltip_delay = 0,
@@ -506,10 +510,9 @@ def read_preselected_tickers(
                     tk_info = yf_ticker.info
                     # Should also check if ticker is still valid, for now assume they're all valid
 
-                    tk_hist_length = len(tk_hist.index)
-                    tk_length = f'{tk_hist_length} bd'
+                    tk_length = len(tk_hist.index)
 
-                    if ('quoteType' in tk_info.keys()) & ( tk_hist_length > 0):
+                    if ('quoteType' in tk_info.keys()) & ( tk_length > 0):
                         # - quoteType is meant to indicate a valid ticker
                         # - tk_hist may be temporarily empty for a valid ticker, but then it must also be excluded
                         
@@ -1273,22 +1276,33 @@ def output_custom_tickers(
             for row in dash_table_selected_tickers_data  # e.g. {'No.': 1, 'Ticker': 'AAPL', ...} etc.
         ],
         css = [
-            # {
-            # 'selector': '.dash-tooltip',
-            # 'rule': 'border: None;'
-            # },
-            # {
-            # 'selector': '.dash-tooltip:before',
-            # 'rule': 'border-top-color: rgb(172, 67, 106) !important; border-bottom-color: rgb(172, 67, 106) !important;'
-            # },
-            # {
-            # 'selector': '.dash-tooltip:after',
-            # 'rule': 'border-top-color: rgb(172, 67, 106) !important; border-bottom-color: rgb(172, 67, 106) !important;'
-            # },
+            {
+            'selector': '.dash-spreadsheet tr',
+            'rule': 'border-top: 2px solid rgb(211, 211, 211) !important;'
+            },
+            {
+            'selector': '.dash-tooltip',
+            'rule': 'border: None;'
+            },
+            {
+            'selector': '.dash-spreadsheet tr:hover td.dash-cell',
+            'rule': 'background-color: rgb(211, 211, 211) !important; border-top: 2px solid rgb(211, 211, 211) !important; border-bottom: 2px solid rgb(211, 211, 211) !important; color: black !important' 
+            },
+            {
+            'selector': '.dash-spreadsheet td.dash-delete-cell',
+            'rule': 'background-color: white !important; border-top: 2px solid rgb(211, 211, 211) !important; border-bottom: 2px solid rgb(211, 211, 211) !important; text-align: center !important; color: darkred !important; font-size: 20px !important; font-weight: bold !important;' 
+            },
+            {
+            'selector': '.dash-spreadsheet tr:hover td.dash-delete-cell',
+            'rule': 'background-color: rgb(211, 211, 211) !important; border-top: 2px solid rgb(211, 211, 211) !important; border-bottom: 2px solid rgb(211, 211, 211) !important; color: darkred !important; font-weight: bold;' 
+            },
+            {
+            'selector': '.dash-tooltip:before, .dash-tooltip:after',
+            'rule': 'border-top-color: rgb(211, 211, 211) !important; border-bottom-color: rgb(211, 211, 211) !important;'
+            },
             {
             'selector': '.dash-table-tooltip',
-            # 'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(172, 67, 106) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica; background-color: rgb(255, 227, 237);'
-            'rule': 'max-width: 500px; width: 500px !important; border: 1px solid !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica;'
+            'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(211, 211, 211) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica;'
             }
         ],
         tooltip_delay = 0,
@@ -1309,8 +1323,8 @@ def output_custom_tickers(
             {'if': {'column_id': 'Length*'}, 'width': 80},
         ],
         id = f'dash-table-selected-tickers',
-        style_header = input_table_header_css,
-        style_data = input_table_data_css,
+        style_header = selected_tickers_table_header_css,
+        style_data = selected_tickers_table_data_css,
     )
 
     ################################

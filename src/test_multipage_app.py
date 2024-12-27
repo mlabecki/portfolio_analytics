@@ -20,7 +20,7 @@ import dash_bootstrap_components as dbc
 # hist_info = DownloadInfo()
 
 # app = Dash(__name__, suppress_callback_exceptions=True, external_stylesheets = [dbc.themes.YETI])
-app = Dash(__name__, use_pages=True, external_stylesheets = [dbc.themes.YETI])
+app = Dash(__name__, use_pages=True, external_stylesheets = [dbc.themes.YETI], suppress_callback_exceptions = True)
 
 # from pages import preliminary_ticker_selection_v3, page1, page2
 

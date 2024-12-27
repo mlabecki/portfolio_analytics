@@ -55,25 +55,37 @@ layout = html.Div([
 
     # MAIN TITLE
     html.Div(
-        'Confirm portfolio selection and choose the range of common dates',
+        'Confirm portfolio selection and choose the common range of dates',
         id = 'dates-main-title',
         style = ticker_main_title_css
     ),
 
     html.Div(
-        id = 'dates-tables-selected-tickers',
-        children = []
-    ),
-    html.Div(
-        '* Length in business days excluding weekends and holidays',
-        id = 'dates-tables-selected-tickers-footnote',
-        style = {
-            'font-family': 'Helvetica',
-            'font-size': '12px',
-            'font-style': 'italic',
-            'margin-left': '10px'
-        }
-    )
+        id = 'dates-tables-selected-tickers-container',
+        children = [
+            html.Div(
+                'YOUR PORTFOLIO',
+                id = f'table-selected-tickers-title',
+                style = input_table_title_css
+            ),
+            html.Div(
+                id = 'dates-tables-selected-tickers',
+                children = []
+            ),
+            html.Div(
+                '* Length of the range of dates in business days excluding weekends and holidays',
+                id = 'dates-table-selected-tickers-footnote',
+                style = {
+                    'font-family': 'Helvetica',
+                    'font-size': '12px',
+                    'font-style': 'italic',
+                    'margin-top': '5px',
+                    'margin-left': '10px'
+                }
+            )
+            ],
+            style = {'width': '1250px', 'margin-left': '5px'}
+        ),
 
     ],
     

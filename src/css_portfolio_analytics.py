@@ -48,7 +48,6 @@ input_table_container_css = {
     'border': '1px solid rgb(211, 211, 211)',
     'margin-top': '5px',
     'margin-left': '5px'
-
 }
 input_table_header_css = {
     'font-family': 'Helvetica',
@@ -293,4 +292,23 @@ popover_select_ticker_summary = {
     'padding-top': '8px',
     'padding-left': '5px',
     'display': 'block'
+}
+
+# Dates selection page
+selected_tickers_table_header_css = {
+    'font-family': 'Helvetica',
+    'font-size' : '14px',
+    'font-weight': 'bold',
+    'background': 'white',
+    'text-align': 'left',
+    'border-top': '2px solid rgb(211, 211, 211)',
+    'border-bottom': '2px solid rgb(211, 211, 211)'
+}
+selected_tickers_table_data_css = {
+    'font-family': 'Helvetica',
+    'font-size' : '14px',
+    'background': 'white',
+    'text-align': 'left',
+    'border-top': '2px solid rgb(211, 211, 211)',
+    'border-bottom': '2px solid rgb(211, 211, 211)'
 }
