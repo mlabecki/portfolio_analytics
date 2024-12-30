@@ -13,20 +13,17 @@ class DownloadData():
         end_date: datetime,
         start_date: datetime #,
         # tickers,
-        # tk_market: str
     ):
     
         """
         end_date:   defaults to today's date, can be changed by user
         start_date: can be specified explicitly or derived based on desired length of history
         tickers:    user-specified based on suggested lists or a custom synthetic portfolio 
-        tk_market:  market benchmark needed for Beta, Alpha, Treynor, defaulting to S&P500
         """
 
         self.end_date = end_date
         self.start_date = start_date
         # self.tickers = tickers
-        # self.tk_market = tk_market
 
 
     def download_yf_data(
@@ -37,6 +34,7 @@ class DownloadData():
         tk_market
      ):
         """
+        tk_market:  market benchmark needed for Beta, Alpha, Treynor, defaulting to S&P500
         """
 
         # For most functions, the user should be offered a choice between Close and Adjusted Close.
@@ -56,7 +54,8 @@ class DownloadData():
         dict_ohlc = {}
 
         # Analysis, stats, graphs, etc. will only be for user specified tickers 
-        # but we want to include benchmark data here
+        # but we want to include benchmark data here  
+        # ### Do we? -- The user can always select it from the Benchmarks category
         tickers_market = tickers
         if tk_market not in tickers:
             tickers_market += [tk_market]
@@ -65,13 +64,33 @@ class DownloadData():
         for tk in tickers_market:
 
             data = yf.download(tk, start = start_date, end = end_date, progress = False)
+
             # NOTE:
             # Maybe use yf.history() instead, which would allow to extract adjusted ohlc, not just adj_close.
-            # This would then require downloading both adjusted and unadjusted data, and creating two versions
-            # of the dollar volume.
+            # This would then require downloading both adjusted and unadjusted data.
+            #
+            # Question:
+            #   In the calculation of dollar volume as price times volume, is the price normally adjusted (for stock splits and dividends) or not, or does it depend and - if so - on what?
+            # 
+            # Copilot:
+            #   In the calculation of dollar volume (price times volume), the price is typically adjusted for stock splits and dividends to ensure consistency and comparability over time [1]. 
+            #   However, volume is usually not adjusted for dividends. Here's a brief overview:
+            #   
+            #   Stock Splits: 
+            #   Both price and volume are adjusted [2]. For example, in a 2-for-1 stock split, the price is halved, and the volume is doubled to maintain consistency [2].
+            #   
+            #   Dividends: 
+            #   Only the price is adjusted [2]. Cash dividends do not affect the volume, but stock dividends (additional shares issued) do result in adjustments to both price and volume [2].
+            #   
+            #   This approach helps in accurately reflecting the historical performance and making meaningful comparisons over time [3].
+            # 
+            # [1] https://leiq.bus.umich.edu/docs/crsp_calculations_splits.pdf
+            # [2] https://forum.alpaca.markets/t/why-is-price-but-not-volume-adjusted-for-dividends/12345
+            # [3] https://help.stockcharts.com/data-and-ticker-symbols/data-availability/price-data-adjustments
 
             if tk in yf.shared._ERRORS.keys():
                 print(f'WARNING: Data is unavailable for {tk}, ticker will be removed from the portfolio')
+                # Should suggest that the user change the dates range or remove the ticker
                 tickers_to_be_removed.append(tk)
 
             else:

@@ -16,6 +16,7 @@ from operator import itemgetter
 from mapping_plot_attributes import *
 from mapping_portfolio_downloads import *
 from mapping_tickers import *
+from mapping_input_tables import *
 from css_portfolio_analytics import *
 from utils import *
 from download_info import DownloadInfo
@@ -28,115 +29,6 @@ register_page(
 )
 
 hist_info = DownloadInfo()
-
-etf_categories = [
-    'biggest_etfs',
-    'fixed_income_etfs',
-    'ai_etfs',
-    'commodity_etfs',
-    'currency_etfs',
-    'crypto_etfs'
-]
-
-input_table_columns_indices = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Category', 'Exchange', 'Currency']
-input_table_columns_futures = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Exchange', 'Currency']
-input_table_columns_equities = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Industry', 'Sector', 'Exchange', 'Currency']
-input_table_columns_etfs = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Category', 'Exchange', 'Currency']
-input_table_columns_cryptos = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Exchange', 'Currency']
-input_table_columns_benchmarks = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Category', 'Exchange', 'Currency']
-
-custom_ticker_table_columns = {
-    'INDEX': ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Category', 'Exchange', 'Currency'],
-    'FUTURE': ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Exchange', 'Currency'],
-    'EQUITY': ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Industry', 'Sector', 'Exchange', 'Currency'],
-    'ETF': ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Category', 'Exchange', 'Currency'],
-    'CRYPTOCURRENCY': ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Exchange', 'Currency']
-}
-
-table_selected_tickers_columns = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Length*', 'Type', 'Category', 'Industry', 'Sector', 'Exchange', 'Currency']
-
-ticker_category_info_map = {
-    'biggest_companies': {
-        'columns': input_table_columns_equities,
-        'id_string': 'biggest-companies',
-        'collapse_title': 'BIGGEST COMPANIES'
-    },
-    'sp500': {
-        'columns': input_table_columns_equities,
-        'id_string': 'sp500',
-        'collapse_title': 'S&P 500 COMPANIES'
-    },
-    'nasdaq100': {
-        'columns': input_table_columns_equities,
-        'id_string': 'nasdaq100',
-        'collapse_title': 'NASDAQ 100 COMPANIES'
-    },
-    'dow_jones': {
-        'columns': input_table_columns_equities,
-        'id_string': 'dow-jones',
-        'collapse_title': 'DOW JONES INDUSTRIAL AVERAGE COMPANIES'
-    },
-    'biggest_etfs': {
-        'columns': input_table_columns_etfs,
-        'id_string': 'biggest-etfs',
-        'collapse_title': 'BIGGEST ETFs'
-    },
-    'fixed_income_etfs': {
-        'columns': input_table_columns_etfs,
-        'id_string': 'fixed-income-etfs',
-        'collapse_title': 'FIXED INCOME ETFs'
-    },
-    'ai_etfs': {
-        'columns': input_table_columns_etfs,
-        'id_string': 'ai-etfs',
-        'collapse_title': 'ARTIFICIAL INTELLIGENCE ETFs'
-    },
-    'commodity_etfs': {
-        'columns': input_table_columns_etfs,
-        'id_string': 'commodity-etfs',
-        'collapse_title': 'COMMODITY ETFs'
-    },
-    'currency_etfs': {
-        'columns': input_table_columns_etfs,
-        'id_string': 'currency-etfs',
-        'collapse_title': 'CURRENCY ETFs'
-    },
-    'cryptos': {
-        'columns': input_table_columns_cryptos,
-        'id_string': 'cryptos',
-        'collapse_title': 'CRYPTOCURRENCIES'
-    },
-    'crypto_etfs': {
-        'columns': input_table_columns_etfs,
-        'id_string': 'crypto-etfs',
-        'collapse_title': 'CRYPTOCURRENCY ETFs'
-    },
-    'futures': {
-        'columns': input_table_columns_futures,
-        'id_string': 'futures',
-        'collapse_title': 'COMMODITY FUTURES'
-    },
-    'precious_metals': {
-        'columns': input_table_columns_futures,
-        'id_string': 'precious-metals',
-        'collapse_title': 'PRECIOUS METALS'
-    },    
-    'stock_indices': {
-        'columns': input_table_columns_indices,
-        'id_string': 'stock-indices',
-        'collapse_title': 'STOCK INDICES'
-    },
-    'volatility_indices': {
-        'columns': input_table_columns_indices,
-        'id_string': 'volatility-indices',
-        'collapse_title': 'VOLATILITY INDICES'
-    },
-    'benchmarks': {
-        'columns': input_table_columns_indices,
-        'id_string': 'benchmarks',
-        'collapse_title': 'BENCHMARKS'
-    }
-}
 
 #################
 
@@ -201,14 +93,14 @@ def initialize_input_table_divs(
         input_table_collapse_div[category] = html.Div(
             id = f'input-table-collapse-div-{id_string}',
             hidden = False,
-            children =
+            children = 
             [
                 html.Div(
                     ticker_category_info_map[category]['collapse_title'],
                     id = f'collapse-button-title-{id_string}',
                     hidden = True
                 ),
-                html.Div(
+                html.Div([
                     dbc.Button(
                         id = f'collapse-button-table-{id_string}',
                         class_name = 'ma-1',
@@ -216,23 +108,91 @@ def initialize_input_table_divs(
                         size = 'sm',
                         n_clicks = 0,
                         style = collapse_button_table_css
-                    )
-                ),
+                    ),                
+                #    html.Div(
+                #        id = f'n-selected-{id_string}-container',
+                #        children = [
+                #            html.Div(
+                #                id = f'n-selected-{id_string}',
+                #                hidden = False,
+                #                style = n_preselected_category_css
+                #            ),
+                #            html.Div(
+                #                f'/ {max_tickers[category]}',
+                #                hidden = False,
+                #                style = n_tickers_category_css
+                #            ),
+                #            html.Div(
+                #                'pre-selected',
+                #                hidden = False,
+                #                style = pre_selected_string
+                #            )
+                #        ],
+                #        style = {'display': 'inline-block'}
+                #    )
+                ]),
+
                 dbc.Collapse(
                     html.Div(
                         html.Div(
-                            id = f'table-{id_string}-container',
+                            id = f'category-{id_string}-container',
                             children = [
+                                
                                 html.Div(
-                                    id = f'table-{id_string}-title',
-                                    style = input_table_title_css
+                                    id = f'menu-{id_string}-container',
+                                    children = [
+
+                                        ### Select button
+                                        html.Div(
+                                            id = f'menu-{id_string}-select-buttons-container',
+                                            style = {'margin-right': '5px', 'margin-bottom': '5px', 'margin-left': '5px'},
+                                            children = [
+                                                dbc.Button(
+                                                    'Select All',
+                                                    id = f'menu-{id_string}-select-all-button',
+                                                    n_clicks = 0,
+                                                    class_name = 'ma-1',
+                                                    color = 'success',
+                                                    size = 'sm',
+                                                    style = pre_menu_select_all_button_css
+                                                ),
+                                            ]
+                                        ),
+                                        ### Unselect button
+                                        html.Div(
+                                            id = f'menu-{id_string}-unselect-buttons-container',
+                                            style = {'margin-right': '5px', 'margin-bottom': '5px', 'margin-left': '5px'},
+                                            children = [
+                                                dbc.Button(
+                                                    'Unselect All',
+                                                    id = f'menu-{id_string}-unselect-all-button',
+                                                    n_clicks = 0,
+                                                    class_name = 'ma-1',
+                                                    color = 'danger',
+                                                    size = 'sm',
+                                                    style = pre_menu_select_all_button_css
+                                                )
+                                            ]
+                                        )
+                                    ],
+                                    style = input_menu_container_css
                                 ),
+
                                 html.Div(
-                                    dash_input_table,
-                                    id = f'table-{id_string}-div'
+                                    id = f'pre-table-{id_string}-container',
+                                    children = [
+                                        html.Div(
+                                            id = f'table-{id_string}-title',
+                                            style = input_table_title_css
+                                        ),
+                                        html.Div(
+                                            dash_input_table,
+                                            id = f'table-{id_string}-div'
+                                        )
+                                    ],
+                                    style = input_table_container_css
                                 )
-                            ],
-                            style = input_table_container_css
+                            ]
                         ),
                     ),
                     id = f'collapse-table-{id_string}',
@@ -353,7 +313,7 @@ layout = html.Div([
         html.Br(),
         'Please Wait ...'
     ],
-    style = {'font-family': 'Helvetica', 'font-size': 26, 'font-weight': 'bold', 'color': 'midnightblue', 'text-align': 'center'}
+    style = page_loading_wrapper_css
     ),
     overlay_style = {'visibility': 'visible', 'opacity': 0.35, 'filter': 'blur(3px)'},
     delay_show = 1000,
@@ -363,11 +323,18 @@ layout = html.Div([
 
     html.Br(),
 
-    dcc.Link('Home Page', href='/'),
-    html.Br(),
-    dcc.Link('Start Over Preliminary Ticker Selection', href='/preliminary_ticker_selection_v3'),
-    html.Br(),
-    dcc.Link('Continue to Date Range Selection', href='/test_dates_selection')
+    html.Div(
+        id = 'dates-link-container',
+        children = [
+            dcc.Link('Home Page', href='/'),
+            html.Br(),
+            dcc.Link('Start Over Preliminary Ticker Selection', href='/preliminary_ticker_selection_v3'),
+            html.Br(),
+            dcc.Link('Continue to Date Range Selection', href='/test_dates_selection')
+        ],
+        style = link_container_css
+    )
+
 
 ])  # layout
 
@@ -789,6 +756,40 @@ def read_preselected_tickers(
     Output('ticker-info', 'data', allow_duplicate = True),
     Output('prev-table-selected-rows', 'data'),
 
+    Output('menu-biggest-companies-select-all-button', 'n_clicks'),
+    Output('menu-sp500-select-all-button', 'n_clicks'),
+    Output('menu-nasdaq100-select-all-button', 'n_clicks'),
+    Output('menu-dow-jones-select-all-button', 'n_clicks'),
+    Output('menu-biggest-etfs-select-all-button', 'n_clicks'),
+    Output('menu-fixed-income-etfs-select-all-button', 'n_clicks'),
+    Output('menu-ai-etfs-select-all-button', 'n_clicks'),
+    Output('menu-commodity-etfs-select-all-button', 'n_clicks'),
+    Output('menu-currency-etfs-select-all-button', 'n_clicks'),
+    Output('menu-cryptos-select-all-button', 'n_clicks'),
+    Output('menu-crypto-etfs-select-all-button', 'n_clicks'),
+    Output('menu-futures-select-all-button', 'n_clicks'),
+    Output('menu-precious-metals-select-all-button', 'n_clicks'),
+    Output('menu-stock-indices-select-all-button', 'n_clicks'),
+    Output('menu-volatility-indices-select-all-button', 'n_clicks'),
+    Output('menu-benchmarks-select-all-button', 'n_clicks'),
+   
+    Output('menu-biggest-companies-unselect-all-button', 'n_clicks'),
+    Output('menu-sp500-unselect-all-button', 'n_clicks'),
+    Output('menu-nasdaq100-unselect-all-button', 'n_clicks'),
+    Output('menu-dow-jones-unselect-all-button', 'n_clicks'),
+    Output('menu-biggest-etfs-unselect-all-button', 'n_clicks'),
+    Output('menu-fixed-income-etfs-unselect-all-button', 'n_clicks'),
+    Output('menu-ai-etfs-unselect-all-button', 'n_clicks'),
+    Output('menu-commodity-etfs-unselect-all-button', 'n_clicks'),
+    Output('menu-currency-etfs-unselect-all-button', 'n_clicks'),
+    Output('menu-cryptos-unselect-all-button', 'n_clicks'),
+    Output('menu-crypto-etfs-unselect-all-button', 'n_clicks'),
+    Output('menu-futures-unselect-all-button', 'n_clicks'),
+    Output('menu-precious-metals-unselect-all-button', 'n_clicks'),
+    Output('menu-stock-indices-unselect-all-button', 'n_clicks'),
+    Output('menu-volatility-indices-unselect-all-button', 'n_clicks'),
+    Output('menu-benchmarks-unselect-all-button', 'n_clicks'),
+
     Output('dash-table-biggest-companies', 'selected_rows'),
     Output('dash-table-sp500', 'selected_rows'),
     Output('dash-table-nasdaq100', 'selected_rows'),
@@ -806,11 +807,65 @@ def read_preselected_tickers(
     Output('dash-table-volatility-indices', 'selected_rows'),
     Output('dash-table-benchmarks', 'selected_rows'),
 
-    Output('table-selected-tickers-stored', 'data'),
+    # Output('selected-tickers-stored', 'data'),
+    Output('table-selected-tickers-data-stored', 'data'),
+    Output('selected-ticker-summaries-stored', 'data'),
+    # Output('dash-table-selected-tickers-stored', 'children'),
 
     Input('ticker-category-info-map', 'data'),
     Input('ticker-info', 'data'),
     Input('excluded-tickers-list', 'children'),
+
+    Input('menu-biggest-companies-select-all-button', 'n_clicks'),
+    Input('menu-sp500-select-all-button', 'n_clicks'),
+    Input('menu-nasdaq100-select-all-button', 'n_clicks'),
+    Input('menu-dow-jones-select-all-button', 'n_clicks'),
+    Input('menu-biggest-etfs-select-all-button', 'n_clicks'),
+    Input('menu-fixed-income-etfs-select-all-button', 'n_clicks'),
+    Input('menu-ai-etfs-select-all-button', 'n_clicks'),
+    Input('menu-commodity-etfs-select-all-button', 'n_clicks'),
+    Input('menu-currency-etfs-select-all-button', 'n_clicks'),
+    Input('menu-cryptos-select-all-button', 'n_clicks'),
+    Input('menu-crypto-etfs-select-all-button', 'n_clicks'),
+    Input('menu-futures-select-all-button', 'n_clicks'),
+    Input('menu-precious-metals-select-all-button', 'n_clicks'),
+    Input('menu-stock-indices-select-all-button', 'n_clicks'),
+    Input('menu-volatility-indices-select-all-button', 'n_clicks'),
+    Input('menu-benchmarks-select-all-button', 'n_clicks'),
+   
+    Input('menu-biggest-companies-unselect-all-button', 'n_clicks'),
+    Input('menu-sp500-unselect-all-button', 'n_clicks'),
+    Input('menu-nasdaq100-unselect-all-button', 'n_clicks'),
+    Input('menu-dow-jones-unselect-all-button', 'n_clicks'),
+    Input('menu-biggest-etfs-unselect-all-button', 'n_clicks'),
+    Input('menu-fixed-income-etfs-unselect-all-button', 'n_clicks'),
+    Input('menu-ai-etfs-unselect-all-button', 'n_clicks'),
+    Input('menu-commodity-etfs-unselect-all-button', 'n_clicks'),
+    Input('menu-currency-etfs-unselect-all-button', 'n_clicks'),
+    Input('menu-cryptos-unselect-all-button', 'n_clicks'),
+    Input('menu-crypto-etfs-unselect-all-button', 'n_clicks'),
+    Input('menu-futures-unselect-all-button', 'n_clicks'),
+    Input('menu-precious-metals-unselect-all-button', 'n_clicks'),
+    Input('menu-stock-indices-unselect-all-button', 'n_clicks'),
+    Input('menu-volatility-indices-unselect-all-button', 'n_clicks'),
+    Input('menu-benchmarks-unselect-all-button', 'n_clicks'),
+
+    Input('dash-table-biggest-companies', 'data'),
+    Input('dash-table-sp500', 'data'),
+    Input('dash-table-nasdaq100', 'data'),
+    Input('dash-table-dow-jones', 'data'),    
+    Input('dash-table-biggest-etfs', 'data'),
+    Input('dash-table-fixed-income-etfs', 'data'),
+    Input('dash-table-ai-etfs', 'data'),    
+    Input('dash-table-commodity-etfs', 'data'),
+    Input('dash-table-currency-etfs', 'data'),
+    Input('dash-table-cryptos', 'data'),
+    Input('dash-table-crypto-etfs', 'data'),    
+    Input('dash-table-futures', 'data'),    
+    Input('dash-table-precious-metals', 'data'),
+    Input('dash-table-stock-indices', 'data'),
+    Input('dash-table-volatility-indices', 'data'),
+    Input('dash-table-benchmarks', 'data'),
 
     Input('dash-table-biggest-companies', 'selected_rows'),
     Input('dash-table-sp500', 'selected_rows'),
@@ -844,6 +899,57 @@ def output_custom_tickers(
     ticker_category_info_map,
     ticker_info,
     excluded_tickers,
+
+    select_all_biggest_companies,
+    select_all_sp500,
+    select_all_nasdaq100,
+    select_all_dow_jones,
+    select_all_biggest_etfs,
+    select_all_fixed_income_etfs,
+    select_all_ai_etfs,
+    select_all_commodity_etfs,
+    select_all_currency_etfs,
+    select_all_cryptos,
+    select_all_crypto_etfs,
+    select_all_futures,
+    select_all_precious_metals,
+    select_all_stock_indices,
+    select_all_volatility_indices,
+    select_all_benchmarks,
+
+    unselect_all_biggest_companies,
+    unselect_all_sp500,
+    unselect_all_nasdaq100,
+    unselect_all_dow_jones,
+    unselect_all_biggest_etfs,
+    unselect_all_fixed_income_etfs,
+    unselect_all_ai_etfs,
+    unselect_all_commodity_etfs,
+    unselect_all_currency_etfs,
+    unselect_all_cryptos,
+    unselect_all_crypto_etfs,
+    unselect_all_futures,
+    unselect_all_precious_metals,
+    unselect_all_stock_indices,
+    unselect_all_volatility_indices,
+    unselect_all_benchmarks,
+
+    table_biggest_companies_data,
+    table_sp500_data,
+    table_nasdaq100_data,
+    table_dow_jones_data,
+    table_biggest_etfs_data,
+    table_fixed_income_etfs_data,
+    table_ai_etfs_data,
+    table_commodity_etfs_data,
+    table_currency_etfs_data,
+    table_cryptos_data,
+    table_crypto_etfs_data,
+    table_futures_data,
+    table_precious_metals_data,
+    table_stock_indices_data,
+    table_volatility_indices_data,
+    table_benchmarks_data,
 
     table_biggest_companies_selected_rows,
     table_sp500_selected_rows,
@@ -888,6 +994,60 @@ def output_custom_tickers(
         'volatility_indices': table_volatility_indices_selected_rows,
         'benchmarks': table_benchmarks_selected_rows
     }
+    table_data = {
+        'biggest_companies': table_biggest_companies_data,
+        'sp500': table_sp500_data,
+        'nasdaq100': table_nasdaq100_data,
+        'dow_jones': table_dow_jones_data,
+        'biggest_etfs': table_biggest_etfs_data,
+        'fixed_income_etfs': table_fixed_income_etfs_data,
+        'ai_etfs': table_ai_etfs_data,
+        'commodity_etfs': table_commodity_etfs_data,
+        'currency_etfs': table_currency_etfs_data,
+        'cryptos': table_cryptos_data,
+        'crypto_etfs': table_crypto_etfs_data,
+        'futures': table_futures_data,
+        'precious_metals': table_precious_metals_data,
+        'stock_indices': table_stock_indices_data,
+        'volatility_indices': table_volatility_indices_data,
+        'benchmarks': table_benchmarks_data
+    }
+    select_all_button_nclicks = {
+        'biggest_companies': select_all_biggest_companies,
+        'sp500': select_all_sp500,
+        'nasdaq100': select_all_nasdaq100,
+        'dow_jones': select_all_dow_jones,
+        'biggest_etfs': select_all_biggest_etfs,
+        'fixed_income_etfs': select_all_fixed_income_etfs,
+        'ai_etfs': select_all_ai_etfs,
+        'commodity_etfs': select_all_commodity_etfs,
+        'currency_etfs': select_all_currency_etfs,
+        'cryptos': select_all_cryptos,
+        'crypto_etfs': select_all_crypto_etfs,
+        'futures': select_all_futures,
+        'precious_metals': select_all_precious_metals,
+        'stock_indices': select_all_stock_indices,
+        'volatility_indices': select_all_volatility_indices,
+        'benchmarks': select_all_benchmarks
+    }
+    unselect_all_button_nclicks = {
+        'biggest_companies': unselect_all_biggest_companies,
+        'sp500': unselect_all_sp500,
+        'nasdaq100': unselect_all_nasdaq100,
+        'dow_jones': unselect_all_dow_jones,
+        'biggest_etfs': unselect_all_biggest_etfs,
+        'fixed_income_etfs': unselect_all_fixed_income_etfs,
+        'ai_etfs': unselect_all_ai_etfs,
+        'commodity_etfs': unselect_all_commodity_etfs,
+        'currency_etfs': unselect_all_currency_etfs,
+        'cryptos': unselect_all_cryptos,
+        'crypto_etfs': unselect_all_crypto_etfs,
+        'futures': unselect_all_futures,
+        'precious_metals': unselect_all_precious_metals,
+        'stock_indices': unselect_all_stock_indices,
+        'volatility_indices': unselect_all_volatility_indices,
+        'benchmarks': unselect_all_benchmarks
+    }
 
     selected_categories = [cat for cat in ticker_category_info_map.keys() if 'Ticker' in ticker_category_info_map[cat]['df'].keys()]
 
@@ -895,24 +1055,24 @@ def output_custom_tickers(
         for category in selected_categories:
             prev_table_selected_rows[category] = []
 
-    table_selected_tickers = {}
+    #####################
+
+    for category in selected_categories:
+
+        n_category_tickers = len(table_data[category])
+
+        if select_all_button_nclicks[category]:
+            table_selected_rows[category] = list(range(n_category_tickers))
+
+        elif unselect_all_button_nclicks[category]:
+            table_selected_rows[category] = []
+
+    table_selected_category_tickers = {}
     for category in selected_categories:
         row_map = ticker_category_info_map[category]['row']
-        table_selected_tickers[category] = [tk for tk in row_map.keys() if row_map[tk] in table_selected_rows[category]]
+        table_selected_category_tickers[category] = [tk for tk in row_map.keys() if row_map[tk] in table_selected_rows[category]]
 
-    ctx = dash.callback_context
-
-    added_ticker = ''
-    removed_ticker = ''
-
-    if 1 in n_clicks:
-        if ctx.triggered:
-            trig_id_str_list = [ctx.triggered[k]['prop_id'].split('.n_clicks')[0] for k in range(len(ctx.triggered)) if ctx.triggered[k]['value']]
-            if len(trig_id_str_list) > 0:
-                trig_id_str = trig_id_str_list[0]  # this is a stringified dictionary with whitespaces removed
-                removed_ticker = trig_id_str.split('{"index":"')[1].split('","type"')[0].replace('select-ticker-icon-', '')  # {tk}
-
-    ticker_divs = [ticker_div_title]
+    ######################
 
     if selected_tickers is None:
         selected_tickers = []
@@ -920,6 +1080,21 @@ def output_custom_tickers(
     updated_tickers = selected_tickers
 
     hide_ticker_container = False if len(updated_tickers) > 0 else True
+
+    ctx = dash.callback_context
+
+    added_tickers = []
+    removed_tickers = []
+
+    if 1 in n_clicks:
+        if ctx.triggered:
+            trig_id_str_list = [ctx.triggered[k]['prop_id'].split('.n_clicks')[0] for k in range(len(ctx.triggered)) if ctx.triggered[k]['value']]
+            if len(trig_id_str_list) > 0:
+                trig_id_str = trig_id_str_list[0]  # this is a stringified dictionary with whitespaces removed
+                removed_ticker = trig_id_str.split('{"index":"')[1].split('","type"')[0].replace('select-ticker-icon-', '')  # {tk}
+                removed_tickers.append(removed_ticker)
+
+    ticker_divs = [ticker_div_title]
 
     ##### INPUT BUTTON
     # Read in custom-specified ticker from input button
@@ -1094,68 +1269,86 @@ def output_custom_tickers(
 
         session.cache.clear()
 
-    elif (tk_input == '') & (removed_ticker != ''):
+    elif (tk_input == '') & (removed_tickers != []):
         hide_tk_input_message = True
-        # for tk in selected_tickers:
-        for tk in updated_tickers:
-            if tk == removed_ticker:
+        for tk in removed_tickers:
+            if tk in updated_tickers:
                 updated_tickers.remove(tk)
 
     # Add tk_input to selected_rows in all relevant tables if not there yet
     for category in selected_categories:
         row_map = ticker_category_info_map[category]['row']
         if tk_input != '': 
-            if (tk_input in row_map.keys()) & (tk_input not in table_selected_tickers[category]):
+            if (tk_input in row_map.keys()) & (tk_input not in table_selected_category_tickers[category]):
                 table_selected_rows[category].append(row_map[tk_input])
-                table_selected_tickers[category] = [tk for tk in row_map.keys() if row_map[tk] in table_selected_rows[category]]
+                table_selected_category_tickers[category] = [tk for tk in row_map.keys() if row_map[tk] in table_selected_rows[category]]
 
     ##### INPUT TABLES
     # Check whether a ticker was added to or removed from any table
 
     for category in selected_categories:
         row_map = ticker_category_info_map[category]['row']
-        df_info = ticker_category_info_map[category]['df']  ## This is a dictionary !!!
+        df_info = ticker_category_info_map[category]['df']  # This is a dictionary!
         selected_rows = [k for k in table_selected_rows[category] if k not in prev_table_selected_rows[category]]
         if len(selected_rows) > 0:
-            for tk in df_info['No.'].keys():
-                # if (df_info['Data Start'][tk] != 'N/A') & (df_info['No.'][tk] == 1 + selected_rows[0]):
-                if df_info['No.'][tk] == 1 + selected_rows[0]:
-                    added_ticker = df_info['Ticker'][tk]
-                    if added_ticker not in updated_tickers:
-                        updated_tickers.append(added_ticker)
-                    break
+            for row in selected_rows:
+                # added_ticker = df_info[row]['Ticker']
+                added_ticker = [tk for tk in row_map.keys() if row_map[tk] == row][0]
+                if added_ticker not in added_tickers:
+                    added_tickers.append(added_ticker)
+                if added_ticker not in updated_tickers:
+                    updated_tickers.append(added_ticker)
+            break
+            # for tk in df_info['No.'].keys():
+            #     # if (df_info['Data Start'][tk] != 'N/A') & (df_info['No.'][tk] == 1 + selected_rows[0]):
+            #     if df_info['No.'][tk] == 1 + selected_rows[0]:
+            #         added_ticker = df_info['Ticker'][tk]
+            #         if added_ticker not in updated_tickers:
+            #             updated_tickers.append(added_ticker)
+            #         break
         else:
             unselected_rows = [k for k in prev_table_selected_rows[category] if k not in table_selected_rows[category]]
             if len(unselected_rows) > 0:
-                for tk in df_info['No.'].keys():
-                    if df_info['No.'][tk] == 1 + unselected_rows[0]:
-                        removed_ticker = df_info['Ticker'][tk]
-                        # if (removed_ticker in updated_tickers) & (removed_ticker not in excluded_tickers):
-                        if (removed_ticker in updated_tickers):
-                            updated_tickers.remove(removed_ticker)
-                        break
+                for row in unselected_rows:
+                    removed_ticker = [tk for tk in row_map.keys() if row_map[tk] == row][0]
+                    # removed_ticker = df_info.index[df_info['No.'] == row + 1][0]
+                    if removed_ticker not in removed_tickers:
+                        removed_tickers.append(removed_ticker)
+                    if removed_ticker in updated_tickers:
+                        updated_tickers.remove(removed_ticker)
+                break                
+                # for tk in df_info['No.'].keys():
+                #     if df_info['No.'][tk] == 1 + unselected_rows[0]:
+                #         removed_ticker = df_info['Ticker'][tk]
+                #         # if (removed_ticker in updated_tickers) & (removed_ticker not in excluded_tickers):
+                #         if (removed_ticker in updated_tickers):
+                #             updated_tickers.remove(removed_ticker)
+                #         break
 
     # Make sure added_ticker is selected in all tables and removed_ticker is removed from all tables
-    if added_ticker != '':
+    if added_tickers != []:
         for category in selected_categories:
-            df_info = ticker_category_info_map[category]['df']  ## This is a dictionary!
-            if added_ticker in df_info['Ticker'].keys():  # or values(), they're the same as keys()
-                row_map = ticker_category_info_map[category]['row']
-                if row_map[added_ticker] not in table_selected_rows[category]:
-                    table_selected_rows[category].append(row_map[added_ticker])
+            df_info = ticker_category_info_map[category]['df']  # This is a dictionary!
+            for added_ticker in added_tickers:
+                if added_ticker in df_info['Ticker']:
+                    row_map = ticker_category_info_map[category]['row']
+                    if row_map[added_ticker] not in table_selected_rows[category]:
+                        table_selected_rows[category].append(row_map[added_ticker])
 
-    if removed_ticker != '':
+    if removed_tickers != []:
         for category in selected_categories:
-            df_info = ticker_category_info_map[category]['df']  ## This is a dictionary !
-            if removed_ticker in df_info['Ticker'].keys():  # or values(), they're the same as keys()
-                row_map = ticker_category_info_map[category]['row']
-                if row_map[removed_ticker] in table_selected_rows[category]:
-                    table_selected_rows[category].remove(row_map[removed_ticker])
+            df_info = ticker_category_info_map[category]['df']  # This is a dictionary!
+            for removed_ticker in removed_tickers:
+                if removed_ticker in df_info['Ticker']:
+                    row_map = ticker_category_info_map[category]['row']
+                    if row_map[removed_ticker] in table_selected_rows[category]:
+                        table_selected_rows[category].remove(row_map[removed_ticker])
 
     ##### SELECTED TICKERS
     # Set up selected tickers divs, popovers and table
 
     table_selected_tickers = pd.DataFrame(index = updated_tickers, columns = table_selected_tickers_columns)
+    selected_ticker_summaries = {}
 
     for i, tk in enumerate(updated_tickers):
 
@@ -1261,71 +1454,89 @@ def output_custom_tickers(
         table_selected_tickers.at[tk, 'Exchange'] = ticker_info[tk]['exchange']
         table_selected_tickers.at[tk, 'Currency'] = ticker_info[tk]['currency']
 
+        selected_ticker_summaries[tk] = ticker_info[tk]['summary']
+
     ########################
 
     dash_table_selected_tickers_data = table_selected_tickers.to_dict('records')
 
     dash_table_selected_tickers = dash_table.DataTable(
-        columns = [{'name': i, 'id': i} for i in table_selected_tickers_columns],
-        data = dash_table_selected_tickers_data,
-        editable = False,
-        row_deletable = True,
-        tooltip_data = [
-            { column: {'value': ticker_info[row['Ticker']]['summary'], 'type': 'markdown' }
-            for column in row.keys() }
-            for row in dash_table_selected_tickers_data  # e.g. {'No.': 1, 'Ticker': 'AAPL', ...} etc.
-        ],
-        css = [
-            {
-            'selector': '.dash-spreadsheet tr',
-            'rule': 'border-top: 2px solid rgb(211, 211, 211) !important;'
-            },
-            {
-            'selector': '.dash-tooltip',
-            'rule': 'border: None;'
-            },
-            {
-            'selector': '.dash-spreadsheet tr:hover td.dash-cell',
-            'rule': 'background-color: rgb(211, 211, 211) !important; border-top: 2px solid rgb(211, 211, 211) !important; border-bottom: 2px solid rgb(211, 211, 211) !important; color: black !important' 
-            },
-            {
-            'selector': '.dash-spreadsheet td.dash-delete-cell',
-            'rule': 'background-color: white !important; border-top: 2px solid rgb(211, 211, 211) !important; border-bottom: 2px solid rgb(211, 211, 211) !important; text-align: center !important; color: darkred !important; font-size: 20px !important; font-weight: bold !important;' 
-            },
-            {
-            'selector': '.dash-spreadsheet tr:hover td.dash-delete-cell',
-            'rule': 'background-color: rgb(211, 211, 211) !important; border-top: 2px solid rgb(211, 211, 211) !important; border-bottom: 2px solid rgb(211, 211, 211) !important; color: darkred !important; font-weight: bold;' 
-            },
-            {
-            'selector': '.dash-tooltip:before, .dash-tooltip:after',
-            'rule': 'border-top-color: rgb(211, 211, 211) !important; border-bottom-color: rgb(211, 211, 211) !important;'
-            },
-            {
-            'selector': '.dash-table-tooltip',
-            'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(211, 211, 211) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica;'
-            }
-        ],
-        tooltip_delay = 0,
-        tooltip_duration = None,
-        style_as_list_view = True,
-        style_data_conditional = [
-            {'if': 
-                { 'state': 'active'},
-                'backgroundColor': 'white',
-                'border-top': '1px solid rgb(211, 211, 211)',
-                'border-bottom': '1px solid rgb(211, 211, 211)'},
-            {'if': {'column_id': 'No.'}, 'width': 24},
-            {'if': {'column_id': 'Ticker'}, 'width': 45},
-            {'if': {'column_id': 'Currency'}, 'width': 70},
-            {'if': {'column_id': 'Exchange'}, 'width': 72},
-            {'if': {'column_id': 'Data Start'}, 'width': 85},
-            {'if': {'column_id': 'Data End'}, 'width': 85},
-            {'if': {'column_id': 'Length*'}, 'width': 80},
-        ],
-        id = f'dash-table-selected-tickers',
-        style_header = selected_tickers_table_header_css,
-        style_data = selected_tickers_table_data_css,
-    )
+    # dash_table_selected_tickers_div = [html.Div(
+    #    dash_table.DataTable(        
+            columns = [{'name': i, 'id': i} for i in table_selected_tickers_columns],
+            data = dash_table_selected_tickers_data,
+            editable = False,
+            row_selectable = 'multi',
+            selected_rows = [k for k in range(len(dash_table_selected_tickers_data))],
+            tooltip_data = [
+                { column: {'value': ticker_info[row['Ticker']]['summary'], 'type': 'markdown' }
+                for column in row.keys() }
+                for row in dash_table_selected_tickers_data  # e.g. {'No.': 1, 'Ticker': 'AAPL', ...} etc.
+            ],
+            css = [
+                {
+                'selector': '.dash-tooltip',
+                'rule': 'border: None;'
+                },
+                {
+                'selector': '.dash-table-tooltip',
+                'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(67, 172, 106) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica; background-color: rgb(227, 255, 237);'
+                },
+                {
+                'selector': '.dash-tooltip:before, .dash-tooltip:after',
+                'rule': 'border-top-color: #43ac6a !important; border-bottom-color: #43ac6a !important;'
+                }            
+                # # {
+                # # 'selector': '.dash-spreadsheet tr',
+                # # 'rule': 'border-top: 2px solid rgb(211, 211, 211) !important;'
+                # # },
+                # {
+                # 'selector': '.dash-tooltip',
+                # 'rule': 'border: None;'
+                # },
+                # {
+                # 'selector': '.dash-spreadsheet tr:hover td.dash-cell',
+                # 'rule': 'background-color: rgb(67, 172, 106) !important; border-top: 2px solid rgb(67, 172, 106) !important; border-bottom: 2px solid rgb(67, 172, 106) !important; color: white !important' 
+                # # 'rule': 'background-color: rgb(211, 211, 211) !important; border-top: 2px solid rgb(211, 211, 211) !important; border-bottom: 2px solid rgb(211, 211, 211) !important; color: black !important' 
+                # },
+                # # {
+                # # 'selector': '.dash-spreadsheet td.dash-delete-cell',
+                # # 'rule': 'background-color: white !important; border-top: 2px solid rgb(67, 172, 106) !important; border-bottom: 2px solid rgb(67, 172, 106) !important; text-align: center !important; color: darkred !important; font-size: 20px !important; font-weight: bold !important;' 
+                # # },
+                # # {
+                # # 'selector': '.dash-spreadsheet tr:hover td.dash-delete-cell',
+                # # 'rule': 'background-color: rgb(67, 172, 106) !important; border-top: 2px solid rgb(67, 172, 106) !important; border-bottom: 2px solid rgb(67, 172, 106) !important; color: darkred !important; font-weight: bold;' 
+                # # },
+                # {
+                # 'selector': '.dash-tooltip:before, .dash-tooltip:after',
+                # 'rule': 'border-top-color: rgb(67, 172, 106) !important; border-bottom-color: rgb(67, 172, 106) !important;'
+                # },
+                # {
+                # 'selector': '.dash-table-tooltip',
+                # 'rule': 'max-width: 500px; width: 500px !important; background-color: rgb(227, 255, 237); border: 1px solid rgb(67, 172, 106) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica;'
+                # }
+            ],
+            tooltip_delay = 0,
+            tooltip_duration = None,
+            style_as_list_view = True,
+            style_data_conditional = [
+                {'if': 
+                    { 'state': 'active'},
+                    'backgroundColor': 'white',
+                    'border-top': '1px solid rgb(211, 211, 211)',
+                    'border-bottom': '1px solid rgb(211, 211, 211)'},
+                {'if': {'column_id': 'No.'}, 'width': 24},
+                {'if': {'column_id': 'Ticker'}, 'width': 45},
+                {'if': {'column_id': 'Currency'}, 'width': 70},
+                {'if': {'column_id': 'Exchange'}, 'width': 72},
+                {'if': {'column_id': 'Data Start'}, 'width': 85},
+                {'if': {'column_id': 'Data End'}, 'width': 85},
+                {'if': {'column_id': 'Length*'}, 'width': 80},
+            ],
+            id = 'dash-table-selected-tickers',
+            style_header = selected_tickers_table_header_css,
+            style_data = selected_tickers_table_data_css,
+        )
 
     ################################
 
@@ -1442,6 +1653,8 @@ def output_custom_tickers(
         select_ticker_portfolio_summary = html.Div([])
         hide_ticker_container = True
 
+    # dash_selected_tickers = updated_tickers.copy()
+
     return (
         ticker_divs,
         hide_ticker_container,
@@ -1454,6 +1667,11 @@ def output_custom_tickers(
         table_custom_ticker_info,
         ticker_info,
         table_selected_rows,
+
+        # select_all_button_nclicks
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        # unselect_all_button_nclicks
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 
         table_selected_rows['biggest_companies'],
         table_selected_rows['sp500'],
@@ -1472,7 +1690,10 @@ def output_custom_tickers(
         table_selected_rows['volatility_indices'],
         table_selected_rows['benchmarks'],
 
-        dash_table_selected_tickers
+        # dash_selected_tickers,
+        dash_table_selected_tickers_data,
+        selected_ticker_summaries
+        # dash_table_selected_tickers_div
     )
 
 
@@ -1497,3 +1718,4 @@ for category in ticker_category_info_map.keys():
 
         suppress_callback_exceptions = True
     )(toggle_collapse_tickers)
+

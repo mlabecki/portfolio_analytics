@@ -361,60 +361,6 @@ pre_table_titles = {
 
 print(f'\nTotal tickers: {len(ticker_names)}')
 
-pre_menu_select_all_button_css = {
-    'display': 'block',
-    'height': '32px',
-    # 'border-color': 'rgb(192, 192, 192)',                             
-    'border-radius': '5px',
-    'margin-top': '10px',
-    'margin-right': '5px',
-    'margin-bottom': '6px',
-    'margin-left': '0px',
-    'padding-left': '5px',
-    'padding-right': '5px',
-    'vertical-align': 'top',
-    'text-align': 'center',
-    'font-family': 'Helvetica',
-    'font-size': '15px',
-    'font-weight': 'bold',
-    'width': '110px'
-}
-pre_menu_unselect_all_button_css = {
-    'display': 'block',
-    'height': '32px',
-    # 'border-color': 'rgb(192, 192, 192)',
-    'border-radius': '5px',
-    'margin-top': '10px',
-    'margin-right': '5px',
-    'margin-bottom': '6px',
-    'margin-left': '0px',
-    'padding-left': '5px',
-    'padding-right': '5px',
-    'vertical-align': 'top',
-    'text-align': 'center',
-    'font-family': 'Helvetica',
-    'font-size': '15px',
-    'font-weight': 'bold',
-    'width': '110px'
-}
-pre_menu_item_css = {
-    'display': 'inline-block',
-    'width': '80px',
-    'margin-top': '0px',
-    'margin-right': '6px',
-    'margin-bottom': '0px',
-    'margin-left': '2px',
-    'vertical-align': 'top',
-    'font-family': 'Helvetica',
-    'border': '1px'
-}
-pre_menu_input_css = {
-    'width': '80px',
-    'height': '30px',
-    'border-color': 'rgb(204, 204, 204)',
-    'border-radius': '5px',
-    'font-size': '14px'
-}
 n_preselected_category_css = {
     'display': 'inline-block',
     'font-family': 'Helvetica',
@@ -436,7 +382,7 @@ n_tickers_category_css = {
     'margin-top': '5px',
     'margin-left': '5px'
 }
-pre_selected_string = {
+pre_selected_string_css = {
     'display': 'inline-block',
     'font-family': 'Helvetica',
     'font-size': '15px',
@@ -523,7 +469,7 @@ for category in ticker_category_info_map.keys():
                         html.Div(
                             'pre-selected',
                             hidden = False,
-                            style = pre_selected_string
+                            style = pre_selected_string_css
                         )
                     ],
                     style = {'display': 'inline-block'}
@@ -673,9 +619,9 @@ for category in ticker_category_info_map.keys():
                                             )
                                         ]
                                     ),
-                                 ],
-                                 style = pre_menu_container_css
-                             ),
+                                ],
+                                style = pre_menu_container_css
+                            ),
 
                             html.Div(
                                 id = f'pre-table-{id_string}-container',
@@ -785,7 +731,7 @@ layout = html.Div([
         html.Br(),
         'Please Wait ...'
     ],
-    style = {'font-family': 'Helvetica', 'font-size': 26, 'font-weight': 'bold', 'color': 'midnightblue', 'text-align': 'center'}
+    style = page_loading_wrapper_css
     ),
     overlay_style = {'visibility': 'visible', 'opacity': 0.35, 'filter': 'blur(3px)'},
     delay_show = 1000,
@@ -795,10 +741,15 @@ layout = html.Div([
 
     html.Br(),
 
-    dcc.Link('Home Page', href='/'),
-    html.Br(),
-    dcc.Link('Continue to Ticker Info & Portfolio Selection', href='/test_ticker_input_v3')
-    # dcc.Link('Go to Page 2', href='/page2')
+    html.Div(
+        id = 'dates-link-container',
+        children = [
+            dcc.Link('Home Page', href='/'),
+            html.Br(),
+            dcc.Link('Continue to Ticker Info & Portfolio Selection', href='/test_ticker_input_v3')
+        ],
+        style = link_container_css
+    )
 
 ])  # app.layout
 
@@ -827,7 +778,7 @@ layout = html.Div([
     Output('pre-menu-stock-indices-select-all-button', 'n_clicks'),
     Output('pre-menu-volatility-indices-select-all-button', 'n_clicks'),
     Output('pre-menu-benchmarks-select-all-button', 'n_clicks'),
-
+     
     Output('pre-menu-biggest-companies-unselect-all-button', 'n_clicks'),
     Output('pre-menu-sp500-unselect-all-button', 'n_clicks'),
     Output('pre-menu-nasdaq100-unselect-all-button', 'n_clicks'),
@@ -1478,7 +1429,7 @@ def output_custom_tickers(
                     added_tickers.append(added_ticker)
                 if added_ticker not in updated_tickers:
                     updated_tickers.append(added_ticker)
-                break
+            break
         else:
             unselected_rows = [k for k in prev_table_selected_rows[category] if k not in table_selected_rows[category]]
             if len(unselected_rows) > 0:

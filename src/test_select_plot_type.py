@@ -27,9 +27,12 @@ from analyze_prices import AnalyzePrices
 
 # tickers = list(magnificent_7_tickers.keys())
 
-end_date = datetime.today()
+end_date = datetime.today().date()
 hist_years, hist_months, hist_days = 5, 0, 0
 start_date = datetime(end_date.year - hist_years, end_date.month - hist_months, end_date.day - hist_days)
+if end_date != datetime.today().date():
+    end_date += timedelta(1)  # Both yf.download and yf.Ticker[tk].history() cut the data one day before end_date
+    
 tk_market = '^GSPC'
 # tk_market = 'BTC-USD'
 

@@ -9,6 +9,15 @@ ticker_main_title_css = {
     'margin-bottom': '10px'
 }
 
+# Page loading
+page_loading_wrapper_css = {
+    'font-family': 'Helvetica',
+    'font-size': 26,
+    'font-weight': 'bold',
+    'color': 'midnightblue',
+    'text-align': 'center'
+}
+
 # Pre-selection tables
 pre_category_container_css = {
     'width': '900px',
@@ -23,7 +32,6 @@ pre_menu_container_css = {
     'font-family': 'Helvetica',
     'font-size' : '14px',
     'border': '1px solid rgb(211, 211, 211)',
-    # 'border-radius': '5px',
     'margin-top': '5px',
     'margin-left': '5px',
     'vertical-align': 'top',
@@ -39,15 +47,79 @@ pre_table_container_css = {
     'vertical-align': 'top',
     'display': 'inline-block'
 }
+pre_menu_select_all_button_css = {
+    'display': 'block',
+    'height': '32px',
+    'border-radius': '5px',
+    'margin-top': '5px',
+    'margin-right': '5px',
+    'margin-bottom': '5px',
+    'margin-left': '0px',
+    'padding-left': '5px',
+    'padding-right': '5px',
+    'vertical-align': 'top',
+    'text-align': 'center',
+    'font-family': 'Helvetica',
+    'font-size': '15px',
+    'font-weight': 'bold',
+    'width': '110px'
+}
+pre_menu_unselect_all_button_css = {
+    'display': 'block',
+    'height': '32px',
+    'border-radius': '5px',
+    'margin-top': '5px',
+    'margin-right': '5px',
+    'margin-bottom': '5px',
+    'margin-left': '0px',
+    'padding-left': '5px',
+    'padding-right': '5px',
+    'vertical-align': 'top',
+    'text-align': 'center',
+    'font-family': 'Helvetica',
+    'font-size': '15px',
+    'font-weight': 'bold',
+    'width': '110px'
+}
+pre_menu_item_css = {
+    'display': 'inline-block',
+    'width': '80px',
+    'margin-top': '0px',
+    'margin-right': '6px',
+    'margin-bottom': '0px',
+    'margin-left': '2px',
+    'vertical-align': 'top',
+    'font-family': 'Helvetica',
+    'border': '1px'
+}
+pre_menu_input_css = {
+    'width': '80px',
+    'height': '30px',
+    'border-color': 'rgb(204, 204, 204)',
+    'border-radius': '5px',
+    'font-size': '14px'
+}
 
 # Input data table
 input_table_container_css = {
-    'width': '1200px',
+    'width': '1173px',
     'font-family': 'Helvetica',
     'font-size' : '14px',
     'border': '1px solid rgb(211, 211, 211)',
     'margin-top': '5px',
-    'margin-left': '5px'
+    'margin-left': '5px',
+    'vertical-align': 'top',
+    'display': 'inline-block'
+}
+input_menu_container_css = {
+    'width': '122px',
+    'font-family': 'Helvetica',
+    'font-size' : '14px',
+    'border': '1px solid rgb(211, 211, 211)',
+    'margin-top': '5px',
+    'margin-left': '5px',
+    'vertical-align': 'top',
+    'display': 'inline-block'
 }
 input_table_header_css = {
     'font-family': 'Helvetica',
@@ -159,7 +231,7 @@ collapse_button_table_css = {
     'text-align': 'left',
     'font-family': 'Helvetica',
     'font-weight': 'bold',
-    'width': '1200px'
+    'width': '1300px'
 }
 
 # Selected tickers elements
@@ -301,14 +373,30 @@ selected_tickers_table_header_css = {
     'font-weight': 'bold',
     'background': 'white',
     'text-align': 'left',
-    'border-top': '2px solid rgb(211, 211, 211)',
-    'border-bottom': '2px solid rgb(211, 211, 211)'
+    'border-top': '1px solid rgb(211, 211, 211)',
+    'border-bottom': '1px solid rgb(211, 211, 211)'
 }
 selected_tickers_table_data_css = {
     'font-family': 'Helvetica',
     'font-size' : '14px',
     'background': 'white',
     'text-align': 'left',
-    'border-top': '2px solid rgb(211, 211, 211)',
-    'border-bottom': '2px solid rgb(211, 211, 211)'
+    'border-top': '1px solid rgb(211, 211, 211)',
+    'border-bottom': '1px solid rgb(211, 211, 211)'
+}
+table_selected_tickers_footnote = {
+    'font-family': 'Helvetica',
+    'font-size': '12px',
+    'font-style': 'italic',
+    'margin-top': '5px',
+    'margin-left': '10px'
+}
+
+# Links
+link_container_css = {
+    'margin-top': '10px',
+    'margin-left': '10px',
+    'font-family': 'Helvetica',
+    'font-size': '15px',
+    'font-weight': 'bold'
 }

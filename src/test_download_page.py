@@ -21,9 +21,11 @@ from utils import *
 from download_data import DownloadData
 from analyze_prices import AnalyzePrices
 
-end_date = datetime.today()
+end_date = datetime.today().date()
 hist_years, hist_months, hist_days = 1, 0, 0
 start_date = datetime(end_date.year - hist_years, end_date.month - hist_months, end_date.day - hist_days)
+if end_date != datetime.today().date():
+    end_date += timedelta(1)  # Both yf.download and yf.Ticker[tk].history() cut the data one day before end_date
 
 deck_types = ['Single', 'Double', 'Triple']
 

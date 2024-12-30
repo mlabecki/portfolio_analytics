@@ -21,6 +21,7 @@ import dash_bootstrap_components as dbc
 
 # app = Dash(__name__, suppress_callback_exceptions=True, external_stylesheets = [dbc.themes.YETI])
 app = Dash(__name__, use_pages=True, external_stylesheets = [dbc.themes.YETI], suppress_callback_exceptions = True)
+# app.suppress_callback_exceptions = True
 
 # from pages import preliminary_ticker_selection_v3, page1, page2
 
@@ -33,7 +34,9 @@ app.layout = html.Div([
     dcc.Store(data = [], id = 'preselected-ticker-tables-stored', storage_type = 'session'),
 
     # dcc.Store(data = [], id = 'selected-tickers-stored', storage_type = 'session'),
-    dcc.Store(data = [], id = 'table-selected-tickers-stored', storage_type = 'session'),
+    dcc.Store(data = [], id = 'table-selected-tickers-data-stored', storage_type = 'session'),
+    dcc.Store(data = [], id = 'selected-ticker-summaries-stored', storage_type = 'session'),
+    # html.Div(children = [], id = 'dash-table-selected-tickers-stored', hidden = True)
 
     # html.Div(id = 'preselected-output-list')
 ])
@@ -93,3 +96,5 @@ app.layout = html.Div([
 
 if __name__ == '__main__':
     app.run(debug = True, port = 8888)
+    # app.run(debug = True, port = 8888, dev_tools_ui = False, dev_tools_props_check = False)
+    # app.run(debug = False, port = 8888, dev_tools_ui = False, dev_tools_props_check = False)
