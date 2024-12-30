@@ -179,10 +179,6 @@ def read_table_selected_tickers(
     selected_ticker_summaries,
     selected_rows
 ):
-    
-    selected_rows = [k for k in range(len(table_selected_tickers_data))] if selected_rows == [] else selected_rows
-    
-    # selected_tickers = [row['Ticker'] for row in table_selected_tickers_data]
 
     tooltip_data = [
         { column: {'value': selected_ticker_summaries[row['Ticker']], 'type': 'markdown' }
@@ -190,9 +186,24 @@ def read_table_selected_tickers(
         for row in table_selected_tickers_data  # e.g. {'No.': 1, 'Ticker': 'AAPL', ...} etc.
     ]
 
+    selected_rows = [k for k in range(len(table_selected_tickers_data))] if selected_rows == [] else selected_rows
+    
+    selected_tickers = [row['Ticker'] for row in table_selected_tickers_data if row['No.'] - 1 in selected_rows]
+    selected_start_dates = [row['Data Start'] for row in table_selected_tickers_data if row['No.'] - 1 in selected_rows]
+    selected_end_dates = [row['Data End'] for row in table_selected_tickers_data if row['No.'] - 1 in selected_rows]
+
+    date_overlap_start = f'{max(selected_start_dates)}'
+    date_overlap_end = f'{min(selected_end_dates)}'
+    tk_overlap_start = [row['Ticker'] for row in table_selected_tickers_data if row['Data Start'] == date_overlap_start][0]
+    tk_overlap_end = [row['Ticker'] for row in table_selected_tickers_data if row['Data End'] == date_overlap_end][0]
+
+    # Use all 4 parameters above to download data just for these two tickers and two dates.
+    # Then, after dropna(), count the length of the range of overlapping portfolio dates.
+
     return (
         # selected_tickers,
-        str(selected_rows),
+        # str(selected_tickers),
+        f' Portfolio Data Overlap: From {date_overlap_start} To {date_overlap_end}',
         table_selected_tickers_data,
         selected_rows,
         tooltip_data
