@@ -9,9 +9,9 @@ import sys
 class DownloadData():
 
     def __init__(
-        self,
-        end_date: datetime,
-        start_date: datetime #,
+        self #,
+        # end_date: datetime,
+        # start_date: datetime #,
         # tickers,
     ):
     
@@ -21,9 +21,45 @@ class DownloadData():
         tickers:    user-specified based on suggested lists or a custom synthetic portfolio 
         """
 
-        self.end_date = end_date
-        self.start_date = start_date
+        # self.end_date = end_date
+        # self.start_date = start_date
         # self.tickers = tickers
+
+
+    def check_portfolio_overlap_days(
+        self,
+        start_date,
+        end_date,
+        tickers
+     ):
+        """
+        tickers: 
+            a list, e.g. [tk_overlap_start, tk_overlap_end] or [tk_portfolio_start, tk_portfolio_end]
+            tk_overlap_start is the ticker corresponding to max(selected_start_dates)
+            tk_overlap_end is the ticker corresponding to min(selected_end_dates)
+            tk_portfolio_start is the ticker corresponding to min(selected_start_dates)
+            tk_portfolio_end is the ticker corresponding to max(selected_end_dates)
+        
+        """
+
+        portfolio_overlap_data = {}
+
+        full_data = yf.download(tickers, start = start_date, end = end_date, progress = False)
+        overlap_data = full_data.dropna()
+
+        excluded_tickers = list(yf.shared._ERRORS.keys())
+
+        portfolio_overlap_data['overlap_length'] = len(overlap_data)
+        portfolio_overlap_data['overlap_start'] = min(overlap_data.index).strftime('%Y-%m-%d') if len(overlap_data) > 0 else 'N/A'
+        portfolio_overlap_data['overlap_end'] = max(overlap_data.index).strftime('%Y-%m-%d') if len(overlap_data) > 0 else 'N/A'
+
+        portfolio_overlap_data['full_length'] = len(full_data)
+        portfolio_overlap_data['full_start'] = min(full_data.index).strftime('%Y-%m-%d') if len(full_data) > 0 else 'N/A'
+        portfolio_overlap_data['full_end'] = max(full_data.index).strftime('%Y-%m-%d') if len(full_data) > 0 else 'N/A'
+
+        portfolio_overlap_data['excluded'] = excluded_tickers
+
+        return portfolio_overlap_data
 
 
     def download_yf_data(

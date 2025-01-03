@@ -296,7 +296,7 @@ select_ticker_right_css = {
     'vertical-align': 'center'
 }
 portfolio_summary_keys_css = {
-    'width': '225px',
+    'width': '135px',
     'padding-left': '5px',
     'display': 'inline-block',
     'color': '#007eff',
@@ -304,30 +304,23 @@ portfolio_summary_keys_css = {
     'font-size': '14px',
 }
 portfolio_summary_values_from_css = {
-    'width': '145px',
+    'width': '137px',
     'display': 'inline-block',
     'color': '#007eff',
     'font-family': 'Helvetica',
     'font-size': '14px',
 }
 portfolio_summary_values_to_css = {
-    'width': '130px',
+    'width': '120px',
     'display': 'inline-block',
     'color': '#007eff',
     'font-family': 'Helvetica',
     'font-size': '14px',
 }
-portfolio_summary_values_length_key_css = {
+portfolio_summary_values_length_css = {
+    'width': '120px',
     'display': 'inline-block',
-    'color': '#007eff',
-    'font-family': 'Helvetica',
-    'font-size': '14px',
-}
-portfolio_summary_values_length_value_css = {
-    'width': '135px',
-    'display': 'inline-block',
-    'text-align': 'right',
-    'margin-right': '12px',
+    'text-align': 'left',
     'color': '#007eff',
     'font-family': 'Helvetica',
     'font-size': '14px',
@@ -367,6 +360,44 @@ popover_select_ticker_summary = {
 }
 
 # Dates selection page
+dates_year_input_css = {
+    'width': '75px',
+    'height': '24px',
+    'font-size': '15px',
+    'border-radius': '5px',
+    'vertical-align': 'top',
+    'margin-right': '5px',
+    'margin-bottom': '0px'
+}
+dates_month_day_input_css = {
+    'width': '60px',
+    'height': '24px',
+    'font-size': '15px',
+    'border-radius': '5px',
+    'vertical-align': 'top',
+    'margin-right': '5px',
+    'margin-bottom': '0px'
+}
+dates_portfolio_summary_title_css = {
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+    'font-weight': 'bold',
+    'color': 'rgb(0, 126, 255)',
+    'margin-top': '5px',
+    'margin-right': '5px',
+    'margin-bottom': '3px',
+    'margin-left': '5px'  
+}
+dates_portfolio_summary_message_css = {
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+    # 'font-weight': 'bold',
+    'color': 'darkred',
+    'margin-top': '3px',
+    'margin-right': '5px',
+    'margin-bottom': '3px',
+    'margin-left': '5px'  
+}
 selected_tickers_table_header_css = {
     'font-family': 'Helvetica',
     'font-size' : '14px',
@@ -396,6 +427,9 @@ table_selected_tickers_footnote = {
 link_container_css = {
     'margin-top': '10px',
     'margin-left': '10px',
+    'padding': '5px',    
+    'border-top': '1px solid navy',
+    'color': 'navy',    
     'font-family': 'Helvetica',
     'font-size': '15px',
     'font-weight': 'bold'

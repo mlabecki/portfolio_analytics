@@ -1565,57 +1565,34 @@ def output_custom_tickers(
         no_overlap_message = 'WARNING: No overlapping dates in the selection'
 
         portfolio_summary_keys = [
-            html.B('Portfolio Ticker Count'), html.Br(),
-            html.B('Portfolio Overlapping Dates'), html.Br(),
-            html.B('Portfolio All Dates'), html.Br(),
+            html.B('Ticker Count'), html.Br(),
+            html.B('Full Range'), html.Br(),
+            html.B('Common Range'), html.Br()
         ]
 
         if portfolio_overlap_data_start <= portfolio_overlap_data_end:
 
             portfolio_summary_values_from = [
                 html.Span(f'{n_tickers}'), html.Br(),
-                html.B('From: '), html.Span(portfolio_overlap_data_start), html.Br(),
-                html.B('From: '), html.Span(portfolio_data_start), html.Br()
+                html.B('From: '), html.Span(portfolio_data_start), html.Br(),
+                html.B('From: '), html.Span(portfolio_overlap_data_start), html.Br()
             ]
             portfolio_summary_values_to = [
                 html.Br(),
-                html.B('To: '), html.Span(portfolio_overlap_data_end), html.Br(),
-                html.B('To: '), html.Span(portfolio_data_end), html.Br()
-            ]
-        #    portfolio_summary_values_length_key = [
-        #        html.Br(),
-        #        html.B('Length: '), html.Br(),
-        #        html.B('Length: '), html.Br()
-        #    ]
-        #    portfolio_summary_values_length_value = [
-        #        html.Br(),
-        #        # html.Span(f'{test_overlap_length} business days'), html.Br(),
-        #        # html.Span(f'{test_max_length} business days'), html.Br()
-        #        # html.Span(portfolio_overlap_data_length), html.Br(),
-        #        # html.Span(portfolio_data_length), html.Br()
-        #    ]
-
+                html.B('To: '), html.Span(portfolio_data_end), html.Br(),
+                html.B('To: '), html.Span(portfolio_overlap_data_end), html.Br()
+             ]
         else:
             portfolio_summary_values_from = [
                 html.Span(f'{n_tickers}'), html.Br(),
-                html.B(no_overlap_message), html.Br(),
-                html.B('From: '), html.Span(portfolio_data_start), html.Br()
+                html.B('From: '), html.Span(portfolio_data_start), html.Br(),
+                html.B(no_overlap_message), html.Br()
             ]
             portfolio_summary_values_to = [
                 html.Br(),
-                html.Br(),
-                html.B('To: '), html.Span(portfolio_data_end), html.Br()
+                html.B('To: '), html.Span(portfolio_data_end), html.Br(),
+                html.Br()
             ]
-        #    portfolio_summary_values_length_key = [
-        #        html.Br(),
-        #        html.B('Length: '), html.Br(),
-        #        html.B('Length: '), html.Br()
-        #    ]
-        #    portfolio_summary_values_length_value = [
-        #        html.Br(),
-        #        html.Span(portfolio_data_length), html.Br(),
-        #        html.Span(portfolio_data_length), html.Br()
-        #    ]
 
         select_ticker_portfolio_summary = html.Div(
             [
@@ -1634,16 +1611,6 @@ def output_custom_tickers(
                 id = 'portfolio-summary-values-to',
                 style = portfolio_summary_values_to_css
             ),
-            # html.Div(
-            #     portfolio_summary_values_length_key,
-            #     id = 'portfolio-summary-values-length',
-            #     style = portfolio_summary_values_length_key_css
-            # ),
-            # html.Div(
-            #     portfolio_summary_values_length_value,
-            #     id = 'portfolio-summary-values-length',
-            #     style = portfolio_summary_values_length_value_css
-            # )
             ],
             style = {'display': 'block'}
         )

@@ -1,5 +1,23 @@
 import numpy as np
 import math
+from datetime import datetime
+
+
+def correct_date(year: int, month: int, day: int):
+    year = min(year, 2100)
+    year = max(year, 1800)
+    month = min(month, 12)
+    day = min(day, 31)
+    try:
+        return datetime(year, month, day).date()
+    except:
+        try:
+            return datetime(year, month, day - 1).date()
+        except:
+            try:
+                return datetime(year, month, day - 2).date()
+            except:
+                return datetime(year, month, day - 3).date()
 
 
 def set_axis_limits(
