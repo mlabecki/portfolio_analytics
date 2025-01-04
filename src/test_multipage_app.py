@@ -1,7 +1,8 @@
-from dash import Dash, dcc, html, Input, Output, State, ALL, MATCH, callback, dash_table
+from dash import Dash, dcc, html, Input, Output, State, ALL, MATCH, callback, dash_table, _dash_renderer
 from dash_extensions.pages import setup_page_components  # , setup_dynamic_components
 from dash import Dash, html, page_container, dcc, page_registry
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 
 # import yfinance as yf
 # import pandas as pd
@@ -19,13 +20,16 @@ import dash_bootstrap_components as dbc
 # 
 # hist_info = DownloadInfo()
 
+_dash_renderer._set_react_version('18.3.1')
+
 # app = Dash(__name__, suppress_callback_exceptions=True, external_stylesheets = [dbc.themes.YETI])
-app = Dash(__name__, use_pages=True, external_stylesheets = [dbc.themes.YETI], suppress_callback_exceptions = True)
+app = Dash(__name__, use_pages=True, external_stylesheets = [dbc.themes.YETI, dmc.styles.DATES], suppress_callback_exceptions = True)
 # app.suppress_callback_exceptions = True
 
 # from pages import preliminary_ticker_selection_v3, page1, page2
 
-app.layout = html.Div([
+app.layout = dmc.MantineProvider([
+#app.layout = html.Div([
     dcc.Location(id = 'url', refresh = False),
     page_container,  # page layout is rendered here
     # setup_page_components(), 

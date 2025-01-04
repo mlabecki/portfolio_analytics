@@ -1,7 +1,8 @@
 import dash
-from dash import Dash, dcc, html, Input, Output, State, ALL, MATCH, callback, dash_table
+from dash import Dash, dcc, html, Input, Output, State, ALL, MATCH, callback, dash_table, _dash_renderer
 from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 import dash_loading_spinners as dls
 
 from dash import register_page
@@ -23,6 +24,8 @@ from utils import *
 from download_data import DownloadData
 
 import requests_cache
+
+_dash_renderer._set_react_version('18.3.1')
 
 register_page(
     __name__,
@@ -120,7 +123,7 @@ layout = html.Div([
 
         # MAIN TITLE
         html.Div(
-            'Confirm portfolio selection and choose the common range of dates',
+            'Select common range of dates and confirm portfolio components',
             id = 'dates-main-title',
             style = ticker_main_title_css
         ),
@@ -135,74 +138,25 @@ layout = html.Div([
                     id = 'start-date-select-container',
                     children = [
                         html.Div(
-                            'Select Start Date',
-                            style = {'font-family': 'Helvetica', 'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px', 'margin-left': '3px'}
+                            'Start Date',
+                            style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px', 'margin-left': '2px'}
                         ),
-                        html.Div(
-                            id = 'start-date-year-month-day',
-                            children = [
-                                html.Div(
-                                    id = 'start-date-year-container',
-                                    children = [
-                                        html.Div(
-                                            'Year',
-                                            style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px', 'margin-left': '5px'}
-                                        ),
-                                        dbc.Input(
-                                            id = 'start-date-year-input',
-                                            type = 'number',
-                                            min = 2000,
-                                            max = 2025,
-                                            step = 1,
-                                            debounce = True,
-                                            style = dates_year_input_css
-                                        )
-                                    ],
-                                    style = {'display': 'inline-block'}
-                                ),
-                                html.Div(
-                                    id = 'start-date-month-container',
-                                    children = [
-                                        html.Div(
-                                            'Month',
-                                            style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px', 'margin-left': '5px'}
-                                        ),
-                                        dbc.Input(
-                                            id = 'start-date-month-input',
-                                            type = 'number',
-                                            min = 1,
-                                            max = 12,
-                                            step = 1,
-                                            debounce = True,
-                                            style = dates_month_day_input_css
-                                        )
-                                    ],
-                                    style = {'display': 'inline-block'}
-                                ),
-                                html.Div(
-                                    id = 'start-date-day-container',
-                                    children = [
-                                        html.Div(
-                                            'Day',
-                                            style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px', 'margin-left': '5px'}
-                                        ),
-                                        dbc.Input(
-                                            id = 'start-date-day-input',
-                                            type = 'number',
-                                            min = 1,
-                                            max = 31,
-                                            step = 1,
-                                            debounce = True,
-                                            style = dates_month_day_input_css
-                                        )
-                                    ],
-                                    style = {'display': 'inline-block'}
-                                )
-                            ],
-                            style = {'display': 'inline-block', 'margin-right': '50px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                        dmc.DatePickerInput(
+                            id = 'start-date-input-dmc',
+                            maxDate = datetime.today().date(),
+                            valueFormat = 'YYYY-MM-DD',
+                            highlightToday = True,
+                            size = 'sm',
+                            variant = 'filled',
+                            w = 102,
+                            style = {
+                                'border': '1px solid rgb(0, 126, 255)',
+                                'border-radius': '5px',
+                                'margin-right': '5px'
+                            }
                         )
                     ],
-                    style = {'display': 'inline-block'}
+                    style = {'display': 'inline-block', 'vertical-align': 'top'}
                 ),
 
                 # End date
@@ -210,77 +164,30 @@ layout = html.Div([
                     id = 'end-date-select-container',
                     children = [
                         html.Div(
-                            'Select End Date',
-                            style = {'font-family': 'Helvetica', 'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px', 'margin-left': '8px'}
+                            'End Date',
+                            style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px', 'margin-left': '8px'}
                         ),
-                        html.Div(
-                            id = 'end-date-year-month-day',
-                            children = [
-                                html.Div(
-                                    id = 'end-date-year-container',
-                                    children = [
-                                        html.Div(
-                                            'Year',
-                                            style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px', 'margin-left': '5px'}
-                                        ),
-                                        dbc.Input(
-                                            id = 'end-date-year-input',
-                                            type = 'number',
-                                            min = 2000,
-                                            max = 2025,
-                                            step = 1,
-                                            debounce = True,
-                                            style = dates_year_input_css
-                                        )
-                                    ],
-                                    style = {'display': 'inline-block'}
-                                ),
-                                html.Div(
-                                    id = 'end-date-month-container',
-                                    children = [
-                                        html.Div(
-                                            'Month',
-                                            style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px', 'margin-left': '5px'}
-                                        ),
-                                        dbc.Input(
-                                            id = 'end-date-month-input',
-                                            type = 'number',
-                                            min = 1,
-                                            max = 12,
-                                            step = 1,
-                                            debounce = True,
-                                            style = dates_month_day_input_css
-                                        )
-                                    ],
-                                    style = {'display': 'inline-block'}
-                                ),
-                                html.Div(
-                                    id = 'end-date-day-container',
-                                    children = [
-                                        html.Div(
-                                            'Day',
-                                            style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px', 'margin-left': '5px'}
-                                        ),
-                                        dbc.Input(
-                                            id = 'end-date-day-input',
-                                            type = 'number',
-                                            min = 1,
-                                            max = 31,
-                                            step = 1,
-                                            debounce = True,
-                                            style = dates_month_day_input_css
-                                        )
-                                    ],
-                                    style = {'display': 'inline-block'}
-                                )
-                            ],
-                            style = {'display': 'inline-block', 'margin-right': '5px', 'margin-left': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+
+                        dmc.DatePickerInput(
+                            id = 'end-date-input-dmc',
+                            maxDate = datetime.today().date(),
+                            value = datetime.today().date(),
+                            valueFormat = 'YYYY-MM-DD',
+                            highlightToday = True,
+                            size = 'sm',
+                            variant = 'filled',
+                            w = 102,
+                            style = {
+                                'border': '1px solid rgb(0, 126, 255)',
+                                'border-radius': '5px',
+                                'margin-left': '5px'
+                            }
                         )
                     ],
-                    style = {'display': 'inline-block', 'margin-left': '5px'}
+                    style = {'display': 'inline-block', 'margin-left': '5px', 'vertical-align': 'top'}
                 )
             ],
-            style = {'margin-left': '10px'}
+            style = {'margin-bottom': '10px', 'margin-left': '10px'}
         ),
 
         # YOUR PORTFOLIO
@@ -300,7 +207,11 @@ layout = html.Div([
                     id = 'dates-portfolio-summary'
                 ),
                 html.Div(
-                    id = 'dates-portfolio-summary-message',
+                    id = 'dates-portfolio-summary-message-container',
+                    children = [
+                        html.B('WARNING: '),
+                        html.Span(id = 'dates-portfolio-summary-message')
+                    ],
                     style = dates_portfolio_summary_message_css
                 )
             ],
@@ -333,7 +244,7 @@ layout = html.Div([
     
     ),  # Loading
 
-    html.Br(),
+    # html.Br(),
 
     html.Div(
         id = 'dates-link-container',
@@ -355,7 +266,12 @@ layout = html.Div([
 @callback(
     # Output('dates-selected-tickers', 'children'),
     # Output('dates-table-selected-tickers', 'children'),
+    Output('end-date-input-dmc', 'maxDate'),
+    Output('end-date-input-dmc', 'minDate'),
+    Output('start-date-input-dmc', 'maxDate'),
+    Output('start-date-input-dmc', 'minDate'),
     Output('dates-portfolio-summary', 'children'),
+    Output('dates-portfolio-summary-message-container', 'hidden'),
     Output('dates-portfolio-summary-message', 'children'),
     Output('dash-table-selected-tickers', 'data'),
     Output('dash-table-selected-tickers', 'selected_rows'),
@@ -364,23 +280,15 @@ layout = html.Div([
     Input('table-selected-tickers-data-stored', 'data'),
     Input('selected-ticker-summaries-stored', 'data'),
     Input('dash-table-selected-tickers', 'selected_rows'),
-    Input('end-date-year-input', 'value'),
-    Input('end-date-month-input', 'value'),
-    Input('end-date-day-input', 'value'),
-    Input('start-date-year-input', 'value'),
-    Input('start-date-month-input', 'value'),
-    Input('start-date-day-input', 'value')
+    Input('end-date-input-dmc', 'value'),
+    Input('start-date-input-dmc', 'value'),
 )
 def read_table_selected_tickers(
     table_selected_tickers_data,
     selected_ticker_summaries,
     selected_rows,
-    end_date_year,
-    end_date_month,
-    end_date_day,
-    start_date_year,
-    start_date_month,
-    start_date_day
+    end_date,
+    start_date
 ):
 
     tooltip_data = [
@@ -398,18 +306,28 @@ def read_table_selected_tickers(
 
     portfolio_start = f'{min(selected_start_dates)}'
     portfolio_end = f'{max(selected_end_dates)}'
+    min_portfolio_date = datetime.strptime(portfolio_start, '%Y-%m-%d')
+    max_portfolio_date = datetime.strptime(portfolio_end, '%Y-%m-%d')
     tk_portfolio_start = [row['Ticker'] for row in table_selected_tickers_data if row['Data Start'] == portfolio_start][0]
     tk_portfolio_end = [row['Ticker'] for row in table_selected_tickers_data if row['Data End'] == portfolio_end][0]
 
-    if ((start_date_year is None) | (start_date_month is None) | (start_date_day is None)):
-        start_date = datetime.strptime(portfolio_start, '%Y-%m-%d')
+    # if ((start_date_year is None) | (start_date_month is None) | (start_date_day is None)):
+    if start_date is None:
+        start_date = min_portfolio_date  # datetime.strptime(portfolio_start, '%Y-%m-%d')
     else:
-        start_date = correct_date(start_date_year, start_date_month, start_date_day)
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+    # else:
+    #     start_date = correct_date(start_date_year, start_date_month, start_date_day)
 
-    if ((end_date_year is None) | (end_date_month is None) | (end_date_day is None)):
-        end_date = datetime.strptime(portfolio_end, '%Y-%m-%d')
+    # if ((end_date_year is None) | (end_date_month is None) | (end_date_day is None)):
+    if end_date is None:
+        end_date = max_portfolio_date  # datetime.strptime(portfolio_end, '%Y-%m-%d')
     else:
-        end_date = correct_date(end_date_year, end_date_month, end_date_day)
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        if end_date < start_date:
+            end_date = max_portfolio_date
+    # else:
+    #     end_date = correct_date(end_date_year, end_date_month, end_date_day)
 
     overlap_start = f'{max(selected_start_dates)}'
     overlap_end = f'{min(selected_end_dates)}'
@@ -435,7 +353,7 @@ def read_table_selected_tickers(
     # data_overlap['end']:      overlap end date string, '' if no overlap
     # data_overlap['excluded']:  list of tickers with no data available during the overlap period
 
-    no_overlap_message = 'WARNING: No overlapping dates for the selected tickers'
+    no_overlap_message = 'No overlapping dates for the selected tickers'
 
     overlap_start = portfolio_overlap_data['overlap_start']
     overlap_end = portfolio_overlap_data['overlap_end']
@@ -446,10 +364,12 @@ def read_table_selected_tickers(
     excluded_tickers = portfolio_overlap_data['excluded']
 
     if len(excluded_tickers) > 0:
-        excluded_tickers_str = ", ".join(excluded_tickers)
-        excluded_tickers_message = f'WARNING: No data available for {excluded_tickers_str} within the selected period'
+        excluded_tickers_str = ', '.join(excluded_tickers)
+        portfolio_summary_message = f'No data available for {excluded_tickers_str} within the selected period'
+        hide_portfolio_summary_message = False
     else:
-        excluded_tickers_message = ' '
+        portfolio_summary_message = ''
+        hide_portfolio_summary_message = True
 
     portfolio_summary_keys = [
         html.B('Ticker Count'), html.Br(),
@@ -471,14 +391,14 @@ def read_table_selected_tickers(
         ]
         portfolio_summary_values_length = [
             html.Br(),
-            html.B('Length*: '), html.Span(full_length), html.Br(),
-            html.B('Length*: '), html.Span(overlap_length), html.Br()
+            html.B('Length: '), html.Span(full_length), html.Br(),
+            html.B('Length: '), html.Span(overlap_length), html.Br()
         ]
     else:
         portfolio_summary_values_from = [
             html.Span(f'{n_tickers}'), html.Br(),
             html.B('From: '), html.Span(full_start), html.Br(),
-            html.B(no_overlap_message), html.Br()
+            html.B('WARNING: '), html.Span(no_overlap_message), html.Br()
         ]
         portfolio_summary_values_to = [
             html.Br(),
@@ -487,7 +407,7 @@ def read_table_selected_tickers(
        ]
         portfolio_summary_values_length = [
             html.Br(),
-            html.B('Length*: '), html.Span(full_length), html.Br(),            
+            html.B('Length: '), html.Span(full_length), html.Br(),            
             html.Br()
         ]
 
@@ -522,8 +442,13 @@ def read_table_selected_tickers(
         # selected_tickers,
         # str(selected_tickers),
         # f' Portfolio Data Overlap: From {date_overlap_start} To {date_overlap_end}',
+        max_portfolio_date,
+        start_date,
+        end_date,
+        min_portfolio_date,
         dates_portfolio_summary,
-        excluded_tickers_message,
+        hide_portfolio_summary_message,
+        portfolio_summary_message,
         table_selected_tickers_data,
         selected_rows,
         tooltip_data
