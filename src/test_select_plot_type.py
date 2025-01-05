@@ -23,6 +23,7 @@ from mapping_portfolio_downloads import *
 from mapping_tickers import *
 from utils import *
 from download_data import DownloadData
+from download_info import DownloadInfo
 from analyze_prices import AnalyzePrices
 
 # tickers = list(magnificent_7_tickers.keys())
@@ -32,12 +33,13 @@ hist_years, hist_months, hist_days = 5, 0, 0
 start_date = datetime(end_date.year - hist_years, end_date.month - hist_months, end_date.day - hist_days)
 if end_date != datetime.today().date():
     end_date += timedelta(1)  # Both yf.download and yf.Ticker[tk].history() cut the data one day before end_date
-    
+
 tk_market = '^GSPC'
 # tk_market = 'BTC-USD'
 
 df = pd.DataFrame()
-hist_data = DownloadData(end_date, start_date)
+hist_data = DownloadData()
+hist_info = DownloadInfo()
 
 ticker_categories = [x for x in url_settings.keys() if x != 'global']
 print(ticker_categories)
@@ -47,7 +49,7 @@ print(ticker_categories)
 
 max_tickers = 10
 ticker_category = 'futures'
-df = hist_data.download_from_url(ticker_category, max_tickers)
+df = hist_info.download_from_url(ticker_category, max_tickers)
 
 category_name = url_settings[ticker_category]['category_name']
 category_sort_by = url_settings[ticker_category]['sort_by']
@@ -118,7 +120,7 @@ print(f'tickers_org = {tickers_org}')
 
 ##############
 
-dict_info = hist_data.download_yh_info(tickers, tk_market)
+dict_info = hist_info.download_yf_info(tickers, tk_market)
 # print(hist_data.start_date)
 
 # for tk in dict_info:
@@ -130,7 +132,7 @@ dict_info = hist_data.download_yh_info(tickers, tk_market)
 
 ##############
 
-downloaded_data = hist_data.download_yh_data(start_date, end_date, tickers, tk_market)
+downloaded_data = hist_data.download_yf_data(start_date, end_date, tickers, tk_market)
 error_msg = downloaded_data['error_msg']
 
 if error_msg:

@@ -1,7 +1,7 @@
 import yfinance as yf
 import pandas as pd
 import numpy as np
-from datetime import datetime
+from datetime import datetime, timedelta
 from mapping_portfolio_downloads import *
 from mapping_tickers import *
 import sys
@@ -41,6 +41,9 @@ class DownloadData():
             tk_portfolio_end is the ticker corresponding to max(selected_end_dates)
         
         """
+
+        if end_date != datetime.today().date():
+            end_date += timedelta(1)  # Both yf.download and yf.Ticker[tk].history() cut the data one day before end_date
 
         portfolio_overlap_data = {}
 
@@ -133,16 +136,16 @@ class DownloadData():
                 
                 data_index = data.index
 
-                adj_close_tk = pd.DataFrame({tk: data['Adj Close']}, index = data_index)
+                adj_close_tk = pd.DataFrame(data = data['Adj Close'], columns = [tk], index = data_index)
                 df_adj_close = pd.concat([df_adj_close, adj_close_tk], axis = 1)
                 
-                close_tk = pd.DataFrame({tk: data['Close']}, index = data_index)
+                close_tk = pd.DataFrame(data = data['Close'], columns = [tk], index = data_index)
                 df_close = pd.concat([df_close, close_tk], axis = 1)
 
-                volume_tk = pd.DataFrame({tk: data['Volume']}, index = data_index)
+                volume_tk = pd.DataFrame(data = data['Volume'], columns = [tk], index = data_index)
                 df_volume = pd.concat([df_volume, volume_tk], axis = 1)
 
-                dollar_volume_tk = pd.DataFrame({tk: data['Volume'] * data['Adj Close']}, index = data_index)
+                dollar_volume_tk = pd.DataFrame(data = data['Volume'] * data['Adj Close'], columns = [tk], index = data_index)
                 df_dollar_volume = pd.concat([df_dollar_volume, dollar_volume_tk], axis = 1)
 
                 # df_adj_close[tk] = data['Adj Close']
@@ -213,22 +216,22 @@ class DownloadData():
                 if last_nan_date_tk < start_date_tk:
                     df_adj_close_start.loc[tk, 'Adj Close Start Date'] = start_date_tk
 
-            if (not pd.isnull(last_nan_date_tk)) & (last_nan_date_tk == end_date.date()):
+            if (not pd.isnull(last_nan_date_tk)) & (last_nan_date_tk == end_date):
                 missing_end_date_tickers.append(tk)
 
         if len(df_adj_close_start) > 0:
             min_start_date_adj_close_tk = df_adj_close_start['Adj Close Start Date'].min()
-            print(f'WARNING: Data for these tickers start after the selected start date of {start_date.date()}.')
+            print(f'WARNING: Data for these tickers start after the selected start date of {start_date}.')
             for tk in df_adj_close_start.index:
                 print(f"\t{tk}:\t{df_adj_close_start.loc[tk, 'Adj Close Start Date']}")
             print(f'The whole portfolio data will be truncated to start at {min_start_date_adj_close_tk}.')
             print(f'Please consider adjusting the start date or removing some tickers if you wish to avoid that.')
 
-        if last_date_tk < end_date.date():
-            print(f'WARNING: No data available for the selected portfolio tickers at the end date of {end_date.date()}.')
+        if last_date_tk < end_date:
+            print(f'WARNING: No data available for the selected portfolio tickers at the end date of {end_date}.')
             print(f'The portfolio data will be truncated to end at the latest available date of {last_date_tk}.')
         elif len(missing_end_date_tickers) > 0:
-            print(f'WARNING: Data for these tickers is missing for the selected end date of {end_date.date()}.')
+            print(f'WARNING: Data for these tickers is missing for the selected end date of {end_date}.')
             print(missing_end_date_tickers)
             print(f'The whole portfolio data will be truncated to end at the latest date containing data for all tickers.')
         

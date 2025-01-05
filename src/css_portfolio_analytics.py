@@ -237,7 +237,8 @@ collapse_button_table_css = {
 # Selected tickers elements
 select_ticker_container_css = {
     'display': 'inline-block',
-    'border': '1px solid rgba(0, 126, 255, .24)',
+    # 'border': '1px solid rgba(0, 126, 255, .24)',
+    'border': '1px solid rgba(0, 126, 255)',
     'border-radius': '2px',
     'margin-top': '5px',            
     'margin-right': '5px',
@@ -388,6 +389,14 @@ dates_portfolio_summary_title_css = {
     'margin-bottom': '3px',
     'margin-left': '5px'  
 }
+dates_portfolio_summary_keys_css = {
+    'width': '200px',
+    'padding-left': '5px',
+    'display': 'inline-block',
+    'color': '#007eff',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+}
 dates_portfolio_summary_message_css = {
     'font-family': 'Helvetica',
     'font-size': '14px',
@@ -396,7 +405,8 @@ dates_portfolio_summary_message_css = {
     'margin-top': '3px',
     'margin-right': '5px',
     'margin-bottom': '3px',
-    'margin-left': '5px'  
+    'margin-left': '5px',
+    'padding-right': '5px'
 }
 selected_tickers_table_header_css = {
     'font-family': 'Helvetica',

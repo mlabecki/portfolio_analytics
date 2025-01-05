@@ -196,7 +196,7 @@ layout = html.Div([
             hidden = False,
             children = [
                 html.Div(
-                    'PORTFOLIO SUMMARY',
+                    'YOUR PORTFOLIO SUMMARY',
                     id = 'dates-portfolio-summary-title',
                     style = dates_portfolio_summary_title_css
                 ),
@@ -329,10 +329,11 @@ def read_table_selected_tickers(
     # else:
     #     end_date = correct_date(end_date_year, end_date_month, end_date_day)
 
-    overlap_start = f'{max(selected_start_dates)}'
-    overlap_end = f'{min(selected_end_dates)}'
-    tk_overlap_start = [row['Ticker'] for row in table_selected_tickers_data if row['Data Start'] == overlap_start][0]
-    tk_overlap_end = [row['Ticker'] for row in table_selected_tickers_data if row['Data End'] == overlap_end][0]
+    full_overlap_start = max(selected_start_dates)
+    full_overlap_end = min(selected_end_dates)
+    full_overlap_length = len(yf.download(selected_tickers, start = full_overlap_start, end = full_overlap_end, progress = False))
+    # tk_overlap_start = [row['Ticker'] for row in table_selected_tickers_data if row['Data Start'] == overlap_start][0]
+    # tk_overlap_end = [row['Ticker'] for row in table_selected_tickers_data if row['Data End'] == overlap_end][0]
 
     # Use all 4 parameters above to download data just for these two tickers and two dates.
     # Then, after dropna(), count the length of the range of overlapping portfolio dates.
@@ -373,8 +374,9 @@ def read_table_selected_tickers(
 
     portfolio_summary_keys = [
         html.B('Ticker Count'), html.Br(),
-        html.B('Selected Range'), html.Br(),
-        html.B('Common Range'), html.Br()
+        html.B('Available Selected Range'), html.Br(),
+        html.B('Common Selected Range'), html.Br(),
+        html.B('Common Full Range'), html.Br()
     ]
 
     if overlap_start <= overlap_end:
@@ -382,32 +384,38 @@ def read_table_selected_tickers(
         portfolio_summary_values_from = [
             html.Span(f'{n_tickers}'), html.Br(),
             html.B('From: '), html.Span(full_start), html.Br(),
-            html.B('From: '), html.Span(overlap_start), html.Br()
+            html.B('From: '), html.Span(overlap_start), html.Br(),
+            html.B('From: '), html.Span(full_overlap_start), html.Br()
         ]
         portfolio_summary_values_to = [
             html.Br(),
             html.B('To: '), html.Span(full_end), html.Br(),
             html.B('To: '), html.Span(overlap_end), html.Br(),
+            html.B('To: '), html.Span(full_overlap_end), html.Br()
         ]
         portfolio_summary_values_length = [
             html.Br(),
             html.B('Length: '), html.Span(full_length), html.Br(),
-            html.B('Length: '), html.Span(overlap_length), html.Br()
+            html.B('Length: '), html.Span(overlap_length), html.Br(),
+            html.B('Length: '), html.Span(full_overlap_length), html.Br()
         ]
     else:
         portfolio_summary_values_from = [
             html.Span(f'{n_tickers}'), html.Br(),
             html.B('From: '), html.Span(full_start), html.Br(),
-            html.B('WARNING: '), html.Span(no_overlap_message), html.Br()
+            html.B('WARNING: '), html.Span(no_overlap_message), html.Br(),
+            html.B('WARNING: '), html.Span(no_overlap_message), html.Br()            
         ]
         portfolio_summary_values_to = [
             html.Br(),
             html.B('To: '), html.Span(full_end), html.Br(),
+            html.Br(),
             html.Br()
        ]
         portfolio_summary_values_length = [
             html.Br(),
             html.B('Length: '), html.Span(full_length), html.Br(),            
+            html.Br(),
             html.Br()
         ]
 
@@ -416,7 +424,7 @@ def read_table_selected_tickers(
         html.Div(
             portfolio_summary_keys,
             id = 'portfolio-summary-keys',
-            style = portfolio_summary_keys_css
+            style = dates_portfolio_summary_keys_css
         ),
         html.Div(
             portfolio_summary_values_from,
