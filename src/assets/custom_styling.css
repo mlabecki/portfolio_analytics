@@ -1,14 +1,14 @@
 .dash-spreadsheet tr:hover td.dash-cell {
     background-color: #43ac6a !important;
     border-top: 1px solid #43ac6a !important;
-    border-bottom: 2px solid #43ac6a !important;
+    border-bottom: 1px solid #43ac6a !important;
     color: white !important;
 }
 
 .dash-spreadsheet tr:hover td.dash-select-cell {
     background-color: #43ac6a !important;
     border-top: 1px solid #43ac6a !important;
-    border-bottom: 2px solid #43ac6a !important;
+    border-bottom: 1px solid #43ac6a !important;
     color: white !important;
 }
 
@@ -16,7 +16,27 @@
     cursor: pointer !important;
 }
 
+.m_6fa5e2aa, .m_8fb7ebe7, .mantine-Input-input, .mantine-DatePickerInput-input {
+    font-family: Helvetica;
+}
+button, input, select, textarea {
+    font-family: Helvetica;
+}
+*, *::before, *::after {
+    box-sizing: border-box;
+    font-family: Helvetica;
+}
+
+/* https://community.plotly.com/t/style-datatable-tooltip-conditional/28563/2
 .dash-tooltip:before, .dash-tooltip:after {
     border-top-color: #43ac6a !important;
     border-bottom-color: #43ac6a !important;
+} */
+
+#loading {
+    display: none !important;
+}
+
+body:has(#_pages_content[data-dash-is-loading="true"]) #loading {
+    display: flex !important;
 }
