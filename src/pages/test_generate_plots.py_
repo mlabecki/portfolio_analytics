@@ -1,7 +1,11 @@
 import dash
-from dash import Dash, dcc, html, Input, Output, State, callback, dash_table
+from dash import Dash, dcc, html, Input, Output, State, ALL, MATCH, callback, dash_table
 from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
+import dash_loading_spinners as dls
+
+from dash import register_page
 
 import yfinance as yf
 import pandas as pd
@@ -18,127 +22,132 @@ import seaborn as sns
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from operator import itemgetter
+
 from mapping_plot_attributes import *
 from mapping_portfolio_downloads import *
 from mapping_tickers import *
+from mapping_input_tables import *
+from css_portfolio_analytics import *
 from utils import *
+
 from download_data import DownloadData
 from download_info import DownloadInfo
 from analyze_prices import AnalyzePrices
 
-# tickers = list(magnificent_7_tickers.keys())
+register_page(
+    __name__,
+    path = '/test_generate_plots'
+)
 
-end_date = datetime.today().date()
-hist_years, hist_months, hist_days = 5, 0, 0
-start_date = datetime(end_date.year - hist_years, end_date.month - hist_months, end_date.day - hist_days)
-if end_date != datetime.today().date():
-    end_date += timedelta(1)  # Both yf.download and yf.Ticker[tk].history() cut the data one day before end_date
+# end_date = datetime.today().date()
+# hist_years, hist_months, hist_days = 5, 0, 0
+# start_date = datetime(end_date.year - hist_years, end_date.month - hist_months, end_date.day - hist_days)
+# if end_date != datetime.today().date():
+#     end_date += timedelta(1) 
 
-tk_market = '^GSPC'
-# tk_market = 'BTC-USD'
-
-df = pd.DataFrame()
 hist_data = DownloadData()
-hist_info = DownloadInfo()
+analyze_prices = AnalyzePrices()
 
-ticker_categories = [x for x in url_settings.keys() if x != 'global']
-print(ticker_categories)
-# Ticker categories:
-# 'nasdaq100', 'sp500', 'dow_jones', 'biggest_companies',
-# 'biggest_etfs', 'crypto_etfs', 'cryptos_yf', 'cryptos', 'futures'
 
-max_tickers = 10
-ticker_category = 'futures'
-df = hist_info.download_from_url(ticker_category, max_tickers)
+@callback(
+    Output('final-table-selected-tickers', 'children'),
+    Output('tickers-dropdown', 'options'),
+    Output('tickers-dropdown', 'value'),
 
-category_name = url_settings[ticker_category]['category_name']
-category_sort_by = url_settings[ticker_category]['sort_by']
-title_prefix = 'Top ' if not ('Biggest' in category_name) else ''
-print(f'\n{title_prefix}{category_name} by {category_sort_by}\n')
+    Input('final-table-selected-tickers-data-stored', 'data'),
+    Input('final-selected-ticker-summaries-stored', 'tooltip_data')
+)
+def display_table_selected_tickers(
+    table_data,
+    table_tooltip_data
+):
+    """
+    table_data:
+        list of dictionaries in the 'records' format
+    table_tooltip_data:
+        a list of ticker summaries (descriptions)
+    downloaded_data:
+        a dictionary of historical price and volume data with selected tickers as keys
+    """
+    
+    selected_tickers = [row['Ticker'] for row in table_data]
+    first_ticker = selected_tickers[0]
 
-# tickers = ['ZF=F', 'GC=F', 'YM=F']
-# df_ticker_info = pd.DataFrame(index = df['Symbol'], columns = ['No.', 'Name', 'Data Start', 'Data End'])
-df_ticker_info = pd.DataFrame(index = df['Symbol'], columns = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End'])
-# df_ticker_info = pd.DataFrame(index = tickers, columns = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End'])
+    dash_table_selected_tickers = dash_table.DataTable(
+        columns = [{'name': i, 'id': i} for i in table_selected_tickers_columns],
+        data = table_data,
+        editable = False,
+        tooltip_data = table_tooltip_data,
+        css = [
+            {
+            'selector': '.dash-tooltip',
+            'rule': 'border: None;'
+            },
+            {
+            'selector': '.dash-table-tooltip',
+            'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(67, 172, 106) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica; background-color: rgb(227, 255, 237);'
+            },
+            {
+            'selector': '.dash-tooltip:before, .dash-tooltip:after',
+            'rule': 'border-top-color: #43ac6a !important; border-bottom-color: #43ac6a !important;'
+            }            
+        ],
+        tooltip_delay = 0,
+        tooltip_duration = None,
+        style_as_list_view = True,
+        style_header_conditional = [
+            {'if': {'column_id': 'Length*'}, 'width': 45, 'text-align': 'right', 'padding-right': '10px'},
+        ],
+        style_data_conditional = [
+            {'if': 
+                { 'state': 'active'},
+                'backgroundColor': 'white',
+                'border-top': '1px solid rgb(211, 211, 211)',
+                'border-bottom': '1px solid rgb(211, 211, 211)'},
+            {'if': {'column_id': 'No.'}, 'width': 24},
+            {'if': {'column_id': 'Ticker'}, 'width': 45},
+            {'if': {'column_id': 'Currency'}, 'width': 70},
+            {'if': {'column_id': 'Exchange'}, 'width': 72},
+            {'if': {'column_id': 'Data Start'}, 'width': 85},
+            {'if': {'column_id': 'Data End'}, 'width': 85},
+            {'if': {'column_id': 'Length*'}, 'width': 45, 'text-align': 'right', 'padding-right': '15px'},
+        ],
+        id = 'final-dash-table-selected-tickers',
+        style_header = selected_tickers_table_header_css,
+        style_data = selected_tickers_table_data_css,
+    )
 
-ticker_menu_info = {}
-for i, tk in enumerate(df['Symbol']):
-# for i, tk in enumerate(tickers):
-    yf_tk_hist = yf.Ticker(tk).history(period = 'max')
-    yf_tk_info = yf.Ticker(tk).info
-    if len(yf_tk_hist.index) > 0:
-        tk_start, tk_end = str(yf_tk_hist.index[0].date()), str(yf_tk_hist.index[-1].date())
-        # tk_info_full = f"{i + 1}. {tk}: {df.loc[i, 'Name']}, {tk_start}, {tk_end}"
-        
-        # print(tk_info)
-        # print(f"{i + 1}. {tk}:\t\t{df.loc[i, 'Name']}, {tk_start}-{tk_end}")
+    dash_table_selected_tickers_div = html.Div(
+        id = 'final-dash-table-selected-tickers-div',
+        children = [
+            html.Div(
+                'YOUR PORTFOLIO',
+                id = f'final-table-selected-tickers-title',
+                style = input_table_title_css
+            ),
+            html.Div(
+                id = 'dates-table-selected-tickers',
+                children = [dash_table_selected_tickers]
+            ),
+            html.Div(
+                '* Length of the range of dates in business days excluding weekends and holidays',
+                id = 'dates-table-selected-tickers-footnote',
+                style = table_selected_tickers_footnote
+            )
+        ],
+        style = {'width': '1300px', 'margin-left': '5px'}
+    )
 
-        df_ticker_info.loc[tk, 'No.'] = i + 1
-        df_ticker_info.loc[tk, 'Ticker'] = tk
+    return (
+        dash_table_selected_tickers_div,
+        selected_tickers,
+        first_ticker
+    )
 
-        if 'longName' in yf_tk_info.keys():
-            tk_name = yf_tk_info['longName']
-        elif 'shortName' in yf_tk_info.keys():
-            tk_name = yf_tk_info['shortName']
-        else:
-            tk_name = df.loc[i, 'Name']
-        df_ticker_info.loc[tk, 'Name'] = tk_name
-
-        df_ticker_info.loc[tk, 'Data Start'] = tk_start
-        df_ticker_info.loc[tk, 'Data End'] = tk_end
-
-        tk_info = f"{tk}: {tk_name}"
-        ticker_menu_info.update({tk_info: tk})
-
-    else:
-        print(f'SORRY: Cannot get data for {tk}')
-
-df_ticker_info = df_ticker_info.dropna()
-
-print(df_ticker_info)
-print(df_ticker_info['Data End'].min())
-
-tickers = list(df['Symbol'])
-
-tk = tickers[0]
-ticker_menu_info_list = list(ticker_menu_info.keys())
-# ticker_names = list(df['Name'])
-
-"""
-tickers = [  # Spot and futures
-    'GC=F',  # Gold, Comex
-    'SI=F',  # Silver, Comex
-    'HG=F',  # Copper, Comex
-    'PL=F',  # Platinum, NY Mercantile
-    'PA=F',  # Palladium, NY Mercantile
-    ]
-"""
-
-tickers_org = tickers.copy()  #
-
-print(f'tickers_org = {tickers_org}')
+# Initialize an empty table first so its id is in the layout
+# dash_final_table_selected_tickers_div = display_final_selected_ticker_table()
 
 ##############
-
-dict_info = hist_info.download_yf_info(tickers, tk_market)
-# print(hist_data.start_date)
-
-# for tk in dict_info:
-    # print(f'{tk}:')
-    # dict_info_tk = dict_info[tk]
-    # for field in dict_info_tk.keys():
-        # print(f'\t{field}:\t{dict_info_tk[field]}')
-    # print('')
-
-##############
-
-downloaded_data = hist_data.download_yf_data(start_date, end_date, tickers, tk_market)
-error_msg = downloaded_data['error_msg']
-
-if error_msg:
-    print(error_msg)
-
-else:
 
     df_adj_close = downloaded_data['Adj Close']
     df_close = downloaded_data['Close']
@@ -202,53 +211,6 @@ deck_types = ['Single', 'Double', 'Triple']
 
 ##############
 
-df_ticker_info.insert(0, ' ', '⬜')
-
-table = html.Div([
-    dash_table.DataTable(
-        columns = [{'name': i, 'id': i} for i in df_ticker_info.columns],
-        data = df_ticker_info.to_dict('records'),
-        editable = False,
-        style_as_list_view = True,
-        style_data_conditional = [
-            # {'if': {'state': 'active'},'backgroundColor': 'white', 'border': '1px solid white'},
-            {'if': {
-                'state': 'active'},
-                'backgroundColor': 'white',
-                'border-top': '1px solid rgb(211, 211, 211)',
-                'border-bottom': '1px solid rgb(211, 211, 211)'},
-            {'if': {'column_id': ' '}, 'cursor': 'pointer'},
-            # {'if': {'column_id': 'Name'}, 'textAlign': 'left', 'text-indent': '10px', 'width': 300},
-        ],
-        fixed_rows = {'headers': True},
-        id = 'ticker-table',
-        style_header = {
-            'font-family': 'Helvetica',
-            'font-size' : '13px',
-            'font-weight' : 'bold',
-            'width': '15px',
-            'background': 'white',
-            'text-align': 'left'
-            # 'text-align': 'center'
-        },
-        style_data = {
-            # 'cursor': 'pointer',
-            'font-family': 'Helvetica',
-            'font-size' : '13px',
-            'width': '15px',
-            'background': 'white',
-            'text-align': 'left',
-            'border-top': '1px solid rgb(211, 211, 211)',
-            'border-bottom': '1px solid rgb(211, 211, 211)'
-            # 'text-align': 'center'
-        },
-    )
-])
-
-#################
-
-app = dash.Dash(__name__, external_stylesheets = [dbc.themes.YETI])     # sharp corners
-
 #################
 # html.Script(src='https://cdn.plot.ly/plotly-latest.min.js')
 
@@ -285,7 +247,17 @@ select_ticker_right_css = {
     'vertical-align': 'center'
 }
 
-app.layout = html.Div([
+layout = html.Div([
+
+    # LOADING WRAPPER
+    dcc.Loading([
+            
+    # MAIN TITLE
+    html.Div(
+        'Select template, ticker and plot types',
+        id = 'dates-main-title',
+        style = ticker_main_title_css
+    ),
 
     html.Div([
             html.Div(html.Span('x'), id = 'select-ticker-icon', style = select_ticker_left_css),
@@ -317,6 +289,37 @@ app.layout = html.Div([
     #         'font-size' : '13px',
     #     }
     # ),
+
+##### BEGIN SELECTED TICKERS TABLE
+
+    html.Div([
+        # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/
+        html.Div(
+            dbc.Button(
+                id = 'collapse-button-final-table-selected-tickers',
+                class_name = 'ma-1',
+                color = 'primary',
+                size = 'sm',
+                n_clicks = 0,
+                style = {
+                    'display': 'inline-block',
+                    'margin-right': '5px',
+                    'text-align': 'left',
+                    'font-family': 'Helvetica',
+                    'font-weight': 'bold',
+                    'width': '250px'
+                }
+            )
+        ),
+        dbc.Collapse(
+            html.Div(
+                id = 'final-table-selected-tickers',
+                children = []
+            ),
+            id = 'collapse-final-table-selected-tickers',
+            is_open = False
+        )
+    ]),
 
     ##### BEGIN TEMPLATE CONTROLS
 
@@ -351,11 +354,11 @@ app.layout = html.Div([
                     html.Div([
                         html.Div('Ticker', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
-                            id='tickers-dropdown',
+                            id = 'tickers-dropdown',
                             # options = tickers,
                             # value = tickers[0],
-                            options = ticker_menu_info_list,
-                            value = ticker_menu_info_list[0],
+                            # options = ticker_menu_info_list,
+                            # value = ticker_menu_info_list[0],
                             clearable = False,
                             # clearable = True,
                             # multi = True,
@@ -769,34 +772,68 @@ app.layout = html.Div([
     html.Div(id = 'fig-div', children = [])
             # [dcc.Graph(id='test-graph', figure = {})],)
 
+    ],
+    
+    id = 'dates-loading-wrapper',
+    custom_spinner = html.Div([
+        'Loading Selected Tickers',
+        html.Br(),
+        html.Br(),
+        dls.Fade(color = 'midnightblue'),
+        html.Br(),
+        'Please Wait ...'
+    ],
+    style = page_loading_wrapper_css
+    ),
+    overlay_style = {'visibility': 'visible', 'opacity': 0.35, 'filter': 'blur(3px)'},
+    delay_show = 1000,
+    delay_hide = 1000
+    
+    ),  # Loading
+
 ])
 
-@app.callback(
-    Output('select-ticker-label-tk', 'children'),
-    Output('select-ticker-label-name', 'children'),
-    # Output('select-ticker', 'hidden'),
-    Input('tickers-dropdown', 'value'),
-    # State('select-ticker', 'hidden')
-    # Input('select-ticker-icon', 'n_clicks')
-)
-def add_ticker_select(tk_info):
-    tk = ticker_menu_info[tk_info]
-    name = tk_info.split(': ')[1]
-    return tk, name
+# @callback(
+#     Output('select-ticker-label-tk', 'children'),
+#     Output('select-ticker-label-name', 'children'),
+#     # Output('select-ticker', 'hidden'),
+#     Input('tickers-dropdown', 'value'),
+#     # State('select-ticker', 'hidden')
+#     # Input('select-ticker-icon', 'n_clicks')
+# )
+# def add_ticker_select(tk_info):
+#     tk = ticker_menu_info[tk_info]
+#     name = tk_info.split(': ')[1]
+#     return tk, name
 
-@app.callback(
-    # Output('select-ticker_label', 'children'),
-    Output('select-ticker', 'hidden'),
-    # Input('tickers-dropdown', 'value'),
-    Input('select-ticker-icon', 'n_clicks')
+# @callback(
+#     # Output('select-ticker_label', 'children'),
+#     Output('select-ticker', 'hidden'),
+#     # Input('tickers-dropdown', 'value'),
+#     Input('select-ticker-icon', 'n_clicks')
+# )
+# def remove_ticker_select(n):
+#     if n:
+#         return True
+#     else:
+#         return False
+
+@callback(
+    Output('collapse-button-final-table-selected-tickers', 'children'),
+    Output('collapse-final-table-selected-tickers', 'is_open'),
+    Input('collapse-button-final-table-selected-tickers', 'n_clicks'),
+    State('collapse-final-table-selected-tickers', 'is_open')
 )
-def remove_ticker_select(n):
+def toggle_collapse_final_table_selected_tickers(n, is_open):
+    # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
+    title = 'YOUR PORTFOLIO'
+    label = f'► {title}' if is_open else f'▼ {title}'
     if n:
-        return True
+        return label, not is_open
     else:
-        return False
-    
-@app.callback(
+        return f'► {title}', is_open
+
+@callback(
     Output('collapse-button-template', 'children'),
     Output('collapse-template', 'is_open'),
     Input('collapse-button-template', 'n_clicks'),
@@ -804,14 +841,14 @@ def remove_ticker_select(n):
 )
 def toggle_collapse_template(n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
-    title = 'TICKER AND TEMPLATE'
+    title = 'TEMPLATE AND TICKER'
     label = f'► {title}' if is_open else f'▼ {title}'
     if n:
         return label, not is_open
     else:
         return f'► {title}', is_open
 
-@app.callback(
+@callback(
     Output('lower-height-input', 'disabled'),
     Output('bollinger-deck-dropdown', 'options'),
     Input('deck-type-dropdown', 'value'))
@@ -823,7 +860,7 @@ def disable_options(deck_type):
     else:
         return False, [1, 2, 3]
 
-@app.callback(
+@callback(
     Output('collapse-button-drawdowns', 'children'),
     Output('collapse-drawdowns', 'is_open'),
     Input('collapse-button-drawdowns', 'n_clicks'),
@@ -831,14 +868,14 @@ def disable_options(deck_type):
 )
 def toggle_collapse_drawdowns(n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
-    title = 'DRAWDOWNS (DD)'
+    title = 'DRAWDOWNS'
     label = f'► {title}' if is_open else f'▼ {title}'
     if n:
         return label, not is_open
     else:
         return f'► {title}', is_open
 
-@app.callback(
+@callback(
     Output('collapse-button-bollinger', 'children'),
     Output('collapse-bollinger', 'is_open'),
     Input('collapse-button-bollinger', 'n_clicks'),
@@ -853,72 +890,83 @@ def toggle_collapse_bollinger(n, is_open):
     else:
         return f'► {title}', is_open
 
-@app.callback(
-    # Output(component_id = 'drawdowns-number-dropdown', component_property = 'options'),
-    # Output(component_id = 'drawdowns-number-dropdown', component_property = 'value'),
-    Output(component_id = 'drawdowns-number-input', component_property = 'max'),
-    Output(component_id = 'drawdowns-number-input', component_property = 'value'),
-    Input(component_id = 'tickers-dropdown', component_property = 'value'),
-    Input(component_id = 'drawdowns-number-input', component_property = 'value')
-)
-def update_drawdowns_number_dropdown(tk_menu_info, dd_number):
-    tk = ticker_menu_info[tk_menu_info]
-    n_drawdowns = portfolio_drawdown_data[tk]['Total Drawdowns']
-    # dd_number_options = [x for x in range(n_drawdowns + 1)][1:]
-    dd_number_value = min(dd_number, n_drawdowns)
-    return n_drawdowns, dd_number_value
-    # return dd_number_options, dd_number_value
 
-@app.callback(
+# @callback(
+#     # Output('drawdowns-number-dropdown', 'options'),
+#     # Output('drawdowns-number-dropdown', 'value'),
+#     Output('drawdowns-number-input', 'max'),
+#     Output('drawdowns-number-input', 'value'),
+# 
+#     Input('tickers-dropdown', 'value'),
+#     Input('drawdowns-number-input', 'value'),
+#     Input('drawdowns-topby-dropdown', 'value')
+# )
+# def update_drawdowns_number_dropdown(tk, dd_number, sort_by):
+#     # Must change price type to reflect user's selection - add Input parameter
+#     drawdown_data = analyze_prices.summarize_tk_drawdowns(df_close, tk, sort_by)
+#     n_drawdowns = portfolio_drawdown_data[tk]['Total Drawdowns']
+#     # dd_number_options = [x for x in range(n_drawdowns + 1)][1:]
+#     dd_number_value = min(dd_number, n_drawdowns)
+#     return n_drawdowns, dd_number_value
+#     # return dd_number_options, dd_number_value
 
-    # Output(component_id = 'test-graph', component_property = 'figure'),
-    # Output(component_id = 'fig_div', component_property = 'children', allow_duplicate = True),
-    # Output(component_id = 'test-graph', component_property = 'figure'),
-    Output(component_id = 'fig-div', component_property = 'children'),
-    Output(component_id = 'drawdown-controls', component_property = 'style'),
-    Output(component_id = 'bollinger-controls', component_property = 'style'),
-    Output(component_id = 'template-controls', component_property = 'style'),
+@callback(
 
-    Input(component_id = 'reset-axes-template', component_property = 'n_clicks'),
-    Input(component_id = 'reset-axes-drawdowns', component_property = 'n_clicks'),
-    Input(component_id = 'reset-axes-bollinger', component_property = 'n_clicks'),
+    # Output('test-graph', 'figure'),
+    # Output('fig_div', 'children', allow_duplicate = True),
+    # Output('test-graph', 'figure'),
+    Output('fig-div', 'children'),
+    Output('drawdown-controls', 'style'),
+    Output('bollinger-controls', 'style'),
+    Output('template-controls', 'style'),
+
+    Output('drawdowns-number-input', 'max'),
+    Output('drawdowns-number-input', 'value'),
+
+    Input('selected-tickers-downloaded-data-stored', 'data'),
+
+    Input('reset-axes-template', 'n_clicks'),
+    Input('reset-axes-drawdowns', 'n_clicks'),
+    Input('reset-axes-bollinger', 'n_clicks'),
     
     # template options
-    Input(component_id = 'tickers-dropdown', component_property = 'value'),
-    Input(component_id = 'theme-dropdown', component_property = 'value'),
-    Input(component_id = 'deck-type-dropdown', component_property = 'value'),
-    Input(component_id = 'secondary-y-dropdown', component_property = 'value'),
-    Input(component_id = 'width-input', component_property = 'value'),
-    Input(component_id = 'upper-height-input', component_property = 'value'),
-    Input(component_id = 'lower-height-input', component_property = 'value'),
+    Input('tickers-dropdown', 'value'),
+    Input('theme-dropdown', 'value'),
+    Input('deck-type-dropdown', 'value'),
+    Input('secondary-y-dropdown', 'value'),
+    Input('width-input', 'value'),
+    Input('upper-height-input', 'value'),
+    Input('lower-height-input', 'value'),
     
     # drawdowns options
-    Input(component_id = 'drawdowns-number-input', component_property = 'value'),
-    Input(component_id = 'drawdowns-topby-dropdown', component_property = 'value'),
-    Input(component_id = 'drawdowns-display-dropdown', component_property = 'value'),
-    Input(component_id = 'drawdowns-color-dropdown', component_property = 'value'),
-    Input(component_id = 'drawdowns-price-color-dropdown', component_property = 'value'),
+    Input('drawdowns-number-input', 'value'),
+    Input('drawdowns-topby-dropdown', 'value'),
+    Input('drawdowns-display-dropdown', 'value'),
+    Input('drawdowns-color-dropdown', 'value'),
+    Input('drawdowns-price-color-dropdown', 'value'),
     # prevent_initial_call=True #,
-    #Input(component_id = 'overlay-dropdown', component_property = 'value')
+    #Input('overlay-dropdown', 'value')
 
     # bollinger options
-    Input(component_id = 'bollinger-deck-dropdown', component_property = 'value'),
-    Input(component_id = 'bollinger-window-input', component_property = 'value'),
-    Input(component_id = 'bollinger-nstd-input', component_property = 'value'),
-    Input(component_id = 'bollinger-nbands-input', component_property = 'value'),
-    Input(component_id = 'bollinger-color-theme-dropdown', component_property = 'value'),
+    Input('bollinger-deck-dropdown', 'value'),
+    Input('bollinger-window-input', 'value'),
+    Input('bollinger-nstd-input', 'value'),
+    Input('bollinger-nbands-input', 'value'),
+    Input('bollinger-color-theme-dropdown', 'value'),
 
-    
+   
 )
 
 def update_plot(
+
+        downloaded_data,
+
         n_click_template,
         n_click_dd,
         n_click_bollinger,
 
         # ticker and template options
-        # tk,
-        tk_menu_info,
+        tk,
         theme,
         deck_type,
         sec_y,
@@ -944,7 +992,7 @@ def update_plot(
     ):
 
     # fig_data = create_graph(theme, tk, drawdown_color, overlay_color_theme)
-    tk = ticker_menu_info[tk_menu_info]
+    date_index = downloaded_data[tk]['ohlc'].index
     theme = theme.lower()
     deck_type = deck_type.lower()
     secondary_y = False if sec_y == 'No' else True
@@ -959,6 +1007,8 @@ def update_plot(
         theme = theme
     )
 
+    close_tk = downloaded_data[tk]['ohlc']['Close']
+
     # if (theme_drawdowns != theme):
     #     theme = theme_drawdowns
 
@@ -971,16 +1021,17 @@ def update_plot(
     bollinger_div_style = drawdown_div_style
     template_div_style = drawdown_div_style
 
-    drawdown_data = portfolio_drawdown_data[tk]
-    selected_drawdown_data = analyze_prices.select_tk_drawdowns(drawdown_data, n_top)
-    # n_drawdowns = len(drawdown_data['Drawdown Stats'])
-    # n_drawdown_list = [x for x in range(n_drawdowns + 1)][1:]
+    drawdown_data_tk = analyze_prices.summarize_tk_drawdowns(close_tk, drawdown_top_by)
+    n_drawdowns = drawdown_data_tk['Total Drawdowns']
+    # dd_number_options = [x for x in range(n_drawdowns + 1)][1:]
+    dd_number_value = min(n_top, n_drawdowns)
+    selected_drawdown_data = analyze_prices.select_tk_drawdowns(drawdown_data_tk, n_top)
 
     show_trough_to_recovery = True if drawdown_display == 'Peak To Recovery' else False
     drawdown_top_by = 'length' if drawdown_top_by == 'Total Length' else 'depth'
     fig_data = analyze_prices.add_drawdowns(
         fig_data,
-        df_close[tk],
+        close_tk,
         tk,
         selected_drawdown_data,
         n_top_drawdowns = n_top,
@@ -1001,7 +1052,7 @@ def update_plot(
     # fig = fig_data['fig']
 
     
-    bollinger_data = analyze_prices.bollinger_bands(df_close[tk], bollinger_window, bollinger_nstd, bollinger_nbands)
+    bollinger_data = analyze_prices.bollinger_bands(close_tk, bollinger_window, bollinger_nstd, bollinger_nbands)
     bollinger_list = bollinger_data['list']
     fig_data = analyze_prices.add_bollinger_overlays(
         fig_data,
@@ -1034,9 +1085,12 @@ def update_plot(
     # fig_div = html.Div(html.Div(children = [dcc.Graph(id = 'drawdowns-graph', figure = fig)]))
     fig_div = dcc.Graph(id='drawdowns-graph', figure = fig)
 
-    return fig_div, drawdown_div_style, bollinger_div_style, template_div_style
-    
+    return (
+        fig_div,
+        drawdown_div_style,
+        bollinger_div_style,
+        template_div_style,
 
-if __name__ == '__main__':
-    app.run_server(debug=True, port=8052)
-    # app.run_server(debug=False, port=8052)
+        n_drawdowns,
+        dd_number_value
+    )

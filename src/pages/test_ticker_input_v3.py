@@ -108,28 +108,7 @@ def initialize_input_table_divs(
                         size = 'sm',
                         n_clicks = 0,
                         style = collapse_button_table_css
-                    ),                
-                #    html.Div(
-                #        id = f'n-selected-{id_string}-container',
-                #        children = [
-                #            html.Div(
-                #                id = f'n-selected-{id_string}',
-                #                hidden = False,
-                #                style = n_preselected_category_css
-                #            ),
-                #            html.Div(
-                #                f'/ {max_tickers[category]}',
-                #                hidden = False,
-                #                style = n_tickers_category_css
-                #            ),
-                #            html.Div(
-                #                'pre-selected',
-                #                hidden = False,
-                #                style = pre_selected_string
-                #            )
-                #        ],
-                #        style = {'display': 'inline-block'}
-                #    )
+                    ),
                 ]),
 
                 dbc.Collapse(
@@ -340,8 +319,6 @@ layout = html.Div([
 
 ####################################################################
 
-# ticker_info = {}
-
 @callback(
     # preselected_table_titles
     Output('table-biggest-companies-title', 'children'),
@@ -450,7 +427,6 @@ def read_preselected_tickers(
     preselected_ticker_tables
 ):
 
-    # preselected_ticker_tables = {}  # {category: [{tk: tk_name}]}
     ticker_info = {}
     dash_input_tables = {}
     excluded_tickers = []
@@ -590,8 +566,8 @@ def read_preselected_tickers(
                 row_ticker_map.update({tk: i})
             
             # Update ticker_category_info_map
-            ticker_category_info_map[category]['df'] = df_info_tickers.to_dict()  # Dictionary !
-            dash_table_data = df_info_tickers.to_dict('records')  # List of dictionaries !
+            ticker_category_info_map[category]['df'] = df_info_tickers.to_dict()  # Dictionary!
+            dash_table_data = df_info_tickers.to_dict('records')  # List of dictionaries!
             ticker_category_info_map[category]['row'] = row_ticker_map
             ticker_category_info_map[category]['hidden'] = False
 
@@ -620,7 +596,6 @@ def read_preselected_tickers(
         excluded_tickers_message = f'WARNING: No historical data available for {excluded_tickers_str} — {plural_adjustment} been removed from list'
         hide_tk_input_message = False
         hide_custom_ticker_info = True
-        # hide_custom_ticker_info = False
     else:
         excluded_tickers_message = ''
         hide_tk_input_message = True
@@ -807,10 +782,8 @@ def read_preselected_tickers(
     Output('dash-table-volatility-indices', 'selected_rows'),
     Output('dash-table-benchmarks', 'selected_rows'),
 
-    # Output('selected-tickers-stored', 'data'),
     Output('table-selected-tickers-data-stored', 'data'),
     Output('selected-ticker-summaries-stored', 'data'),
-    # Output('dash-table-selected-tickers-stored', 'children'),
 
     Input('ticker-category-info-map', 'data'),
     Input('ticker-info', 'data'),
@@ -1117,7 +1090,6 @@ def output_custom_tickers(
         yf_ticker_input = yf.Ticker(tk_input, session = session)
         # yf_ticker_input.actions
 
-        # _ = yf.download(tk_input, progress = False)
         tk_hist = yf_ticker_input.history(period = 'max')
         tk_info = yf_ticker_input.info
         # Unfortunately a failure of yf.Ticker(tk).info query does not add tk to yf.shared._ERRORS
@@ -1129,7 +1101,6 @@ def output_custom_tickers(
 
         elif tk_info['quoteType'] not in custom_ticker_table_columns.keys():
             # Info available but quoteType is unknown
-            # tk_input_message = f"ERROR: Unknown ticker type {tk_info['quoteType']} for {tk_input}"
             # To avoid tickers like 'BOO', which has quoteType MUTUALFUND but only a cryptic name 79110
             tk_input_message = f'ERROR: Unknown ticker type for {tk_input}'
             hide_tk_input_message = False
@@ -1292,38 +1263,22 @@ def output_custom_tickers(
         selected_rows = [k for k in table_selected_rows[category] if k not in prev_table_selected_rows[category]]
         if len(selected_rows) > 0:
             for row in selected_rows:
-                # added_ticker = df_info[row]['Ticker']
                 added_ticker = [tk for tk in row_map.keys() if row_map[tk] == row][0]
                 if added_ticker not in added_tickers:
                     added_tickers.append(added_ticker)
                 if added_ticker not in updated_tickers:
                     updated_tickers.append(added_ticker)
             break
-            # for tk in df_info['No.'].keys():
-            #     # if (df_info['Data Start'][tk] != 'N/A') & (df_info['No.'][tk] == 1 + selected_rows[0]):
-            #     if df_info['No.'][tk] == 1 + selected_rows[0]:
-            #         added_ticker = df_info['Ticker'][tk]
-            #         if added_ticker not in updated_tickers:
-            #             updated_tickers.append(added_ticker)
-            #         break
         else:
             unselected_rows = [k for k in prev_table_selected_rows[category] if k not in table_selected_rows[category]]
             if len(unselected_rows) > 0:
                 for row in unselected_rows:
                     removed_ticker = [tk for tk in row_map.keys() if row_map[tk] == row][0]
-                    # removed_ticker = df_info.index[df_info['No.'] == row + 1][0]
                     if removed_ticker not in removed_tickers:
                         removed_tickers.append(removed_ticker)
                     if removed_ticker in updated_tickers:
                         updated_tickers.remove(removed_ticker)
                 break                
-                # for tk in df_info['No.'].keys():
-                #     if df_info['No.'][tk] == 1 + unselected_rows[0]:
-                #         removed_ticker = df_info['Ticker'][tk]
-                #         # if (removed_ticker in updated_tickers) & (removed_ticker not in excluded_tickers):
-                #         if (removed_ticker in updated_tickers):
-                #             updated_tickers.remove(removed_ticker)
-                #         break
 
     # Make sure added_ticker is selected in all tables and removed_ticker is removed from all tables
     if added_tickers != []:
@@ -1421,7 +1376,6 @@ def output_custom_tickers(
                             ],
                             style = {'display': 'block'}
                         ),
-                        # html.Br(),
                         html.Div(
                             f"{ticker_info[tk]['summary']}",
                             id = 'popover-select-ticker-summary',
@@ -1460,84 +1414,6 @@ def output_custom_tickers(
 
     dash_table_selected_tickers_data = table_selected_tickers.to_dict('records')
 
-    dash_table_selected_tickers = dash_table.DataTable(
-    # dash_table_selected_tickers_div = [html.Div(
-    #    dash_table.DataTable(        
-            columns = [{'name': i, 'id': i} for i in table_selected_tickers_columns],
-            data = dash_table_selected_tickers_data,
-            editable = False,
-            row_selectable = 'multi',
-            selected_rows = [k for k in range(len(dash_table_selected_tickers_data))],
-            tooltip_data = [
-                { column: {'value': ticker_info[row['Ticker']]['summary'], 'type': 'markdown' }
-                for column in row.keys() }
-                for row in dash_table_selected_tickers_data  # e.g. {'No.': 1, 'Ticker': 'AAPL', ...} etc.
-            ],
-            css = [
-                {
-                'selector': '.dash-tooltip',
-                'rule': 'border: None;'
-                },
-                {
-                'selector': '.dash-table-tooltip',
-                'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(67, 172, 106) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica; background-color: rgb(227, 255, 237);'
-                },
-                {
-                'selector': '.dash-tooltip:before, .dash-tooltip:after',
-                'rule': 'border-top-color: #43ac6a !important; border-bottom-color: #43ac6a !important;'
-                }            
-                # # {
-                # # 'selector': '.dash-spreadsheet tr',
-                # # 'rule': 'border-top: 2px solid rgb(211, 211, 211) !important;'
-                # # },
-                # {
-                # 'selector': '.dash-tooltip',
-                # 'rule': 'border: None;'
-                # },
-                # {
-                # 'selector': '.dash-spreadsheet tr:hover td.dash-cell',
-                # 'rule': 'background-color: rgb(67, 172, 106) !important; border-top: 2px solid rgb(67, 172, 106) !important; border-bottom: 2px solid rgb(67, 172, 106) !important; color: white !important' 
-                # # 'rule': 'background-color: rgb(211, 211, 211) !important; border-top: 2px solid rgb(211, 211, 211) !important; border-bottom: 2px solid rgb(211, 211, 211) !important; color: black !important' 
-                # },
-                # # {
-                # # 'selector': '.dash-spreadsheet td.dash-delete-cell',
-                # # 'rule': 'background-color: white !important; border-top: 2px solid rgb(67, 172, 106) !important; border-bottom: 2px solid rgb(67, 172, 106) !important; text-align: center !important; color: darkred !important; font-size: 20px !important; font-weight: bold !important;' 
-                # # },
-                # # {
-                # # 'selector': '.dash-spreadsheet tr:hover td.dash-delete-cell',
-                # # 'rule': 'background-color: rgb(67, 172, 106) !important; border-top: 2px solid rgb(67, 172, 106) !important; border-bottom: 2px solid rgb(67, 172, 106) !important; color: darkred !important; font-weight: bold;' 
-                # # },
-                # {
-                # 'selector': '.dash-tooltip:before, .dash-tooltip:after',
-                # 'rule': 'border-top-color: rgb(67, 172, 106) !important; border-bottom-color: rgb(67, 172, 106) !important;'
-                # },
-                # {
-                # 'selector': '.dash-table-tooltip',
-                # 'rule': 'max-width: 500px; width: 500px !important; background-color: rgb(227, 255, 237); border: 1px solid rgb(67, 172, 106) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica;'
-                # }
-            ],
-            tooltip_delay = 0,
-            tooltip_duration = None,
-            style_as_list_view = True,
-            style_data_conditional = [
-                {'if': 
-                    { 'state': 'active'},
-                    'backgroundColor': 'white',
-                    'border-top': '1px solid rgb(211, 211, 211)',
-                    'border-bottom': '1px solid rgb(211, 211, 211)'},
-                {'if': {'column_id': 'No.'}, 'width': 24},
-                {'if': {'column_id': 'Ticker'}, 'width': 45},
-                {'if': {'column_id': 'Currency'}, 'width': 70},
-                {'if': {'column_id': 'Exchange'}, 'width': 72},
-                {'if': {'column_id': 'Data Start'}, 'width': 85},
-                {'if': {'column_id': 'Data End'}, 'width': 85},
-                {'if': {'column_id': 'Length*'}, 'width': 80},
-            ],
-            id = 'dash-table-selected-tickers',
-            style_header = selected_tickers_table_header_css,
-            style_data = selected_tickers_table_data_css,
-        )
-
     ################################
 
     n_tickers = len(updated_tickers)
@@ -1546,21 +1422,11 @@ def output_custom_tickers(
         
         hide_ticker_container = False
 
-        # portfolio_data_start = f"{min([ticker_info[tk]['start'] for tk in updated_tickers if ticker_info[tk]['start'] != 'N/A'])}"
-        # portfolio_data_end = f"{max([ticker_info[tk]['end'] for tk in updated_tickers if ticker_info[tk]['end'] != 'N/A'])}"
-        # portfolio_overlap_data_start = f"{max([ticker_info[tk]['start'] for tk in updated_tickers if ticker_info[tk]['start'] != 'N/A'])}"
-        # portfolio_overlap_data_end = f"{min([ticker_info[tk]['end'] for tk in updated_tickers if ticker_info[tk]['end'] != 'N/A'])}"
-
         portfolio_data_start = f"{min([ticker_info[tk]['start'] for tk in updated_tickers])}"
         portfolio_data_end = f"{max([ticker_info[tk]['end'] for tk in updated_tickers])}"
-        # portfolio_data_length = f'{len(pd.bdate_range(portfolio_data_start, portfolio_data_end))} business days'
 
         portfolio_overlap_data_start = f"{max([ticker_info[tk]['start'] for tk in updated_tickers])}"
         portfolio_overlap_data_end = f"{min([ticker_info[tk]['end'] for tk in updated_tickers])}"
-        # portfolio_overlap_data_length = f'{len(pd.bdate_range(portfolio_overlap_data_start, portfolio_overlap_data_end))} business days'
-
-        # test_max_length = max([ticker_info[tk]['length'] for tk in updated_tickers])
-        # test_overlap_length = min([ticker_info[tk]['length'] for tk in updated_tickers])
 
         no_overlap_message = 'WARNING: No overlapping dates in the selection'
 
@@ -1620,8 +1486,6 @@ def output_custom_tickers(
         select_ticker_portfolio_summary = html.Div([])
         hide_ticker_container = True
 
-    # dash_selected_tickers = updated_tickers.copy()
-
     return (
         ticker_divs,
         hide_ticker_container,
@@ -1657,10 +1521,8 @@ def output_custom_tickers(
         table_selected_rows['volatility_indices'],
         table_selected_rows['benchmarks'],
 
-        # dash_selected_tickers,
         dash_table_selected_tickers_data,
         selected_ticker_summaries
-        # dash_table_selected_tickers_div
     )
 
 

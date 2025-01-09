@@ -20,19 +20,19 @@ from mapping_plot_attributes import *
 class AnalyzePrices():
 
     def __init__(
-        self,
-        end_date: datetime,
-        start_date: datetime,
-        tickers = []
+        self
+        # end_date: datetime,
+        # start_date: datetime,
+        # tickers = []
     ):
         """
         end_date:   defaults to today's date, can be changed by user
         start_date: can be specified explicitly or derived based on desired length of history
         tickers:    user-specified based on suggested lists or a custom synthetic portfolio 
         """
-        self.end_date = end_date
-        self.start_date = start_date
-        self.tickers = tickers
+        # self.end_date = end_date
+        # self.start_date = start_date
+        # self.tickers = tickers
 
 
     ##### WELLES WILDER MOVING AVERAGE #####
@@ -1079,9 +1079,6 @@ class AnalyzePrices():
             available for overlay is Close.
         """
 
-        # x_min = start_date if x_min is None else x_min
-        # x_max = end_date if x_max is None else x_max
-
         fig_macd = fig_data['fig']
         plot_height = fig_data['plot_height'][target_deck]
         deck_type = fig_data['deck_type']
@@ -1575,12 +1572,10 @@ class AnalyzePrices():
     def summarize_tk_drawdowns(
         self,
         df_price,
-        tk,
         sort_by
     ):
         """
-        df_price:   series/dataframe of historical prices, such as df_adj_close
-        tk:         ticker for which to perform the analysis
+        df_price:   series of historical prices for a certain ticker
         sort_by:    column to sort by, should be a based on user input
         return:     drawdown_data = {
                         'Drawdown Stats': df_tk_drawdowns,
@@ -1589,15 +1584,9 @@ class AnalyzePrices():
                     }
         """
 
-        if isinstance(df_price, pd.Series):
-            df_tk = df_price.copy()
-        elif isinstance(df_price, pd.DataFrame):
-            df_tk = df_price[tk]
-        else:
-            print('Incorrect format of input data')
-            exit
+        df_tk = df_price.copy()
+        df_roll_max_tk = pd.DataFrame(index=df_tk.index)
 
-        df_roll_max = pd.DataFrame(index=df_tk.index)
         drawdown_columns = [
             'Peak',
             'Trough',
@@ -1633,8 +1622,8 @@ class AnalyzePrices():
         df_tk_longest_drawdowns_str = pd.DataFrame(columns=drawdown_columns)
 
         n = len(df_tk)
-        df_roll_max[tk] = df_tk.rolling(n, min_periods=1).max()
-        unique_max_list = df_roll_max[tk].unique()
+        df_roll_max_tk = df_tk.rolling(n, min_periods=1).max()
+        unique_max_list = df_roll_max_tk.unique()
 
         # print(f'df_roll_max:\n{df_roll_max}')
         # print(f'unique_max_list:\n{unique_max_list}')
@@ -1642,8 +1631,8 @@ class AnalyzePrices():
         for peak in unique_max_list:
 
             # Define a segment corresponding to vmax 
-            cond = df_roll_max[tk] == peak
-            seg = df_roll_max.loc[cond, tk]
+            cond = df_roll_max_tk == peak
+            seg = df_roll_max_tk[cond]
             n_seg = len(seg)
 
             # print(f'unique_max_list peak:\n{peak}')
@@ -2601,8 +2590,6 @@ class AnalyzePrices():
         df_price,
         ma_list,
         target_deck = 1,
-        x_min = None,
-        x_max = None,
         add_yaxis_title = False,
         yaxis_title = 'Moving Average',
         theme = 'dark',
@@ -2617,9 +2604,6 @@ class AnalyzePrices():
              - ma_type: 'sma' (default), 'ema', 'dema', 'tema', 'wma' or 'wwma'
              - ma_window, in days
         """
-
-        x_min = self.start_date if x_min is None else x_min
-        x_max = self.end_date if x_max is None else x_max
 
         deck_type = fig_data['deck_type']
         fig_overlays = fig_data['overlays']
@@ -2643,7 +2627,7 @@ class AnalyzePrices():
             if ma_name not in current_names:
 
                 ma_data = self.moving_average(
-                    df_price[x_min: x_max],
+                    df_price,
                     ma_type,
                     ma_window
                 )
@@ -2713,17 +2697,12 @@ class AnalyzePrices():
         fig_data,
         bollinger_list,
         target_deck = 1,
-        x_min = None,
-        x_max = None,
         theme = 'dark',
         color_theme = 'gold'
     ):
         """
         df_price: df_close or df_adj_close, depending on the underlying figure in fig_data
         """
-
-        x_min = self.start_date if x_min is None else x_min
-        x_max = self.end_date if x_max is None else x_max
 
         deck_type = fig_data['deck_type']
         fig_overlays = fig_data['overlays']
@@ -2742,7 +2721,7 @@ class AnalyzePrices():
 
             if boll['name'] not in current_names:
                 bollinger_overlays.append({
-                    'data': boll['data'][x_min: x_max],
+                    'data': boll['data'],
                     'name': boll['name'],
                     'color_idx': overlay_color_idx[abs(boll['idx_offset'])]
                 })
@@ -3010,16 +2989,11 @@ class AnalyzePrices():
         fig_data,
         ma_envelope_list,
         target_deck = 1,    
-        x_min = None,
-        x_max = None,
         theme = 'dark',
         color_theme = 'gold'
     ):
         """
         """
-
-        x_min = self.start_date if x_min is None else x_min
-        x_max = self.end_date if x_max is None else x_max
 
         deck_type = fig_data['deck_type']
         fig_overlays = fig_data['overlays']
@@ -3038,7 +3012,7 @@ class AnalyzePrices():
 
             if env['name'] not in current_names:
                 ma_envelope_overlays.append({
-                   'data': env['data'][x_min: x_max],
+                   'data': env['data'],
                    'name': env['name'],
                    'color_idx': overlay_color_idx[abs(env['idx_offset'])]
                 })
@@ -3847,8 +3821,6 @@ class AnalyzePrices():
         self,
         fig_data,
         price_list,
-        x_min = None,
-        x_max = None,
         target_deck = 1,
         add_yaxis_title = False,
         yaxis_title = 'Price',
@@ -3865,9 +3837,6 @@ class AnalyzePrices():
         x_min, x_max:
             minimum and maximum dates in the datetime format
         """
-
-        x_min = self.start_date if x_min is None else x_min
-        x_max = self.end_date if x_max is None else x_max
 
         deck_type = fig_data['deck_type']
         fig_overlays = fig_data['overlays']

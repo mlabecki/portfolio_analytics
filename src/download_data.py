@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from mapping_portfolio_downloads import *
 from mapping_tickers import *
 import sys
+import requests_cache
 
 class DownloadData():
 
@@ -66,6 +67,77 @@ class DownloadData():
 
 
     def download_yf_data(
+        self,
+        start_date,
+        end_date,
+        tickers
+     ):
+        """
+        tickers: a list of selected tickers
+
+        For most functions, the user will be offered a choice between adjusted and non-adjusted prices.
+        Adjusted prices include dividends and stock splits.
+        
+        NOTE: Dollar Volume is only used for Amihud liquidity measure and will only be based on Adj Close.
+
+        Question:
+          In the calculation of dollar volume as price times volume, is the price normally adjusted (for stock splits and dividends) or not, or does it depend and - if so - on what?
+        
+        Copilot:
+          In the calculation of dollar volume (price times volume), the price is typically adjusted for stock splits and dividends to ensure consistency and comparability over time [1]. 
+          However, volume is usually not adjusted for dividends. Here's a brief overview:
+          
+          Stock Splits: 
+          Both price and volume are adjusted [2]. For example, in a 2-for-1 stock split, the price is halved, and the volume is doubled to maintain consistency [2].
+          
+          Dividends: 
+          Only the price is adjusted [2]. Cash dividends do not affect the volume, but stock dividends (additional shares issued) do result in adjustments to both price and volume [2].
+          
+          This approach helps in accurately reflecting the historical performance and making meaningful comparisons over time [3].
+        
+        [1] https://leiq.bus.umich.edu/docs/crsp_calculations_splits.pdf
+        [2] https://forum.alpaca.markets/t/why-is-price-but-not-volume-adjusted-for-dividends/12345
+        [3] https://help.stockcharts.com/data-and-ticker-symbols/data-availability/price-data-adjustments
+            
+        """
+
+        downloaded_data = {}
+        ohlc_cols = ['Open', 'High', 'Low', 'Close']
+
+        for tk in tickers:
+
+            session = requests_cache.CachedSession('cache/yfinance.cache')
+            session.headers['User-agent'] = url_settings['global']['headers']
+
+            # yf.Ticker().history()
+            #
+            #   auto_adjust:
+            #       Adjust all OHLC (Open/High/Low/Close prices) automatically? - default is True
+            #   actions: 
+            #       Download stock dividends and stock splits events? - default is True
+
+            yf_ticker = yf.Ticker(tk, session = session)
+            data = yf_ticker.history(start = start_date, end = end_date, auto_adjust = False, actions = False)
+            data_adj = yf_ticker.history(start = start_date, end = end_date, auto_adjust = True, actions = False)
+
+            df_ohlc = data[ohlc_cols]  # a dataframe, but e.g. df_ohlc['Close'] is a series
+            df_ohlc_adj = data_adj[ohlc_cols]
+            df_volume = data['Volume']  # a series, not dataframe
+            df_dollar_volume = df_volume * df_ohlc_adj['Close']  # a series, not dataframe
+
+            downloaded_data[tk] = {
+                'ohlc': df_ohlc,
+                'ohlc-adj': df_ohlc_adj,
+                'volume': df_volume,
+                'dollar_volume': df_dollar_volume
+            }
+
+        session.cache.clear()
+
+        return downloaded_data
+
+
+    def download_yf_data_legacy(
         self,
         start_date,
         end_date,

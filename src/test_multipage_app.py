@@ -28,8 +28,13 @@ app = Dash(__name__, use_pages=True, external_stylesheets = [dbc.themes.YETI, dm
 
 # from pages import preliminary_ticker_selection_v3, page1, page2
 
-app.layout = dmc.MantineProvider([
+app.layout = dmc.MantineProvider(
+
+    # forceColorScheme = 'outline',
+
+    children = [
 #app.layout = html.Div([
+
     dcc.Location(id = 'url', refresh = False),
     page_container,  # page layout is rendered here
     # setup_page_components(), 
@@ -40,7 +45,14 @@ app.layout = dmc.MantineProvider([
     # dcc.Store(data = [], id = 'selected-tickers-stored', storage_type = 'session'),
     dcc.Store(data = [], id = 'table-selected-tickers-data-stored', storage_type = 'session'),
     dcc.Store(data = [], id = 'selected-ticker-summaries-stored', storage_type = 'session'),
+    dcc.Store(data = {}, id = 'selected-tickers-downloaded-data-stored', storage_type = 'session'),
     # html.Div(children = [], id = 'dash-table-selected-tickers-stored', hidden = True)
+
+    dcc.Store(data = [], id = 'final-table-selected-tickers-data-stored', storage_type = 'session'),
+    dcc.Store(data = [], id = 'final-selected-ticker-summaries-stored', storage_type = 'session'),
+    dcc.Store(data = [], id = 'final-start-date-stored', storage_type = 'session'),
+    dcc.Store(data = [], id = 'final-end-date-stored', storage_type = 'session'),
+    dcc.Store(data = [], id = 'final-selected-tickers-stored', storage_type = 'session'),
 
     # html.Div(id = 'preselected-output-list')
 ])

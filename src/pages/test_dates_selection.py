@@ -14,6 +14,7 @@ from datetime import datetime, timedelta, date
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from operator import itemgetter
+
 from mapping_plot_attributes import *
 from mapping_portfolio_downloads import *
 from mapping_tickers import *
@@ -31,10 +32,6 @@ register_page(
     __name__,
     path = '/test_dates_selection'
 )
-
-# end_date = datetime(2010, 10, 31)
-# y_hist, m_hist, d_hist = 5, 0, 0
-# start_date = datetime(end_date.year - y_hist, end_date.month - m_hist, end_date.day - d_hist)
 
 hist_data = DownloadData()
 
@@ -119,7 +116,8 @@ layout = html.Div([
     # LOADING WRAPPER
     dcc.Loading([
         
-        html.Div(id = 'dates-selected-tickers', hidden = False, style = {'font-size' : '14px'}),
+        html.Div(id = 'dates-start-date', hidden = False, style = {'font-size' : '14px'}),
+        html.Div(id = 'dates-end-date', hidden = False, style = {'font-size' : '14px'}),
 
         # MAIN TITLE
         html.Div(
@@ -264,8 +262,6 @@ layout = html.Div([
 #################################################
 
 @callback(
-    # Output('dates-selected-tickers', 'children'),
-    # Output('dates-table-selected-tickers', 'children'),
     Output('end-date-input-dmc', 'maxDate'),
     Output('end-date-input-dmc', 'minDate'),
     Output('start-date-input-dmc', 'maxDate'),
@@ -276,6 +272,12 @@ layout = html.Div([
     Output('dash-table-selected-tickers', 'data'),
     Output('dash-table-selected-tickers', 'selected_rows'),
     Output('dash-table-selected-tickers', 'tooltip_data'),
+    # Output('final-table-selected-tickers-data-stored', 'data'),
+    # Output('final-selected-ticker-summaries-stored', 'data'),
+    Output('final-start-date-stored', 'data'),
+    Output('final-end-date-stored', 'data'),
+    # Output('selected-tickers-downloaded-data-stored', 'data'),
+    Output('final-selected-tickers-stored', 'data'),
 
     Input('table-selected-tickers-data-stored', 'data'),
     Input('selected-ticker-summaries-stored', 'data'),
@@ -283,7 +285,7 @@ layout = html.Div([
     Input('end-date-input-dmc', 'value'),
     Input('start-date-input-dmc', 'value'),
 )
-def read_table_selected_tickers(
+def get_table_selected_tickers(
     table_selected_tickers_data,
     selected_ticker_summaries,
     selected_rows,
@@ -308,8 +310,6 @@ def read_table_selected_tickers(
     portfolio_end = f'{max(selected_end_dates)}'
     min_portfolio_date = datetime.strptime(portfolio_start, '%Y-%m-%d')
     max_portfolio_date = datetime.strptime(portfolio_end, '%Y-%m-%d')
-    tk_portfolio_start = [row['Ticker'] for row in table_selected_tickers_data if row['Data Start'] == portfolio_start][0]
-    tk_portfolio_end = [row['Ticker'] for row in table_selected_tickers_data if row['Data End'] == portfolio_end][0]
 
     # if ((start_date_year is None) | (start_date_month is None) | (start_date_day is None)):
     if start_date is None:
@@ -445,11 +445,16 @@ def read_table_selected_tickers(
         style = {'display': 'block'}
     )
 
+    final_table_selected_tickers_data = table_selected_tickers_data  # a list of dictionaries
+    # final_tooltip_data = tooltip_data.copy()  # a list
+    final_selected_tickers = [row['Ticker'] for row in final_table_selected_tickers_data if row['No.'] - 1 in selected_rows]
+    #
+    # NOTE: Cannot call download_yf_data if overlap_start/overlap_end might be N/A.
+    #       There is no 'final' version here of the start and end dates or selected tickers because 
+    #       the function is under callback.
+    # downloaded_data = hist_data.download_yf_data(overlap_start, overlap_end, final_selected_tickers)
 
     return (
-        # selected_tickers,
-        # str(selected_tickers),
-        # f' Portfolio Data Overlap: From {date_overlap_start} To {date_overlap_end}',
         max_portfolio_date,
         start_date,
         end_date,
@@ -459,5 +464,27 @@ def read_table_selected_tickers(
         portfolio_summary_message,
         table_selected_tickers_data,
         selected_rows,
-        tooltip_data
+        tooltip_data,
+
+        # final_table_selected_tickers_data,
+        # final_tooltip_data,
+        overlap_start,
+        overlap_end,
+        # downloaded_data,
+        final_selected_tickers
     )
+
+
+@callback(
+    Output('dates-start-date', 'children'),
+    Output('dates-end-date', 'children'),
+    Input('final-start-date-stored', 'data'),
+    Input('final-end-date-stored', 'data')
+)
+def display_start_end_dates(
+    start_date_stored,
+    end_date_stored
+):
+    return start_date_stored, end_date_stored
+    
+
