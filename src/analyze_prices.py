@@ -243,7 +243,7 @@ class AnalyzePrices():
         be populated with the appropriate deck name in a triple deck.
 
         date_index:
-            series or list of dates (e.g. close_tk.index)
+            series or list of dates (e.g. close_tk.index) in the date format
         deck_type:
             'single', 'double' or 'triple'
 
@@ -288,8 +288,11 @@ class AnalyzePrices():
         for _, idx in enumerate(date_index):
             df_dummy[idx] = 0
 
-        x_min = str(min(df_dummy.index).date())
-        x_max = str(max(df_dummy.index).date())
+        # x_min = str(min(df_dummy.index).date())
+        # x_max = str(max(df_dummy.index).date())
+
+        x_min = str(min(df_dummy.index))
+        x_max = str(max(df_dummy.index))
 
         height_pct = {}
         row_heights = []
@@ -1585,7 +1588,7 @@ class AnalyzePrices():
         """
 
         df_tk = df_price.copy()
-        df_roll_max_tk = pd.DataFrame(index=df_tk.index)
+        df_roll_max_tk = pd.DataFrame(index = df_tk.index)
 
         drawdown_columns = [
             'Peak',
@@ -1622,7 +1625,7 @@ class AnalyzePrices():
         df_tk_longest_drawdowns_str = pd.DataFrame(columns=drawdown_columns)
 
         n = len(df_tk)
-        df_roll_max_tk = df_tk.rolling(n, min_periods=1).max()
+        df_roll_max_tk = df_tk.rolling(n, min_periods = 1).max()
         unique_max_list = df_roll_max_tk.unique()
 
         # print(f'df_roll_max:\n{df_roll_max}')
@@ -1710,9 +1713,9 @@ class AnalyzePrices():
         for idx in df_tk_drawdowns.index:
             df_tk_drawdowns_str.loc[idx, 'Peak'] = f"{df_tk_drawdowns.loc[idx, 'Peak']:.2f}"
             df_tk_drawdowns_str.loc[idx, 'Trough'] = f"{df_tk_drawdowns.loc[idx, 'Trough']:.2f}"
-            df_tk_drawdowns_str.loc[idx, 'Peak Date'] = f"{df_tk_drawdowns.loc[idx, 'Peak Date'].date()}"
-            df_tk_drawdowns_str.loc[idx, 'Trough Date'] = f"{df_tk_drawdowns.loc[idx, 'Trough Date'].date()}"
-            df_tk_drawdowns_str.loc[idx, 'Recovery Date'] = f"{df_tk_drawdowns.loc[idx, 'Recovery Date'].date()}"
+            df_tk_drawdowns_str.loc[idx, 'Peak Date'] = f"{df_tk_drawdowns.loc[idx, 'Peak Date']}"
+            df_tk_drawdowns_str.loc[idx, 'Trough Date'] = f"{df_tk_drawdowns.loc[idx, 'Trough Date']}"
+            df_tk_drawdowns_str.loc[idx, 'Recovery Date'] = f"{df_tk_drawdowns.loc[idx, 'Recovery Date']}"
             df_tk_drawdowns_str.loc[idx, '% Depth'] = f"{(df_tk_drawdowns.loc[idx, '% Depth']):.2f}%"
             df_tk_drawdowns_str.loc[idx, 'Total Length'] = f"{df_tk_drawdowns.loc[idx, 'Total Length']}"
             df_tk_drawdowns_str.loc[idx, 'Peak To Trough'] = f"{df_tk_drawdowns.loc[idx, 'Peak To Trough']}"
@@ -1721,9 +1724,9 @@ class AnalyzePrices():
         for idx in df_tk_deepest_drawdowns.index:
             df_tk_deepest_drawdowns_str.loc[idx, 'Peak'] = f"{df_tk_deepest_drawdowns.loc[idx, 'Peak']:.2f}"
             df_tk_deepest_drawdowns_str.loc[idx, 'Trough'] = f"{df_tk_deepest_drawdowns.loc[idx, 'Trough']:.2f}"
-            df_tk_deepest_drawdowns_str.loc[idx, 'Peak Date'] = f"{df_tk_deepest_drawdowns.loc[idx, 'Peak Date'].date()}"
-            df_tk_deepest_drawdowns_str.loc[idx, 'Trough Date'] = f"{df_tk_deepest_drawdowns.loc[idx, 'Trough Date'].date()}"
-            df_tk_deepest_drawdowns_str.loc[idx, 'Recovery Date'] = f"{df_tk_deepest_drawdowns.loc[idx, 'Recovery Date'].date()}"
+            df_tk_deepest_drawdowns_str.loc[idx, 'Peak Date'] = f"{df_tk_deepest_drawdowns.loc[idx, 'Peak Date']}"
+            df_tk_deepest_drawdowns_str.loc[idx, 'Trough Date'] = f"{df_tk_deepest_drawdowns.loc[idx, 'Trough Date']}"
+            df_tk_deepest_drawdowns_str.loc[idx, 'Recovery Date'] = f"{df_tk_deepest_drawdowns.loc[idx, 'Recovery Date']}"
             df_tk_deepest_drawdowns_str.loc[idx, '% Depth'] = f"{(df_tk_deepest_drawdowns.loc[idx, '% Depth']):.2f}%"
             df_tk_deepest_drawdowns_str.loc[idx, 'Total Length'] = f"{df_tk_deepest_drawdowns.loc[idx, 'Total Length']}d"
             df_tk_deepest_drawdowns_str.loc[idx, 'Peak To Trough'] = f"{df_tk_deepest_drawdowns.loc[idx, 'Peak To Trough']}d"
@@ -1732,9 +1735,9 @@ class AnalyzePrices():
         for idx in df_tk_longest_drawdowns.index:
             df_tk_longest_drawdowns_str.loc[idx, 'Peak'] = f"{df_tk_longest_drawdowns.loc[idx, 'Peak']:.2f}"
             df_tk_longest_drawdowns_str.loc[idx, 'Trough'] = f"{df_tk_longest_drawdowns.loc[idx, 'Trough']:.2f}"
-            df_tk_longest_drawdowns_str.loc[idx, 'Peak Date'] = f"{df_tk_longest_drawdowns.loc[idx, 'Peak Date'].date()}"
-            df_tk_longest_drawdowns_str.loc[idx, 'Trough Date'] = f"{df_tk_longest_drawdowns.loc[idx, 'Trough Date'].date()}"
-            df_tk_longest_drawdowns_str.loc[idx, 'Recovery Date'] = f"{df_tk_longest_drawdowns.loc[idx, 'Recovery Date'].date()}"
+            df_tk_longest_drawdowns_str.loc[idx, 'Peak Date'] = f"{df_tk_longest_drawdowns.loc[idx, 'Peak Date']}"
+            df_tk_longest_drawdowns_str.loc[idx, 'Trough Date'] = f"{df_tk_longest_drawdowns.loc[idx, 'Trough Date']}"
+            df_tk_longest_drawdowns_str.loc[idx, 'Recovery Date'] = f"{df_tk_longest_drawdowns.loc[idx, 'Recovery Date']}"
             df_tk_longest_drawdowns_str.loc[idx, '% Depth'] = f"{(df_tk_longest_drawdowns.loc[idx, '% Depth']):.2f}%"
             df_tk_longest_drawdowns_str.loc[idx, 'Total Length'] = f"{df_tk_longest_drawdowns.loc[idx, 'Total Length']}d"
             df_tk_longest_drawdowns_str.loc[idx, 'Peak To Trough'] = f"{df_tk_longest_drawdowns.loc[idx, 'Peak To Trough']}d"
@@ -3834,8 +3837,6 @@ class AnalyzePrices():
             list of dictionaries with keys
              - 'name': 'Adjusted Close', 'Close', 'Open', 'High', 'Low', 'Average True Rate', etc.
              - 'show': True / False - include in plot or not
-        x_min, x_max:
-            minimum and maximum dates in the datetime format
         """
 
         deck_type = fig_data['deck_type']

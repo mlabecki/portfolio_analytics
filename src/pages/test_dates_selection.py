@@ -116,8 +116,8 @@ layout = html.Div([
     # LOADING WRAPPER
     dcc.Loading([
         
-        html.Div(id = 'dates-start-date', hidden = False, style = {'font-size' : '14px'}),
-        html.Div(id = 'dates-end-date', hidden = False, style = {'font-size' : '14px'}),
+        # html.Div(id = 'dates-start-date', hidden = False, style = {'font-size' : '14px'}),
+        # html.Div(id = 'dates-end-date', hidden = False, style = {'font-size' : '14px'}),
 
         # MAIN TITLE
         html.Div(
@@ -252,6 +252,8 @@ layout = html.Div([
             dcc.Link('Start Over Preliminary Ticker Selection', href='/preliminary_ticker_selection_v3'),
             html.Br(),
             dcc.Link('Back To Ticker Info & Portfolio Selection', href='/test_ticker_input_v3'),
+            html.Br(),
+            dcc.Link('Go To Template & Plot Selection', href='/test_generate_plots'),
         ],
         style = link_container_css
     )
@@ -475,16 +477,16 @@ def get_table_selected_tickers(
     )
 
 
-@callback(
-    Output('dates-start-date', 'children'),
-    Output('dates-end-date', 'children'),
-    Input('final-start-date-stored', 'data'),
-    Input('final-end-date-stored', 'data')
-)
-def display_start_end_dates(
-    start_date_stored,
-    end_date_stored
-):
-    return start_date_stored, end_date_stored
+# @callback(
+#     Output('dates-start-date', 'children'),
+#     Output('dates-end-date', 'children'),
+#     Input('final-start-date-stored', 'data'),
+#     Input('final-end-date-stored', 'data')
+# )
+# def display_start_end_dates(
+#     start_date_stored,
+#     end_date_stored
+# ):
+#     return start_date_stored, end_date_stored
     
 

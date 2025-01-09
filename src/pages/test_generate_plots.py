@@ -149,45 +149,45 @@ def display_table_selected_tickers(
 
 ##############
 
-    df_adj_close = downloaded_data['Adj Close']
-    df_close = downloaded_data['Close']
-    df_volume = downloaded_data['Volume']
-    dict_ohlc = downloaded_data['OHLC']
-
-    # Refresh the list of tickers, as some of them may have been removed
-    tickers = list(df_close.columns)
-    # tk = 'MSFT'
-    # tk = tickers[0]
-
-    df_ohlc = dict_ohlc[tk]
-    ohlc_tk = df_ohlc.copy()
-    adj_close_tk = df_adj_close[tk]
-    close_tk = df_close[tk]
-    open_tk = ohlc_tk['Open']
-    high_tk = ohlc_tk['High']
-    low_tk = ohlc_tk['Low']
-    volume_tk = df_volume[tk]
-
-    # print(df_close)
-
-    # We don't want the benchmark ticker in the app menus at this point (for example, 
-    # the drawdown data will not generated) unless tk_market is explicitly selected.
-
-    if tk_market not in tickers_org:
-        tickers = tickers[:-1]  # if added by download_data, tk_market would be in the last position
-
-    analyze_prices = AnalyzePrices(end_date, start_date, tickers)
-    date_index = df_close.index
-
-    sort_by = ['Total Length', '% Depth']
-    portfolio_drawdown_data = {}
-
-    for tk in tickers:
-        drawdown_data = analyze_prices.summarize_tk_drawdowns(df_close, tk, sort_by)
-        n_drawdowns = drawdown_data['Total Drawdowns']
-        drawdown_numbers = [x for x in range(n_drawdowns + 1)[1:]]
-        portfolio_drawdown_data.update({tk: drawdown_data})
-
+#    df_adj_close = downloaded_data['Adj Close']
+#    df_close = downloaded_data['Close']
+#    df_volume = downloaded_data['Volume']
+#    dict_ohlc = downloaded_data['OHLC']
+#
+#    # Refresh the list of tickers, as some of them may have been removed
+#    tickers = list(df_close.columns)
+#    # tk = 'MSFT'
+#    # tk = tickers[0]
+#
+#    df_ohlc = dict_ohlc[tk]
+#    ohlc_tk = df_ohlc.copy()
+#    adj_close_tk = df_adj_close[tk]
+#    close_tk = df_close[tk]
+#    open_tk = ohlc_tk['Open']
+#    high_tk = ohlc_tk['High']
+#    low_tk = ohlc_tk['Low']
+#    volume_tk = df_volume[tk]
+#
+#    # print(df_close)
+#
+#    # We don't want the benchmark ticker in the app menus at this point (for example, 
+#    # the drawdown data will not generated) unless tk_market is explicitly selected.
+#
+#    if tk_market not in tickers_org:
+#        tickers = tickers[:-1]  # if added by download_data, tk_market would be in the last position
+#
+#    analyze_prices = AnalyzePrices(end_date, start_date, tickers)
+#    date_index = df_close.index
+#
+#    sort_by = ['Total Length', '% Depth']
+#    portfolio_drawdown_data = {}
+#
+#    for tk in tickers:
+#        drawdown_data = analyze_prices.summarize_tk_drawdowns(df_close, tk, sort_by)
+#        n_drawdowns = drawdown_data['Total Drawdowns']
+#        drawdown_numbers = [x for x in range(n_drawdowns + 1)[1:]]
+#        portfolio_drawdown_data.update({tk: drawdown_data})
+#
 ##############
 
 drawdown_color = 'red'
@@ -251,7 +251,10 @@ layout = html.Div([
 
     # LOADING WRAPPER
     dcc.Loading([
-            
+
+    html.Div(id = 'plots-start-date', hidden = False, style = {'font-size' : '14px'}),
+    html.Div(id = 'plots-end-date', hidden = False, style = {'font-size' : '14px'}),
+
     # MAIN TITLE
     html.Div(
         'Select template, ticker and plot types',
@@ -776,7 +779,9 @@ layout = html.Div([
     
     id = 'dates-loading-wrapper',
     custom_spinner = html.Div([
-        'Loading Selected Tickers',
+        html.Br(),
+        html.Br(),
+        'Updating Plot',
         html.Br(),
         html.Br(),
         dls.Fade(color = 'midnightblue'),
@@ -923,7 +928,12 @@ def toggle_collapse_bollinger(n, is_open):
     Output('drawdowns-number-input', 'max'),
     Output('drawdowns-number-input', 'value'),
 
-    Input('selected-tickers-downloaded-data-stored', 'data'),
+    Output('plots-start-date', 'children'),
+    Output('plots-end-date', 'children'),
+
+    Input('final-start-date-stored', 'data'),
+    Input('final-end-date-stored', 'data'),
+    Input('final-selected-tickers-stored', 'data'),
 
     Input('reset-axes-template', 'n_clicks'),
     Input('reset-axes-drawdowns', 'n_clicks'),
@@ -959,7 +969,10 @@ def toggle_collapse_bollinger(n, is_open):
 
 def update_plot(
 
-        downloaded_data,
+        start_date,
+        end_date,
+        selected_tickers,
+        # downloaded_data,
 
         n_click_template,
         n_click_dd,
@@ -990,6 +1003,8 @@ def update_plot(
         bollinger_color_theme
 
     ):
+
+    downloaded_data = hist_data.download_yf_data(start_date, end_date, selected_tickers)
 
     # fig_data = create_graph(theme, tk, drawdown_color, overlay_color_theme)
     date_index = downloaded_data[tk]['ohlc'].index
@@ -1092,5 +1107,7 @@ def update_plot(
         template_div_style,
 
         n_drawdowns,
-        dd_number_value
+        dd_number_value,
+        start_date,
+        end_date
     )

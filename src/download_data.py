@@ -119,6 +119,8 @@ class DownloadData():
             yf_ticker = yf.Ticker(tk, session = session)
             data = yf_ticker.history(start = start_date, end = end_date, auto_adjust = False, actions = False)
             data_adj = yf_ticker.history(start = start_date, end = end_date, auto_adjust = True, actions = False)
+            data.index = data.index.date
+            data_adj.index = data_adj.index.date
 
             df_ohlc = data[ohlc_cols]  # a dataframe, but e.g. df_ohlc['Close'] is a series
             df_ohlc_adj = data_adj[ohlc_cols]
