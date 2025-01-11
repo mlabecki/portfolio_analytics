@@ -85,8 +85,12 @@ def display_table_selected_tickers(
             },
             {
             'selector': '.dash-spreadsheet tr:hover td.dash-cell',
-            'rule': 'background-color: rgb(211, 211, 211) !important; border-top: 1px solid rgb(211, 211, 211) !important; border-bottom: 1px solid rgb(211, 211, 211) !important;'
+            'rule': 'background-color: rgb(211, 211, 211) !important; color: black !important; border-top: 1px solid rgb(211, 211, 211) !important; border-bottom: 1px solid rgb(211, 211, 211) !important;'
             },
+            # {
+            # 'selector': '.dash-spreadsheet tr:hover td.dash-select-cell',
+            # 'rule': 'background-color: rgb(211, 211, 211) !important; color: black !important; border-top: 1px solid rgb(211, 211, 211) !important; border-bottom: 1px solid rgb(211, 211, 211) !important;'
+            # },
             {
             'selector': '.dash-table-tooltip',
             # 'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(67, 172, 106) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica; background-color: rgb(227, 255, 237);'
@@ -352,76 +356,66 @@ layout = html.Div([
                         html.Div('Ticker', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id = 'tickers-dropdown',
-                            # options = tickers,
-                            # value = tickers[0],
-                            # options = ticker_menu_info_list,
-                            # value = ticker_menu_info_list[0],
+                            className = 'plots-dropdown-button',
                             clearable = False,
-                            # clearable = True,
-                            # multi = True,
-                            # style = {'width': '180px'}
-                            # optionHeight = 30,
-                            # style = {'display': 'flex', 'flex-direction': 'row', 'align-items': 'center', 'width': '110px', 'height': '30px', 'font-size': '14px', 'border-radius': '5px', 'vertical-align': 'middle', 'margin-bottom': '0px'}
-                            style = {'display': 'flex', 'justify-content': 'flex-end', 'align-items': 'center', 'width': '110px', 'height': '30px', 'font-size': '14px', 'border-radius': '5px', 'vertical-align': 'middle', 'margin-bottom': '0px'}
+                            style = {'width': '300px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
-                    html.Div([
-                        html.Div('Ticker', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),
-                        dmc.Select(
-                            # label="Ticker",
-                            # placeholder="Select one",
-                            id = "ticker-dropdown-dmc",
-                            # value="pd",
-                            data = ['GLD', 'SIL', 'PAX'],
-                            w = 110,
-                            h = 30,
-                            size = 'xs',
-                            # mb = 10,
-                            style = {'width': '110px', 'max-height': '30px', 'font-size': '14px', 'border-radius': '5px', 'vertical-align': 'top', 'margin-bottom': '0px'}
-                        )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    html.Div(
+                        id = 'plots-selected-ticker-name',
+                        # children = [
+                        #     # html.Div('Ticker', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),
+                        # ],
+                        style = {
+                            'display': 'inline-block',
+                            'width': '300px',
+                            'color': 'rgb(0, 106, 240)',
+                            'margin': '3px 0px 3px 5px',
+                            'vertical-align': 'top',
+                            'font-family': 'Helvetica',
+                            'font-size': '14px'}
                     ),
 
                     html.Div([
                         html.Div('Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id = 'theme-dropdown',
+                            className = 'plots-dropdown-button',
                             options = ['Dark', 'Light'],
                             value = 'Dark',
                             disabled = False,
                             clearable = False,
-                            # style = {'display': 'flex', 'justify-content': 'flex-end', 'flex-direction': 'row', 'align-items': 'center', 'width': '70px', 'height': '30px', 'font-size': '14px', 'border-radius': '5px', 'vertical-align': 'middle', 'margin-bottom': '0px'}
-                            style = {'display': 'flex', 'justify-content': 'flex-end', 'align-items': 'center', 'width': '70px', 'height': '30px', 'font-size': '14px', 'border-radius': '5px', 'vertical-align': 'middle', 'margin-bottom': '0px'}
+                            style = {'width': '80px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
                         html.Div('Deck Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id='deck-type-dropdown',
+                            className = 'plots-dropdown-button',
                             options = deck_types,
                             value = 'Single',
                             clearable = False, 
-                            # style = {'display': 'flex', 'justify-content': 'flex-end', 'flex-direction': 'row', 'align-items': 'center', 'width': '80px', 'height': '30px', 'font-size': '14px', 'border-radius': '5px', 'vertical-align': 'middle', 'margin-bottom': '0px'}
-                            style = {'display': 'flex', 'justify-content': 'flex-end', 'align-items': 'center', 'width': '80px', 'height': '30px', 'font-size': '14px', 'border-radius': '5px', 'vertical-align': 'middle', 'margin-bottom': '0px'}
+                            style = {'width': '110px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Sec Y', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),        
+                        html.Div('Secondary Y', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),        
                         dcc.Dropdown(
                             id='secondary-y-dropdown',
+                            className = 'plots-dropdown-button',
                             options = ['No', 'Yes'],
                             value = 'No',
                             clearable = False,
-                            # style = {'display': 'flex', 'justify-content': 'flex-end', 'flex-direction': 'row', 'align-items': 'center', 'width': '60px', 'height': '30px', 'font-size': '14px', 'border-radius': '5px', 'vertical-align': 'middle', 'margin-bottom': '0px'}
-                            style = {'display': 'flex', 'justify-content': 'flex-end', 'align-items': 'center', 'width': '60px', 'height': '30px', 'font-size': '14px', 'border-radius': '5px', 'vertical-align': 'middle', 'margin-bottom': '0px'}
+                            style = {'width': '100px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
@@ -434,9 +428,9 @@ layout = html.Div([
                             max = 1600,
                             step = 50,
                             debounce = True,
-                            style = {'width': '75px', 'height': '30px', 'font-size': '14px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'vertical-align': 'top'}
+                            style = {'width': '90px', 'height': '30px', 'font-size': '14px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'vertical-align': 'top'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
@@ -449,9 +443,9 @@ layout = html.Div([
                             max = 1000,
                             step = 50,
                             debounce = True,
-                            style = {'width': '90px', 'height': '30px', 'font-size': '14px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'vertical-align': 'top'}
+                            style = {'width': '100px', 'height': '30px', 'font-size': '14px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'vertical-align': 'top'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'border-radius': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'border-radius': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
@@ -464,48 +458,49 @@ layout = html.Div([
                             max = 300,
                             step = 50,
                             debounce = True,
-                            style = {'width': '90px', 'height': '30px', 'font-size': '14px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'vertical-align': 'top', 'font-color': 'black'}
+                            style = {'width': '100px', 'height': '30px', 'font-size': '14px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'vertical-align': 'top', 'font-color': 'black'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     ### ADD RESET AXES BUTTON
 
-                    html.Div([
-                        html.Div('_', style = {'color': 'white', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
-                        dbc.Button(
-                            'Reset Axes',
-                            id = 'reset-axes-template',
-                            n_clicks = 0,
-                            class_name = 'ma-1',
-                            color = 'light',
-                            size = 'sm',
-                            style = {
-                                'display': 'inline-block',
-                                'height': '30px',
-                                'border-color': 'rgb(192, 192, 192)', 
-                                'border-radius': '5px',
-                                'margin-bottom': '0px',
-                                'margin-top': 'auto',
-                                'text-align': 'center',
-                                'font-family': 'Helvetica',
-                                'font-size': '14px',
-                                'width': '95px'
-                            }
-                        )],
-                        style = {
-                            'float': 'right',
-                            'vertical-align': 'top',
-                            'margin-bottom': '0px',
-                            'margin-top': 'auto'
-                        }
-                    ),
+                    # html.Div([
+                    #     html.Div('_', style = {'color': 'white', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                    #     dbc.Button(
+                    #         'Reset Axes',
+                    #         id = 'reset-axes-template',
+                    #         n_clicks = 0,
+                    #         class_name = 'ma-1',
+                    #         color = 'light',
+                    #         size = 'sm',
+                    #         style = {
+                    #             'display': 'inline-block',
+                    #             'height': '30px',
+                    #             'border-color': 'rgb(192, 192, 192)', 
+                    #             'border-radius': '5px',
+                    #             'margin-bottom': '0px',
+                    #             'margin-top': 'auto',
+                    #             'text-align': 'center',
+                    #             'font-family': 'Helvetica',
+                    #             'font-size': '14px',
+                    #             'width': '95px'
+                    #         }
+                    #     )],
+                    #     style = {
+                    #         'float': 'right',
+                    #         'vertical-align': 'top',
+                    #         'margin-bottom': '0px',
+                    #         'margin-top': 'auto'
+                    #     }
+                    # ),
 
                 ]
             ),
-        
+
             id = 'collapse-template',
-            is_open = False
+            is_open = False,
+            style = {'width': '300px'}
         )],
         style = {'margin-left': '5px'}
     ),
@@ -894,11 +889,12 @@ def toggle_collapse_bollinger(n, is_open):
     # Output('test-graph', 'figure'),
     # Output('fig_div', 'children', allow_duplicate = True),
     # Output('test-graph', 'figure'),
+    Output('plots-selected-ticker-name', 'children'),
 
     Output('fig-div', 'children'),
-    Output('drawdown-controls', 'style'),
-    Output('bollinger-controls', 'style'),
-    Output('template-controls', 'style'),
+    # Output('drawdown-controls', 'style'),
+    # Output('bollinger-controls', 'style'),
+    # Output('template-controls', 'style'),
 
     Output('drawdowns-number-input', 'max'),
     Output('drawdowns-number-input', 'value'),
@@ -910,7 +906,7 @@ def toggle_collapse_bollinger(n, is_open):
     Input('final-end-date-stored', 'data'),
     Input('final-selected-tickers-stored', 'data'),
 
-    Input('reset-axes-template', 'n_clicks'),
+    # Input('reset-axes-template', 'n_clicks'),
     Input('reset-axes-drawdowns', 'n_clicks'),
     Input('reset-axes-bollinger', 'n_clicks'),
     
@@ -946,10 +942,10 @@ def update_plot(
 
         start_date,
         end_date,
-        selected_tickers,
+        selected_tickers_names,
         # downloaded_data,
 
-        n_click_template,
+        # n_click_template,
         n_click_dd,
         n_click_bollinger,
 
@@ -979,6 +975,8 @@ def update_plot(
 
     ):
 
+    selected_tickers = list(selected_tickers_names.keys())
+
     downloaded_data = hist_data.download_yf_data(start_date, end_date, selected_tickers)
 
     drawdown_color = drawdown_color.lower() if drawdown_color is not None else 'red'
@@ -1005,14 +1003,14 @@ def update_plot(
     # if (theme_drawdowns != theme):
     #     theme = theme_drawdowns
 
-    drawdown_div_style = {
-        'width': width,
-        # 'vertical-align': 'top',
-        # 'margin-top': 'auto', 
-        # 'margin-bottom': '0px'
-    }
-    bollinger_div_style = drawdown_div_style
-    template_div_style = drawdown_div_style
+    # drawdown_div_style = {
+    #     'width': width,
+    #     # 'vertical-align': 'top',
+    #     # 'margin-top': 'auto', 
+    #     # 'margin-bottom': '0px'
+    # }
+    # bollinger_div_style = drawdown_div_style
+    # template_div_style = drawdown_div_style
 
     drawdown_data_tk = analyze_prices.summarize_tk_drawdowns(close_tk, drawdown_top_by)
     n_drawdowns = drawdown_data_tk['Total Drawdowns']
@@ -1080,10 +1078,12 @@ def update_plot(
     fig_div = dcc.Graph(id='drawdowns-graph', figure = fig)
 
     return (
+        selected_tickers_names[tk],
+
         fig_div,
-        drawdown_div_style,
-        bollinger_div_style,
-        template_div_style,
+        # drawdown_div_style,
+        # bollinger_div_style,
+        # template_div_style,
 
         n_drawdowns,
         dd_number_value,

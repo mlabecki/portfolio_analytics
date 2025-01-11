@@ -236,11 +236,11 @@ collapse_button_table_css = {
 collapse_button_css = {
     'display': 'inline-block',
     'margin-right': '5px',
-    'margin-left': '5px',
+    # 'margin-left': '5px',
     'text-align': 'left',
     'font-family': 'Helvetica',
     'font-weight': 'bold',
-    'width': '250px'
+    'width': '300px'
 }
 
 # Selected tickers elements
@@ -435,6 +435,15 @@ plots_selected_tickers_table_header_css = {
     'border-top': '1px solid rgba(0, 140, 186, 0.2)',
     'border-bottom': '1px solid rgba(0, 140, 186, 0.2)'
 }
+# plots_dropdown_button_css = {
+#     'display': 'flex',
+#     'justify-content': 'flex-end',
+#     'align-items': 'center',
+#     'height': '30px', 
+#     'font-size': '14px',
+#     'border-radius': '5px',
+#     'vertical-align': 'middle'
+# }
 selected_tickers_table_data_css = {
     'font-family': 'Helvetica',
     'font-size' : '14px',

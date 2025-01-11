@@ -52,7 +52,7 @@ app.layout = dmc.MantineProvider(
     dcc.Store(data = [], id = 'final-selected-ticker-summaries-stored', storage_type = 'session'),
     dcc.Store(data = [], id = 'final-start-date-stored', storage_type = 'session'),
     dcc.Store(data = [], id = 'final-end-date-stored', storage_type = 'session'),
-    dcc.Store(data = [], id = 'final-selected-tickers-stored', storage_type = 'session'),
+    dcc.Store(data = {}, id = 'final-selected-tickers-stored', storage_type = 'session'),
 
     # html.Div(id = 'preselected-output-list')
 ])
