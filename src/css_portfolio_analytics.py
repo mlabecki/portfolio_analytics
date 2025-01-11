@@ -242,6 +242,17 @@ collapse_button_css = {
     'font-weight': 'bold',
     'width': '300px'
 }
+collapse_button_menu_css = {
+    'display': 'inline-block',
+    'margin-right': '5px',
+    'margin-bottom': '5px',
+    'margin-left': '5px',
+    'text-align': 'left',
+    'font-family': 'Helvetica',
+    'font-weight': 'bold',
+    'width': '31px'
+    # 'width': '60px'
+}
 
 # Selected tickers elements
 select_ticker_container_css = {

@@ -272,62 +272,32 @@ layout = html.Div([
         style = ticker_main_title_css
     ),
 
-    html.Div(
-        [
-            html.Div(html.Span('x'), id = 'select-ticker-icon', style = select_ticker_left_css),
-            html.Div(children = [
-                # html.B(ticker_menu_info[ticker_menu_info_list[0]], id = 'select-ticker-label-tk'),  # ticker corresponding to the first menu item
-                # html.Span(f': {ticker_menu_info_list[0].split(": ")[1]}', id = 'select-ticker-label-name')  # the first menu item
-                html.B(id = 'select-ticker-label-tk', style = {'margin-right': '10px'}),
-                html.Span(id = 'select-ticker-label-name')
-                ],
-                id = 'select-ticker-label',
-                style = select_ticker_right_css
-            ),
-        ],
-        id = 'select-ticker',
-        hidden = True,
-        style = {
-            # 'width': '400px',
-            'border': '1px solid rgba(0, 126, 255, .24)',
-            'border-radius': '2px',
-            'margin-right': '5px'
-        }
-    ),
-
-    # html.Div(
-    #     table,
-    #     style = {
-    #         'width': '550px',
-    #         'font-family': 'Helvetica',
-    #         'font-size' : '13px',
-    #     }
-    # ),
-
-##### BEGIN SELECTED TICKERS TABLE
+    ##### BEGIN SIDEBAR MENU ALL CONTROLS
 
     html.Div([
-        # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/
-        html.Div(
-            dbc.Button(
-                id = 'collapse-button-final-table-selected-tickers',
-                class_name = 'ma-1',
-                color = 'primary',
-                size = 'sm',
-                n_clicks = 0,
-                style = collapse_button_css
-            )
-        ),
-        dbc.Collapse(
-            html.Div(
-                id = 'final-table-selected-tickers',
-                children = []
-            ),
-            id = 'collapse-final-table-selected-tickers',
-            is_open = False
-        )],
-        style = {'margin-left': '5px'}
+
+    ##### SIDEBAR MENU COLLAPSE
+
+    html.Div(
+        dbc.Button(
+            id = 'collapse-button-sidebar-menu',
+            class_name = 'ma-1',
+            color = 'primary',
+            size = 'sm',
+            n_clicks = 0,
+            style = collapse_button_menu_css
+        )
+        # style = {'height': '36px', 'margin-left': '5px'}
     ),
+
+    dbc.Collapse(
+        
+    id = 'collapse-sidebar-menu',
+    is_open = False,
+    dimension = 'width',
+
+    children =
+    [
 
     ##### BEGIN TEMPLATE CONTROLS
 
@@ -365,9 +335,6 @@ layout = html.Div([
 
                     html.Div(
                         id = 'plots-selected-ticker-name',
-                        # children = [
-                        #     # html.Div('Ticker', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),
-                        # ],
                         style = {
                             'display': 'inline-block',
                             'width': '300px',
@@ -462,38 +429,6 @@ layout = html.Div([
                         )],
                         style = {'display': 'inline-block', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
-
-                    ### ADD RESET AXES BUTTON
-
-                    # html.Div([
-                    #     html.Div('_', style = {'color': 'white', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
-                    #     dbc.Button(
-                    #         'Reset Axes',
-                    #         id = 'reset-axes-template',
-                    #         n_clicks = 0,
-                    #         class_name = 'ma-1',
-                    #         color = 'light',
-                    #         size = 'sm',
-                    #         style = {
-                    #             'display': 'inline-block',
-                    #             'height': '30px',
-                    #             'border-color': 'rgb(192, 192, 192)', 
-                    #             'border-radius': '5px',
-                    #             'margin-bottom': '0px',
-                    #             'margin-top': 'auto',
-                    #             'text-align': 'center',
-                    #             'font-family': 'Helvetica',
-                    #             'font-size': '14px',
-                    #             'width': '95px'
-                    #         }
-                    #     )],
-                    #     style = {
-                    #         'float': 'right',
-                    #         'vertical-align': 'top',
-                    #         'margin-bottom': '0px',
-                    #         'margin-top': 'auto'
-                    #     }
-                    # ),
 
                 ]
             ),
@@ -771,20 +706,64 @@ layout = html.Div([
 
     ##### END BOLLINGER CONTROLS
 
+    ]),
+
+    # id = 'collapse-sidebar-menu',
+    # is_open = False,
+    # dimension = 'width'
+
+    ],
+    style = {'display': 'inline-block', 'vertical-align': 'top'}
+
+    ),
+
+    ##### END SIDEBAR MENU ALL CONTROLS
+
     # style = {'display': 'inline-block', 'vertical-align': 'top', 'margin-right': '5px', 'font-family': 'Helvetica'}
   
     # html.Br(),
     # dcc.Store(id = 'fig_data'),
 
-    html.Div(
-        id = 'fig-div',
-        children = [],
-        style = {'margin-left': '5px'}
-    )
-    # [dcc.Graph(id='test-graph', figure = {})],)
+    html.Div([
 
+        ##### BEGIN SELECTED TICKERS TABLE
+
+        html.Div([
+            # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/
+            html.Div(
+                dbc.Button(
+                    id = 'collapse-button-final-table-selected-tickers',
+                    class_name = 'ma-1',
+                    color = 'primary',
+                    size = 'sm',
+                    n_clicks = 0,
+                    style = collapse_button_css
+                )
+            ),
+            dbc.Collapse(
+                html.Div(
+                    id = 'final-table-selected-tickers',
+                    children = []
+                ),
+                id = 'collapse-final-table-selected-tickers',
+                is_open = False
+            )],
+            style = {'vertical-align': 'top', 'margin-bottom': '5px', 'margin-left': '0px'}
+        ),
+
+        ##### BEGIN GRAPH
+
+        html.Div(
+            id = 'fig-div',
+            children = [],
+            style = {'display': 'inline-block', 'vertical-align': 'top', 'margin-left': '0px'}
+        )
     ],
+    style = {'display': 'inline-block', 'vertical-align': 'top'}
     
+    )
+    ],
+
     id = 'dates-loading-wrapper',
     custom_spinner = html.Div([
         html.Br(),
@@ -806,6 +785,22 @@ layout = html.Div([
 
 ])
 
+
+@callback(
+    Output('collapse-button-sidebar-menu', 'children'),
+    Output('collapse-sidebar-menu', 'is_open'),
+    Input('collapse-button-sidebar-menu', 'n_clicks'),
+    State('collapse-sidebar-menu', 'is_open')
+)
+def toggle_collapse_drawdowns(n, is_open):
+    # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
+    title = ''  # 'MENU'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+    
 
 @callback(
     Output('collapse-button-final-table-selected-tickers', 'children'),
