@@ -44,7 +44,7 @@ button, input, select, textarea {
     display: flex;
     justify-content: flex-end !important;
     align-items: center;
-    height: 30px;
+    height: 30px !important;
     font-family: Helvetica;
     font-size: 14px;
     border-radius: 5px;

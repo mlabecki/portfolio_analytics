@@ -274,8 +274,8 @@ layout = html.Div([
     Output('dash-table-selected-tickers', 'data'),
     Output('dash-table-selected-tickers', 'selected_rows'),
     Output('dash-table-selected-tickers', 'tooltip_data'),
-    # Output('final-table-selected-tickers-data-stored', 'data'),
-    # Output('final-selected-ticker-summaries-stored', 'data'),
+    Output('final-table-selected-tickers-data-stored', 'data'),
+    Output('final-selected-ticker-summaries-stored', 'data'),
     Output('final-start-date-stored', 'data'),
     Output('final-end-date-stored', 'data'),
     # Output('selected-tickers-downloaded-data-stored', 'data'),
@@ -448,9 +448,10 @@ def get_table_selected_tickers(
     )
 
     final_table_selected_tickers_data = table_selected_tickers_data  # a list of dictionaries
-    # final_tooltip_data = tooltip_data.copy()  # a list
+    final_tooltip_data = tooltip_data.copy()  # a list
     final_selected_tickers_names = {row['Ticker']: row['Name'] for row in final_table_selected_tickers_data if row['No.'] - 1 in selected_rows}
-    aaa = final_selected_tickers_names
+    
+    # aaa = final_selected_tickers_names
     #
     # NOTE: Cannot call download_yf_data if overlap_start/overlap_end might be N/A.
     #       There is no 'final' version here of the start and end dates or selected tickers because 
@@ -469,8 +470,8 @@ def get_table_selected_tickers(
         selected_rows,
         tooltip_data,
 
-        # final_table_selected_tickers_data,
-        # final_tooltip_data,
+        final_table_selected_tickers_data,
+        final_tooltip_data,
         overlap_start,
         overlap_end,
         # downloaded_data,

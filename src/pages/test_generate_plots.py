@@ -87,10 +87,10 @@ def display_table_selected_tickers(
             'selector': '.dash-spreadsheet tr:hover td.dash-cell',
             'rule': 'background-color: rgb(211, 211, 211) !important; color: black !important; border-top: 1px solid rgb(211, 211, 211) !important; border-bottom: 1px solid rgb(211, 211, 211) !important;'
             },
-            # {
-            # 'selector': '.dash-spreadsheet tr:hover td.dash-select-cell',
-            # 'rule': 'background-color: rgb(211, 211, 211) !important; color: black !important; border-top: 1px solid rgb(211, 211, 211) !important; border-bottom: 1px solid rgb(211, 211, 211) !important;'
-            # },
+            {
+            'selector': '.dash-spreadsheet tr:hover td.dash-select-cell',
+            'rule': 'background-color: rgb(211, 211, 211) !important; color: black !important; border-top: 1px solid rgb(211, 211, 211) !important; border-bottom: 1px solid rgb(211, 211, 211) !important;'
+            },
             {
             'selector': '.dash-table-tooltip',
             # 'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(67, 172, 106) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica; background-color: rgb(227, 255, 237);'
@@ -111,7 +111,7 @@ def display_table_selected_tickers(
         ],
         style_data_conditional = [
             {'if': 
-                { 'state': 'active'},
+                {'state': 'active'},
                 'backgroundColor': 'white',
                 'border-top': '1px solid rgb(211, 211, 211)',
                 'border-bottom': '1px solid rgb(211, 211, 211)'},
@@ -273,6 +273,8 @@ layout = html.Div([
     ),
 
     ##### BEGIN SIDEBAR MENU ALL CONTROLS
+
+    # dbc.Col(dbc.Row([
 
     html.Div([
 
@@ -713,9 +715,12 @@ layout = html.Div([
     # dimension = 'width'
 
     ],
-    style = {'display': 'inline-block', 'vertical-align': 'top'}
+    style = {'display': 'inline-block', 'vertical-align': 'top', 'height': '1000px'}
 
-    ),
+    )
+
+    # ]))
+    ,
 
     ##### END SIDEBAR MENU ALL CONTROLS
 
@@ -723,6 +728,8 @@ layout = html.Div([
   
     # html.Br(),
     # dcc.Store(id = 'fig_data'),
+
+    # dbc.Col(dbc.Row([
 
     html.Div([
 
@@ -762,9 +769,11 @@ layout = html.Div([
     style = {'display': 'inline-block', 'vertical-align': 'top'}
     
     )
+    # ]))  # Col, Row
+    
     ],
 
-    id = 'dates-loading-wrapper',
+    id = 'plots-loading-wrapper',
     custom_spinner = html.Div([
         html.Br(),
         html.Br(),
