@@ -27,6 +27,22 @@ button, input, select, textarea {
     font-family: Helvetica;
 }
 
+div.Select-multi-value-wrapper, div.Select-input, div.Select-value {
+    height: 30px;
+    line-height: 30px;
+    vertical-align: middle !important;
+    display: flex;
+    align-items: center;
+}
+
+.Select-input, .Select-control, .Select-value, .Select-value-label, .Select--single, .Select-placeholder {
+    height: 30px;
+    line-height: 30px;
+    vertical-align: middle !important;
+    display: flex;
+    align-items: center;
+}
+
 /* https://community.plotly.com/t/style-datatable-tooltip-conditional/28563/2
 .dash-tooltip:before, .dash-tooltip:after {
     border-top-color: #43ac6a !important;

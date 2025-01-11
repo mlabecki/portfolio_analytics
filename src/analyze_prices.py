@@ -1809,7 +1809,7 @@ class AnalyzePrices():
         title_font_size = 32,
         theme = 'dark',
         price_color_theme = None,
-        drawdown_color = 'red'
+        drawdown_color = None
     ):
         """
         fig_data:
@@ -1829,6 +1829,9 @@ class AnalyzePrices():
         price_type:
             one of 'adjusted close', 'close', 'open', 'high', 'low'
         """
+
+        drawdown_color = 'red' if drawdown_color is None else drawdown_color
+        price_color_theme = 'base' if price_color_theme is None else price_color_theme
 
         if isinstance(df_price, pd.Series):
             df_tk = df_price.copy()
@@ -1876,7 +1879,6 @@ class AnalyzePrices():
             top_list = list(df_tk_longest_drawdowns[length_col])
             top_cmap = map_values(top_list, alpha_min, alpha_max, ascending=False)
 
-        price_color_theme = 'base' if price_color_theme is None else price_color_theme
         color_idx = style['overlay_color_selection'][price_color_theme][1][0]
         linecolor = style['overlay_color_theme'][price_color_theme][color_idx]
 
@@ -2700,12 +2702,15 @@ class AnalyzePrices():
         fig_data,
         bollinger_list,
         target_deck = 1,
-        theme = 'dark',
-        color_theme = 'gold'
+        theme = None,
+        color_theme = None
     ):
         """
         df_price: df_close or df_adj_close, depending on the underlying figure in fig_data
         """
+
+        theme = 'dark' if theme is None else theme
+        color_theme = 'gold' if color_theme is None else color_theme
 
         deck_type = fig_data['deck_type']
         fig_overlays = fig_data['overlays']

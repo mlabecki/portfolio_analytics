@@ -233,6 +233,15 @@ collapse_button_table_css = {
     'font-weight': 'bold',
     'width': '1300px'
 }
+collapse_button_css = {
+    'display': 'inline-block',
+    'margin-right': '5px',
+    'margin-left': '5px',
+    'text-align': 'left',
+    'font-family': 'Helvetica',
+    'font-weight': 'bold',
+    'width': '250px'
+}
 
 # Selected tickers elements
 select_ticker_container_css = {
@@ -417,12 +426,21 @@ selected_tickers_table_header_css = {
     'border-top': '1px solid rgb(211, 211, 211)',
     'border-bottom': '1px solid rgb(211, 211, 211)'
 }
+plots_selected_tickers_table_header_css = {
+    'font-family': 'Helvetica',
+    'font-size' : '14px',
+    'font-weight': 'bold',
+    'background': 'rgba(0, 140, 186, 0.2)',
+    'text-align': 'left',
+    'border-top': '1px solid rgba(0, 140, 186, 0.2)',
+    'border-bottom': '1px solid rgba(0, 140, 186, 0.2)'
+}
 selected_tickers_table_data_css = {
     'font-family': 'Helvetica',
     'font-size' : '14px',
     'background': 'white',
     'text-align': 'left',
-    'border-top': '1px solid rgb(211, 211, 211)',
+    # 'border-top': '1px solid rgb(211, 211, 211)',
     'border-bottom': '1px solid rgb(211, 211, 211)'
 }
 table_selected_tickers_footnote = {
@@ -430,7 +448,8 @@ table_selected_tickers_footnote = {
     'font-size': '12px',
     'font-style': 'italic',
     'margin-top': '5px',
-    'margin-left': '10px'
+    'margin-bottom': '5px',
+    'margin-left': '10px',
 }
 
 # Links

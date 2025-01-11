@@ -55,7 +55,7 @@ analyze_prices = AnalyzePrices()
     Output('tickers-dropdown', 'value'),
 
     Input('final-table-selected-tickers-data-stored', 'data'),
-    Input('final-selected-ticker-summaries-stored', 'tooltip_data')
+    Input('final-selected-ticker-summaries-stored', 'data')
 )
 def display_table_selected_tickers(
     table_data,
@@ -84,19 +84,26 @@ def display_table_selected_tickers(
             'rule': 'border: None;'
             },
             {
+            'selector': '.dash-spreadsheet tr:hover td.dash-cell',
+            'rule': 'background-color: rgb(211, 211, 211) !important; border-top: 1px solid rgb(211, 211, 211) !important; border-bottom: 1px solid rgb(211, 211, 211) !important;'
+            },
+            {
             'selector': '.dash-table-tooltip',
-            'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(67, 172, 106) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica; background-color: rgb(227, 255, 237);'
+            # 'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(67, 172, 106) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica; background-color: rgb(227, 255, 237);'
+            'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(211, 211, 211) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica; background-color: rgb(211, 211, 211);'
             },
             {
             'selector': '.dash-tooltip:before, .dash-tooltip:after',
-            'rule': 'border-top-color: #43ac6a !important; border-bottom-color: #43ac6a !important;'
-            }            
+            # 'rule': 'border-top-color: #43ac6a !important; border-bottom-color: #43ac6a !important;'
+            'rule': 'border-top-color: rgb(211, 211, 211) !important; border-bottom-color: rgb(211, 211, 211) !important;'
+            }
         ],
         tooltip_delay = 0,
         tooltip_duration = None,
         style_as_list_view = True,
         style_header_conditional = [
             {'if': {'column_id': 'Length*'}, 'width': 45, 'text-align': 'right', 'padding-right': '10px'},
+            {'if': {'column_id': 'No.'}, 'padding-left': '8px'},
         ],
         style_data_conditional = [
             {'if': 
@@ -104,7 +111,7 @@ def display_table_selected_tickers(
                 'backgroundColor': 'white',
                 'border-top': '1px solid rgb(211, 211, 211)',
                 'border-bottom': '1px solid rgb(211, 211, 211)'},
-            {'if': {'column_id': 'No.'}, 'width': 24},
+            {'if': {'column_id': 'No.'}, 'width': 24, 'padding-left': '8px'},
             {'if': {'column_id': 'Ticker'}, 'width': 45},
             {'if': {'column_id': 'Currency'}, 'width': 70},
             {'if': {'column_id': 'Exchange'}, 'width': 72},
@@ -113,18 +120,18 @@ def display_table_selected_tickers(
             {'if': {'column_id': 'Length*'}, 'width': 45, 'text-align': 'right', 'padding-right': '15px'},
         ],
         id = 'final-dash-table-selected-tickers',
-        style_header = selected_tickers_table_header_css,
+        style_header = plots_selected_tickers_table_header_css,
         style_data = selected_tickers_table_data_css,
     )
 
     dash_table_selected_tickers_div = html.Div(
         id = 'final-dash-table-selected-tickers-div',
         children = [
-            html.Div(
-                'YOUR PORTFOLIO',
-                id = f'final-table-selected-tickers-title',
-                style = input_table_title_css
-            ),
+            # html.Div(
+            #     'YOUR PORTFOLIO',
+            #     id = f'final-table-selected-tickers-title',
+            #     style = input_table_title_css
+            # ),
             html.Div(
                 id = 'dates-table-selected-tickers',
                 children = [dash_table_selected_tickers]
@@ -135,7 +142,7 @@ def display_table_selected_tickers(
                 style = table_selected_tickers_footnote
             )
         ],
-        style = {'width': '1300px', 'margin-left': '5px'}
+        style = {'width': '1300px'}
     )
 
     return (
@@ -190,26 +197,25 @@ def display_table_selected_tickers(
 #
 ##############
 
-drawdown_color = 'red'
 theme = 'dark'
-overlay_color_theme = 'grasslands'
-# overlay_color_themes = list(theme_style[theme]['overlay_color_theme'].keys())
-overlay_color_themes = [x.title() for x in theme_style[theme]['overlay_color_theme'].keys()]
-# print(overlay_color_themes)
-# drawdown_colors = list(theme_style[theme]['drawdown_colors'].keys())
+# overlay_color_theme = 'grasslands'
+overlay_color_themes = list(theme_style[theme]['overlay_color_theme'].keys())
+# overlay_color_themes = [x.title() for x in theme_style[theme]['overlay_color_theme'].keys()]
+# # print(overlay_color_themes)
+# # drawdown_colors = list(theme_style[theme]['drawdown_colors'].keys())
 drawdown_colors = [x.title() for x in theme_style[theme]['drawdown_colors'].keys()]
+# 
+# # deck_type = 'triple'
+# # deck_type = 'single'
+# # deck_type = 'double'
+# secondary_y = False
+# plot_width = 1600
+# plot_height_1 = 750
+# plot_height_2 = 150
+# plot_height_3 = 150
 
-# deck_type = 'triple'
-# deck_type = 'single'
-# deck_type = 'double'
-secondary_y = False
-plot_width = 1600
-plot_height_1 = 750
-plot_height_2 = 150
-plot_height_3 = 150
 deck_types = ['Single', 'Double', 'Triple']
 
-##############
 
 #################
 # html.Script(src='https://cdn.plot.ly/plotly-latest.min.js')
@@ -252,8 +258,8 @@ layout = html.Div([
     # LOADING WRAPPER
     dcc.Loading([
 
-    html.Div(id = 'plots-start-date', hidden = False, style = {'font-size' : '14px'}),
-    html.Div(id = 'plots-end-date', hidden = False, style = {'font-size' : '14px'}),
+    html.Div(id = 'plots-start-date', hidden = True, style = {'font-size' : '14px'}),
+    html.Div(id = 'plots-end-date', hidden = True, style = {'font-size' : '14px'}),
 
     # MAIN TITLE
     html.Div(
@@ -262,7 +268,8 @@ layout = html.Div([
         style = ticker_main_title_css
     ),
 
-    html.Div([
+    html.Div(
+        [
             html.Div(html.Span('x'), id = 'select-ticker-icon', style = select_ticker_left_css),
             html.Div(children = [
                 # html.B(ticker_menu_info[ticker_menu_info_list[0]], id = 'select-ticker-label-tk'),  # ticker corresponding to the first menu item
@@ -304,14 +311,7 @@ layout = html.Div([
                 color = 'primary',
                 size = 'sm',
                 n_clicks = 0,
-                style = {
-                    'display': 'inline-block',
-                    'margin-right': '5px',
-                    'text-align': 'left',
-                    'font-family': 'Helvetica',
-                    'font-weight': 'bold',
-                    'width': '250px'
-                }
+                style = collapse_button_css
             )
         ),
         dbc.Collapse(
@@ -321,8 +321,9 @@ layout = html.Div([
             ),
             id = 'collapse-final-table-selected-tickers',
             is_open = False
-        )
-    ]),
+        )],
+        style = {'margin-left': '5px'}
+    ),
 
     ##### BEGIN TEMPLATE CONTROLS
 
@@ -336,14 +337,7 @@ layout = html.Div([
                 color = 'primary',
                 size = 'sm',
                 n_clicks = 0,
-                style = {
-                    'display': 'inline-block',
-                    'margin-right': '5px',
-                    'text-align': 'left',
-                    'font-family': 'Helvetica',
-                    'font-weight': 'bold',
-                    'width': '250px'
-                }
+                style = collapse_button_css
             )
         ),
 
@@ -355,7 +349,7 @@ layout = html.Div([
                 children = [
 
                     html.Div([
-                        html.Div('Ticker', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        html.Div('Ticker', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id = 'tickers-dropdown',
                             # options = tickers,
@@ -366,64 +360,87 @@ layout = html.Div([
                             # clearable = True,
                             # multi = True,
                             # style = {'width': '180px'}
-                            style = {'width': '450px', 'font-size': '15px', 'border-radius': '5px', 'vertical-align': 'top', 'margin-bottom': '0px'}
+                            # optionHeight = 30,
+                            # style = {'display': 'flex', 'flex-direction': 'row', 'align-items': 'center', 'width': '110px', 'height': '30px', 'font-size': '14px', 'border-radius': '5px', 'vertical-align': 'middle', 'margin-bottom': '0px'}
+                            style = {'display': 'flex', 'justify-content': 'flex-end', 'align-items': 'center', 'width': '110px', 'height': '30px', 'font-size': '14px', 'border-radius': '5px', 'vertical-align': 'middle', 'margin-bottom': '0px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Theme', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        html.Div('Ticker', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),
+                        dmc.Select(
+                            # label="Ticker",
+                            # placeholder="Select one",
+                            id = "ticker-dropdown-dmc",
+                            # value="pd",
+                            data = ['GLD', 'SIL', 'PAX'],
+                            w = 110,
+                            h = 30,
+                            size = 'xs',
+                            # mb = 10,
+                            style = {'width': '110px', 'max-height': '30px', 'font-size': '14px', 'border-radius': '5px', 'vertical-align': 'top', 'margin-bottom': '0px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id = 'theme-dropdown',
                             options = ['Dark', 'Light'],
                             value = 'Dark',
                             disabled = False,
                             clearable = False,
-                            style = {'width': '90px', 'font-size': '15px', 'border-radius': '5px', 'vertical-align': 'top', 'margin-bottom': '0px'}
+                            # style = {'display': 'flex', 'justify-content': 'flex-end', 'flex-direction': 'row', 'align-items': 'center', 'width': '70px', 'height': '30px', 'font-size': '14px', 'border-radius': '5px', 'vertical-align': 'middle', 'margin-bottom': '0px'}
+                            style = {'display': 'flex', 'justify-content': 'flex-end', 'align-items': 'center', 'width': '70px', 'height': '30px', 'font-size': '14px', 'border-radius': '5px', 'vertical-align': 'middle', 'margin-bottom': '0px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Deck Type', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        html.Div('Deck Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id='deck-type-dropdown',
                             options = deck_types,
                             value = 'Single',
                             clearable = False, 
-                            style = {'width': '110px', 'font-size': '15px', 'border-radius': '5px', 'vertical-align': 'top', 'margin-bottom': '0px'}
+                            # style = {'display': 'flex', 'justify-content': 'flex-end', 'flex-direction': 'row', 'align-items': 'center', 'width': '80px', 'height': '30px', 'font-size': '14px', 'border-radius': '5px', 'vertical-align': 'middle', 'margin-bottom': '0px'}
+                            style = {'display': 'flex', 'justify-content': 'flex-end', 'align-items': 'center', 'width': '80px', 'height': '30px', 'font-size': '14px', 'border-radius': '5px', 'vertical-align': 'middle', 'margin-bottom': '0px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Sec Y', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),        
+                        html.Div('Sec Y', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),        
                         dcc.Dropdown(
                             id='secondary-y-dropdown',
                             options = ['No', 'Yes'],
                             value = 'No',
                             clearable = False,
-                            style = {'width': '80px', 'font-size': '15px', 'border-radius': '5px', 'vertical-align': 'top', 'margin-bottom': '0px'}
+                            # style = {'display': 'flex', 'justify-content': 'flex-end', 'flex-direction': 'row', 'align-items': 'center', 'width': '60px', 'height': '30px', 'font-size': '14px', 'border-radius': '5px', 'vertical-align': 'middle', 'margin-bottom': '0px'}
+                            style = {'display': 'flex', 'justify-content': 'flex-end', 'align-items': 'center', 'width': '60px', 'height': '30px', 'font-size': '14px', 'border-radius': '5px', 'vertical-align': 'middle', 'margin-bottom': '0px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Plot Width', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        html.Div('Width', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),
                         dbc.Input(
                             id = 'width-input',
                             type = 'number',
                             value = 1450,
                             min = 800,
-                            max = 1800,
+                            max = 1600,
                             step = 50,
-                            style = {'width': '100px', 'height': '36px', 'font-size': '15px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'vertical-align': 'top'}
+                            debounce = True,
+                            style = {'width': '75px', 'height': '30px', 'font-size': '14px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'vertical-align': 'top'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Upper Deck Height', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px'}),
+                        html.Div('Height Upper', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-top': '0px'}),
                         dbc.Input(
                             id = 'upper-height-input',
                             type = 'number',
@@ -431,13 +448,14 @@ layout = html.Div([
                             min = 250,
                             max = 1000,
                             step = 50,
-                            style = {'width': '160px', 'height': '36px', 'font-size': '15px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'vertical-align': 'top'}
+                            debounce = True,
+                            style = {'width': '90px', 'height': '30px', 'font-size': '14px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'vertical-align': 'top'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'border-radius': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Lower Deck Height', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        html.Div('Height Lower', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),
                         dbc.Input(
                             id = 'lower-height-input',
                             type = 'number',
@@ -445,7 +463,8 @@ layout = html.Div([
                             min = 100,
                             max = 300,
                             step = 50,
-                            style = {'width': '160px', 'height': '36px', 'font-size': '15px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'vertical-align': 'top', 'font-color': 'black'}
+                            debounce = True,
+                            style = {'width': '90px', 'height': '30px', 'font-size': '14px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'vertical-align': 'top', 'font-color': 'black'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -463,14 +482,14 @@ layout = html.Div([
                             size = 'sm',
                             style = {
                                 'display': 'inline-block',
-                                'height': '36px',
+                                'height': '30px',
                                 'border-color': 'rgb(192, 192, 192)', 
                                 'border-radius': '5px',
                                 'margin-bottom': '0px',
                                 'margin-top': 'auto',
                                 'text-align': 'center',
                                 'font-family': 'Helvetica',
-                                'font-size': '15px',
+                                'font-size': '14px',
                                 'width': '95px'
                             }
                         )],
@@ -487,9 +506,9 @@ layout = html.Div([
         
             id = 'collapse-template',
             is_open = False
-        )
-    
-    ]),
+        )],
+        style = {'margin-left': '5px'}
+    ),
 
     ##### END TEMPLATE CONTROLS
 
@@ -504,14 +523,7 @@ layout = html.Div([
                 color = 'primary',
                 size = 'sm',
                 n_clicks = 0,
-                style = {
-                    'display': 'inline-block',
-                    'margin-right': '5px',
-                    'text-align': 'left',
-                    'font-family': 'Helvetica',
-                    'font-weight': 'bold',
-                    'width': '250px'
-                }
+                style = collapse_button_css
             )
         ),
 
@@ -616,12 +628,14 @@ layout = html.Div([
                     ),
 
                 ],
+                style = {'margin-left': '5px'}
             ), 
 
             id = 'collapse-drawdowns',
             is_open = False
 
-        )]
+        )],
+        style = {'margin-left': '5px'}
     ), 
 
     ##### END DRAWDOWN CONTROLS
@@ -637,14 +651,7 @@ layout = html.Div([
                 color = 'primary',
                 size = 'sm',
                 n_clicks = 0,
-                style = {
-                    'display': 'inline-block',
-                    'margin-right': '5px',
-                    'text-align': 'left',
-                    'font-family': 'Helvetica',
-                    'font-weight': 'bold',
-                    'width': '250px'
-                }
+                style = collapse_button_css
             )
         ),
 
@@ -757,12 +764,14 @@ layout = html.Div([
                     ),
 
                 ],
+                style = {'margin-left': '5px'}
             ), 
 
             id = 'collapse-bollinger',
             is_open = False
 
-        )]
+        )],
+        style = {'margin-left': '5px'}
     ), 
 
     ##### END BOLLINGER CONTROLS
@@ -772,8 +781,12 @@ layout = html.Div([
     # html.Br(),
     # dcc.Store(id = 'fig_data'),
 
-    html.Div(id = 'fig-div', children = [])
-            # [dcc.Graph(id='test-graph', figure = {})],)
+    html.Div(
+        id = 'fig-div',
+        children = [],
+        style = {'margin-left': '5px'}
+    )
+    # [dcc.Graph(id='test-graph', figure = {})],)
 
     ],
     
@@ -798,30 +811,6 @@ layout = html.Div([
 
 ])
 
-# @callback(
-#     Output('select-ticker-label-tk', 'children'),
-#     Output('select-ticker-label-name', 'children'),
-#     # Output('select-ticker', 'hidden'),
-#     Input('tickers-dropdown', 'value'),
-#     # State('select-ticker', 'hidden')
-#     # Input('select-ticker-icon', 'n_clicks')
-# )
-# def add_ticker_select(tk_info):
-#     tk = ticker_menu_info[tk_info]
-#     name = tk_info.split(': ')[1]
-#     return tk, name
-
-# @callback(
-#     # Output('select-ticker_label', 'children'),
-#     Output('select-ticker', 'hidden'),
-#     # Input('tickers-dropdown', 'value'),
-#     Input('select-ticker-icon', 'n_clicks')
-# )
-# def remove_ticker_select(n):
-#     if n:
-#         return True
-#     else:
-#         return False
 
 @callback(
     Output('collapse-button-final-table-selected-tickers', 'children'),
@@ -838,6 +827,7 @@ def toggle_collapse_final_table_selected_tickers(n, is_open):
     else:
         return f'► {title}', is_open
 
+
 @callback(
     Output('collapse-button-template', 'children'),
     Output('collapse-template', 'is_open'),
@@ -853,6 +843,7 @@ def toggle_collapse_template(n, is_open):
     else:
         return f'► {title}', is_open
 
+
 @callback(
     Output('lower-height-input', 'disabled'),
     Output('bollinger-deck-dropdown', 'options'),
@@ -864,6 +855,7 @@ def disable_options(deck_type):
         return False, [1, 2]
     else:
         return False, [1, 2, 3]
+
 
 @callback(
     Output('collapse-button-drawdowns', 'children'),
@@ -879,6 +871,7 @@ def toggle_collapse_drawdowns(n, is_open):
         return label, not is_open
     else:
         return f'► {title}', is_open
+
 
 @callback(
     Output('collapse-button-bollinger', 'children'),
@@ -896,30 +889,12 @@ def toggle_collapse_bollinger(n, is_open):
         return f'► {title}', is_open
 
 
-# @callback(
-#     # Output('drawdowns-number-dropdown', 'options'),
-#     # Output('drawdowns-number-dropdown', 'value'),
-#     Output('drawdowns-number-input', 'max'),
-#     Output('drawdowns-number-input', 'value'),
-# 
-#     Input('tickers-dropdown', 'value'),
-#     Input('drawdowns-number-input', 'value'),
-#     Input('drawdowns-topby-dropdown', 'value')
-# )
-# def update_drawdowns_number_dropdown(tk, dd_number, sort_by):
-#     # Must change price type to reflect user's selection - add Input parameter
-#     drawdown_data = analyze_prices.summarize_tk_drawdowns(df_close, tk, sort_by)
-#     n_drawdowns = portfolio_drawdown_data[tk]['Total Drawdowns']
-#     # dd_number_options = [x for x in range(n_drawdowns + 1)][1:]
-#     dd_number_value = min(dd_number, n_drawdowns)
-#     return n_drawdowns, dd_number_value
-#     # return dd_number_options, dd_number_value
-
 @callback(
 
     # Output('test-graph', 'figure'),
     # Output('fig_div', 'children', allow_duplicate = True),
     # Output('test-graph', 'figure'),
+
     Output('fig-div', 'children'),
     Output('drawdown-controls', 'style'),
     Output('bollinger-controls', 'style'),
@@ -1006,6 +981,9 @@ def update_plot(
 
     downloaded_data = hist_data.download_yf_data(start_date, end_date, selected_tickers)
 
+    drawdown_color = drawdown_color.lower() if drawdown_color is not None else 'red'
+    price_color_theme = price_color_theme.lower() if price_color_theme is not None else 'base'
+
     # fig_data = create_graph(theme, tk, drawdown_color, overlay_color_theme)
     date_index = downloaded_data[tk]['ohlc'].index
     theme = theme.lower()
@@ -1044,6 +1022,7 @@ def update_plot(
 
     show_trough_to_recovery = True if drawdown_display == 'Peak To Recovery' else False
     drawdown_top_by = 'length' if drawdown_top_by == 'Total Length' else 'depth'
+
     fig_data = analyze_prices.add_drawdowns(
         fig_data,
         close_tk,
@@ -1057,11 +1036,11 @@ def update_plot(
         top_by = drawdown_top_by,
         show_trough_to_recovery = show_trough_to_recovery,
         add_title = True,
-        theme = theme,
+        # theme = theme,
         # theme = theme_drawdowns,
         # color_theme = 'base',
-        price_color_theme = price_color_theme.lower(),
-        drawdown_color = drawdown_color.lower()
+        price_color_theme = price_color_theme,
+        drawdown_color = drawdown_color
     )
     # fig_div = create_graph(theme, tk, drawdown_color, overlay_color_theme)
     # fig = fig_data['fig']
@@ -1073,8 +1052,8 @@ def update_plot(
         fig_data,
         bollinger_list,
         target_deck = bollinger_deck,
-        theme = theme,
-        color_theme = bollinger_color_theme.lower()
+        # theme = theme,
+        color_theme = bollinger_color_theme
     )
     
 
