@@ -274,7 +274,9 @@ layout = html.Div([
 
     ##### BEGIN SIDEBAR MENU ALL CONTROLS
 
-    # dbc.Col(dbc.Row([
+    dbc.Row([
+
+    dbc.Col([  # Col 1
 
     html.Div([
 
@@ -394,7 +396,7 @@ layout = html.Div([
                             type = 'number',
                             value = 1450,
                             min = 800,
-                            max = 1600,
+                            max = 1800,
                             step = 50,
                             debounce = True,
                             style = {'width': '90px', 'height': '30px', 'font-size': '14px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'vertical-align': 'top'}
@@ -715,21 +717,23 @@ layout = html.Div([
     # dimension = 'width'
 
     ],
-    style = {'display': 'inline-block', 'vertical-align': 'top', 'height': '1000px'}
+    style = {'display': 'inline-block', 'vertical-align': 'top'}
 
     )
 
-    # ]))
+    ### ],  # Col 1
+    # style = {'width': 'flex'}
+    ### )  # Closing Col 1
     ,
-
+        
     ##### END SIDEBAR MENU ALL CONTROLS
 
+    ### dbc.Col([  # Col 2
+    
     # style = {'display': 'inline-block', 'vertical-align': 'top', 'margin-right': '5px', 'font-family': 'Helvetica'}
   
     # html.Br(),
     # dcc.Store(id = 'fig_data'),
-
-    # dbc.Col(dbc.Row([
 
     html.Div([
 
@@ -769,8 +773,15 @@ layout = html.Div([
     style = {'display': 'inline-block', 'vertical-align': 'top'}
     
     )
-    # ]))  # Col, Row
-    
+
+    ],  # Col
+    style = {'display': 'flex', 'flex-wrap': 'nowrap'}
+    )  # Closing Col
+
+    ],  # Row
+    # style = {'display': 'flex', 'flex-wrap': 'nowrap'}
+    )  # Closing Row
+
     ],
 
     id = 'plots-loading-wrapper',
@@ -804,11 +815,11 @@ layout = html.Div([
 def toggle_collapse_drawdowns(n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
     title = ''  # 'MENU'
-    label = f'► {title}' if is_open else f'▼ {title}'
+    label = f'▼ {title}' if is_open else f'► {title}'
     if n:
         return label, not is_open
     else:
-        return f'► {title}', is_open
+        return f'▼ {title}', is_open
     
 
 @callback(
