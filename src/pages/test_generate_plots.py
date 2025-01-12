@@ -528,39 +528,6 @@ layout = html.Div([
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
-
-                    ### ADD RESET AXES BUTTON
-
-                    html.Div([
-                        html.Div('_', style = {'color': 'white', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
-                        dbc.Button(
-                            'Reset Axes',
-                            id = 'reset-axes-drawdowns',
-                            n_clicks = 0,
-                            class_name = 'ma-1',
-                            color = 'light',
-                            size = 'sm',
-                            style = {
-                                'display': 'inline-block',
-                                'height': '36px',
-                                'border-color': 'rgb(192, 192, 192)',
-                                'border-radius': '5px',
-                                'margin-bottom': '0px',
-                                'margin-top': 'auto',
-                                'text-align': 'center',
-                                'font-family': 'Helvetica',
-                                'font-size': '15px',
-                                'width': '95px'
-                            }
-                        )],
-                        style = {
-                            'float': 'right',
-                            'vertical-align': 'top',
-                            'margin-bottom': '0px',
-                            'margin-top': 'auto'
-                        }
-                    ),
-
                 ],
                 style = {'margin-left': '5px'}
             ), 
@@ -663,40 +630,6 @@ layout = html.Div([
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
-
-                    ### ADD RESET AXES BUTTON
-
-                    html.Div([
-                        html.Div('_', style = {'color': 'white', 'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
-                        dbc.Button(
-                            'Reset Axes',
-                            id = 'reset-axes-bollinger',
-                            n_clicks = 0,
-                            class_name = 'ma-1',
-                            color = 'light',
-                            size = 'sm',
-                            style = {
-                                'display': 'inline-block',
-                                'height': '36px',
-                                'border-color': 'rgb(192, 192, 192)',                                
-                                'border-radius': '5px',
-                                'margin-bottom': '0px',
-                                'margin-top': 'auto',
-                                'text-align': 'center',
-                                'font-family': 'Helvetica',
-                                'font-size': '15px',
-                                'width': '95px'
-                            }
-                        )],
-                        style = {
-                            'float': 'right',
-                            # 'vertical-align': 'top',
-                            'vertical-align': 'top', 
-                            'margin-bottom': '0px',
-                            'margin-top': 'auto'
-                        }
-                    ),
-
                 ],
                 style = {'margin-left': '5px'}
             ), 
@@ -739,7 +672,8 @@ layout = html.Div([
 
         ##### BEGIN SELECTED TICKERS TABLE
 
-        html.Div([
+        html.Div(
+            [
             # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/
             html.Div(
                 dbc.Button(
@@ -758,16 +692,47 @@ layout = html.Div([
                 ),
                 id = 'collapse-final-table-selected-tickers',
                 is_open = False
-            )],
+            )
+            ],
             style = {'vertical-align': 'top', 'margin-bottom': '5px', 'margin-left': '0px'}
         ),
 
         ##### BEGIN GRAPH
-
         html.Div(
-            id = 'fig-div',
-            children = [],
-            style = {'display': 'inline-block', 'vertical-align': 'top', 'margin-left': '0px'}
+            id = 'fig-div-container',
+            children = 
+            [
+                dbc.Row([  # Row
+                
+                    dbc.Col([  # Col 1
+                        html.Div(
+                            id = 'fig-div',
+                            children = [],
+                            style = {'display': 'inline-block', 'vertical-align': 'top', 'margin-left': '0px'}
+                        )
+                    ]),  # Closing Col1 
+                    ### ADD RESET AXES BUTTON
+                    dbc.Col([  # Col 2
+                        html.Div([
+                            dbc.Button(
+                                'Reset Axes',
+                                id = 'reset-axes',
+                                n_clicks = 0,
+                                class_name = 'ma-1',
+                                color = 'light',
+                                size = 'sm',
+                                style = reset_axes_button_css
+                            )
+                        ],
+                        style = {'vertical-align': 'top'}
+                        )
+                    ],
+                    style = {'display': 'flex', 'flex-wrap': 'nowrap'}
+                    )  # Closing Col2 
+                ],
+                style = {'--bs-gutter-x': '0'}
+                )  # Closing Row
+            ],
         )
     ],
     style = {'display': 'inline-block', 'vertical-align': 'top'}
@@ -921,9 +886,7 @@ def toggle_collapse_bollinger(n, is_open):
     Input('final-end-date-stored', 'data'),
     Input('final-selected-tickers-stored', 'data'),
 
-    # Input('reset-axes-template', 'n_clicks'),
-    Input('reset-axes-drawdowns', 'n_clicks'),
-    Input('reset-axes-bollinger', 'n_clicks'),
+    Input('reset-axes', 'n_clicks'),
     
     # template options
     Input('tickers-dropdown', 'value'),
@@ -960,9 +923,7 @@ def update_plot(
         selected_tickers_names,
         # downloaded_data,
 
-        # n_click_template,
-        n_click_dd,
-        n_click_bollinger,
+        n_click_reset_axes,
 
         # ticker and template options
         tk,

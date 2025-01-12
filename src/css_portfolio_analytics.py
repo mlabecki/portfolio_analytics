@@ -483,3 +483,25 @@ link_container_css = {
     'font-size': '15px',
     'font-weight': 'bold'
 }
+
+# Plots
+reset_axes_button_css = {
+    'display': 'inline-block',
+    # 'display': 'flex',
+    # 'flex-wrap': 'nowrap',
+    'width': '58px',                            
+    'height': '55px',
+    'border-color': 'rgb(192, 192, 192)',                      
+    'border-radius': '5px',
+    'margin-bottom': '0px',
+    'padding-left': '6px',
+    'padding-right': '7px',
+    'margin-top': 'auto',
+    'text-align': 'center',
+    'font-family': 'Helvetica',
+    'font-weight': 'bold',
+    'font-size': '14px',
+    'vertical-align': 'middle',
+    # 'float': 'top'
+    'float': 'right'
+}
