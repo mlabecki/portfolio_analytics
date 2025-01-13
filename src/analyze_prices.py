@@ -105,6 +105,27 @@ class AnalyzePrices():
         return wm
 
 
+    ##### WEIGHTED MEAN #####
+
+    def weighted_standard_deviation(
+        self,
+        values
+    ):
+        """
+        values: a list, tuple or series of numerical values
+        """
+        if isinstance(values, (list, tuple)):
+            values = pd.Series(values)
+
+        n = len(values)
+        weights = range(n + 1)[1:]
+
+        wm = self.weighted_mean(values)
+        wstd = np.sqrt(np.average((values - wm) ** 2, weights = weights))
+
+        return wstd
+
+
     ##### MOVING AVERAGE #####
 
     def moving_average(
@@ -124,7 +145,7 @@ class AnalyzePrices():
             triple exponential ('tema'),
             weighted ('wma'),
             Welles Wilder ('wwma')
-        window:
+        ma_window:
             length in days
         Returns ma
         """
@@ -190,29 +211,46 @@ class AnalyzePrices():
 
     ##### MOVING VOLATILITY / STANDARD DEVIATION #####
 
-    def moving_volatility(
+    def moving_std_vol(
         self,
         df_tk,
-        window = 10,
+        ma_type,
+        ma_window = 10,
         min_periods = 1,
         ddof = 0
     ):
         """
         df_tk:      
             a series of price values, taken as a column of df_close or df_adj_close for ticker tk
-        window:
+        ma_type:
+            simple ('sma'),
+            exponential ('ema'),
+            weighted ('wma')
+        ma_window:
             length in days
         Returns moving (rolling) standard deviation m_std and volatility m_vol
         """
 
-        m_std = df_tk.rolling(window = window, min_periods = min_periods).std(ddof = ddof)
-        m_vol = df_tk.rolling(window = window, min_periods = min_periods).var(ddof = ddof)
+        ma_type = 'sma' if ma_type is None else ma_type
+
+        if ma_type == 'ema':
+            m_std = df_tk.ewm(span = ma_window).std(ddof = ddof)
+            m_vol = df_tk.ewm(span = ma_window).var(ddof = ddof)
+
+        elif ma_type == 'wma':
+            m_std = df_tk.rolling(window = ma_window, min_periods = min_periods).apply(lambda x: self.weighted_standard_deviation(x))
+            m_vol = df_tk.rolling(window = ma_window, min_periods = min_periods).apply(lambda x: self.weighted_standard_deviation(x) ** 2)
+
+        else:  # 'sma' or anything else
+            m_std = df_tk.rolling(window = ma_window, min_periods = min_periods).std(ddof = ddof)
+            m_vol = df_tk.rolling(window = ma_window, min_periods = min_periods).var(ddof = ddof)
 
         mvol_data = {
+            'type': ma_type,
             'std': m_std,
             'vol': m_vol,
-            'std name': f'MSTD {window}',
-            'vol name': f'MVOL {window}'
+            'std name': f'MSTD {ma_window}',
+            'vol name': f'MVOL {ma_window}'
         }
 
         return mvol_data
@@ -253,6 +291,7 @@ class AnalyzePrices():
 
         """
 
+        deck_type = deck_type.lower()
         map_deck_type = {'single': 1, 'double': 2, 'triple': 3}
         n_rows = map_deck_type[deck_type]
 
@@ -539,7 +578,8 @@ class AnalyzePrices():
             'atrp'  - Average True Rate Percentage
         """
 
-        style = theme_style[theme]
+        theme = theme.lower()
+        color_theme = color_theme.lower()
 
         fig = fig_data['fig']
         fig_y_min = fig_data['y_min'][target_deck]
@@ -1830,8 +1870,8 @@ class AnalyzePrices():
             one of 'adjusted close', 'close', 'open', 'high', 'low'
         """
 
-        drawdown_color = 'red' if drawdown_color is None else drawdown_color
-        price_color_theme = 'base' if price_color_theme is None else price_color_theme
+        drawdown_color = 'red' if drawdown_color is None else drawdown_color.lower()
+        price_color_theme = 'base' if price_color_theme is None else price_color_theme.lower()
 
         if isinstance(df_price, pd.Series):
             df_tk = df_price.copy()
@@ -2311,6 +2351,7 @@ class AnalyzePrices():
     def bollinger_bands(
         self,
         prices,
+        ma_type,
         window = None,
         n_std = None,
         n_bands = None,
@@ -2319,6 +2360,10 @@ class AnalyzePrices():
         """
         prices:
             series of ticker prices ('adjusted close', 'open', 'high', 'low' or 'close')
+        ma_type:
+            simple ('sma'),
+            exponential ('ema'),
+            weighted ('wma')
         window:
             size of the rolling window in days, defaults to 20
         n_std:
@@ -2329,6 +2374,8 @@ class AnalyzePrices():
         Returns a list of bollinger band dictionaries
         """
 
+        ma_type = 'sma' if ma_type is None else ma_type        
+
         max_n_bands = 5
         window = 20 if (window is None) else window
         n_std = 2.0 if (n_std is None) else n_std
@@ -2336,12 +2383,12 @@ class AnalyzePrices():
 
         eps = 1e-6
 
-        df_sma = prices.rolling(window = window, min_periods = 1).mean()
-        df_std = prices.rolling(window = window, min_periods = 1).std(ddof = ddof)
+        df_mean = self.moving_average(prices, ma_type, window)
+        df_std = self.moving_std_vol(prices, ma_type, window)['std']
 
         bollinger_list = [{
-            'data': df_sma,
-            'name': f'SMA {window}',
+            'data': df_mean,
+            'name': f'{ma_type.upper()} {window}',
             'idx_offset': 0
         }]
 
@@ -2357,7 +2404,7 @@ class AnalyzePrices():
 
             band_width = i * n_std
 
-            upper_band = df_sma + band_width * df_std
+            upper_band = df_mean + band_width * df_std
             upper_name = f'({window}, {band_width:.{k}f}) Upper Bollinger'
             bollinger_list.append({
                 'data': upper_band,
@@ -2365,7 +2412,7 @@ class AnalyzePrices():
                 'idx_offset': i
             })
 
-            lower_band = df_sma - band_width * df_std        
+            lower_band = df_mean - band_width * df_std        
             lower_name = f'({window}, {band_width:.{k}f}) Lower Bollinger'
             bollinger_list.append({
                 'data': lower_band,
@@ -2379,7 +2426,7 @@ class AnalyzePrices():
         pct_bollinger = (prices - lower_band_1) / (upper_band_1 - lower_band_1)
         pct_bollinger = pct_bollinger.fillna(0)        
 
-        bollinger_width = 100 * (upper_band_1 - lower_band_1) / df_sma
+        bollinger_width = 100 * (upper_band_1 - lower_band_1) / df_mean
 
         bollinger_list = sorted(bollinger_list, key = itemgetter('idx_offset'), reverse = True)
 
@@ -2408,13 +2455,13 @@ class AnalyzePrices():
         prices:
             series of ticker prices ('adjusted close', 'open', 'high', 'low' or 'close')
         ma_type:
-            one of 'sma', 'ema', dema', tema'
+            one of 'sma', 'ema', dema', tema', 'wma', 'wwma'
         window:
             size of the rolling window in days
         prc_offset: 
             vertical offset from base moving average in percentage points (-99% to 99%)
         n_bands:
-            number of pairs of envelopes to be created, defaults to 3 (max)
+            number of pairs of envelopes to be created, defaults to 3, max 5
 
         Returns a list of ma envelope dictionaries
         """
@@ -2424,7 +2471,7 @@ class AnalyzePrices():
         if ma_type is None:
             ma_type = 'sma'
 
-        n_bands = min(3, n_bands)
+        n_bands = min(5, n_bands)
         if abs(prc_offset) > 99:
             prc_offset = math.sign(prc_offset) * 99
 
@@ -2496,6 +2543,9 @@ class AnalyzePrices():
 
         Returns the updated fig_data dictionary
         """
+
+        theme = theme.lower()
+        color_theme = color_theme.lower()
 
         style = theme_style[theme]
         overlay_colors = style['overlay_color_theme'][color_theme]
@@ -2610,6 +2660,9 @@ class AnalyzePrices():
              - ma_window, in days
         """
 
+        theme = theme.lower()
+        color_theme = color_theme.lower()
+
         deck_type = fig_data['deck_type']
         fig_overlays = fig_data['overlays']
 
@@ -2709,8 +2762,8 @@ class AnalyzePrices():
         df_price: df_close or df_adj_close, depending on the underlying figure in fig_data
         """
 
-        theme = 'dark' if theme is None else theme
-        color_theme = 'gold' if color_theme is None else color_theme
+        theme = 'dark' if theme is None else theme.lower()
+        color_theme = 'gold' if color_theme is None else color_theme.lower()
 
         deck_type = fig_data['deck_type']
         fig_overlays = fig_data['overlays']
@@ -2718,7 +2771,7 @@ class AnalyzePrices():
         n_boll = int((len(bollinger_list) + 1) / 2)
 
         style = theme_style[theme]
-        overlay_color_idx = style['overlay_color_selection'][color_theme][n_boll]
+        overlay_color_idx = style['overlay_color_selection'][color_theme.lower()][n_boll]
 
         current_names = [tr['name'] for tr in fig_data['fig']['data'] if (tr['legendgroup'] == str(target_deck))]
 
@@ -2801,6 +2854,9 @@ class AnalyzePrices():
         secondary_y is False if target_deck == 2 or 3
 
         """
+
+        theme = theme.lower()
+        color_theme = color_theme.lower()
 
         style = theme_style[theme]
 
@@ -3003,6 +3059,9 @@ class AnalyzePrices():
         """
         """
 
+        theme = theme.lower()
+        color_theme = color_theme.lower()
+
         deck_type = fig_data['deck_type']
         fig_overlays = fig_data['overlays']
 
@@ -3091,6 +3150,9 @@ class AnalyzePrices():
             'vol' - moving volatility
             'std' - moving standard deviation
         """
+
+        theme = theme.lower()
+        color_theme = color_theme.lower()
 
         style = theme_style[theme]
 
@@ -3413,9 +3475,9 @@ class AnalyzePrices():
 
         #####
 
+        theme = theme.lower()
         style = theme_style[theme]
-
-        color_theme = 'base' if color_theme is None else color_theme
+        color_theme = 'base' if color_theme is None else color_theme.lower()
         color_idx = style['overlay_color_selection'][color_theme][1][0]
         linecolor = style['overlay_color_theme'][color_theme][color_idx]
 
@@ -3843,6 +3905,9 @@ class AnalyzePrices():
              - 'name': 'Adjusted Close', 'Close', 'Open', 'High', 'Low', 'Average True Rate', etc.
              - 'show': True / False - include in plot or not
         """
+
+        theme = theme.lower()
+        color_theme = color_theme.lower()
 
         deck_type = fig_data['deck_type']
         fig_overlays = fig_data['overlays']

@@ -104,10 +104,10 @@ class DownloadData():
         downloaded_data = {}
         ohlc_cols = ['Open', 'High', 'Low', 'Close']
 
-        for tk in tickers:
+        session = requests_cache.CachedSession('cache/yfinance.cache')
+        session.headers['User-agent'] = url_settings['global']['headers']
 
-            session = requests_cache.CachedSession('cache/yfinance.cache')
-            session.headers['User-agent'] = url_settings['global']['headers']
+        for tk in tickers:
 
             # yf.Ticker().history()
             #
@@ -123,13 +123,13 @@ class DownloadData():
             data_adj.index = data_adj.index.date
 
             df_ohlc = data[ohlc_cols]  # a dataframe, but e.g. df_ohlc['Close'] is a series
-            df_ohlc_adj = data_adj[ohlc_cols]
+            df_ohlc_adj = data_adj[ohlc_cols]  # a dataframe
             df_volume = data['Volume']  # a series, not dataframe
             df_dollar_volume = df_volume * df_ohlc_adj['Close']  # a series, not dataframe
 
             downloaded_data[tk] = {
                 'ohlc': df_ohlc,
-                'ohlc-adj': df_ohlc_adj,
+                'ohlc_adj': df_ohlc_adj,
                 'volume': df_volume,
                 'dollar_volume': df_dollar_volume
             }

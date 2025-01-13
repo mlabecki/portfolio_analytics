@@ -203,7 +203,7 @@ def display_table_selected_tickers(
 
 theme = 'dark'
 # overlay_color_theme = 'grasslands'
-overlay_color_themes = list(theme_style[theme]['overlay_color_theme'].keys())
+overlay_color_themes = [x.title() for x in theme_style[theme]['overlay_color_theme'].keys()]
 # overlay_color_themes = [x.title() for x in theme_style[theme]['overlay_color_theme'].keys()]
 # # print(overlay_color_themes)
 # # drawdown_colors = list(theme_style[theme]['drawdown_colors'].keys())
@@ -219,6 +219,24 @@ drawdown_colors = [x.title() for x in theme_style[theme]['drawdown_colors'].keys
 # plot_height_3 = 150
 
 deck_types = ['Single', 'Double', 'Triple']
+
+def deck_number(deck_type, deck_name):
+    if deck_name == 'Middle':
+        return 2
+    elif deck_name == 'Lower':
+        return 2 if deck_type == 'Double' else 3
+    else:  
+        # 'Upper' and all else
+        return 1
+
+ma_type_map = {
+    'Simple': 'sma',
+    'Exponential': 'ema',
+    'Double Exponential': 'dema',
+    'Triple Exponential': 'tema',
+    'Weighted': 'wma',
+    'Welles Wilder': 'wwma'
+}
 
 
 #################
@@ -327,7 +345,7 @@ layout = html.Div([
                 children = [
 
                     html.Div([
-                        html.Div('Ticker', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),
+                        html.Div('Ticker', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-top': '3px', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id = 'tickers-dropdown',
                             className = 'plots-dropdown-button',
@@ -393,13 +411,14 @@ layout = html.Div([
                         html.Div('Width', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),
                         dbc.Input(
                             id = 'width-input',
+                            className = 'plots-input-button',
                             type = 'number',
                             value = 1450,
                             min = 800,
                             max = 1800,
                             step = 50,
                             debounce = True,
-                            style = {'width': '90px', 'height': '30px', 'font-size': '14px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'vertical-align': 'top'}
+                            style = {'width': '90px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -408,13 +427,14 @@ layout = html.Div([
                         html.Div('Height Upper', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-top': '0px'}),
                         dbc.Input(
                             id = 'upper-height-input',
+                            className = 'plots-input-button',
                             type = 'number',
                             value = 750,
                             min = 250,
                             max = 1000,
                             step = 50,
                             debounce = True,
-                            style = {'width': '100px', 'height': '30px', 'font-size': '14px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'vertical-align': 'top'}
+                            style = {'width': '100px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'border-radius': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -423,13 +443,14 @@ layout = html.Div([
                         html.Div('Height Lower', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),
                         dbc.Input(
                             id = 'lower-height-input',
+                            className = 'plots-input-button',
                             type = 'number',
                             value = 150,
                             min = 100,
                             max = 300,
                             step = 50,
                             debounce = True,
-                            style = {'width': '100px', 'height': '30px', 'font-size': '14px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'vertical-align': 'top', 'font-color': 'black'}
+                            style = {'width': '100px'}
                         )],
                         style = {'display': 'inline-block', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -469,72 +490,103 @@ layout = html.Div([
                 children = [
 
                     html.Div([
-                        html.Div('Top DD Number', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        html.Div('Top DD Number', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
                         dbc.Input(
                             id='drawdowns-number-input',
+                            className = 'plots-input-button',
                             type = 'number',
                             value = 5,
                             min = 1,
                             step = 1,
-                            style = {'width': '130px', 'height': '36px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'font-size': '15px'}
+                            style = {'width': '130px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Top DD By', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        html.Div('Top DD By', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id='drawdowns-topby-dropdown',
+                            className = 'plots-dropdown-button',
                             options = ['% Depth', 'Total Length'],
                             value = '% Depth',
                             clearable = False,
-                            style = {'width': '130px', 'font-size': '15px'}
+                            style = {'width': '130px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('DD Display', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        html.Div('DD Display', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id='drawdowns-display-dropdown',
+                            className = 'plots-dropdown-button',
                             options = ['Peak To Trough', 'Peak To Recovery'],
                             value = 'Peak To Trough',
                             clearable = False,
-                            style = {'width': '170px', 'font-size': '15px'}
+                            style = {'width': '170px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('DD Color', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        html.Div('Price', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='drawdowns-price-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Close', 'High', 'Open', 'Low'],
+                            value = 'Close',
+                            clearable = False,
+                            style = {'width': '60px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='drawdowns-adjusted-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '100px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('DD Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id='drawdowns-color-dropdown',
+                            className = 'plots-dropdown-button',
                             options = drawdown_colors,
                             value = 'Red',
                             clearable = False,
-                            style = {'width': '100px', 'font-size': '15px'}
+                            style = {'width': '100px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Price Color Theme', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        html.Div('Price Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id='drawdowns-price-color-dropdown',
+                            className = 'plots-dropdown-button',
                             options = overlay_color_themes,
                             value = 'Sapphire',
                             clearable = False,
-                            style = {'width': '150px', 'font-size': '15px'}
+                            style = {'width': '150px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
                 ],
-                style = {'margin-left': '5px'}
+                # style = {'margin-left': '5px'}
             ), 
 
             id = 'collapse-drawdowns',
-            is_open = False
-
+            is_open = False,
+            style = {'width': '300px'}
         )],
         style = {'margin-left': '5px'}
     ), 
@@ -564,84 +616,275 @@ layout = html.Div([
                 children = [
 
                     html.Div([
-                        html.Div('Target Deck', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),        
+                        html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id = 'bollinger-deck-dropdown',
-                            options = [1],
-                            value = 1,
-                            # options = [1, 2],
-                            # value = 2,
+                            className = 'plots-dropdown-button',
+                            options = ['Upper'],
+                            value = 'Upper',
                             clearable = False,
-                            style = {'width': '100px', 'font-size': '15px'}
+                            style = {'width': '115px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+
+                    html.Div([
+                        html.Div('Price Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='bollinger-price-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Close', 'High', 'Low', 'Open'],
+                            value = 'Close',
+                            clearable = False,
+                            style = {'width': '100px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Window Size', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
-                        dbc.Input(
-                            id = 'bollinger-window-input',
-                            type = 'number',
-                            value = 20,
-                            min = 1,
-                            max = 100,
-                            step = 1,
-                            style = {'width': '120px', 'height': '36px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'font-size': '15px'}
+                        html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='bollinger-adjusted-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '75px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('St Dev Multiplier', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
-                        dbc.Input(
-                            id = 'bollinger-nstd-input',
-                            type = 'number',
-                            value = 2.0,
-                            min = 0,
-                            max = 10,
-                            step = 0.1,
-                            style = {'width': '130px', 'height': '36px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'font-size': '15px'}
-                        )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                    ),
-
-                    html.Div([
-                        html.Div('Number Of Bands', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        html.Div('# Of Bands', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dbc.Input(
                             id = 'bollinger-nbands-input',
+                            className = 'plots-input-button',
                             type = 'number',
                             value = 1,
                             min = 1,
                             max = 5,
                             step = 1,
-                            style = {'width': '140px', 'height': '36px', 'border-color': 'rgb(204, 204, 204)', 'border-radius': '5px', 'font-size': '15px'}
+                            style = {'width': '85px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Color Theme', style = {'font-size': '15px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        html.Div('Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dbc.Input(
+                            id = 'bollinger-window-input',
+                            className = 'plots-input-button',
+                            type = 'number',
+                            value = 20,
+                            min = 1,
+                            max = 100,
+                            step = 1,
+                            debounce = True,
+                            style = {'width': '100px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('St Dev Factor', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dbc.Input(
+                            id = 'bollinger-nstd-input',
+                            className = 'plots-input-button',
+                            type = 'number',
+                            value = 2.0,
+                            min = 0,
+                            max = 10,
+                            step = 0.1,
+                            debounce = True,
+                            style = {'width': '105px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Moving Ave / St Dev Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='bollinger-ma-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Simple', 'Exponential', 'Weighted'],
+                            value = 'Simple',
+                            clearable = False,
+                            style = {'width': '182px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id='bollinger-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
                             options = overlay_color_themes,
-                            value = 'Grasslands',
+                            value = 'Gold',
                             clearable = False,
-                            style = {'width': '120px', 'font-size': '15px'}
+                            style = {'width': '113px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
                 ],
-                style = {'margin-left': '5px'}
+                # style = {'margin-left': '5px'}
             ), 
 
             id = 'collapse-bollinger',
-            is_open = False
-
+            is_open = False,
+            style = {'width': '300px'}
         )],
         style = {'margin-left': '5px'}
     ), 
 
     ##### END BOLLINGER CONTROLS
+
+    ##### BEGIN MA ENVELOPE CONTROLS
+
+    html.Div([
+
+        html.Div(
+            dbc.Button(
+                id = 'collapse-button-ma-env',
+                class_name = 'ma-1',
+                color = 'primary',
+                size = 'sm',
+                n_clicks = 0,
+                style = collapse_button_css
+            )
+        ),
+
+        dbc.Collapse(
+
+            html.Div(
+
+                id = 'ma-env-controls',
+                children = [
+
+                    html.Div([
+                        html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id = 'ma-env-deck-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Upper'],
+                            value = 'Upper',
+                            clearable = False,
+                            style = {'width': '115px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Price Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='ma-env-price-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Close', 'High', 'Low', 'Open'],
+                            value = 'Close',
+                            clearable = False,
+                            style = {'width': '100px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='ma-env-adjusted-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '75px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('# Of Envelopes', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dbc.Input(
+                            id = 'ma-env-nbands-input',
+                            className = 'plots-input-button',
+                            type = 'number',
+                            value = 1,
+                            min = 1,
+                            max = 5,
+                            step = 1,
+                            style = {'width': '120px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dbc.Input(
+                            id = 'ma-env-window-input',
+                            className = 'plots-input-button',
+                            type = 'number',
+                            value = 20,
+                            min = 1,
+                            max = 100,
+                            step = 1,
+                            debounce = True,
+                            style = {'width': '100px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('% Width', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dbc.Input(
+                            id = 'ma-env-offset-input',
+                            className = 'plots-input-button',
+                            type = 'number',
+                            value = 5.0,
+                            min = 0,
+                            max = 50,
+                            step = 2.5,
+                            debounce = True,
+                            style = {'width': '70px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='ma-env-ma-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Simple', 'Exponential', 'Double Exponential', 'Triple Exponential', 'Weighted', 'Welles Wilder'],
+                            value = 'Simple',
+                            clearable = False,
+                            style = {'width': '175px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='ma-env-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = overlay_color_themes,
+                            value = 'Grasslands',
+                            clearable = False,
+                            style = {'width': '120px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                ],
+                # style = {'margin-left': '5px'}
+            ), 
+
+            id = 'collapse-ma-env',
+            is_open = False,
+            style = {'width': '300px'}
+        )],
+        style = {'margin-left': '5px'}
+    ), 
+
+    ##### END MA ENVELOPE CONTROLS
 
     ]),
 
@@ -652,21 +895,9 @@ layout = html.Div([
     ],
     style = {'display': 'inline-block', 'vertical-align': 'top'}
 
-    )
-
-    ### ],  # Col 1
-    # style = {'width': 'flex'}
-    ### )  # Closing Col 1
-    ,
+    ),
         
     ##### END SIDEBAR MENU ALL CONTROLS
-
-    ### dbc.Col([  # Col 2
-    
-    # style = {'display': 'inline-block', 'vertical-align': 'top', 'margin-right': '5px', 'font-family': 'Helvetica'}
-  
-    # html.Br(),
-    # dcc.Store(id = 'fig_data'),
 
     html.Div([
 
@@ -703,7 +934,7 @@ layout = html.Div([
             children = 
             [
                 dbc.Row([  # Row
-                
+                    
                     dbc.Col([  # Col 1
                         html.Div(
                             id = 'fig-div',
@@ -711,6 +942,7 @@ layout = html.Div([
                             style = {'display': 'inline-block', 'vertical-align': 'top', 'margin-left': '0px'}
                         )
                     ]),  # Closing Col1 
+
                     ### ADD RESET AXES BUTTON
                     dbc.Col([  # Col 2
                         html.Div([
@@ -727,10 +959,13 @@ layout = html.Div([
                         style = {'vertical-align': 'top'}
                         )
                     ],
-                    style = {'display': 'flex', 'flex-wrap': 'nowrap'}
+                    style = {'display': 'flex'}
                     )  # Closing Col2 
+
                 ],
-                style = {'--bs-gutter-x': '0'}
+                style = {'--bs-gutter-x': '0', 'flex-wrap': 'nowrap'}
+                # --bs-gutter-x refers to the content left and right margins within each column
+                # nowrap ensures that the Reset Axes button doesn't move to the bottom of graph when the page is resized
                 )  # Closing Row
             ],
         )
@@ -822,14 +1057,18 @@ def toggle_collapse_template(n, is_open):
 @callback(
     Output('lower-height-input', 'disabled'),
     Output('bollinger-deck-dropdown', 'options'),
+    Output('bollinger-deck-dropdown', 'value'),
     Input('deck-type-dropdown', 'value'))
 def disable_options(deck_type):
     if deck_type == 'Single':
-        return True, [1]
+        # return True, [1]
+        return True, ['Upper'], 'Upper'
     elif deck_type == 'Double':
-        return False, [1, 2]
+        # return False, [1, 2]
+        return False, ['Upper', 'Lower'], 'Upper'
     else:
-        return False, [1, 2, 3]
+        # return False, [1, 2, 3]
+        return False, ['Upper', 'Middle', 'Lower'], 'Upper'
 
 
 @callback(
@@ -857,6 +1096,22 @@ def toggle_collapse_drawdowns(n, is_open):
 def toggle_collapse_bollinger(n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
     title = 'BOLLINGER BANDS'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
+    Output('collapse-button-ma-env', 'children'),
+    Output('collapse-ma-env', 'is_open'),
+    Input('collapse-button-ma-env', 'n_clicks'),
+    State('collapse-ma-env', 'is_open')
+)
+def toggle_collapse_ma_env(n, is_open):
+    # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
+    title = 'MOVING AVERAGE ENVELOPES'
     label = f'► {title}' if is_open else f'▼ {title}'
     if n:
         return label, not is_open
@@ -901,6 +1156,8 @@ def toggle_collapse_bollinger(n, is_open):
     Input('drawdowns-number-input', 'value'),
     Input('drawdowns-topby-dropdown', 'value'),
     Input('drawdowns-display-dropdown', 'value'),
+    Input('drawdowns-adjusted-dropdown', 'value'),
+    Input('drawdowns-price-type-dropdown', 'value'),
     Input('drawdowns-color-dropdown', 'value'),
     Input('drawdowns-price-color-dropdown', 'value'),
     # prevent_initial_call=True #,
@@ -908,11 +1165,23 @@ def toggle_collapse_bollinger(n, is_open):
 
     # bollinger options
     Input('bollinger-deck-dropdown', 'value'),
+    Input('bollinger-adjusted-dropdown', 'value'),
+    Input('bollinger-price-type-dropdown', 'value'),
+    Input('bollinger-ma-type-dropdown', 'value'),
     Input('bollinger-window-input', 'value'),
     Input('bollinger-nstd-input', 'value'),
     Input('bollinger-nbands-input', 'value'),
     Input('bollinger-color-theme-dropdown', 'value'),
 
+    # ma envelope options
+    Input('ma-env-deck-dropdown', 'value'),
+    Input('ma-env-adjusted-dropdown', 'value'),
+    Input('ma-env-price-type-dropdown', 'value'),
+    Input('ma-env-ma-type-dropdown', 'value'),
+    Input('ma-env-window-input', 'value'),
+    Input('ma-env-offset-input', 'value'),
+    Input('ma-env-nbands-input', 'value'),
+    Input('ma-env-color-theme-dropdown', 'value'),
    
 )
 
@@ -938,16 +1207,30 @@ def update_plot(
         n_top, 
         drawdown_top_by, 
         drawdown_display, 
+        drawdown_adjusted,
+        drawdown_price_type,
         drawdown_color, 
         price_color_theme,
 
         # bollinger options
         # tk_bollinger,
-        bollinger_deck,
+        bollinger_deck_name,
+        bollinger_adjusted,
+        bollinger_price_type,
+        bollinger_ma_type,
         bollinger_window,
         bollinger_nstd,
         bollinger_nbands,
-        bollinger_color_theme
+        bollinger_color_theme,
+
+        ma_env_deck_name,
+        ma_env_adjusted,
+        ma_env_price_type,
+        ma_env_ma_type,
+        ma_env_window,
+        ma_env_offset,
+        ma_env_nbands,
+        ma_env_color_theme
 
     ):
 
@@ -961,7 +1244,7 @@ def update_plot(
     # fig_data = create_graph(theme, tk, drawdown_color, overlay_color_theme)
     date_index = downloaded_data[tk]['ohlc'].index
     theme = theme.lower()
-    deck_type = deck_type.lower()
+    # deck_type = deck_type.lower()
     secondary_y = False if sec_y == 'No' else True
     fig_data = analyze_prices.create_template(
         date_index,
@@ -974,7 +1257,14 @@ def update_plot(
         theme = theme
     )
 
-    close_tk = downloaded_data[tk]['ohlc']['Close']
+    df_drawdown_price = downloaded_data[tk]['ohlc_adj'] if drawdown_adjusted else downloaded_data[tk]['ohlc']
+    drawdown_price = df_drawdown_price[drawdown_price_type]
+
+    df_bollinger_price = downloaded_data[tk]['ohlc_adj'] if bollinger_adjusted else downloaded_data[tk]['ohlc']
+    bollinger_price = df_bollinger_price[bollinger_price_type]
+
+    df_ma_env_price = downloaded_data[tk]['ohlc_adj'] if ma_env_adjusted else downloaded_data[tk]['ohlc']
+    ma_env_price = df_ma_env_price[ma_env_price_type]
 
     # if (theme_drawdowns != theme):
     #     theme = theme_drawdowns
@@ -988,7 +1278,7 @@ def update_plot(
     # bollinger_div_style = drawdown_div_style
     # template_div_style = drawdown_div_style
 
-    drawdown_data_tk = analyze_prices.summarize_tk_drawdowns(close_tk, drawdown_top_by)
+    drawdown_data_tk = analyze_prices.summarize_tk_drawdowns(drawdown_price, drawdown_top_by)
     n_drawdowns = drawdown_data_tk['Total Drawdowns']
     # dd_number_options = [x for x in range(n_drawdowns + 1)][1:]
     dd_number_value = min(n_top, n_drawdowns)
@@ -999,7 +1289,7 @@ def update_plot(
 
     fig_data = analyze_prices.add_drawdowns(
         fig_data,
-        close_tk,
+        drawdown_price,
         tk,
         selected_drawdown_data,
         n_top_drawdowns = n_top,
@@ -1019,18 +1309,37 @@ def update_plot(
     # fig_div = create_graph(theme, tk, drawdown_color, overlay_color_theme)
     # fig = fig_data['fig']
 
-    
-    bollinger_data = analyze_prices.bollinger_bands(close_tk, bollinger_window, bollinger_nstd, bollinger_nbands)
+    bollinger_data = analyze_prices.bollinger_bands(
+        bollinger_price,
+        ma_type_map[bollinger_ma_type],
+        bollinger_window,
+        bollinger_nstd,
+        bollinger_nbands
+    )
     bollinger_list = bollinger_data['list']
     fig_data = analyze_prices.add_bollinger_overlays(
         fig_data,
         bollinger_list,
-        target_deck = bollinger_deck,
+        target_deck = deck_number(deck_type, bollinger_deck_name),
         # theme = theme,
         color_theme = bollinger_color_theme
     )
     
-
+    ma_env_list = analyze_prices.ma_envelopes(
+        ma_env_price,
+        ma_type_map[ma_env_ma_type],
+        ma_env_window,
+        ma_env_offset,
+        ma_env_nbands
+    )
+    fig_data = analyze_prices.add_ma_envelope_overlays(
+        fig_data,
+        ma_env_list,
+        target_deck = deck_number(deck_type, ma_env_deck_name),
+        # theme = theme,
+        color_theme = ma_env_color_theme
+    )
+    
     # target_deck = 1
     # plot_height = fig_data['plot_height'][target_deck]
     # y_min = fig_data['y_min'][target_deck]
