@@ -1859,7 +1859,8 @@ class AnalyzePrices():
             Normally drawdowns should only go into deck 1 and the title should be added.
         add_price:
             Normally True, and the y-axis range will be set based on the price range.
-            Should be forced to True if fig_y_min/fig_y_max are None (empty deck).
+            Should be forced to True if fig_y_min/fig_y_max are None (empty deck) 
+                -- No, the user may want to plot drawdowns before adding the price
             However, there might be some interest in adding drawdowns as an overlay on a
             different plot, in which case:
               - add_price could be False, and the y-axis range will not be reset; e.g. drawdowns
@@ -1889,8 +1890,11 @@ class AnalyzePrices():
         title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
 
-        if (fig_y_min is None) | (fig_y_max is None):
-            add_price = True
+        # NOTE: Cancelled because the user may want to plot drawdowns before adding the price
+        # Even if add_price is False, the y-range must be worked out
+        #
+        # if (fig_y_min is None) | (fig_y_max is None):
+        #     add_price = True
 
         df_tk_deepest_drawdowns = drawdown_data['Deepest Drawdowns']
         df_tk_longest_drawdowns = drawdown_data['Longest Drawdowns']
@@ -1898,7 +1902,7 @@ class AnalyzePrices():
         df_tk_longest_drawdowns_str = drawdown_data['Longest Drawdowns Str']
 
         style = theme_style[theme]
-        ### top_by_color = style['red_color']
+
         top_by_color = style['drawdown_colors'][drawdown_color]['fill']
         drawdown_border_color = style['drawdown_colors'][drawdown_color]['border']
                 
@@ -1924,56 +1928,54 @@ class AnalyzePrices():
 
         reset_y_limits = False
         
-        if add_price:
-            
-            min_y = min(df_tk[~df_tk.isna()])
-            max_y = max(df_tk[~df_tk.isna()])
+        min_y = min(df_tk[~df_tk.isna()])
+        max_y = max(df_tk[~df_tk.isna()])
 
-            # print(f'tk, min_y, max_y = {tk, min_y, max_y}')
-            # print(f'tk, fig_y_min, fig_y_max = {tk, fig_y_min, fig_y_max}')
+        # print(f'tk, min_y, max_y = {tk, min_y, max_y}')
+        # print(f'tk, fig_y_min, fig_y_max = {tk, fig_y_min, fig_y_max}')
 
-            if fig_y_min is None:
-                new_y_min = min_y
+        if fig_y_min is None:
+            new_y_min = min_y
+            reset_y_limits = True
+        else:
+            new_y_min = min(min_y, fig_y_min)
+            if new_y_min < fig_y_min:
                 reset_y_limits = True
-            else:
-                new_y_min = min(min_y, fig_y_min)
-                if new_y_min < fig_y_min:
-                    reset_y_limits = True
 
-            if fig_y_max is None:
-                new_y_max = max_y
+        if fig_y_max is None:
+            new_y_max = max_y
+            reset_y_limits = True
+        else:
+            new_y_max = max(max_y, fig_y_max)
+            if new_y_max > fig_y_max:
                 reset_y_limits = True
-            else:
-                new_y_max = max(max_y, fig_y_max)
-                if new_y_max > fig_y_max:
-                    reset_y_limits = True
 
-            # print(f'tk, new_y_min, new_y_max = {tk, new_y_min, new_y_max}')
+        # print(f'tk, new_y_min, new_y_max = {tk, new_y_min, new_y_max}')
 
-            if reset_y_limits:
+        if reset_y_limits:
                 
-                min_n_intervals = n_yintervals_map['min'][plot_height]
-                max_n_intervals = n_yintervals_map['max'][plot_height]
-                y_lower_limit, y_upper_limit, y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
+            min_n_intervals = n_yintervals_map['min'][plot_height]
+            max_n_intervals = n_yintervals_map['max'][plot_height]
+            y_lower_limit, y_upper_limit, y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
 
-                if target_deck > 1:
-                    y_upper_limit *= 0.999
+            if target_deck > 1:
+                y_upper_limit *= 0.999
+        
+            # print(f'min_n_intervals, max_n_intervals = {min_n_intervals, max_n_intervals}')
+            # print(f'y_lower_limit, y_upper_limit, y_delta = {y_lower_limit, y_upper_limit, y_delta}')
+            # print(f'FINAL new_y_min, new_y_max, y_delta = {new_y_min, new_y_max, y_delta}')
 
-                # print(f'min_n_intervals, max_n_intervals = {min_n_intervals, max_n_intervals}')
-                # print(f'y_lower_limit, y_upper_limit, y_delta = {y_lower_limit, y_upper_limit, y_delta}')
-                # print(f'FINAL new_y_min, new_y_max, y_delta = {new_y_min, new_y_max, y_delta}')
-
-                y_range = (y_lower_limit, y_upper_limit)
-                fig.update_yaxes(
-                    range = y_range,
-                    title = legend_name,
-                    showticklabels = True,
-                    tick0 = y_lower_limit,
-                    dtick = y_delta,
-                    showgrid = True,
-                    zeroline = True,
-                    row = target_deck, col = 1
-                )
+            y_range = (y_lower_limit, y_upper_limit)
+            fig.update_yaxes(
+                range = y_range,
+                title = legend_name,
+                showticklabels = True,
+                tick0 = y_lower_limit,
+                dtick = y_delta,
+                showgrid = True,
+                zeroline = True,
+                row = target_deck, col = 1
+            )
 
         infinity = 2 * y_upper_limit  # Reset Axes refresh takes very long if this is too high
 
