@@ -498,6 +498,7 @@ layout = html.Div([
                             value = 5,
                             min = 1,
                             step = 1,
+                            debounce = True,
                             style = {'width': '65px'}
                         )],
                         style = {'display': 'inline-block', 'margin-bottom': '5px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
@@ -608,6 +609,18 @@ layout = html.Div([
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
+                    html.Div([
+                        dbc.Button(
+                            'Add To Plot',
+                            id = f'add-drawdowns-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'success',
+                            size = 'sm',
+                            style = plots_add_button_css
+                        )],
+                    ),
+
                 ],
                 # style = {'margin-left': '5px'}
             ), 
@@ -693,6 +706,7 @@ layout = html.Div([
                             min = 1,
                             max = 5,
                             step = 1,
+                            debounce = True,
                             style = {'width': '85px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
@@ -755,6 +769,20 @@ layout = html.Div([
                         )],
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
+
+                    html.Div([
+                        dbc.Button(
+                            'Add To Plot',
+                            id = f'add-bollinger-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'success',
+                            size = 'sm',
+                            style = plots_add_button_css
+                        )],
+                        # style = {'margin-bottom': '5px'}
+                    ),
+
                 ],
                 # style = {'margin-left': '5px'}
             ), 
@@ -839,6 +867,7 @@ layout = html.Div([
                             min = 1,
                             max = 5,
                             step = 1,
+                            debounce = True,
                             style = {'width': '120px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
@@ -901,6 +930,20 @@ layout = html.Div([
                         )],
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
+
+                    html.Div([
+                        dbc.Button(
+                            'Add To Plot',
+                            id = f'add-ma-env-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'success',
+                            size = 'sm',
+                            style = plots_add_button_css
+                        )],
+                        # style = {'margin-bottom': '5px'}
+                    ),
+
                 ],
                 # style = {'margin-left': '5px'}
             ), 
@@ -1191,6 +1234,7 @@ def toggle_collapse_ma_env(n, is_open):
     Input('drawdowns-price-color-dropdown', 'value'),
     Input('drawdowns-add-price-dropdown', 'value'),
     Input('drawdowns-add-title-dropdown', 'value'),
+    Input('add-drawdowns-button', 'n_clicks'),    
     # prevent_initial_call=True #,
     #Input('overlay-dropdown', 'value')
 
@@ -1203,6 +1247,7 @@ def toggle_collapse_ma_env(n, is_open):
     Input('bollinger-nstd-input', 'value'),
     Input('bollinger-nbands-input', 'value'),
     Input('bollinger-color-theme-dropdown', 'value'),
+    Input('add-bollinger-button', 'n_clicks'),
 
     # ma envelope options
     Input('ma-env-deck-dropdown', 'value'),
@@ -1213,6 +1258,7 @@ def toggle_collapse_ma_env(n, is_open):
     Input('ma-env-offset-input', 'value'),
     Input('ma-env-nbands-input', 'value'),
     Input('ma-env-color-theme-dropdown', 'value'),
+    Input('add-ma-env-button', 'n_clicks'),
    
 )
 
@@ -1241,9 +1287,10 @@ def update_plot(
         drawdown_adjusted,
         drawdown_price_type,
         drawdown_color, 
-        price_color_theme,
+        drawdown_price_color_theme,
         drawdown_add_price,
         drawdown_add_title,
+        add_drawdowns,
 
         # bollinger options
         # tk_bollinger,
@@ -1255,6 +1302,7 @@ def update_plot(
         bollinger_nstd,
         bollinger_nbands,
         bollinger_color_theme,
+        add_bollinger,
 
         ma_env_deck_name,
         ma_env_adjusted,
@@ -1263,19 +1311,14 @@ def update_plot(
         ma_env_window,
         ma_env_offset,
         ma_env_nbands,
-        ma_env_color_theme
+        ma_env_color_theme,
+        add_ma_env
 
     ):
-
-    dd_add_price_disabled = True if drawdown_add_price == 'No' else False
-    dd_add_title = True if drawdown_add_title =='Yes' else False
 
     selected_tickers = list(selected_tickers_names.keys())
 
     downloaded_data = hist_data.download_yf_data(start_date, end_date, selected_tickers)
-
-    drawdown_color = drawdown_color.lower() if drawdown_color is not None else 'red'
-    price_color_theme = price_color_theme.lower() if price_color_theme is not None else 'base'
 
     # fig_data = create_graph(theme, tk, drawdown_color, overlay_color_theme)
     date_index = downloaded_data[tk]['ohlc'].index
@@ -1293,106 +1336,85 @@ def update_plot(
         theme = theme
     )
 
-    df_drawdown_price = downloaded_data[tk]['ohlc_adj'] if drawdown_adjusted else downloaded_data[tk]['ohlc']
-    drawdown_price = df_drawdown_price[drawdown_price_type]
+    dd_add_price_disabled = True if drawdown_add_price == 'No' else False
+    n_drawdowns = 5 if n_top is None else n_top
+    dd_number_value = n_drawdowns
 
-    df_bollinger_price = downloaded_data[tk]['ohlc_adj'] if bollinger_adjusted else downloaded_data[tk]['ohlc']
-    bollinger_price = df_bollinger_price[bollinger_price_type]
+    ### Add drawdowns
+    if add_drawdowns:
+        
+        dd_add_title = True if drawdown_add_title =='Yes' else False
+        drawdown_color = drawdown_color.lower() if drawdown_color is not None else 'red'
+        drawdown_price_color_theme = drawdown_price_color_theme.lower() if drawdown_price_color_theme is not None else 'base'
+        df_drawdown_price = downloaded_data[tk]['ohlc_adj'] if drawdown_adjusted else downloaded_data[tk]['ohlc']
+        drawdown_price = df_drawdown_price[drawdown_price_type]
 
-    df_ma_env_price = downloaded_data[tk]['ohlc_adj'] if ma_env_adjusted else downloaded_data[tk]['ohlc']
-    ma_env_price = df_ma_env_price[ma_env_price_type]
+        drawdown_data_tk = analyze_prices.summarize_tk_drawdowns(drawdown_price, drawdown_top_by)
+        n_drawdowns = drawdown_data_tk['Total Drawdowns']
+        dd_number_value = min(n_top, n_drawdowns)
+        selected_drawdown_data = analyze_prices.select_tk_drawdowns(drawdown_data_tk, n_top)
 
-    # if (theme_drawdowns != theme):
-    #     theme = theme_drawdowns
+        show_trough_to_recovery = True if 'Recovery' in drawdown_display else False
+        drawdown_top_by = 'length' if drawdown_top_by == 'Total Length' else 'depth'
 
-    # drawdown_div_style = {
-    #     'width': width,
-    #     # 'vertical-align': 'top',
-    #     # 'margin-top': 'auto', 
-    #     # 'margin-bottom': '0px'
-    # }
-    # bollinger_div_style = drawdown_div_style
-    # template_div_style = drawdown_div_style
+        fig_data = analyze_prices.add_drawdowns(
+            fig_data,
+            drawdown_price,
+            tk,
+            selected_drawdown_data,
+            n_top_drawdowns = n_top,
+            target_deck = 1,
+            add_price = not dd_add_price_disabled,
+            price_type = drawdown_price_type.lower(),
+            top_by = drawdown_top_by,
+            show_trough_to_recovery = show_trough_to_recovery,
+            add_title = dd_add_title,
+            theme = theme,
+            price_color_theme = drawdown_price_color_theme,
+            drawdown_color = drawdown_color
+        )
 
-    drawdown_data_tk = analyze_prices.summarize_tk_drawdowns(drawdown_price, drawdown_top_by)
-    n_drawdowns = drawdown_data_tk['Total Drawdowns']
-    # dd_number_options = [x for x in range(n_drawdowns + 1)][1:]
-    dd_number_value = min(n_top, n_drawdowns)
-    selected_drawdown_data = analyze_prices.select_tk_drawdowns(drawdown_data_tk, n_top)
+    ### Add Bollinger bands
+    if add_bollinger:
+        df_bollinger_price = downloaded_data[tk]['ohlc_adj'] if bollinger_adjusted else downloaded_data[tk]['ohlc']
+        bollinger_price = df_bollinger_price[bollinger_price_type]
+        bollinger_data = analyze_prices.bollinger_bands(
+            bollinger_price,
+            ma_type_map[bollinger_ma_type],
+            bollinger_window,
+            bollinger_nstd,
+            bollinger_nbands
+        )
+        bollinger_list = bollinger_data['list']
+        fig_data = analyze_prices.add_bollinger_overlays(
+            fig_data,
+            bollinger_list,
+            target_deck = deck_number(deck_type, bollinger_deck_name),
+            theme = theme,
+            color_theme = bollinger_color_theme
+        )
 
-    show_trough_to_recovery = True if 'Recovery' in drawdown_display else False
-    drawdown_top_by = 'length' if drawdown_top_by == 'Total Length' else 'depth'
-
-    fig_data = analyze_prices.add_drawdowns(
-        fig_data,
-        drawdown_price,
-        tk,
-        selected_drawdown_data,
-        n_top_drawdowns = n_top,
-        target_deck = 1,
-        add_price = not dd_add_price_disabled,
-        # add_price = False,
-        price_type = drawdown_price_type.lower(),
-        top_by = drawdown_top_by,
-        show_trough_to_recovery = show_trough_to_recovery,
-        add_title = dd_add_title,
-        price_color_theme = price_color_theme,
-        drawdown_color = drawdown_color
-    )
-    # fig_div = create_graph(theme, tk, drawdown_color, overlay_color_theme)
-    # fig = fig_data['fig']
-
-    bollinger_data = analyze_prices.bollinger_bands(
-        bollinger_price,
-        ma_type_map[bollinger_ma_type],
-        bollinger_window,
-        bollinger_nstd,
-        bollinger_nbands
-    )
-    bollinger_list = bollinger_data['list']
-    fig_data = analyze_prices.add_bollinger_overlays(
-        fig_data,
-        bollinger_list,
-        target_deck = deck_number(deck_type, bollinger_deck_name),
-        # theme = theme,
-        color_theme = bollinger_color_theme
-    )
+    ### Add moving average envelopes
+    if add_ma_env:
+        df_ma_env_price = downloaded_data[tk]['ohlc_adj'] if ma_env_adjusted else downloaded_data[tk]['ohlc']
+        ma_env_price = df_ma_env_price[ma_env_price_type]
+        ma_env_list = analyze_prices.ma_envelopes(
+            ma_env_price,
+            ma_type_map[ma_env_ma_type],
+            ma_env_window,
+            ma_env_offset,
+            ma_env_nbands
+        )
+        fig_data = analyze_prices.add_ma_envelope_overlays(
+            fig_data,
+            ma_env_list,
+            target_deck = deck_number(deck_type, ma_env_deck_name),
+            theme = theme,
+            color_theme = ma_env_color_theme
+        )
     
-    ma_env_list = analyze_prices.ma_envelopes(
-        ma_env_price,
-        ma_type_map[ma_env_ma_type],
-        ma_env_window,
-        ma_env_offset,
-        ma_env_nbands
-    )
-    fig_data = analyze_prices.add_ma_envelope_overlays(
-        fig_data,
-        ma_env_list,
-        target_deck = deck_number(deck_type, ma_env_deck_name),
-        # theme = theme,
-        color_theme = ma_env_color_theme
-    )
-    
-    # target_deck = 1
-    # plot_height = fig_data['plot_height'][target_deck]
-    # y_min = fig_data['y_min'][target_deck]
-    # y_max = fig_data['y_max'][target_deck]
+    ### Update graph
     fig = fig_data['fig']
-    
-#     if n_click:
-#         min_n_intervals = n_yintervals_map['min'][plot_height]
-#         max_n_intervals = n_yintervals_map['max'][plot_height]
-# 
-#         y_lower_limit, y_upper_limit, y_delta = set_axis_limits(y_min, y_max, min_n_intervals, max_n_intervals)
-# 
-#         # y_lower_limit, y_upper_limit, y_delta = 100, 450, 50
-# 
-#         fig['layout']['yaxis']['range'] = (y_lower_limit, y_upper_limit)
-#         fig['layout']['yaxis']['tick0'] = y_lower_limit
-#         fig['layout']['yaxis']['dtick'] = y_delta
-    
-    # fig_div = html.Div(html.Div(dcc.Graph(id = 'drawdowns-graph', figure = fig)))
-    # fig_div = html.Div(html.Div(children = [dcc.Graph(id = 'drawdowns-graph', figure = fig)]))
     fig_div = dcc.Graph(id='drawdowns-graph', figure = fig)
 
     return (

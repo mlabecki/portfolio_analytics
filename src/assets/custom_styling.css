@@ -28,14 +28,14 @@ button, input, select, textarea {
 }
 
 .Select-input, .Select-control {
-    height: 30px;
+    height: 30px !important;
     vertical-align: middle;
     display: flex;
     justify-content: flex-end;
     align-items: center;
 }
 .Select-value, .Select-value-label, .Select--single {
-    height: 30px;
+    height: 30px !important;
     vertical-align: middle;
     display: flex;
     align-items: center;
@@ -49,6 +49,21 @@ button, input, select, textarea {
     font-size: 14px;
     border-radius: 5px;
     vertical-align: middle !important;
+}
+.plots-input-button {
+    height: 30px;
+    border-color: rgb(204, 204, 204);
+    border-radius: 5px;
+    font-family: Helvetica;
+    font-size: 14px
+}
+
+#add-drawdowns-button:hover,
+#add-bollinger-button:hover,
+#add-ma-env-button:hover
+{
+    border-color: rgb(152, 242, 178) !important;
+    background-color: rgb(152, 242, 178) !important;
 }
 
 /* https://community.plotly.com/t/style-datatable-tooltip-conditional/28563/2

@@ -485,6 +485,27 @@ link_container_css = {
 }
 
 # Plots
+plots_add_button_css = {
+    'display': 'block',
+    'width': '300px',
+    'height': '30px',
+    'margin-right': '5px',
+    'margin-bottom': '5px',
+    'margin-left': '0px',
+    'padding-left': '5px',
+    'padding-right': '10px',
+    # 'vertical-align': 'top',
+    'vertical-align': 'middle',
+    'text-align': 'center',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+    'font-weight': 'bold',
+    'border-radius': '5px',
+    'border-color': 'rgb(152, 245, 178)',  # palegreen = rgb(152,251,152)
+    'background-color': 'rgb(212, 250, 220)',
+    'color': 'black',
+    '--bs-btn-hover-bg': 'rgb(152, 242, 178) !important'
+}
 reset_axes_button_css = {
     'display': 'inline-block',
     # 'display': 'flex',
