@@ -499,7 +499,7 @@ layout = html.Div([
                             min = 1,
                             step = 1,
                             debounce = True,
-                            style = {'width': '65px'}
+                            style = {'width': '63px'}
                         )],
                         style = {'display': 'inline-block', 'margin-bottom': '5px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -525,7 +525,7 @@ layout = html.Div([
                             options = ['To Trough', 'To Recovery'],
                             value = 'To Trough',
                             clearable = False,
-                            style = {'width': '113px'}
+                            style = {'width': '115px'}
                         )],
                         style = {'display': 'inline-block', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -957,6 +957,164 @@ layout = html.Div([
 
     ##### END MA ENVELOPE CONTROLS
 
+    ##### BEGIN MA RIBBON CONTROLS
+
+    html.Div([
+
+        html.Div(
+            dbc.Button(
+                id = 'collapse-button-ma-ribbon',
+                class_name = 'ma-1',
+                color = 'primary',
+                size = 'sm',
+                n_clicks = 0,
+                style = collapse_button_css
+            )
+        ),
+
+        dbc.Collapse(
+
+            html.Div(
+
+                id = 'ma-ribbon-controls',
+                children = [
+
+                    html.Div([
+                        html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id = 'ma-ribbon-deck-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Upper'],
+                            value = 'Upper',
+                            clearable = False,
+                            style = {'width': '115px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Price Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='ma-ribbon-price-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Close', 'High', 'Low', 'Open'],
+                            value = 'Close',
+                            clearable = False,
+                            style = {'width': '100px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='ma-ribbon-adjusted-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '75px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('# Of Bands', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dbc.Input(
+                            id = 'ma-ribbon-nbands-input',
+                            className = 'plots-input-button',
+                            type = 'number',
+                            value = 1,
+                            min = 1,
+                            max = 6,
+                            step = 1,
+                            debounce = True,
+                            style = {'width': '82px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dbc.Input(
+                            id = 'ma-ribbon-window-input',
+                            className = 'plots-input-button',
+                            type = 'number',
+                            value = 10,
+                            min = 1,
+                            max = 200,
+                            step = 1,
+                            debounce = True,
+                            style = {'width': '95px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Add Y-Axis Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='ma-ribbon-add-yaxis-title-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['No', 'Yes'],
+                            value = 'No',
+                            clearable = False,
+                            style = {'width': '113px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='ma-ribbon-ma-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Simple', 'Exponential', 'Double Exponential', 'Triple Exponential', 'Weighted', 'Welles Wilder'],
+                            value = 'Simple',
+                            clearable = False,
+                            style = {'width': '175px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='ma-ribbon-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = overlay_color_themes,
+                            value = 'Lavender',
+                            clearable = False,
+                            style = {'width': '120px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        dbc.Button(
+                            'Add To Plot',
+                            id = f'add-ma-ribbon-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'success',
+                            size = 'sm',
+                            style = plots_add_button_css
+                        )],
+                        # style = {'margin-bottom': '5px'}
+                    ),
+
+                ],
+                # style = {'margin-left': '5px'}
+            ), 
+
+            id = 'collapse-ma-ribbon',
+            is_open = False,
+            style = {'width': '300px'}
+        )],
+        style = {'margin-left': '5px'}
+    ), 
+
+    ##### END MA RIBBON CONTROLS
+
     ]),
 
     # id = 'collapse-sidebar-menu',
@@ -1127,19 +1285,28 @@ def toggle_collapse_template(n, is_open):
 
 @callback(
     Output('lower-height-input', 'disabled'),
+
     Output('bollinger-deck-dropdown', 'options'),
+    Output('ma-env-deck-dropdown', 'options'),
+    Output('ma-ribbon-deck-dropdown', 'options'),
+
     Output('bollinger-deck-dropdown', 'value'),
-    Input('deck-type-dropdown', 'value'))
+    Output('ma-env-deck-dropdown', 'value'),
+    Output('ma-ribbon-deck-dropdown', 'value'),
+
+    Input('deck-type-dropdown', 'value')
+)
 def disable_options(deck_type):
+    n = 3  # number of deck-dropdown outputs
     if deck_type == 'Single':
         # return True, [1]
-        return True, ['Upper'], 'Upper'
+        return tuple([True]) + tuple([k for k in [['Upper']] * n]) + tuple(['Upper'] * n)
     elif deck_type == 'Double':
         # return False, [1, 2]
-        return False, ['Upper', 'Lower'], 'Upper'
+        return tuple([False]) + tuple([k for k in [['Upper', 'Lower']] * n]) + tuple(['Upper'] * n)
     else:
         # return False, [1, 2, 3]
-        return False, ['Upper', 'Middle', 'Lower'], 'Upper'
+        return tuple([False]) + tuple([k for k in [['Upper', 'Middle', 'Lower']] * n]) + tuple(['Upper'] * n)
 
 
 @callback(
@@ -1183,6 +1350,22 @@ def toggle_collapse_bollinger(n, is_open):
 def toggle_collapse_ma_env(n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
     title = 'MOVING AVERAGE ENVELOPES'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
+    Output('collapse-button-ma-ribbon', 'children'),
+    Output('collapse-ma-ribbon', 'is_open'),
+    Input('collapse-button-ma-ribbon', 'n_clicks'),
+    State('collapse-ma-ribbon', 'is_open')
+)
+def toggle_collapse_ma_ribbon(n, is_open):
+    # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
+    title = 'MOVING AVERAGE RIBBON'
     label = f'► {title}' if is_open else f'▼ {title}'
     if n:
         return label, not is_open
@@ -1260,6 +1443,17 @@ def toggle_collapse_ma_env(n, is_open):
     Input('ma-env-color-theme-dropdown', 'value'),
     Input('add-ma-env-button', 'n_clicks'),
    
+    # ma ribbon options
+    Input('ma-ribbon-deck-dropdown', 'value'),
+    Input('ma-ribbon-adjusted-dropdown', 'value'),
+    Input('ma-ribbon-price-type-dropdown', 'value'),
+    Input('ma-ribbon-ma-type-dropdown', 'value'),
+    Input('ma-ribbon-window-input', 'value'),
+    Input('ma-ribbon-nbands-input', 'value'),
+    Input('ma-ribbon-add-yaxis-title-dropdown', 'value'),
+    Input('ma-ribbon-color-theme-dropdown', 'value'),
+    Input('add-ma-ribbon-button', 'n_clicks'),
+   
 )
 
 def update_plot(
@@ -1312,7 +1506,17 @@ def update_plot(
         ma_env_offset,
         ma_env_nbands,
         ma_env_color_theme,
-        add_ma_env
+        add_ma_env,
+
+        ma_ribbon_deck_name,
+        ma_ribbon_adjusted,
+        ma_ribbon_price_type,
+        ma_ribbon_ma_type,
+        ma_ribbon_window,
+        ma_ribbon_nbands,
+        ma_ribbon_add_yaxis_title,
+        ma_ribbon_color_theme,
+        add_ma_ribbon
 
     ):
 
@@ -1413,9 +1617,30 @@ def update_plot(
             color_theme = ma_env_color_theme
         )
     
+    ### Add moving average ribbon
+    if add_ma_ribbon:
+        df_ma_ribbon_price = downloaded_data[tk]['ohlc_adj'] if ma_ribbon_adjusted else downloaded_data[tk]['ohlc']
+        ma_ribbon_price = df_ma_ribbon_price[ma_ribbon_price_type]
+        ma_ribbon_list = analyze_prices.get_ma_ribbon(
+            ma_type_map[ma_ribbon_ma_type],
+            ma_ribbon_window,
+            ma_ribbon_nbands
+        )
+        fig_data = analyze_prices.add_ma_overlays(
+            fig_data,
+            ma_ribbon_price,
+            ma_ribbon_list,
+            target_deck = deck_number(deck_type, ma_ribbon_deck_name),
+            add_yaxis_title = True if ma_ribbon_add_yaxis_title == 'Yes' else False,
+            yaxis_title = 'Moving Average',
+            theme = theme,
+            color_theme = ma_ribbon_color_theme
+        )
+
+
     ### Update graph
     fig = fig_data['fig']
-    fig_div = dcc.Graph(id='drawdowns-graph', figure = fig)
+    fig_div = dcc.Graph(id = 'main-graph', figure = fig)
 
     return (
         selected_tickers_names[tk],
