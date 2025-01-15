@@ -322,6 +322,8 @@ class AnalyzePrices():
             })
 
         n_ticks_max = round(plot_width / n_xticks_map['width_slope']) if n_ticks_max is None else n_ticks_max
+        n_dates_per_xtick = math.floor(len(date_index) / (n_ticks_max - 1))
+        x_tickvals = [z for z in reversed([x for x in [y for y in reversed(date_index)][::n_dates_per_xtick]])]
 
         df_dummy = pd.Series(index = date_index)
         for _, idx in enumerate(date_index):
@@ -443,10 +445,11 @@ class AnalyzePrices():
             # Update axes
             fig.update_xaxes(
                 # autorange = False,
+                tickvals = x_tickvals,
                 type = 'category',
                 showgrid = True,
                 gridcolor = style['x_gridcolor'],
-                nticks = n_ticks_max,
+                # nticks = n_ticks_max,
                 tickangle = -90,
                 ticks = 'outside',
                 ticklen = 8,
@@ -2645,7 +2648,7 @@ class AnalyzePrices():
         self,
         fig_data,
         df_price,
-        ma_list,
+        ma_ribbon_list,
         target_deck = 1,
         add_yaxis_title = False,
         yaxis_title = 'Moving Average',
@@ -2655,8 +2658,8 @@ class AnalyzePrices():
         """
         df_price: 
             df_close or df_adj_close, depending on the underlying figure
-        ma_list: 
-            list of ma overlay dictionaries, containing
+        ma_ribbon_list: 
+            list of ma overlay dictionaries (called ma_ribbon in the get_ma_ribbon() function), containing
              - ma_idx ma index (1, 2,...)
              - ma_type: 'sma' (default), 'ema', 'dema', 'tema', 'wma' or 'wwma'
              - ma_window, in days
@@ -2668,7 +2671,7 @@ class AnalyzePrices():
         deck_type = fig_data['deck_type']
         fig_overlays = fig_data['overlays']
 
-        n_ma = len(ma_list)
+        n_ma = len(ma_ribbon_list)
 
         style = theme_style[theme]
         overlay_color_idx = style['overlay_color_selection'][color_theme][n_ma]
@@ -2678,7 +2681,7 @@ class AnalyzePrices():
         ma_overlays = []
         ma_overlay_names = []
 
-        for i, ma in enumerate(ma_list):
+        for i, ma in enumerate(ma_ribbon_list):
 
             ma_type = ma['ma_type']
             ma_window = ma['ma_window']
