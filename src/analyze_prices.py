@@ -192,8 +192,8 @@ class AnalyzePrices():
         ma_window:
             length in days
         n_ma:
-            number of elements in the ribbon (1-6)
-        Returns ma
+            number of bands in the ribbon (1-6)
+        Returns ma_ribbon
         """
 
         n_ma = 6 if n_ma > 6 else 1 if n_ma < 1 else n_ma
@@ -2584,30 +2584,30 @@ class AnalyzePrices():
             if new_y_max > fig_y_max:
                 reset_y_limits = True
 
-            # Find new y limits and delta if the y range is expanded
-            if reset_y_limits:
+        # Find new y limits and delta if the y range is expanded
+        if reset_y_limits:
                 
-                min_n_intervals = n_yintervals_map['min'][plot_height]
-                max_n_intervals = n_yintervals_map['max'][plot_height]
-                y_lower_limit, y_upper_limit, y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
+            min_n_intervals = n_yintervals_map['min'][plot_height]
+            max_n_intervals = n_yintervals_map['max'][plot_height]
+            y_lower_limit, y_upper_limit, y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
 
-                if target_deck > 1:
-                    y_upper_limit *= 0.999
+            if target_deck > 1:
+                y_upper_limit *= 0.999
 
-                # print(f'min_n_intervals, max_n_intervals = {min_n_intervals, max_n_intervals}')
-                # print(f'y_lower_limit, y_upper_limit, y_delta = {y_lower_limit, y_upper_limit, y_delta}')
-                # print(f'FINAL new_y_min, new_y_max, y_delta = {new_y_min, new_y_max, y_delta}')
+            # print(f'min_n_intervals, max_n_intervals = {min_n_intervals, max_n_intervals}')
+            # print(f'y_lower_limit, y_upper_limit, y_delta = {y_lower_limit, y_upper_limit, y_delta}')
+            # print(f'FINAL new_y_min, new_y_max, y_delta = {new_y_min, new_y_max, y_delta}')
 
-                y_range = (y_lower_limit, y_upper_limit)
-                fig.update_yaxes(
-                    range = y_range,
-                    showticklabels = True,
-                    tick0 = y_lower_limit,
-                    dtick = y_delta,
-                    showgrid = True,
-                    zeroline = True,
-                    row = target_deck, col = 1
-                )
+            y_range = (y_lower_limit, y_upper_limit)
+            fig.update_yaxes(
+                range = y_range,
+                showticklabels = True,
+                tick0 = y_lower_limit,
+                dtick = y_delta,
+                showgrid = True,
+                zeroline = True,
+                row = target_deck, col = 1
+            )
 
         if color_idx >= len(overlay_colors):
             # Take the last overlay color from the available list
@@ -2702,6 +2702,9 @@ class AnalyzePrices():
                     'color_idx': ma_color_idx
                 })
                 ma_overlay_names.append(ma_name)
+
+                print('ma_overlays data')
+                print(ma_data)
 
         if len(ma_overlays) > 0:
 
@@ -3053,7 +3056,7 @@ class AnalyzePrices():
 
     ##### ADD MOVING AVERAGE ENVELOPE OVERLAYS #####
 
-    def add_ma_envelope_overlays(
+    def add_ma_envelopes(
         self,
         fig_data,
         ma_envelope_list,
@@ -3089,6 +3092,9 @@ class AnalyzePrices():
                    'color_idx': overlay_color_idx[abs(env['idx_offset'])]
                 })
                 ma_envelope_overlay_names.append(env['name'])
+
+                print('ma_envelope_overlays data')
+                print(env['data'])
 
         if len(ma_envelope_overlays) > 0:
 

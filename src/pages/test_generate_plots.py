@@ -1609,7 +1609,7 @@ def update_plot(
             ma_env_offset,
             ma_env_nbands
         )
-        fig_data = analyze_prices.add_ma_envelope_overlays(
+        fig_data = analyze_prices.add_ma_envelopes(
             fig_data,
             ma_env_list,
             target_deck = deck_number(deck_type, ma_env_deck_name),
