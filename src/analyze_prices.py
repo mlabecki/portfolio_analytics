@@ -683,6 +683,7 @@ class AnalyzePrices():
                 fig.update_yaxes(
                     range = None,
                     secondary_y = True,
+                    showticklabels = True,
                     showgrid = False,
                     zeroline = False,
                     row = target_deck, col = 1
@@ -737,8 +738,9 @@ class AnalyzePrices():
                 )
 
             fig_data.update({'fig': fig})
-            fig_data['y_min'].update({target_deck: new_y_min})
-            fig_data['y_max'].update({target_deck: new_y_max})
+            if not secondary_y:
+                fig_data['y_min'].update({target_deck: new_y_min})
+                fig_data['y_max'].update({target_deck: new_y_max})
 
             color_map = {legend_name: color_idx}
             overlay_idx = len(fig_overlays) + 1
@@ -1955,6 +1957,8 @@ class AnalyzePrices():
 
         # print(f'tk, new_y_min, new_y_max = {tk, new_y_min, new_y_max}')
 
+        infinity = 2 * new_y_max
+
         if reset_y_limits:
                 
             min_n_intervals = n_yintervals_map['min'][plot_height]
@@ -1980,7 +1984,9 @@ class AnalyzePrices():
                 row = target_deck, col = 1
             )
 
-        infinity = 2 * y_upper_limit  # Reset Axes refresh takes very long if this is too high
+            infinity = 2 * y_upper_limit  # Reset Axes refresh takes very long if this is too high
+
+        #########
 
         legendgrouptitle = {}
         if deck_type == 'triple':
@@ -2556,6 +2562,9 @@ class AnalyzePrices():
         overlay_colors = style['overlay_color_theme'][color_theme]
 
         fig = fig_data['fig']
+        # Must take secondary_y into account!
+        # The concept of fig_data['y_min'] and fig_data['y_max'] should only be applied to 
+        # the primary y-axis.
         fig_y_min = fig_data['y_min'][target_deck]
         fig_y_max = fig_data['y_max'][target_deck]
         plot_height = fig_data['plot_height'][target_deck]
@@ -2606,7 +2615,8 @@ class AnalyzePrices():
                 dtick = y_delta,
                 showgrid = True,
                 zeroline = True,
-                row = target_deck, col = 1
+                row = target_deck, col = 1,
+                secondary_y = False
             )
 
         if color_idx >= len(overlay_colors):
@@ -2632,7 +2642,8 @@ class AnalyzePrices():
                 legendgroup = f'{target_deck}',
                 legendgrouptitle = legendgrouptitle
             ),
-            row = target_deck, col = 1    
+            row = target_deck, col = 1,
+            secondary_y = False  # No overlays are added onto secondary y-axis
         )
 
         fig_data.update({'fig': fig})
@@ -2703,9 +2714,6 @@ class AnalyzePrices():
                 })
                 ma_overlay_names.append(ma_name)
 
-                print('ma_overlays data')
-                print(ma_data)
-
         if len(ma_overlays) > 0:
 
             color_map = {}
@@ -2732,7 +2740,8 @@ class AnalyzePrices():
             if add_yaxis_title:
                 fig_data['fig'].update_yaxes(
                     title = yaxis_title,
-                    row = target_deck, col = 1
+                    row = target_deck, col = 1,
+                    secondary_y = False
                 )
 
             overlay_idx = len(fig_overlays) + 1
@@ -2981,6 +2990,7 @@ class AnalyzePrices():
                 fig.update_yaxes(
                     range = None,
                     secondary_y = True,
+                    showticklabels = True,
                     showgrid = False,
                     zeroline = False,
                     row = target_deck, col = 1
@@ -3035,8 +3045,9 @@ class AnalyzePrices():
                 )
 
             fig_data.update({'fig': fig})
-            fig_data['y_min'].update({target_deck: new_y_min})
-            fig_data['y_max'].update({target_deck: new_y_max})
+            if not secondary_y:
+                fig_data['y_min'].update({target_deck: new_y_min})
+                fig_data['y_max'].update({target_deck: new_y_max})
 
             color_map = {legend_name: color_idx}
             overlay_idx = len(fig_overlays) + 1
@@ -3285,6 +3296,7 @@ class AnalyzePrices():
                 fig.update_yaxes(
                     range = None,
                     secondary_y = True,
+                    showticklabels = True,
                     showgrid = False,
                     zeroline = False,
                     row = target_deck, col = 1
@@ -3339,8 +3351,9 @@ class AnalyzePrices():
                 )
 
             fig_data.update({'fig': fig})
-            fig_data['y_min'].update({target_deck: new_y_min})
-            fig_data['y_max'].update({target_deck: new_y_max})
+            if not secondary_y:
+                fig_data['y_min'].update({target_deck: new_y_min})
+                fig_data['y_max'].update({target_deck: new_y_max})
 
             color_map = {legend_name: color_idx}
             overlay_idx = len(fig_overlays) + 1
@@ -3554,6 +3567,7 @@ class AnalyzePrices():
             fig.update_yaxes(
                 range = None,
                 title = yaxis_title,
+                showticklabels = True,
                 secondary_y = True,
                 showgrid = False,
                 zeroline = False,
@@ -3623,8 +3637,9 @@ class AnalyzePrices():
             )
 
         fig_data.update({'fig': fig})
-        fig_data['y_min'].update({target_deck: new_y_min})
-        fig_data['y_max'].update({target_deck: new_y_max})
+        if not secondary_y:
+            fig_data['y_min'].update({target_deck: new_y_min})
+            fig_data['y_max'].update({target_deck: new_y_max})
 
         color_map = {legend_name: color_idx}
         overlay_idx = len(fig_overlays) + 1

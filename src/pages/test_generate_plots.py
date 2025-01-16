@@ -389,7 +389,7 @@ layout = html.Div([
                             options = deck_types,
                             value = 'Single',
                             clearable = False, 
-                            style = {'width': '110px'}
+                            style = {'width': '108px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -402,7 +402,7 @@ layout = html.Div([
                             options = ['No', 'Yes'],
                             value = 'No',
                             clearable = False,
-                            style = {'width': '100px'}
+                            style = {'width': '102px'}
                         )],
                         style = {'display': 'inline-block', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -466,6 +466,160 @@ layout = html.Div([
     ),
 
     ##### END TEMPLATE CONTROLS
+
+    ##### BEGIN HISTORICAL PRICE CONTROLS
+
+    html.Div([
+
+        html.Div(
+            dbc.Button(
+                id = 'collapse-button-hist-price',
+                class_name = 'ma-1',
+                color = 'primary',
+                size = 'sm',
+                n_clicks = 0,
+                style = collapse_button_css
+            )
+        ),
+
+        dbc.Collapse(
+
+            html.Div(
+
+                id = 'hist-price-controls',
+                children = [
+
+                    html.Div([
+                        html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id = 'hist-price-deck-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Upper'],
+                            value = 'Upper',
+                            clearable = False,
+                            style = {'width': '115px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+
+                    html.Div([
+                        html.Div('Price Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='hist-price-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Close', 'High', 'Low', 'Open'],
+                            value = 'Close',
+                            clearable = False,
+                            style = {'width': '100px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='hist-price-adjusted-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '75px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Plot Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='hist-price-plot-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Line', 'Histogram'],
+                            value = 'Line',
+                            clearable = False,
+                            style = {'width': '110px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Fill Below', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='hist-price-fill-below-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['No', 'Yes'],
+                            value = 'No',
+                            clearable = False,
+                            style = {'width': '90px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='hist-price-add-title-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '90px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='hist-price-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = overlay_color_themes,
+                            value = 'Base',
+                            clearable = False,
+                            style = {'width': '130px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Plot On Secondary Y', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='hist-price-secondary-y-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['No', 'Yes'],
+                            value = 'No',
+                            clearable = False,
+                            disabled = True,
+                            style = {'width': '165px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        dbc.Button(
+                            'Add To Plot',
+                            id = f'add-hist-price-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'success',
+                            size = 'sm',
+                            style = plots_add_button_css
+                        )],
+                        # style = {'margin-bottom': '5px'}
+                    ),
+
+                ],
+                # style = {'margin-left': '5px'}
+            ), 
+
+            id = 'collapse-hist-price',
+            is_open = False,
+            style = {'width': '300px'}
+        )],
+        style = {'margin-left': '5px'}
+    ), 
+
+    ##### END HISTORICAL PRICE CONTROLS
 
     ##### BEGIN DRAWDOWN CONTROLS
 
@@ -1286,10 +1440,12 @@ def toggle_collapse_template(n, is_open):
 @callback(
     Output('lower-height-input', 'disabled'),
 
+    Output('hist-price-deck-dropdown', 'options'),
     Output('bollinger-deck-dropdown', 'options'),
     Output('ma-env-deck-dropdown', 'options'),
     Output('ma-ribbon-deck-dropdown', 'options'),
 
+    Output('hist-price-deck-dropdown', 'value'),
     Output('bollinger-deck-dropdown', 'value'),
     Output('ma-env-deck-dropdown', 'value'),
     Output('ma-ribbon-deck-dropdown', 'value'),
@@ -1297,7 +1453,7 @@ def toggle_collapse_template(n, is_open):
     Input('deck-type-dropdown', 'value')
 )
 def disable_options(deck_type):
-    n = 3  # number of deck-dropdown outputs
+    n = 4  # number of deck-dropdown outputs
     if deck_type == 'Single':
         # return True, [1]
         return tuple([True]) + tuple([k for k in [['Upper']] * n]) + tuple(['Upper'] * n)
@@ -1310,13 +1466,27 @@ def disable_options(deck_type):
 
 
 @callback(
+    Output('collapse-button-hist-price', 'children'),
+    Output('collapse-hist-price', 'is_open'),
+    Input('collapse-button-hist-price', 'n_clicks'),
+    State('collapse-hist-price', 'is_open')
+)
+def toggle_collapse_hist_price(n, is_open):
+    title = 'HISTORICAL PRICE'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
     Output('collapse-button-drawdowns', 'children'),
     Output('collapse-drawdowns', 'is_open'),
     Input('collapse-button-drawdowns', 'n_clicks'),
     State('collapse-drawdowns', 'is_open')
 )
 def toggle_collapse_drawdowns(n, is_open):
-    # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
     title = 'DRAWDOWNS'
     label = f'► {title}' if is_open else f'▼ {title}'
     if n:
@@ -1385,6 +1555,8 @@ def toggle_collapse_ma_ribbon(n, is_open):
     # Output('bollinger-controls', 'style'),
     # Output('template-controls', 'style'),
 
+    Output('hist-price-secondary-y-dropdown', 'disabled'),
+
     Output('drawdowns-number-input', 'max'),
     Output('drawdowns-number-input', 'value'),
     Output('drawdowns-price-color-dropdown', 'disabled'),
@@ -1407,6 +1579,16 @@ def toggle_collapse_ma_ribbon(n, is_open):
     Input('upper-height-input', 'value'),
     Input('lower-height-input', 'value'),
     
+    Input('hist-price-deck-dropdown', 'value'),
+    Input('hist-price-type-dropdown', 'value'),
+    Input('hist-price-adjusted-dropdown', 'value'),
+    Input('hist-price-secondary-y-dropdown', 'value'),
+    Input('hist-price-plot-type-dropdown', 'value'),
+    Input('hist-price-fill-below-dropdown', 'value'),
+    Input('hist-price-color-theme-dropdown', 'value'),
+    Input('hist-price-add-title-dropdown', 'value'),
+    Input('add-hist-price-button', 'n_clicks'),
+
     # drawdowns options
     Input('drawdowns-number-input', 'value'),
     Input('drawdowns-topby-dropdown', 'value'),
@@ -1474,6 +1656,17 @@ def update_plot(
         upper_height,
         lower_height,
 
+        # historical price options
+        hist_price_deck_name,
+        hist_price_type,
+        hist_price_adjusted,
+        hist_price_secondary_y,
+        hist_price_plot_type,
+        hist_price_fill_below,
+        hist_price_color_theme,
+        hist_price_add_title,
+        add_hist_price,
+
         # drawdowns options
         n_top, 
         drawdown_top_by, 
@@ -1487,7 +1680,6 @@ def update_plot(
         add_drawdowns,
 
         # bollinger options
-        # tk_bollinger,
         bollinger_deck_name,
         bollinger_adjusted,
         bollinger_price_type,
@@ -1540,9 +1732,34 @@ def update_plot(
         theme = theme
     )
 
+    # These are in the list of outputs, so they must stay outside of the if statements
+    
+    hist_price_sec_y_disabled = not secondary_y        
+
     dd_add_price_disabled = True if drawdown_add_price == 'No' else False
     n_drawdowns = 5 if n_top is None else n_top
     dd_number_value = n_drawdowns
+
+    ### Add historical price
+    if add_hist_price:
+
+        hist_price_color_theme = hist_price_color_theme.lower() if hist_price_color_theme is not None else 'base'
+        df_hist_price = downloaded_data[tk]['ohlc_adj'] if hist_price_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
+        hist_price = df_hist_price[hist_price_type]
+
+        fig_data = analyze_prices.add_hist_price(
+            fig_data,
+            hist_price,
+            tk,
+            target_deck = deck_number(deck_type, hist_price_deck_name),
+            secondary_y = True if hist_price_secondary_y == 'Yes' else False,
+            plot_type = 'bar' if hist_price_plot_type == 'Histogram' else 'scatter',
+            price_type = hist_price_type.lower(),
+            add_title = True if hist_price_add_title == 'Yes' else False,
+            theme = theme,
+            color_theme = hist_price_color_theme,
+            fill_below = True if hist_price_fill_below == 'Yes' else False
+        )
 
     ### Add drawdowns
     if add_drawdowns:
@@ -1550,7 +1767,7 @@ def update_plot(
         dd_add_title = True if drawdown_add_title =='Yes' else False
         drawdown_color = drawdown_color.lower() if drawdown_color is not None else 'red'
         drawdown_price_color_theme = drawdown_price_color_theme.lower() if drawdown_price_color_theme is not None else 'base'
-        df_drawdown_price = downloaded_data[tk]['ohlc_adj'] if drawdown_adjusted else downloaded_data[tk]['ohlc']
+        df_drawdown_price = downloaded_data[tk]['ohlc_adj'] if drawdown_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
         drawdown_price = df_drawdown_price[drawdown_price_type]
 
         drawdown_data_tk = analyze_prices.summarize_tk_drawdowns(drawdown_price, drawdown_top_by)
@@ -1580,7 +1797,7 @@ def update_plot(
 
     ### Add Bollinger bands
     if add_bollinger:
-        df_bollinger_price = downloaded_data[tk]['ohlc_adj'] if bollinger_adjusted else downloaded_data[tk]['ohlc']
+        df_bollinger_price = downloaded_data[tk]['ohlc_adj'] if bollinger_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
         bollinger_price = df_bollinger_price[bollinger_price_type]
         bollinger_data = analyze_prices.bollinger_bands(
             bollinger_price,
@@ -1600,7 +1817,7 @@ def update_plot(
 
     ### Add moving average envelopes
     if add_ma_env:
-        df_ma_env_price = downloaded_data[tk]['ohlc_adj'] if ma_env_adjusted else downloaded_data[tk]['ohlc']
+        df_ma_env_price = downloaded_data[tk]['ohlc_adj'] if ma_env_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
         ma_env_price = df_ma_env_price[ma_env_price_type]
         ma_env_list = analyze_prices.ma_envelopes(
             ma_env_price,
@@ -1619,7 +1836,7 @@ def update_plot(
     
     ### Add moving average ribbon
     if add_ma_ribbon:
-        df_ma_ribbon_price = downloaded_data[tk]['ohlc_adj'] if ma_ribbon_adjusted else downloaded_data[tk]['ohlc']
+        df_ma_ribbon_price = downloaded_data[tk]['ohlc_adj'] if ma_ribbon_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
         ma_ribbon_price = df_ma_ribbon_price[ma_ribbon_price_type]
         ma_ribbon_list = analyze_prices.get_ma_ribbon(
             ma_type_map[ma_ribbon_ma_type],
@@ -1649,6 +1866,8 @@ def update_plot(
         # drawdown_div_style,
         # bollinger_div_style,
         # template_div_style,
+
+        hist_price_sec_y_disabled,
 
         n_drawdowns,
         dd_number_value,
