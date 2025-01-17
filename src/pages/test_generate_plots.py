@@ -621,6 +621,176 @@ layout = html.Div([
 
     ##### END HISTORICAL PRICE CONTROLS
 
+    ##### BEGIN VOLUME CONTROLS
+
+    html.Div([
+
+        html.Div(
+            dbc.Button(
+                id = 'collapse-button-volume',
+                class_name = 'ma-1',
+                color = 'primary',
+                size = 'sm',
+                n_clicks = 0,
+                style = collapse_button_css
+            )
+        ),
+
+        dbc.Collapse(
+
+            html.Div(
+
+                id = 'volume-controls',
+                children = [
+
+                    html.Div([
+                        html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id = 'volume-deck-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Upper'],
+                            value = 'Upper',
+                            clearable = False,
+                            style = {'width': '95px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    # Keep for Dollar Volume
+                    #
+                    # html.Div([
+                    #     html.Div('Price Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                    #     dcc.Dropdown(
+                    #         id='dollar-volume-type-dropdown',
+                    #         className = 'plots-dropdown-button',
+                    #         options = ['Close', 'High', 'Low', 'Open'],
+                    #         value = 'Close',
+                    #         clearable = False,
+                    #         style = {'width': '100px'}
+                    #     )],
+                    #     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    # ),
+# 
+                    # html.Div([
+                    #     html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                    #     dcc.Dropdown(
+                    #         id='dollar-volume-adjusted-dropdown',
+                    #         className = 'plots-dropdown-button',
+                    #         options = ['Yes', 'No'],
+                    #         value = 'Yes',
+                    #         clearable = False,
+                    #         style = {'width': '75px'}
+                    #     )],
+                    #     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    # ),
+
+                    html.Div([
+                        html.Div('Plot Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='volume-plot-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Histogram', 'Line'],
+                            value = 'Histogram',
+                            clearable = False,
+                            style = {'width': '105px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='volume-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = overlay_color_themes,
+                            value = 'Base',
+                            clearable = False,
+                            style = {'width': '90px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Fill Below', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='volume-fill-below-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '80px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    # Volume should not be the primary title
+                    #
+                    # html.Div([
+                    #     html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                    #     dcc.Dropdown(
+                    #         id='volume-add-title-dropdown',
+                    #         className = 'plots-dropdown-button',
+                    #         options = ['Yes', 'No'],
+                    #         value = 'Yes',
+                    #         clearable = False,
+                    #         style = {'width': '90px'}
+                    #     )],
+                    #     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    # ),
+
+                    html.Div([
+                        html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='volume-add-title-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['No', 'Yes'],
+                            value = 'No',
+                            clearable = False,
+                            style = {'width': '70px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Plot On Secondary Y', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='volume-secondary-y-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['No', 'Yes'],
+                            value = 'No',
+                            clearable = False,
+                            disabled = True,
+                            style = {'width': '140px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        dbc.Button(
+                            'Add To Plot',
+                            id = f'add-volume-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'success',
+                            size = 'sm',
+                            style = plots_add_button_css
+                        )],
+                        # style = {'margin-bottom': '5px'}
+                    ),
+
+                ],
+                # style = {'margin-left': '5px'}
+            ), 
+
+            id = 'collapse-volume',
+            is_open = False,
+            style = {'width': '300px'}
+        )],
+        style = {'margin-left': '5px'}
+    ), 
+
+    ##### END VOLUME CONTROLS
+
     ##### BEGIN DRAWDOWN CONTROLS
 
     html.Div([
@@ -1441,11 +1611,13 @@ def toggle_collapse_template(n, is_open):
     Output('lower-height-input', 'disabled'),
 
     Output('hist-price-deck-dropdown', 'options'),
+    Output('volume-deck-dropdown', 'options'),
     Output('bollinger-deck-dropdown', 'options'),
     Output('ma-env-deck-dropdown', 'options'),
     Output('ma-ribbon-deck-dropdown', 'options'),
 
     Output('hist-price-deck-dropdown', 'value'),
+    Output('volume-deck-dropdown', 'value'),
     Output('bollinger-deck-dropdown', 'value'),
     Output('ma-env-deck-dropdown', 'value'),
     Output('ma-ribbon-deck-dropdown', 'value'),
@@ -1453,7 +1625,7 @@ def toggle_collapse_template(n, is_open):
     Input('deck-type-dropdown', 'value')
 )
 def disable_options(deck_type):
-    n = 4  # number of deck-dropdown outputs
+    n = 5  # number of deck-dropdown outputs
     if deck_type == 'Single':
         # return True, [1]
         return tuple([True]) + tuple([k for k in [['Upper']] * n]) + tuple(['Upper'] * n)
@@ -1473,6 +1645,21 @@ def disable_options(deck_type):
 )
 def toggle_collapse_hist_price(n, is_open):
     title = 'HISTORICAL PRICE'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
+    Output('collapse-button-volume', 'children'),
+    Output('collapse-volume', 'is_open'),
+    Input('collapse-button-volume', 'n_clicks'),
+    State('collapse-volume', 'is_open')
+)
+def toggle_collapse_volume(n, is_open):
+    title = 'VOLUME'
     label = f'► {title}' if is_open else f'▼ {title}'
     if n:
         return label, not is_open
@@ -1578,7 +1765,8 @@ def toggle_collapse_ma_ribbon(n, is_open):
     Input('width-input', 'value'),
     Input('upper-height-input', 'value'),
     Input('lower-height-input', 'value'),
-    
+
+    # Historical price options
     Input('hist-price-deck-dropdown', 'value'),
     Input('hist-price-type-dropdown', 'value'),
     Input('hist-price-adjusted-dropdown', 'value'),
@@ -1588,6 +1776,15 @@ def toggle_collapse_ma_ribbon(n, is_open):
     Input('hist-price-color-theme-dropdown', 'value'),
     Input('hist-price-add-title-dropdown', 'value'),
     Input('add-hist-price-button', 'n_clicks'),
+
+    # Volume options
+    Input('volume-deck-dropdown', 'value'),
+    Input('volume-secondary-y-dropdown', 'value'),
+    Input('volume-plot-type-dropdown', 'value'),
+    Input('volume-fill-below-dropdown', 'value'),
+    Input('volume-color-theme-dropdown', 'value'),
+    Input('volume-add-title-dropdown', 'value'),
+    Input('add-volume-button', 'n_clicks'),
 
     # drawdowns options
     Input('drawdowns-number-input', 'value'),
@@ -1600,8 +1797,6 @@ def toggle_collapse_ma_ribbon(n, is_open):
     Input('drawdowns-add-price-dropdown', 'value'),
     Input('drawdowns-add-title-dropdown', 'value'),
     Input('add-drawdowns-button', 'n_clicks'),    
-    # prevent_initial_call=True #,
-    #Input('overlay-dropdown', 'value')
 
     # bollinger options
     Input('bollinger-deck-dropdown', 'value'),
@@ -1667,6 +1862,15 @@ def update_plot(
         hist_price_add_title,
         add_hist_price,
 
+        # volume options
+        volume_deck_name,
+        volume_secondary_y,
+        volume_plot_type,
+        volume_fill_below,
+        volume_color_theme,
+        volume_add_title,
+        add_volume,
+        
         # drawdowns options
         n_top, 
         drawdown_top_by, 
@@ -1759,6 +1963,26 @@ def update_plot(
             theme = theme,
             color_theme = hist_price_color_theme,
             fill_below = True if hist_price_fill_below == 'Yes' else False
+        )
+
+    ### Add volume
+    if add_volume:
+
+        volume_color_theme = volume_color_theme.lower() if volume_color_theme is not None else 'sapphire'
+        df_volume = downloaded_data[tk]['volume']
+
+        fig_data = analyze_prices.add_hist_price(
+            fig_data,
+            df_volume,
+            tk,
+            target_deck = deck_number(deck_type, volume_deck_name),
+            secondary_y = True if volume_secondary_y == 'Yes' else False,
+            plot_type = 'bar' if volume_plot_type == 'Histogram' else 'scatter',
+            price_type = 'volume',
+            add_title = True if volume_add_title == 'Yes' else False,
+            theme = theme,
+            color_theme = volume_color_theme,
+            fill_below = True if volume_fill_below == 'Yes' else False
         )
 
     ### Add drawdowns

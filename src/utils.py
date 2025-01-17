@@ -37,7 +37,8 @@ def set_axis_limits(
         return x_min, x_max
     
     else:
-        units = np.array([0.05, 0.1, 0.2, 0.25, 0.5])
+        # units = np.array([0.05, 0.1, 0.2, 0.25, 0.5])
+        units = np.array([0.05, 0.1, 0.2, 0.25, 0.5, 1])
         # intervals = np.array(range(4, max_n_intervals + 1))
 
         x_maxmax = max(abs(x_max), abs(x_min))
@@ -49,6 +50,7 @@ def set_axis_limits(
         # print(f'\ny_min, y_max = {x_min}, {x_max}')
         # print(f'order = {order}')
         eps = order * 1e-10
+        # print(f'eps: {eps}')
 
         for unit in units:
             unit_scaled = order * unit
@@ -82,11 +84,28 @@ def set_axis_limits(
             n = round((upper_anchor - lower_anchor) / increment)
 
             # print(f'\tTotal Diff = {diff_upper + diff_lower}')
+            # print(f'\tdiff: {diff}')
+            # print(f'\tupper_anchor - y_max: {upper_anchor - x_max}')
+            # print(f'\tround((upper_anchor - lower_anchor) / increment): {round((upper_anchor - lower_anchor) / increment)}')
+
+            # Save the lower and upper limits for the smallest diff, in case the iteration does not find them 
+            # for the specified range of intervals.
+            if diff_lower + diff_upper < diff:
+                lower_limit_tmp = lower_anchor
+                upper_limit_tmp = upper_anchor
+                delta_tmp = increment
+
             if (upper_anchor - x_max > -eps) & (diff_lower + diff_upper < diff) & (n >= min_n_intervals):
+            # if (abs(upper_anchor - x_max) < eps) & (diff_lower + diff_upper < diff) & (n >= min_n_intervals):                
                 diff = diff_lower + diff_upper
                 lower_limit = lower_anchor
                 upper_limit = upper_anchor
                 delta = increment
+
+            if (lower_limit is None) | (upper_limit is None) | (delta is None):
+                lower_limit = lower_limit_tmp
+                upper_limit = upper_limit_tmp
+                delta = delta_tmp
 
             # print(f'Number of intervals: {n}')
 

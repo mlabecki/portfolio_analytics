@@ -3548,6 +3548,10 @@ class AnalyzePrices():
             if reset_y_limits:
                 min_n_intervals = n_yintervals_map['min'][plot_height]
                 max_n_intervals = n_yintervals_map['max'][plot_height]
+                # print(f'new_y_min: {new_y_min}')
+                # print(f'new_y_max: {new_y_max}')
+                # print(f'min_n_intervals: {min_n_intervals}')
+                # print(f'max_n_intervals: {max_n_intervals}')
                 y_lower_limit, y_upper_limit, y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
                 if target_deck > 1:
                     y_upper_limit *= 0.999
