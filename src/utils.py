@@ -94,6 +94,10 @@ def set_axis_limits(
                 lower_limit_tmp = lower_anchor
                 upper_limit_tmp = upper_anchor
                 delta_tmp = increment
+            # else:
+            #     lower_limit_tmp = 0
+            #     upper_limit_tmp = diff
+            #     delta_tmp = diff
 
             if (upper_anchor - x_max > -eps) & (diff_lower + diff_upper < diff) & (n >= min_n_intervals):
             # if (abs(upper_anchor - x_max) < eps) & (diff_lower + diff_upper < diff) & (n >= min_n_intervals):                
@@ -101,8 +105,7 @@ def set_axis_limits(
                 lower_limit = lower_anchor
                 upper_limit = upper_anchor
                 delta = increment
-
-            if (lower_limit is None) | (upper_limit is None) | (delta is None):
+            else:
                 lower_limit = lower_limit_tmp
                 upper_limit = upper_limit_tmp
                 delta = delta_tmp

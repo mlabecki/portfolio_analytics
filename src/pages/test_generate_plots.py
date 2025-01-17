@@ -651,7 +651,7 @@ layout = html.Div([
                             options = ['Upper'],
                             value = 'Upper',
                             clearable = False,
-                            style = {'width': '95px'}
+                            style = {'width': '81px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -692,7 +692,7 @@ layout = html.Div([
                             options = ['Histogram', 'Line'],
                             value = 'Histogram',
                             clearable = False,
-                            style = {'width': '105px'}
+                            style = {'width': '98px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -705,7 +705,7 @@ layout = html.Div([
                             options = overlay_color_themes,
                             value = 'Base',
                             clearable = False,
-                            style = {'width': '90px'}
+                            style = {'width': '104px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
