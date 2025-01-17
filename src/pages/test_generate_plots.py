@@ -51,15 +51,18 @@ analyze_prices = AnalyzePrices()
 
 @callback(
     Output('final-table-selected-tickers', 'children'),
-    Output('tickers-dropdown', 'options'),
-    Output('tickers-dropdown', 'value'),
+    Output('dash-table-tickers-to-plot-div', 'children'),
+    # Output('tickers-dropdown', 'options'),
+    # Output('tickers-dropdown', 'value'),
 
     Input('final-table-selected-tickers-data-stored', 'data'),
-    Input('final-selected-ticker-summaries-stored', 'data')
+    Input('final-selected-ticker-summaries-stored', 'data'),
+    Input('final-selected-tickers-stored', 'data')
 )
 def display_table_selected_tickers(
     table_data,
-    table_tooltip_data
+    table_tooltip_data,
+    selected_ticker_names
 ):
     """
     table_data:
@@ -71,10 +74,10 @@ def display_table_selected_tickers(
     """
     
     selected_tickers = [row['Ticker'] for row in table_data]
-    first_ticker = selected_tickers[0]
+    # first_ticker = selected_tickers[0]
 
     dash_table_selected_tickers = dash_table.DataTable(
-        columns = [{'name': i, 'id': i} for i in table_selected_tickers_columns],
+        columns = [{'name': i, 'id': i} for i in plots_table_selected_tickers_columns],
         data = table_data,
         editable = False,
         tooltip_data = table_tooltip_data,
@@ -106,7 +109,7 @@ def display_table_selected_tickers(
         tooltip_duration = None,
         style_as_list_view = True,
         style_header_conditional = [
-            {'if': {'column_id': 'Length*'}, 'width': 45, 'text-align': 'right', 'padding-right': '10px'},
+            # {'if': {'column_id': 'Length*'}, 'width': 45, 'text-align': 'right', 'padding-right': '10px'},
             {'if': {'column_id': 'No.'}, 'padding-left': '8px'},
         ],
         style_data_conditional = [
@@ -119,9 +122,9 @@ def display_table_selected_tickers(
             {'if': {'column_id': 'Ticker'}, 'width': 45},
             {'if': {'column_id': 'Currency'}, 'width': 70},
             {'if': {'column_id': 'Exchange'}, 'width': 72},
-            {'if': {'column_id': 'Data Start'}, 'width': 85},
-            {'if': {'column_id': 'Data End'}, 'width': 85},
-            {'if': {'column_id': 'Length*'}, 'width': 45, 'text-align': 'right', 'padding-right': '15px'},
+            # {'if': {'column_id': 'Data Start'}, 'width': 85},
+            # {'if': {'column_id': 'Data End'}, 'width': 85},
+            # {'if': {'column_id': 'Length*'}, 'width': 45, 'text-align': 'right', 'padding-right': '15px'},
         ],
         id = 'final-dash-table-selected-tickers',
         style_header = plots_selected_tickers_table_header_css,
@@ -140,19 +143,79 @@ def display_table_selected_tickers(
                 id = 'dates-table-selected-tickers',
                 children = [dash_table_selected_tickers]
             ),
-            html.Div(
-                '* Length of the range of dates in business days excluding weekends and holidays',
-                id = 'dates-table-selected-tickers-footnote',
-                style = table_selected_tickers_footnote
-            )
+            # html.Div(
+            #     '* Length of the range of dates in business days excluding weekends and holidays',
+            #     id = 'dates-table-selected-tickers-footnote',
+            #     style = table_selected_tickers_footnote
+            # )
         ],
         style = {'width': '1300px'}
     )
 
+    dash_table_tickers_to_plot = dash_table.DataTable(
+        columns = [{'name': i, 'id': i} for i in ['Ticker', 'Name']],
+        data = [{'Ticker': tk, 'Name': selected_ticker_names[tk]} for tk in selected_tickers],
+        editable = False,
+        row_selectable = 'multi',
+        selected_rows = [0],
+        tooltip_data = table_tooltip_data,
+        css = [
+            {
+                # Hide the header
+               'selector': 'tr:first-child',
+               'rule': 'display: none',
+            },
+            {
+            'selector': '.dash-tooltip',
+            'rule': 'border: None;'
+            },
+            {
+            'selector': '.dash-spreadsheet tr:hover td.dash-cell',
+            'rule': 'background-color: rgb(211, 211, 211) !important; color: black !important; border-top: 1px solid rgb(211, 211, 211) !important; border-bottom: 1px solid rgb(211, 211, 211) !important;'
+            },
+            {
+            'selector': '.dash-spreadsheet tr:hover td.dash-select-cell',
+            'rule': 'background-color: rgb(211, 211, 211) !important; color: black !important; border-top: 1px solid rgb(211, 211, 211) !important; border-bottom: 1px solid rgb(211, 211, 211) !important;'
+            },
+            {
+            'selector': '.dash-table-tooltip',
+            # 'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(67, 172, 106) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica; background-color: rgb(227, 255, 237);'
+            'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(211, 211, 211) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica; background-color: rgb(211, 211, 211);'
+            },
+            {
+            'selector': '.dash-tooltip:before, .dash-tooltip:after',
+            # 'rule': 'border-top-color: #43ac6a !important; border-bottom-color: #43ac6a !important;'
+            'rule': 'border-top-color: rgb(211, 211, 211) !important; border-bottom-color: rgb(211, 211, 211) !important;'
+            }
+        ],
+        tooltip_delay = 0,
+        tooltip_duration = None,
+        style_as_list_view = True,
+        # style_header_conditional = [
+        #     {'if': {'column_id': 'No.'}, 'padding-left': '8px'},
+        # ],
+        style_data_conditional = [
+            {'if': 
+                {'state': 'active'},
+                'width': '300px !important',
+                'backgroundColor': 'white',
+                'border-top': '1px solid rgb(211, 211, 211)',
+                'border-bottom': '1px solid rgb(211, 211, 211)'},
+            # {'if': {'column_id': 'No.'}, 'width': 24, 'padding-left': '8px'},
+            {'if': {'column_id': 'Ticker'}, 'width': 50},
+            {'if': {'column_id': 'Name'}, 'width': 200},
+        ],
+        id = 'dash-table-tickers-to-plot',
+        # style_header = plots_selected_tickers_table_header_css,
+        style_table={'overflowX': 'auto'},
+        style_data = selected_tickers_table_data_css
+    )
+
     return (
         dash_table_selected_tickers_div,
-        selected_tickers,
-        first_ticker
+        dash_table_tickers_to_plot
+        # selected_tickers,
+        # first_ticker
     )
 
 # Initialize an empty table first so its id is in the layout
@@ -321,6 +384,85 @@ layout = html.Div([
     children =
     [
 
+##### BEGIN TICKERS CONTROLS
+
+    html.Div([
+
+        # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/
+        html.Div(
+            dbc.Button(
+                id = 'collapse-button-tickers',
+                class_name = 'ma-1',
+                color = 'primary',
+                size = 'sm',
+                n_clicks = 0,
+                style = collapse_button_css
+            )
+        ),
+
+        dbc.Collapse(
+
+            html.Div(
+
+                id = 'tickers-controls',
+                children = [
+
+                    html.Div([
+                        html.Div(
+                            'Select Tickers To Plot',
+                            style = {
+                                'display': 'block',
+                                'font-size': '14px',
+                                'font-weight': 'bold',
+                                'vertical-align': 'top',
+                                'height': '20px',
+                                'margin-top': '5px',
+                                'margin-bottom': '5px'
+                            }
+                        ),
+                        html.Div(
+                            id = 'dash-table-tickers-to-plot-div',
+                            # children = []
+                        ),
+                        # dcc.Dropdown(
+                        #     id = 'tickers-dropdown',
+                        #     className = 'plots-dropdown-button',
+                        #     multi = True,
+                        #     clearable = False,
+                        #     style = {'width': '300px', 'vertical-align': 'middle'}
+                        # )
+                        ],
+                        style = {
+                            'display': 'block',
+                            'margin-right': '0px',
+                            'vertical-align': 'middle',
+                            'font-family': 'Helvetica'
+                        }
+                    ),
+
+                    html.Div(
+                        id = 'plots-selected-ticker-names-div',
+                        style = {
+                            'display': 'block',
+                            'width': '300px',
+                            'color': 'rgb(0, 106, 240)',
+                            'margin': '3px 0px 3px 5px',
+                            'vertical-align': 'bottom',
+                            'font-family': 'Helvetica',
+                            'font-size': '14px'}
+                    ),
+                ]
+            ),
+
+            id = 'collapse-tickers',
+            is_open = False,
+            style = {'width': '300px'}
+        )],
+        style = {'margin-left': '5px'}
+    ),
+
+    ##### END TICKERS CONTROLS
+
     ##### BEGIN TEMPLATE CONTROLS
 
     html.Div([
@@ -345,30 +487,7 @@ layout = html.Div([
                 children = [
 
                     html.Div([
-                        html.Div('Ticker', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-top': '3px', 'margin-bottom': '0px'}),
-                        dcc.Dropdown(
-                            id = 'tickers-dropdown',
-                            className = 'plots-dropdown-button',
-                            clearable = False,
-                            style = {'width': '300px'}
-                        )],
-                        style = {'display': 'inline-block', 'margin-right': '0px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                    ),
-
-                    html.Div(
-                        id = 'plots-selected-ticker-name',
-                        style = {
-                            'display': 'inline-block',
-                            'width': '300px',
-                            'color': 'rgb(0, 106, 240)',
-                            'margin': '3px 0px 3px 5px',
-                            'vertical-align': 'top',
-                            'font-family': 'Helvetica',
-                            'font-size': '14px'}
-                    ),
-
-                    html.Div([
-                        html.Div('Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),
+                        html.Div('Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-top': '3px'}),
                         dcc.Dropdown(
                             id = 'theme-dropdown',
                             className = 'plots-dropdown-button',
@@ -382,7 +501,7 @@ layout = html.Div([
                     ),
 
                     html.Div([
-                        html.Div('Deck Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),
+                        html.Div('Deck Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-top': '3px'}),
                         dcc.Dropdown(
                             id='deck-type-dropdown',
                             className = 'plots-dropdown-button',
@@ -395,7 +514,7 @@ layout = html.Div([
                     ),
 
                     html.Div([
-                        html.Div('Secondary Y', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-bottom': '0px'}),        
+                        html.Div('Secondary Y', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'height': '20px', 'margin-top': '3px'}),
                         dcc.Dropdown(
                             id='secondary-y-dropdown',
                             className = 'plots-dropdown-button',
@@ -1484,43 +1603,41 @@ layout = html.Div([
         ##### BEGIN GRAPH
         html.Div(
             id = 'fig-div-container',
-            children = 
-            [
-                dbc.Row([  # Row
-                    
-                    dbc.Col([  # Col 1
-                        html.Div(
-                            id = 'fig-div',
-                            children = [],
-                            style = {'display': 'inline-block', 'vertical-align': 'top', 'margin-left': '0px'}
-                        )
-                    ]),  # Closing Col1 
-
-                    ### ADD RESET AXES BUTTON
-                    dbc.Col([  # Col 2
-                        html.Div([
-                            dbc.Button(
-                                'Reset Axes',
-                                id = 'reset-axes',
-                                n_clicks = 0,
-                                class_name = 'ma-1',
-                                color = 'light',
-                                size = 'sm',
-                                style = reset_axes_button_css
-                            )
-                        ],
-                        style = {'vertical-align': 'top'}
-                        )
-                    ],
-                    style = {'display': 'flex'}
-                    )  # Closing Col2 
-
-                ],
-                style = {'--bs-gutter-x': '0', 'flex-wrap': 'nowrap'}
-                # --bs-gutter-x refers to the content left and right margins within each column
-                # nowrap ensures that the Reset Axes button doesn't move to the bottom of graph when the page is resized
-                )  # Closing Row
-            ],
+            children = [],
+            # [
+            #     dbc.Row([  # Row
+            #         
+            #         dbc.Col([  # Col 1
+            #             html.Div(
+            #                 id = 'fig-div',
+            #                 children = [],
+            #                 style = {'display': 'inline-block', 'vertical-align': 'top', 'margin-left': '0px'}
+            #             )
+            #         ]),  # Closing Col1 
+            #         ### ADD RESET AXES BUTTON
+            #         dbc.Col([  # Col 2
+            #             html.Div([
+            #                 dbc.Button(
+            #                     'Reset Axes',
+            #                     id = 'reset-axes',
+            #                     n_clicks = 0,
+            #                     class_name = 'ma-1',
+            #                     color = 'light',
+            #                     size = 'sm',
+            #                     style = reset_axes_button_css
+            #                 )
+            #             ],
+            #             style = {'vertical-align': 'top'}
+            #             )
+            #         ],
+            #         style = {'display': 'flex'}
+            #         )  # Closing Col2 
+            #     ],
+            #     style = {'--bs-gutter-x': '0', 'flex-wrap': 'nowrap'}
+            #     # --bs-gutter-x refers to the content left and right margins within each column
+            #     # nowrap ensures that the Reset Axes button doesn't move to the bottom of graph when the page is resized
+            #     )  # Closing Row
+            # ],
         )
     ],
     style = {'display': 'inline-block', 'vertical-align': 'top'}
@@ -1592,6 +1709,21 @@ def toggle_collapse_final_table_selected_tickers(n, is_open):
 
 
 @callback(
+    Output('collapse-button-tickers', 'children'),
+    Output('collapse-tickers', 'is_open'),
+    Input('collapse-button-tickers', 'n_clicks'),
+    State('collapse-tickers', 'is_open')
+)
+def toggle_collapse_tickers(n, is_open):
+    title = 'TICKERS'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
     Output('collapse-button-template', 'children'),
     Output('collapse-template', 'is_open'),
     Input('collapse-button-template', 'n_clicks'),
@@ -1599,7 +1731,7 @@ def toggle_collapse_final_table_selected_tickers(n, is_open):
 )
 def toggle_collapse_template(n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
-    title = 'TEMPLATE AND TICKER'
+    title = 'TEMPLATE'
     label = f'► {title}' if is_open else f'▼ {title}'
     if n:
         return label, not is_open
@@ -1735,9 +1867,9 @@ def toggle_collapse_ma_ribbon(n, is_open):
     # Output('test-graph', 'figure'),
     # Output('fig_div', 'children', allow_duplicate = True),
     # Output('test-graph', 'figure'),
-    Output('plots-selected-ticker-name', 'children'),
+    # Output('plots-selected-ticker-names-div', 'children'),
 
-    Output('fig-div', 'children'),
+    Output('fig-div-container', 'children'),
     # Output('drawdown-controls', 'style'),
     # Output('bollinger-controls', 'style'),
     # Output('template-controls', 'style'),
@@ -1755,10 +1887,14 @@ def toggle_collapse_ma_ribbon(n, is_open):
     Input('final-end-date-stored', 'data'),
     Input('final-selected-tickers-stored', 'data'),
 
-    Input('reset-axes', 'n_clicks'),
-    
+    # Input('reset-axes', 'n_clicks'),
+    Input({'index': ALL, 'type': 'reset-axes'}, 'n_clicks'),
+
+    # tickers options
+    ### Input('tickers-dropdown', 'value'),
+    Input('dash-table-tickers-to-plot', 'selected_rows'),
+
     # template options
-    Input('tickers-dropdown', 'value'),
     Input('theme-dropdown', 'value'),
     Input('deck-type-dropdown', 'value'),
     Input('secondary-y-dropdown', 'value'),
@@ -1842,8 +1978,11 @@ def update_plot(
 
         n_click_reset_axes,
 
-        # ticker and template options
-        tk,
+        # ticker options
+        selected_rows_tickers_to_plot,
+        # tk,
+
+        # template options
         theme,
         deck_type,
         sec_y,
@@ -1917,24 +2056,28 @@ def update_plot(
     ):
 
     selected_tickers = list(selected_tickers_names.keys())
+    id_tk_map = {i: tk for i, tk in enumerate(selected_tickers)}
 
     downloaded_data = hist_data.download_yf_data(start_date, end_date, selected_tickers)
 
+    tickers_to_plot = [id_tk_map[i] for i in selected_rows_tickers_to_plot] if selected_rows_tickers_to_plot != [] else id_tk_map[0]
+
+    tk = tickers_to_plot[0]
+
     # fig_data = create_graph(theme, tk, drawdown_color, overlay_color_theme)
-    date_index = downloaded_data[tk]['ohlc'].index
     theme = theme.lower()
     # deck_type = deck_type.lower()
     secondary_y = False if sec_y == 'No' else True
-    fig_data = analyze_prices.create_template(
-        date_index,
-        deck_type = deck_type,
-        secondary_y = secondary_y,
-        plot_width = width,
-        plot_height_1 = upper_height,
-        plot_height_2 = lower_height,
-        plot_height_3 = lower_height,
-        theme = theme
-    )
+    # fig_data = analyze_prices.create_template(
+    #     date_index,
+    #     deck_type = deck_type,
+    #     secondary_y = secondary_y,
+    #     plot_width = width,
+    #     plot_height_1 = upper_height,
+    #     plot_height_2 = lower_height,
+    #     plot_height_3 = lower_height,
+    #     theme = theme
+    # )
 
     # These are in the list of outputs, so they must stay outside of the if statements
     
@@ -1944,149 +2087,217 @@ def update_plot(
     n_drawdowns = 5 if n_top is None else n_top
     dd_number_value = n_drawdowns
 
-    ### Add historical price
-    if add_hist_price:
+    ################
 
-        hist_price_color_theme = hist_price_color_theme.lower() if hist_price_color_theme is not None else 'base'
-        df_hist_price = downloaded_data[tk]['ohlc_adj'] if hist_price_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
-        hist_price = df_hist_price[hist_price_type]
+    fig_divs = []
+    # fig_data_all = {}
 
-        fig_data = analyze_prices.add_hist_price(
-            fig_data,
-            hist_price,
-            tk,
-            target_deck = deck_number(deck_type, hist_price_deck_name),
-            secondary_y = True if hist_price_secondary_y == 'Yes' else False,
-            plot_type = 'bar' if hist_price_plot_type == 'Histogram' else 'scatter',
-            price_type = hist_price_type.lower(),
-            add_title = True if hist_price_add_title == 'Yes' else False,
-            theme = theme,
-            color_theme = hist_price_color_theme,
-            fill_below = True if hist_price_fill_below == 'Yes' else False
+    for tk in tickers_to_plot:
+
+        date_index = downloaded_data[tk]['ohlc'].index
+        fig_data = analyze_prices.create_template(
+            date_index,
+            deck_type = deck_type,
+            secondary_y = secondary_y,
+            plot_width = width,
+            plot_height_1 = upper_height,
+            plot_height_2 = lower_height,
+            plot_height_3 = lower_height,
+            theme = theme
         )
 
-    ### Add volume
-    if add_volume:
+        ### Add historical price
+        if add_hist_price:
 
-        volume_color_theme = volume_color_theme.lower() if volume_color_theme is not None else 'sapphire'
-        df_volume = downloaded_data[tk]['volume']
+            hist_price_color_theme = hist_price_color_theme.lower() if hist_price_color_theme is not None else 'base'
+            df_hist_price = downloaded_data[tk]['ohlc_adj'] if hist_price_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
+            hist_price = df_hist_price[hist_price_type]
 
-        fig_data = analyze_prices.add_hist_price(
-            fig_data,
-            df_volume,
-            tk,
-            target_deck = deck_number(deck_type, volume_deck_name),
-            secondary_y = True if volume_secondary_y == 'Yes' else False,
-            plot_type = 'bar' if volume_plot_type == 'Histogram' else 'scatter',
-            price_type = 'volume',
-            add_title = True if volume_add_title == 'Yes' else False,
-            theme = theme,
-            color_theme = volume_color_theme,
-            fill_below = True if volume_fill_below == 'Yes' else False
+            fig_data = analyze_prices.add_hist_price(
+            # fig_data_all[tk] = analyze_prices.add_hist_price(
+                fig_data,
+                # fig_data_all[tk],
+                hist_price,
+                tk,
+                target_deck = deck_number(deck_type, hist_price_deck_name),
+                secondary_y = True if hist_price_secondary_y == 'Yes' else False,
+                plot_type = 'bar' if hist_price_plot_type == 'Histogram' else 'scatter',
+                price_type = hist_price_type.lower(),
+                add_title = True if hist_price_add_title == 'Yes' else False,
+                theme = theme,
+                color_theme = hist_price_color_theme,
+                fill_below = True if hist_price_fill_below == 'Yes' else False
+            )
+
+        ### Add volume
+        if add_volume:
+
+            volume_color_theme = volume_color_theme.lower() if volume_color_theme is not None else 'sapphire'
+            df_volume = downloaded_data[tk]['volume']
+
+            fig_data = analyze_prices.add_hist_price(
+                fig_data,
+                df_volume,
+                tk,
+                target_deck = deck_number(deck_type, volume_deck_name),
+                secondary_y = True if volume_secondary_y == 'Yes' else False,
+                plot_type = 'bar' if volume_plot_type == 'Histogram' else 'scatter',
+                price_type = 'volume',
+                add_title = True if volume_add_title == 'Yes' else False,
+                theme = theme,
+                color_theme = volume_color_theme,
+                fill_below = True if volume_fill_below == 'Yes' else False
+            )
+
+        ### Add drawdowns
+        if add_drawdowns:
+
+            dd_add_title = True if drawdown_add_title =='Yes' else False
+            drawdown_color = drawdown_color.lower() if drawdown_color is not None else 'red'
+            drawdown_price_color_theme = drawdown_price_color_theme.lower() if drawdown_price_color_theme is not None else 'base'
+            df_drawdown_price = downloaded_data[tk]['ohlc_adj'] if drawdown_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
+            drawdown_price = df_drawdown_price[drawdown_price_type]
+
+            drawdown_data_tk = analyze_prices.summarize_tk_drawdowns(drawdown_price, drawdown_top_by)
+            n_drawdowns = drawdown_data_tk['Total Drawdowns']
+            dd_number_value = min(n_top, n_drawdowns)
+            selected_drawdown_data = analyze_prices.select_tk_drawdowns(drawdown_data_tk, n_top)
+
+            show_trough_to_recovery = True if 'Recovery' in drawdown_display else False
+            drawdown_top_by = 'length' if drawdown_top_by == 'Total Length' else 'depth'
+
+            fig_data = analyze_prices.add_drawdowns(
+                fig_data,
+                drawdown_price,
+                tk,
+                selected_drawdown_data,
+                n_top_drawdowns = n_top,
+                target_deck = 1,
+                add_price = not dd_add_price_disabled,
+                price_type = drawdown_price_type.lower(),
+                top_by = drawdown_top_by,
+                show_trough_to_recovery = show_trough_to_recovery,
+                add_title = dd_add_title,
+                theme = theme,
+                price_color_theme = drawdown_price_color_theme,
+                drawdown_color = drawdown_color
+            )
+
+        ### Add Bollinger bands
+        if add_bollinger:
+            df_bollinger_price = downloaded_data[tk]['ohlc_adj'] if bollinger_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
+            bollinger_price = df_bollinger_price[bollinger_price_type]
+            bollinger_data = analyze_prices.bollinger_bands(
+                bollinger_price,
+                ma_type_map[bollinger_ma_type],
+                bollinger_window,
+                bollinger_nstd,
+                bollinger_nbands
+            )
+            bollinger_list = bollinger_data['list']
+            fig_data = analyze_prices.add_bollinger_overlays(
+                fig_data,
+                bollinger_list,
+                target_deck = deck_number(deck_type, bollinger_deck_name),
+                theme = theme,
+                color_theme = bollinger_color_theme
+            )
+
+        ### Add moving average envelopes
+        if add_ma_env:
+            df_ma_env_price = downloaded_data[tk]['ohlc_adj'] if ma_env_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
+            ma_env_price = df_ma_env_price[ma_env_price_type]
+            ma_env_list = analyze_prices.ma_envelopes(
+                ma_env_price,
+                ma_type_map[ma_env_ma_type],
+                ma_env_window,
+                ma_env_offset,
+                ma_env_nbands
+            )
+            fig_data = analyze_prices.add_ma_envelopes(
+                fig_data,
+                ma_env_list,
+                target_deck = deck_number(deck_type, ma_env_deck_name),
+                theme = theme,
+                color_theme = ma_env_color_theme
+            )
+
+        ### Add moving average ribbon
+        if add_ma_ribbon:
+            df_ma_ribbon_price = downloaded_data[tk]['ohlc_adj'] if ma_ribbon_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
+            ma_ribbon_price = df_ma_ribbon_price[ma_ribbon_price_type]
+            ma_ribbon_list = analyze_prices.get_ma_ribbon(
+                ma_type_map[ma_ribbon_ma_type],
+                ma_ribbon_window,
+                ma_ribbon_nbands
+            )
+            fig_data = analyze_prices.add_ma_overlays(
+                fig_data,
+                ma_ribbon_price,
+                ma_ribbon_list,
+                target_deck = deck_number(deck_type, ma_ribbon_deck_name),
+                add_yaxis_title = True if ma_ribbon_add_yaxis_title == 'Yes' else False,
+                yaxis_title = 'Moving Average',
+                theme = theme,
+                color_theme = ma_ribbon_color_theme
+            )
+
+        ### Update graph
+        fig = fig_data['fig']
+        # fig_div = dcc.Graph(id = f'{tk}-main-graph', figure = fig)
+
+        fig_div = html.Div(
+            id = f'{tk}-fig-div',
+            children = [
+                dbc.Row([  # Row
+                    dbc.Col([  # Col 1
+                        html.Div(
+                            id = f'{tk}-fig-div',
+                            children = [
+                                dcc.Graph(
+                                    id = f'{tk}-main-graph',
+                                    figure = fig
+                                )
+                            ],
+                            style = {'display': 'inline-block', 'vertical-align': 'top', 'margin-left': '0px'}
+                        )
+                    ]),  # Closing Col1 
+                    ### ADD RESET AXES BUTTON
+                    dbc.Col([  # Col 2
+                        html.Div([
+                            dbc.Button(
+                                'Reset Axes',
+                                id = {'index': f'{tk}-reset-axes', 'type': 'reset-axes'},
+                                n_clicks = 0,
+                                class_name = 'ma-1',
+                                color = 'light',
+                                size = 'sm',
+                                style = reset_axes_button_css
+                            )
+                        ],
+                        style = {'vertical-align': 'top'}
+                        )
+                    ],
+                    style = {'display': 'flex'}
+                    )  # Closing Col2 
+                ],
+                style = {'--bs-gutter-x': '0', 'flex-wrap': 'nowrap', 'margin-bottom': '5px'}
+                # --bs-gutter-x refers to the content left and right margins within each column
+                # nowrap ensures that the Reset Axes button doesn't move to the bottom of graph when the page is resized
+                ),  # Closing Row
+                # html.Br()
+            ],
         )
 
-    ### Add drawdowns
-    if add_drawdowns:
-        
-        dd_add_title = True if drawdown_add_title =='Yes' else False
-        drawdown_color = drawdown_color.lower() if drawdown_color is not None else 'red'
-        drawdown_price_color_theme = drawdown_price_color_theme.lower() if drawdown_price_color_theme is not None else 'base'
-        df_drawdown_price = downloaded_data[tk]['ohlc_adj'] if drawdown_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
-        drawdown_price = df_drawdown_price[drawdown_price_type]
+        fig_divs.append(fig_div)
 
-        drawdown_data_tk = analyze_prices.summarize_tk_drawdowns(drawdown_price, drawdown_top_by)
-        n_drawdowns = drawdown_data_tk['Total Drawdowns']
-        dd_number_value = min(n_top, n_drawdowns)
-        selected_drawdown_data = analyze_prices.select_tk_drawdowns(drawdown_data_tk, n_top)
-
-        show_trough_to_recovery = True if 'Recovery' in drawdown_display else False
-        drawdown_top_by = 'length' if drawdown_top_by == 'Total Length' else 'depth'
-
-        fig_data = analyze_prices.add_drawdowns(
-            fig_data,
-            drawdown_price,
-            tk,
-            selected_drawdown_data,
-            n_top_drawdowns = n_top,
-            target_deck = 1,
-            add_price = not dd_add_price_disabled,
-            price_type = drawdown_price_type.lower(),
-            top_by = drawdown_top_by,
-            show_trough_to_recovery = show_trough_to_recovery,
-            add_title = dd_add_title,
-            theme = theme,
-            price_color_theme = drawdown_price_color_theme,
-            drawdown_color = drawdown_color
-        )
-
-    ### Add Bollinger bands
-    if add_bollinger:
-        df_bollinger_price = downloaded_data[tk]['ohlc_adj'] if bollinger_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
-        bollinger_price = df_bollinger_price[bollinger_price_type]
-        bollinger_data = analyze_prices.bollinger_bands(
-            bollinger_price,
-            ma_type_map[bollinger_ma_type],
-            bollinger_window,
-            bollinger_nstd,
-            bollinger_nbands
-        )
-        bollinger_list = bollinger_data['list']
-        fig_data = analyze_prices.add_bollinger_overlays(
-            fig_data,
-            bollinger_list,
-            target_deck = deck_number(deck_type, bollinger_deck_name),
-            theme = theme,
-            color_theme = bollinger_color_theme
-        )
-
-    ### Add moving average envelopes
-    if add_ma_env:
-        df_ma_env_price = downloaded_data[tk]['ohlc_adj'] if ma_env_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
-        ma_env_price = df_ma_env_price[ma_env_price_type]
-        ma_env_list = analyze_prices.ma_envelopes(
-            ma_env_price,
-            ma_type_map[ma_env_ma_type],
-            ma_env_window,
-            ma_env_offset,
-            ma_env_nbands
-        )
-        fig_data = analyze_prices.add_ma_envelopes(
-            fig_data,
-            ma_env_list,
-            target_deck = deck_number(deck_type, ma_env_deck_name),
-            theme = theme,
-            color_theme = ma_env_color_theme
-        )
-    
-    ### Add moving average ribbon
-    if add_ma_ribbon:
-        df_ma_ribbon_price = downloaded_data[tk]['ohlc_adj'] if ma_ribbon_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
-        ma_ribbon_price = df_ma_ribbon_price[ma_ribbon_price_type]
-        ma_ribbon_list = analyze_prices.get_ma_ribbon(
-            ma_type_map[ma_ribbon_ma_type],
-            ma_ribbon_window,
-            ma_ribbon_nbands
-        )
-        fig_data = analyze_prices.add_ma_overlays(
-            fig_data,
-            ma_ribbon_price,
-            ma_ribbon_list,
-            target_deck = deck_number(deck_type, ma_ribbon_deck_name),
-            add_yaxis_title = True if ma_ribbon_add_yaxis_title == 'Yes' else False,
-            yaxis_title = 'Moving Average',
-            theme = theme,
-            color_theme = ma_ribbon_color_theme
-        )
-
-
-    ### Update graph
-    fig = fig_data['fig']
-    fig_div = dcc.Graph(id = 'main-graph', figure = fig)
 
     return (
-        selected_tickers_names[tk],
+        # selected_tickers_names[tk],
+        # str([selected_tickers_names[tk] for tk in tickers_to_plot]),
+        # [selected_tickers_names[tk] for tk in tickers_to_plot],
 
-        fig_div,
+        fig_divs,
         # drawdown_div_style,
         # bollinger_div_style,
         # template_div_style,

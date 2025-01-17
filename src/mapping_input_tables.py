@@ -23,6 +23,7 @@ custom_ticker_table_columns = {
 }
 
 table_selected_tickers_columns = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Length*', 'Type', 'Category', 'Industry', 'Sector', 'Exchange', 'Currency']
+plots_table_selected_tickers_columns = ['No.', 'Ticker', 'Name', 'Type', 'Category', 'Industry', 'Sector', 'Exchange', 'Currency']
 
 ticker_category_info_map = {
     'biggest_companies': {

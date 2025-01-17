@@ -96,7 +96,7 @@ def initialize_selected_ticker_table():
                 children = [dash_table_selected_tickers]
             ),
             html.Div(
-                '* Length of the range of dates in business days excluding weekends and holidays',
+                '* Length of the range of dates in business days excluding weekends and holidays (except for cryptocurrencies)',
                 id = 'dates-table-selected-tickers-footnote',
                 style = table_selected_tickers_footnote
             )
@@ -332,8 +332,10 @@ def get_table_selected_tickers(
     #     end_date = correct_date(end_date_year, end_date_month, end_date_day)
 
     full_overlap_start = max(selected_start_dates)
-    full_overlap_end = (datetime.strptime(min(selected_end_dates), '%Y-%m-%d') + timedelta(1)).date()
-    full_overlap_length = len(yf.download(selected_tickers, start = full_overlap_start, end = full_overlap_end, progress = False))
+    full_overlap_end = (datetime.strptime(min(selected_end_dates), '%Y-%m-%d')).date()
+    full_overlap_end_dl = (datetime.strptime(min(selected_end_dates), '%Y-%m-%d') + timedelta(1)).date()
+    # For correct download range we must add 1 day to the end_date
+    full_overlap_length = len(yf.download(selected_tickers, start = full_overlap_start, end = full_overlap_end_dl, progress = False))
     # tk_overlap_start = [row['Ticker'] for row in table_selected_tickers_data if row['Data Start'] == overlap_start][0]
     # tk_overlap_end = [row['Ticker'] for row in table_selected_tickers_data if row['Data End'] == overlap_end][0]
 

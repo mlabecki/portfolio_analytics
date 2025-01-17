@@ -3104,9 +3104,6 @@ class AnalyzePrices():
                 })
                 ma_envelope_overlay_names.append(env['name'])
 
-                print('ma_envelope_overlays data')
-                print(env['data'])
-
         if len(ma_envelope_overlays) > 0:
 
             color_map = {}
