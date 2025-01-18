@@ -804,7 +804,7 @@ layout = html.Div([
                     # ),
 
                     html.Div([
-                        html.Div('Plot Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        html.Div('Plot Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
                         dcc.Dropdown(
                             id='volume-plot-type-dropdown',
                             className = 'plots-dropdown-button',
@@ -817,7 +817,7 @@ layout = html.Div([
                     ),
 
                     html.Div([
-                        html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '0px'}),
                         dcc.Dropdown(
                             id='volume-color-theme-dropdown',
                             className = 'plots-dropdown-button',
@@ -1076,6 +1076,230 @@ layout = html.Div([
     ), 
 
     ##### END DRAWDOWN CONTROLS
+
+    ##### BEGIN PRICE OVERLAYS CONTROLS
+
+    html.Div([
+
+        html.Div(
+            dbc.Button(
+                id = 'collapse-button-price-overlays',
+                class_name = 'ma-1',
+                color = 'primary',
+                size = 'sm',
+                n_clicks = 0,
+                style = collapse_button_css
+            )
+        ),
+
+        dbc.Collapse(
+
+            html.Div(
+
+                id = 'price-overlays-controls',
+                children = [
+
+                    html.Div([
+                        html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id = 'price-overlays-deck-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Upper'],
+                            value = 'Upper',
+                            clearable = False,
+                            style = {'width': '79px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id='price-overlays-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = overlay_color_themes,
+                            value = 'Gold',
+                            clearable = False,
+                            style = {'width': '104px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Add Y-Axis Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px'}),
+                        dcc.Dropdown(
+                            id='price-overlays-add-yaxis-title-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['No', 'Yes'],
+                            value = 'No',
+                            clearable = False,
+                            style = {'width': '106px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div('Select Price Types', style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px'}),
+                    html.Div(
+                        id = 'price-overlays-price-list-container',
+                        children = [
+                            dbc.Checklist(
+                                id = 'price-overlays-adj-price-list',
+                                options = [
+                                    {'label': 'Adjusted Close', 'value': 'Adjusted Close'},
+                                    {'label': 'Adjusted Open', 'value': 'Adjusted Open'},
+                                    {'label': 'Adjusted High', 'value': 'Adjusted High'},
+                                    {'label': 'Adjusted Low', 'value': 'Austeddj Low'}
+                                ],
+                                label_style = {
+                                    'width': '106px',
+                                    'font-family': 'Helvetica',
+                                    'font-size': '14px',
+                                    'color': 'black',
+                                    'margin-right': '0px',
+                                    'margin-bottom': '0px'
+                                },
+                                label_checked_style = {
+                                    'width': '106px',
+                                    'font-family': 'Helvetica',
+                                    'font-size': '14px',
+                                    'font-weight': 'bold',
+                                    # 'color': 'rgb(0, 126, 255)'
+                                },
+                                # input_style = {'width': '24px'},
+                                input_checked_style = {
+                                    'background-color': 'rgb(0, 126, 255)',
+                                    'border-color': 'rgb(0, 126, 255)'
+                                },
+                                inline = True,
+                            ),
+                            dbc.Checklist(
+                                id = 'price-overlays-price-list',
+                                options = [
+                                    {'label': 'Close', 'value': 'Close'},
+                                    {'label': 'Open', 'value': 'Open'},
+                                    {'label': 'High', 'value': 'High'},
+                                    {'label': 'Low', 'value': 'Low'}
+                                ],
+                                label_style = {
+                                    'width': '33px',
+                                    'font-family': 'Helvetica',
+                                    'font-size': '14px',
+                                    'color': 'black',
+                                    'margin-right': '0px',
+                                    'margin-bottom': '0px'
+                                },
+                                label_checked_style = {
+                                    'width': '33px',
+                                    'font-family': 'Helvetica',
+                                    'font-size': '14px',
+                                    'font-weight': 'bold',
+                                    # 'color': 'rgb(0, 126, 255)'
+                                },
+                                # input_style = {'width': '24px'},
+                                input_checked_style = {
+                                    'background-color': 'rgb(0, 126, 255)',
+                                    'border-color': 'rgb(0, 126, 255)'
+                                },
+                                inline = True,
+                            )
+                        ],
+                        style = {
+                            'display': 'inline-block',
+                            'margin-left': '5px'
+                            # 'justify-content': 'space-between',
+                        }
+                    ),
+
+                    # dbc.Checkbox(
+                    #     id = "price-overlays-adj-close-checkbox",
+                    #     label = "Adjusted Close",
+                    #     value = False,
+                    #     label_style = {'font-family': 'Helvetica', 'font-size': '14px', 'color': 'black', 'margin-right': '5px', 'margin-bottom': '5px'},
+                    #     # label_checked_style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'color': 'darkgreen', 'margin-right': '5px', 'margin-bottom': '5px'},
+                    #     # input_checked_style = {'color': 'darkgreen'},
+                    # ),
+                    # dbc.Checkbox(
+                    #     id = "price-overlays-adj-open-checkbox",
+                    #     label = "Adjusted Open",
+                    #     value = False,
+                    #     label_style = {'font-family': 'Helvetica', 'font-size': '14px', 'color': 'black', 'margin-right': '5px', 'margin-bottom': '5px'},
+                    #     # label_checked_style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'color': 'darkgreen', 'margin-right': '5px', 'margin-bottom': '5px'},
+                    #     # input_checked_style = {'color': 'darkgreen'},
+                    # ),
+                    # dbc.Checkbox(
+                    #     id = "price-overlays-adj-high-checkbox",
+                    #     label = "Adjusted High",
+                    #     value = False,
+                    #     label_style = {'font-family': 'Helvetica', 'font-size': '14px', 'color': 'black', 'margin-right': '5px', 'margin-bottom': '5px'},
+                    #     # label_checked_style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'color': 'darkgreen', 'margin-right': '5px', 'margin-bottom': '5px'},
+                    #     # input_checked_style = {'color': 'darkgreen'},
+                    # ),
+                    # dbc.Checkbox(
+                    #     id = "price-overlays-adj-low-checkbox",
+                    #     label = "Adjusted Low",
+                    #     value = False,
+                    #     label_style = {'font-family': 'Helvetica', 'font-size': '14px', 'color': 'black', 'margin-right': '5px', 'margin-bottom': '5px'},
+                    #     # label_checked_style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'color': 'darkgreen', 'margin-right': '5px', 'margin-bottom': '5px'},
+                    #     # input_checked_style = {'color': 'darkgreen'},
+                    # ),
+                    # dbc.Checkbox(
+                    #     id = "price-overlays-close-checkbox",
+                    #     label = "Close",
+                    #     value = False,
+                    #     label_style = {'font-family': 'Helvetica', 'font-size': '14px', 'color': 'black', 'margin-right': '5px', 'margin-bottom': '5px'},
+                    #     # label_checked_style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'color': 'darkgreen', 'margin-right': '5px', 'margin-bottom': '5px'},
+                    #     # input_checked_style = {'color': 'darkgreen'},
+                    # ),
+                    # dbc.Checkbox(
+                    #     id = "price-overlays-open-checkbox",
+                    #     label = "Open",
+                    #     value = False,
+                    #     label_style = {'font-family': 'Helvetica', 'font-size': '14px', 'color': 'black', 'margin-right': '5px', 'margin-bottom': '5px'},
+                    #     # label_checked_style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'color': 'darkgreen', 'margin-right': '5px', 'margin-bottom': '5px'},
+                    #     # input_checked_style = {'color': 'darkgreen'},
+                    # ),
+                    # dbc.Checkbox(
+                    #     id = "price-overlays-high-checkbox",
+                    #     label = "High",
+                    #     value = False,
+                    #     label_style = {'font-family': 'Helvetica', 'font-size': '14px', 'color': 'black', 'margin-right': '5px', 'margin-bottom': '5px'},
+                    #     # label_checked_style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'color': 'darkgreen', 'margin-right': '5px', 'margin-bottom': '5px'},
+                    #     # input_checked_style = {'color': 'darkgreen'},
+                    # ),
+                    # dbc.Checkbox(
+                    #     id = "price-overlays-low-checkbox",
+                    #     label = "Low",
+                    #     value = False,
+                    #     label_style = {'font-family': 'Helvetica', 'font-size': '14px', 'color': 'black', 'margin-right': '5px', 'margin-bottom': '5px'},
+                    #     # label_checked_style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'color': 'darkgreen', 'margin-right': '5px', 'margin-bottom': '5px'},
+                    #     # input_checked_style = {'color': 'darkgreen'},
+                    # ),
+
+                    html.Div([
+                        dbc.Button(
+                            'Add To Plot',
+                            id = f'add-price-overlays-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'success',
+                            size = 'sm',
+                            style = plots_add_button_css
+                        )],
+                        # style = {'margin-bottom': '5px'}
+                    ),
+
+                ],
+                # style = {'margin-left': '5px'}
+            ), 
+
+            id = 'collapse-price-overlays',
+            is_open = False,
+            style = {'width': '300px'}
+        )],
+        style = {'margin-left': '5px'}
+    ), 
+
+    ##### END PRICE OVERLAYS CONTROLS
 
     ##### BEGIN BOLLINGER CONTROLS
 
@@ -1815,6 +2039,21 @@ def toggle_collapse_drawdowns(n, is_open):
 
 
 @callback(
+    Output('collapse-button-price-overlays', 'children'),
+    Output('collapse-price-overlays', 'is_open'),
+    Input('collapse-button-price-overlays', 'n_clicks'),
+    State('collapse-price-overlays', 'is_open')
+)
+def toggle_collapse_price_overlays(n, is_open):
+    title = 'PRICE OVERLAYS'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
     Output('collapse-button-bollinger', 'children'),
     Output('collapse-bollinger', 'is_open'),
     Input('collapse-button-bollinger', 'n_clicks'),
@@ -1934,6 +2173,22 @@ def toggle_collapse_ma_ribbon(n, is_open):
     Input('drawdowns-add-title-dropdown', 'value'),
     Input('add-drawdowns-button', 'n_clicks'),    
 
+    # price overlay options
+    Input('price-overlays-deck-dropdown', 'value'),
+    Input('price-overlays-adj-price-list', 'value'),    
+    Input('price-overlays-price-list', 'value'),
+    # Input('price-overlays-adj-close-checkbox', 'value'),
+    # Input('price-overlays-adj-open-checkbox', 'value'),
+    # Input('price-overlays-adj-high-checkbox', 'value'),
+    # Input('price-overlays-adj-low-checkbox', 'value'),
+    # Input('price-overlays-close-checkbox', 'value'),
+    # Input('price-overlays-open-checkbox', 'value'),
+    # Input('price-overlays-high-checkbox', 'value'),
+    # Input('price-overlays-low-checkbox', 'value'),
+    Input('price-overlays-add-yaxis-title-dropdown', 'value'),
+    Input('price-overlays-color-theme-dropdown', 'value'),
+    Input('add-price-overlays-button', 'n_clicks'),
+
     # bollinger options
     Input('bollinger-deck-dropdown', 'value'),
     Input('bollinger-adjusted-dropdown', 'value'),
@@ -2021,6 +2276,22 @@ def update_plot(
         drawdown_add_price,
         drawdown_add_title,
         add_drawdowns,
+
+        # price overlays
+        price_overlay_deck_name,
+        price_overlay_adj_price_list,
+        price_overlay_price_list,
+        # price_overlay_show_adj_close,
+        # price_overlay_show_adj_open,
+        # price_overlay_show_adj_high,
+        # price_overlay_show_adj_low,
+        # price_overlay_show_close,
+        # price_overlay_show_open,
+        # price_overlay_show_high,
+        # price_overlay_show_low,
+        price_overlay_add_yaxis_title,
+        price_overlay_color_theme,
+        add_price_overlays,
 
         # bollinger options
         bollinger_deck_name,

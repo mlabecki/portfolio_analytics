@@ -29,14 +29,14 @@ button, input, select, textarea {
 
 .Select-input, .Select-control {
     height: 30px !important;
-    vertical-align: middle;
+    vertical-align: middle !important;
     display: flex;
     justify-content: flex-end;
     align-items: center;
 }
 .Select-value, .Select-value-label, .Select--single {
     height: 30px !important;
-    vertical-align: middle;
+    vertical-align: middle !important;
     display: flex;
     align-items: center;
 }
@@ -58,9 +58,13 @@ button, input, select, textarea {
     font-size: 14px
 }
 
+#add-hist-price-button:hover,
+#add-price-overlays-button:hover,
+#add-volume-button:hover,
 #add-drawdowns-button:hover,
 #add-bollinger-button:hover,
-#add-ma-env-button:hover
+#add-ma-env-button:hover,
+#add-ma-ribbon-button:hover
 {
     border-color: rgb(152, 242, 178) !important;
     background-color: rgb(152, 242, 178) !important;

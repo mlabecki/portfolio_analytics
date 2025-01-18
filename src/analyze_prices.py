@@ -3929,8 +3929,13 @@ class AnalyzePrices():
             A dictionary containing the underlying figure data
         price_list: 
             list of dictionaries with keys
-             - 'name': 'Adjusted Close', 'Close', 'Open', 'High', 'Low', 'Average True Rate', etc.
-             - 'show': True / False - include in plot or not
+             - 'name': 
+               'Adjusted Close', 'Adjusted Open', 'Adjusted High', 'Adjusted Low',
+               'Close', 'Open', 'High', 'Low'
+             - 'data':
+                adj_close_tk, adj_open_tk, etc. (pd.Series)
+             - 'show': 
+                True / False - include in plot or not
         """
 
         theme = theme.lower()
