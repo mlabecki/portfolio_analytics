@@ -3947,7 +3947,7 @@ class AnalyzePrices():
         # Count lines that will be overlaid ('show' is True)
 
         selected_prices = [x for x in price_list if x['show']]
-        n_price = len(selected_prices)
+        n_price = min(len(selected_prices), 6)
 
         style = theme_style[theme]
         overlay_color_idx = style['overlay_color_selection'][color_theme][n_price]
@@ -3964,7 +3964,8 @@ class AnalyzePrices():
             if price_name not in current_names:
 
                 price_data = price['data']
-                color_idx = overlay_color_idx[i]
+                # Modulo 6 will ensure that the index goes back to 0 once it has exceeded 5
+                color_idx = overlay_color_idx[np.mod(i, 6)]
 
                 price_overlays.append({
                     'data': price_data,

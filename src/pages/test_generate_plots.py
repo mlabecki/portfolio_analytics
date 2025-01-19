@@ -1148,8 +1148,9 @@ layout = html.Div([
                                     {'label': 'Adjusted Close', 'value': 'Adjusted Close'},
                                     {'label': 'Adjusted Open', 'value': 'Adjusted Open'},
                                     {'label': 'Adjusted High', 'value': 'Adjusted High'},
-                                    {'label': 'Adjusted Low', 'value': 'Austeddj Low'}
+                                    {'label': 'Adjusted Low', 'value': 'Adjusted Low'}
                                 ],
+                                value = [],
                                 label_style = {
                                     'width': '106px',
                                     'font-family': 'Helvetica',
@@ -1180,6 +1181,7 @@ layout = html.Div([
                                     {'label': 'High', 'value': 'High'},
                                     {'label': 'Low', 'value': 'Low'}
                                 ],
+                                value = [],
                                 label_style = {
                                     'width': '33px',
                                     'font-family': 'Helvetica',
@@ -1971,17 +1973,19 @@ def toggle_collapse_template(n, is_open):
     Output('bollinger-deck-dropdown', 'options'),
     Output('ma-env-deck-dropdown', 'options'),
     Output('ma-ribbon-deck-dropdown', 'options'),
+    Output('price-overlays-deck-dropdown', 'options'),
 
     Output('hist-price-deck-dropdown', 'value'),
     Output('volume-deck-dropdown', 'value'),
     Output('bollinger-deck-dropdown', 'value'),
     Output('ma-env-deck-dropdown', 'value'),
     Output('ma-ribbon-deck-dropdown', 'value'),
+    Output('price-overlays-deck-dropdown', 'value'),
 
     Input('deck-type-dropdown', 'value')
 )
-def disable_options(deck_type):
-    n = 5  # number of deck-dropdown outputs
+def target_deck_options(deck_type):
+    n = 6  # number of deck-dropdown outputs
     if deck_type == 'Single':
         # return True, [1]
         return tuple([True]) + tuple([k for k in [['Upper']] * n]) + tuple(['Upper'] * n)
@@ -2379,7 +2383,7 @@ def update_plot(
 
         ### Add historical price
         if add_hist_price:
-
+            
             hist_price_color_theme = hist_price_color_theme.lower() if hist_price_color_theme is not None else 'base'
             df_hist_price = downloaded_data[tk]['ohlc_adj'] if hist_price_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
             hist_price = df_hist_price[hist_price_type]
@@ -2435,7 +2439,7 @@ def update_plot(
             selected_drawdown_data = analyze_prices.select_tk_drawdowns(drawdown_data_tk, n_top)
 
             show_trough_to_recovery = True if 'Recovery' in drawdown_display else False
-            drawdown_top_by = 'length' if drawdown_top_by == 'Total Length' else 'depth'
+            dd_top_by = 'length' if drawdown_top_by == 'Total Length' else 'depth'
 
             fig_data = analyze_prices.add_drawdowns(
                 fig_data,
@@ -2446,7 +2450,7 @@ def update_plot(
                 target_deck = 1,
                 add_price = not dd_add_price_disabled,
                 price_type = drawdown_price_type.lower(),
-                top_by = drawdown_top_by,
+                top_by = dd_top_by,
                 show_trough_to_recovery = show_trough_to_recovery,
                 add_title = dd_add_title,
                 theme = theme,
@@ -2485,7 +2489,7 @@ def update_plot(
                 ma_env_offset,
                 ma_env_nbands
             )
-            fig_data = analyze_prices.add_ma_envelopes(
+            big_data = analyze_prices.add_ma_envelopes(
                 fig_data,
                 ma_env_list,
                 target_deck = deck_number(deck_type, ma_env_deck_name),
@@ -2512,6 +2516,35 @@ def update_plot(
                 theme = theme,
                 color_theme = ma_ribbon_color_theme
             )
+
+        ### Add price overlays
+        if add_price_overlays:
+            price_list = []
+            for name in ['Adjusted Close', 'Adjusted Open', 'Adjusted High', 'Adjusted Low']:
+                if name in price_overlay_adj_price_list:
+                    price_list.append({
+                        'name': name,
+                        'data': downloaded_data[tk]['ohlc_adj'][name.replace('Adjusted ', '')],
+                        'show': True
+                    })
+            for name in ['Close', 'Open', 'High', 'Low']:
+                if name in price_overlay_price_list:
+                    price_list.append({
+                        'name': name,
+                        'data': downloaded_data[tk]['ohlc'][name],
+                        'show': True
+                    })
+            if len(price_list) > 0:
+                fig_data = analyze_prices.add_price_overlays(
+                    fig_data,
+                    price_list,
+                    target_deck = deck_number(deck_type, price_overlay_deck_name),
+                    add_yaxis_title = True if price_overlay_add_yaxis_title == 'Yes' else False,
+                    yaxis_title = 'Price',
+                    theme = theme,
+                    color_theme = price_overlay_color_theme
+                )
+
 
         ### Update graph
         fig = fig_data['fig']

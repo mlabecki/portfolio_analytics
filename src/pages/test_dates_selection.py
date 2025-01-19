@@ -96,7 +96,7 @@ def initialize_selected_ticker_table():
                 children = [dash_table_selected_tickers]
             ),
             html.Div(
-                '* Length of the range of dates in business days excluding weekends and holidays (except for cryptocurrencies)',
+                '* Length of the range of dates in trading days, which typically exclude weekends and holidays - except for cryptocurrencies.',
                 id = 'dates-table-selected-tickers-footnote',
                 style = table_selected_tickers_footnote
             )
