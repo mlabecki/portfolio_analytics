@@ -2010,28 +2010,6 @@ class AnalyzePrices():
             title_text = 'Total Length'
         else:
             title_text = '% Depth'
-            
-        # if show_trough_to_recovery | (top_by == 'length'):
-        if show_trough_to_recovery:
-            zip_drawdown_parameters = zip(
-                top_drawdowns_str.index,
-                top_drawdowns_str['Peak Date'],
-                top_drawdowns_str['Recovery Date'],
-                top_drawdowns['% Depth'],
-                top_drawdowns['Peak To Trough'],
-                top_drawdowns['Total Length']
-            )
-            title_drawdowns = f'{tk} {n_top_drawdowns} Top Drawdowns by {title_text} - Peak To Recovery'    
-        else:
-            zip_drawdown_parameters = zip(
-                top_drawdowns_str.index,
-                top_drawdowns_str['Peak Date'],
-                top_drawdowns_str['Trough Date'],
-                top_drawdowns['% Depth'],
-                top_drawdowns['Peak To Trough'],
-                top_drawdowns['Total Length']
-            )
-            title_drawdowns = f'{tk} {n_top_drawdowns} Top Drawdowns by {title_text} - Peak To Trough'
 
         if add_price:
             # Add the price line here to make sure it's first in the legend
@@ -2049,46 +2027,77 @@ class AnalyzePrices():
                 ),
                 row = target_deck, col = 1
             )
+
+        ############################
+
+        str_peak_to = 'Recovery' if show_trough_to_recovery else 'Trough'
+        title_drawdowns = f'{tk} {n_top_drawdowns} Top Drawdowns by {title_text} - Peak To {str_peak_to}'
         
-        for idx, x1, x2, depth, peak_to_trough, total_length in zip_drawdown_parameters:
-
-            # length = total_length if show_trough_to_recovery else peak_to_trough
-            length = total_length
-
-            if top_by == 'depth':
-                alpha_deepest = top_cmap[depth]
-                name = f'{depth:.1f}%, {peak_to_trough}d / {total_length}d'
+        if n_top_drawdowns > 0:
+            
+            # if show_trough_to_recovery | (top_by == 'length'):
+            if show_trough_to_recovery:
+                zip_drawdown_parameters = zip(
+                    top_drawdowns_str.index,
+                    top_drawdowns_str['Peak Date'],
+                    top_drawdowns_str['Recovery Date'],
+                    top_drawdowns['% Depth'],
+                    top_drawdowns['Peak To Trough'],
+                    top_drawdowns['Total Length']
+                )
             else:
-                alpha_deepest = top_cmap[length]
-                name = f'{peak_to_trough}d / {total_length}d, {depth:.1f}%'
+                zip_drawdown_parameters = zip(
+                    top_drawdowns_str.index,
+                    top_drawdowns_str['Peak Date'],
+                    top_drawdowns_str['Trough Date'],
+                    top_drawdowns['% Depth'],
+                    top_drawdowns['Peak To Trough'],
+                    top_drawdowns['Total Length']
+                )
 
-            fillcolor = top_by_color.replace('1)', f'{alpha_deepest})')
+            for idx, x1, x2, depth, peak_to_trough, total_length in zip_drawdown_parameters:
 
-            fig.add_trace(
-                go.Scatter(
-                    x = [x1, x2, x2, x1, x1],
-                    y = [0, 0, infinity, infinity, 0],
-                    # y = [0, 0, y_upper_limit, y_upper_limit, 0],
-                    mode = 'lines',
-                    line_width = 2,
-                    line_color = drawdown_border_color,
-                    fill = 'toself',
-                    fillcolor = fillcolor,
-                    name = name,
-                    legendgroup = f'{target_deck}',
-                    legendgrouptitle = legendgrouptitle
-                ),
-                row = target_deck, col = 1
-            )
+                # length = total_length if show_trough_to_recovery else peak_to_trough
+                length = total_length
+
+                if top_by == 'depth':
+                    alpha_deepest = top_cmap[depth]
+                    name = f'{depth:.1f}%, {peak_to_trough}d / {total_length}d'
+                else:
+                    alpha_deepest = top_cmap[length]
+                    name = f'{peak_to_trough}d / {total_length}d, {depth:.1f}%'
+
+                fillcolor = top_by_color.replace('1)', f'{alpha_deepest})')
+
+                fig.add_trace(
+                    go.Scatter(
+                        x = [x1, x2, x2, x1, x1],
+                        y = [0, 0, infinity, infinity, 0],
+                        # y = [0, 0, y_upper_limit, y_upper_limit, 0],
+                        mode = 'lines',
+                        line_width = 2,
+                        line_color = drawdown_border_color,
+                        fill = 'toself',
+                        fillcolor = fillcolor,
+                        name = name,
+                        legendgroup = f'{target_deck}',
+                        legendgrouptitle = legendgrouptitle
+                    ),
+                    row = target_deck, col = 1
+                )
 
         if add_price:
             # Add the price line here to make sure it's on top of other layers
+            # opacity = 0.6
+            # fillcolor = linecolor.replace(', 1)', f', {opacity})')
             fig.add_trace(
                 go.Scatter(
                     x = df_tk.index.astype(str),
                     y = df_tk,
                     line_color = linecolor,
                     line_width = 2,
+                    # fill = 'tozeroy',
+                    # fillcolor = fillcolor,
                     showlegend = False,
                     name = legend_name,
                     legendgroup = f'{target_deck}',

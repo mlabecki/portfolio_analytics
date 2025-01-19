@@ -245,24 +245,27 @@ def map_values(k_list, v_min, v_max, ascending=False):
     ascending:  a flag indicating whether the order of elements in k_list is ascending or descending
     """
     dict_map = {}
-    k_list = sorted(k_list)
-    if ascending:
-        k_list.reverse()
-    k_first = k_list[0]
-    k_last = k_list[len(k_list) - 1]
-    dict_map.update({k_first: v_min, k_last: v_max})
 
-    k_range = k_last - k_first
+    if len(k_list) > 0:
+        
+        k_list = sorted(k_list)
+        if ascending:
+            k_list.reverse()
+        k_first = k_list[0]
+        k_last = k_list[len(k_list) - 1]
+        dict_map.update({k_first: v_min, k_last: v_max})
 
-    if k_range != 0:
-        v_range = v_max - v_min
-        kv_scale = v_range / k_range
-        for k in k_list[1: -1]:
-            k_delta = k - k_first
-            v = v_min + k_delta * kv_scale
-            dict_map.update({k: v})
-    else:
-        dict_map.update({k_last: v_max})
+        k_range = k_last - k_first
+
+        if k_range != 0:
+            v_range = v_max - v_min
+            kv_scale = v_range / k_range
+            for k in k_list[1: -1]:
+                k_delta = k - k_first
+                v = v_min + k_delta * kv_scale
+                dict_map.update({k: v})
+        else:
+            dict_map.update({k_last: v_max})
 
     return dict_map
 
