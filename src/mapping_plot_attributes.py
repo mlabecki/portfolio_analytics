@@ -51,6 +51,11 @@ n_xticks_map = {
 
 ##### LEGEND MAPS #####
 
+doubledeck_legendtitle = {
+    1: 'UPPER DECK',
+    2: 'LOWER DECK'
+} 
+
 tripledeck_legendtitle = {
     1: 'UPPER DECK',
     2: 'MIDDLE DECK',

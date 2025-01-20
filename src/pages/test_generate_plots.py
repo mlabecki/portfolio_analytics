@@ -1982,19 +1982,66 @@ def toggle_collapse_template(n, is_open):
     Output('ma-ribbon-deck-dropdown', 'value'),
     Output('price-overlays-deck-dropdown', 'value'),
 
-    Input('deck-type-dropdown', 'value')
+    Input('deck-type-dropdown', 'n_clicks'),
+    Input('deck-type-dropdown', 'value'),
+
+    Input('hist-price-deck-dropdown', 'value'),
+    Input('volume-deck-dropdown', 'value'),
+    Input('bollinger-deck-dropdown', 'value'),
+    Input('ma-env-deck-dropdown', 'value'),
+    Input('ma-ribbon-deck-dropdown', 'value'),
+    Input('price-overlays-deck-dropdown', 'value'),
 )
-def target_deck_options(deck_type):
+def target_deck_options(
+    deck_changed,
+    deck_type,
+    hist_price_deck,
+    volume_deck,
+    bollinger_deck,
+    ma_env_deck,
+    ma_ribbon_deck,
+    price_overlays_deck
+):
     n = 6  # number of deck-dropdown outputs
+
+    deck_changed = False if deck_changed is None else deck_changed
+
     if deck_type == 'Single':
-        # return True, [1]
         return tuple([True]) + tuple([k for k in [['Upper']] * n]) + tuple(['Upper'] * n)
+
     elif deck_type == 'Double':
-        # return False, [1, 2]
-        return tuple([False]) + tuple([k for k in [['Upper', 'Lower']] * n]) + tuple(['Upper'] * n)
+        
+        hist_price_deck_value =     ['Lower'] if (hist_price_deck in ['Middle', 'Lower']) else ['Upper']
+        volume_deck_value =         ['Lower'] if (volume_deck in ['Middle', 'Lower']) else ['Upper']
+        bollinger_deck_value =      ['Lower'] if (bollinger_deck in ['Middle', 'Lower']) else ['Upper']
+        ma_env_deck_value =         ['Lower'] if (ma_env_deck in ['Middle', 'Lower']) else ['Upper']
+        ma_ribbon_deck_value =      ['Lower'] if (ma_ribbon_deck in ['Middle', 'Lower']) else ['Upper']
+        price_overlays_deck_value = ['Lower'] if (price_overlays_deck in ['Middle', 'Lower']) else ['Upper']
+        all_deck_values = \
+            hist_price_deck_value + \
+            volume_deck_value + \
+            bollinger_deck_value + \
+            ma_env_deck_value + \
+            ma_ribbon_deck_value + \
+            price_overlays_deck_value
+        return tuple([False]) + tuple([k for k in [['Upper', 'Lower']] * n]) + tuple(all_deck_values)
+
     else:
-        # return False, [1, 2, 3]
-        return tuple([False]) + tuple([k for k in [['Upper', 'Middle', 'Lower']] * n]) + tuple(['Upper'] * n)
+
+        hist_price_deck_value =     ['Middle'] if (hist_price_deck == 'Lower') & deck_changed else [hist_price_deck]
+        volume_deck_value =         ['Middle'] if (volume_deck == 'Lower') & deck_changed else [volume_deck]
+        bollinger_deck_value =      ['Middle'] if (bollinger_deck == 'Lower') & deck_changed else [bollinger_deck]
+        ma_env_deck_value =         ['Middle'] if (ma_env_deck == 'Lower') & deck_changed else [ma_env_deck]
+        ma_ribbon_deck_value =      ['Middle'] if (ma_ribbon_deck == 'Lower') & deck_changed else [ma_ribbon_deck]
+        price_overlays_deck_value = ['Middle'] if (price_overlays_deck == 'Lower') & deck_changed else [price_overlays_deck]
+        all_deck_values = \
+            hist_price_deck_value + \
+            volume_deck_value + \
+            bollinger_deck_value + \
+            ma_env_deck_value + \
+            ma_ribbon_deck_value + \
+            price_overlays_deck_value
+        return tuple([False]) + tuple([k for k in [['Upper', 'Middle', 'Lower']] * n]) + tuple(all_deck_values)
 
 
 @callback(
@@ -2118,6 +2165,7 @@ def toggle_collapse_ma_ribbon(n, is_open):
     # Output('template-controls', 'style'),
 
     Output('hist-price-secondary-y-dropdown', 'disabled'),
+    Output('volume-secondary-y-dropdown', 'disabled'),
 
     Output('drawdowns-number-input', 'max'),
     Output('drawdowns-number-input', 'value'),
@@ -2356,7 +2404,8 @@ def update_plot(
 
     # These are in the list of outputs, so they must stay outside of the if statements
     
-    hist_price_sec_y_disabled = not secondary_y        
+    hist_price_sec_y_disabled = not secondary_y
+    volume_sec_y_disabled = not secondary_y
 
     dd_add_price_disabled = True if drawdown_add_price == 'No' else False
     n_drawdowns = 5 if n_top is None else n_top
@@ -2607,6 +2656,7 @@ def update_plot(
         # template_div_style,
 
         hist_price_sec_y_disabled,
+        volume_sec_y_disabled,
 
         n_drawdowns,
         dd_number_value,

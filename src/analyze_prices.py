@@ -540,6 +540,11 @@ class AnalyzePrices():
             legend_groupgap_unadjusted = intercept_double + slope_upper_double * height_upper + slope_lower_double * height_lower
             legend_groupgap = legend_groupgap_unadjusted - legend_item_height * n_traces_upper
 
+        if (deck_type == 'double') | (n_traces_upper == 0):
+
+            # legend_groupgap = intercept_double + slope_upper_double * height_upper + slope_lower_double * height_lower
+            legend_groupgap = intercept_double + slope_upper_double * height_upper + slope_lower_double * height_lower
+
         elif deck_type == 'triple':
 
             if n_traces_middle == 0:
@@ -555,6 +560,10 @@ class AnalyzePrices():
                 legend_groupgap = (legend_groupgap_unadjusted - n_traces_total * legend_item_height - 3 * legend_title_height) / 2
     
         legend_tracegroupgap = max(legend_groupgap, 0)
+
+        # print(f'legend_tracegroupgap: {legend_tracegroupgap}')
+
+        legend_tracegroupgap = 32
 
         return legend_tracegroupgap
 
@@ -690,8 +699,8 @@ class AnalyzePrices():
                 )
 
             legendgrouptitle = {}
-            if deck_type == 'triple':
-                legendtitle = tripledeck_legendtitle[target_deck]
+            if deck_type in ['double', 'triple']:
+                legendtitle = doubledeck_legendtitle[target_deck] if deck_type == 'double' else tripledeck_legendtitle[target_deck]
                 legendgrouptitle = dict(
                     text = legendtitle,
                     font_size = 16,
@@ -885,14 +894,13 @@ class AnalyzePrices():
         y_upper_limit = 99.99 if target_deck > 1 else 100
 
         legendgrouptitle = {}
-        if deck_type == 'triple':
-            legendtitle = tripledeck_legendtitle[target_deck]
+        if deck_type in ['double', 'triple']:
+            legendtitle = doubledeck_legendtitle[target_deck] if deck_type == 'double' else tripledeck_legendtitle[target_deck]
             legendgrouptitle = dict(
                 text = legendtitle,
                 font_size = 16,
                 font_weight = 'normal'
             )
-
         fig_stochastic.add_trace(
             go.Scatter(
                 x = k_line.index,
@@ -1184,8 +1192,8 @@ class AnalyzePrices():
             y_macd_max *= 0.999
 
         legendgrouptitle = {}
-        if deck_type == 'triple':
-            legendtitle = tripledeck_legendtitle[target_deck]
+        if deck_type in ['double', 'triple']:
+            legendtitle = doubledeck_legendtitle[target_deck] if deck_type == 'double' else tripledeck_legendtitle[target_deck]
             legendgrouptitle = dict(
                 text = legendtitle,
                 font_size = 16,
@@ -1989,8 +1997,8 @@ class AnalyzePrices():
         #########
 
         legendgrouptitle = {}
-        if deck_type == 'triple':
-            legendtitle = tripledeck_legendtitle[target_deck]
+        if deck_type in ['double', 'triple']:
+            legendtitle = doubledeck_legendtitle[target_deck] if deck_type == 'double' else tripledeck_legendtitle[target_deck]
             legendgrouptitle = dict(
                 text = legendtitle,
                 font_size = 16,
@@ -2249,8 +2257,8 @@ class AnalyzePrices():
         y_upper_limit = 99.99 if target_deck > 1 else 100
 
         legendgrouptitle = {}
-        if deck_type == 'triple':
-            legendtitle = tripledeck_legendtitle[target_deck]
+        if deck_type in ['double', 'triple']:
+            legendtitle = doubledeck_legendtitle[target_deck] if deck_type == 'double' else tripledeck_legendtitle[target_deck]
             legendgrouptitle = dict(
                 text = legendtitle,
                 font_size = 16,
@@ -2633,8 +2641,8 @@ class AnalyzePrices():
             color_idx = -1
 
         legendgrouptitle = {}
-        if deck_type == 'triple':
-            legendtitle = tripledeck_legendtitle[target_deck]
+        if deck_type in ['double', 'triple']:
+            legendtitle = doubledeck_legendtitle[target_deck] if deck_type == 'double' else tripledeck_legendtitle[target_deck]
             legendgrouptitle = dict(
                 text = legendtitle,
                 font_size = 16,
@@ -3006,8 +3014,8 @@ class AnalyzePrices():
                 )
 
             legendgrouptitle = {}
-            if deck_type == 'triple':
-                legendtitle = tripledeck_legendtitle[target_deck]
+            if deck_type in ['double', 'triple']:
+                legendtitle = doubledeck_legendtitle[target_deck] if deck_type == 'double' else tripledeck_legendtitle[target_deck]
                 legendgrouptitle = dict(
                     text = legendtitle,
                     font_size = 16,
@@ -3309,8 +3317,8 @@ class AnalyzePrices():
                 )
 
             legendgrouptitle = {}
-            if deck_type == 'triple':
-                legendtitle = tripledeck_legendtitle[target_deck]
+            if deck_type in ['double', 'triple']:
+                legendtitle = doubledeck_legendtitle[target_deck] if deck_type == 'double' else tripledeck_legendtitle[target_deck]
                 legendgrouptitle = dict(
                     text = legendtitle,
                     font_size = 16,
@@ -3585,8 +3593,8 @@ class AnalyzePrices():
             )
 
         legendgrouptitle = {}
-        if deck_type == 'triple':
-            legendtitle = tripledeck_legendtitle[target_deck]
+        if deck_type in ['double', 'triple']:
+            legendtitle = doubledeck_legendtitle[target_deck] if deck_type == 'double' else tripledeck_legendtitle[target_deck]
             legendgrouptitle = dict(
                 text = legendtitle,
                 font_size = 16,
@@ -3754,8 +3762,8 @@ class AnalyzePrices():
         df['Date'] = df.index.astype(str)
 
         legendgrouptitle = {}
-        if deck_type == 'triple':
-            legendtitle = tripledeck_legendtitle[target_deck]
+        if deck_type in ['double', 'triple']:
+            legendtitle = doubledeck_legendtitle[target_deck] if deck_type == 'double' else tripledeck_legendtitle[target_deck]
             legendgrouptitle = dict(
                 text = legendtitle,
                 font_size = 16,
@@ -4102,8 +4110,8 @@ class AnalyzePrices():
         signal_window = diff_data['signal_window']
 
         legendgrouptitle = {}
-        if deck_type == 'triple':
-            legendtitle = tripledeck_legendtitle[target_deck]
+        if deck_type in ['double', 'triple']:
+            legendtitle = doubledeck_legendtitle[target_deck] if deck_type == 'double' else tripledeck_legendtitle[target_deck]
             legendgrouptitle = dict(
                 text = legendtitle,
                 font_size = 16,
@@ -4373,8 +4381,8 @@ class AnalyzePrices():
         df_price = stochastic_data['price']
 
         legendgrouptitle = {}
-        if deck_type == 'triple':
-            legendtitle = tripledeck_legendtitle[target_deck]
+        if deck_type in ['double', 'triple']:
+            legendtitle = doubledeck_legendtitle[target_deck] if deck_type == 'double' else tripledeck_legendtitle[target_deck]
             legendgrouptitle = dict(
                 text = legendtitle,
                 font_size = 16,
