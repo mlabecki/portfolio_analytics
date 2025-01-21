@@ -322,7 +322,7 @@ class AnalyzePrices():
             })
 
         n_ticks_max = round(plot_width / n_xticks_map['width_slope']) if n_ticks_max is None else n_ticks_max
-        n_dates_per_xtick = math.floor(len(date_index) / (n_ticks_max - 1))
+        n_dates_per_xtick = max(math.floor(len(date_index) / (n_ticks_max - 1)), 1)
         x_tickvals = [z for z in reversed([x for x in [y for y in reversed(date_index)][::n_dates_per_xtick]])]
 
         df_dummy = pd.Series(index = date_index)
@@ -421,6 +421,7 @@ class AnalyzePrices():
                 go.Scatter(
                     x = df_dummy.index.astype(str),
                     y = df_dummy,
+                    mode = 'lines',  # Plotly adds narkers when the number of x points is low enough
                     line_width = 0,         
                     showlegend = False,     
                     legendgroup = 'dummy',
@@ -563,7 +564,7 @@ class AnalyzePrices():
 
         # print(f'legend_tracegroupgap: {legend_tracegroupgap}')
 
-        legend_tracegroupgap = 32
+        legend_tracegroupgap = 24
 
         return legend_tracegroupgap
 
@@ -711,8 +712,10 @@ class AnalyzePrices():
                 go.Scatter(
                     x = atr_line.index.astype(str),
                     y = atr_line,
+                    mode = 'lines',
                     line_color = linecolor,
                     name = legend_name,
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle
                 ),
@@ -905,8 +908,10 @@ class AnalyzePrices():
             go.Scatter(
                 x = k_line.index,
                 y = k_line,
+                mode = 'lines',
                 line_color = style['kline_linecolor'],
                 line_width = 2,
+                legendrank = target_deck * 1000,
                 legendgroup = f'{target_deck}',
                 legendgrouptitle = legendgrouptitle,
                 name = f'{stochastic_type} {stochastic_label} %K'
@@ -917,8 +922,10 @@ class AnalyzePrices():
             go.Scatter(
                 x = d_line.index,
                 y = d_line,
+                mode = 'lines',
                 line_color = style['dline_linecolor'],
                 line_width = 2,
+                legendrank = target_deck * 1000,
                 legendgroup = f'{target_deck}',
                 legendgrouptitle = legendgrouptitle,
                 name = f'{stochastic_type} {stochastic_label} %D'
@@ -940,6 +947,7 @@ class AnalyzePrices():
                 go.Scatter(
                     x = stochastic_hlines.index,
                     y = stochastic_hlines['y_max'],
+                    mode = 'lines',
                     line_color = 'black',
                     line_width = 0,
                     hoverinfo = 'skip',
@@ -951,10 +959,12 @@ class AnalyzePrices():
                 go.Scatter(
                     x = stochastic_hlines.index,
                     y = stochastic_hlines['overbought'],
+                    mode = 'lines',
                     line_color = style['overbought_linecolor'],
                     line_width = 2,
                     fill = 'tonexty',  # fill to previous scatter trace
                     fillcolor = style['overbought_fillcolor'],
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
                     name = f'Overbought > {overbought_threshold}%'
@@ -966,10 +976,12 @@ class AnalyzePrices():
                 go.Scatter(
                     x = stochastic_hlines.index,
                     y = stochastic_hlines['oversold'],
+                    mode = 'lines',
                     line_color = style['oversold_linecolor'],
                     line_width = 2,
                     fill = 'tozeroy',
                     fillcolor = style['oversold_fillcolor'],
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
                     name = f'Oversold < {oversold_threshold}%'
@@ -982,6 +994,7 @@ class AnalyzePrices():
                 go.Scatter(
                     x = k_line.index,
                     y = df_price,
+                    mode = 'lines',
                     line_color = style['basecolor'],
                     showgrid = False,
                     name = 'Close',
@@ -1219,6 +1232,7 @@ class AnalyzePrices():
                         marker_color = style['green_color'],
                         width = 1,
                         name = macd_legend_positive,
+                        legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
                         showlegend = True
@@ -1232,6 +1246,7 @@ class AnalyzePrices():
                         marker_color = style['red_color'],
                         width = 1,
                         name = macd_legend_negative,
+                        legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
                         showlegend = True
@@ -1265,11 +1280,13 @@ class AnalyzePrices():
                     go.Scatter(
                         x = macd_positive.index.astype(str),
                         y = macd_positive,
+                        mode = 'lines',
                         line_color = style['diff_green_linecolor'],
                         line_width = 2,
                         fill = 'tozeroy',
                         fillcolor = style['diff_green_fillcolor'],
                         name = macd_legend_positive,
+                        legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
                         showlegend = True
@@ -1280,11 +1297,13 @@ class AnalyzePrices():
                     go.Scatter(
                         x = macd_negative.index.astype(str),
                         y = macd_negative,
+                        mode = 'lines',
                         line_color = style['diff_red_linecolor'],
                         line_width = 2,
                         fill = 'tozeroy',
                         fillcolor = style['diff_red_fillcolor'],
                         name = macd_legend_negative,
+                        legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
                         showlegend = True
@@ -1310,6 +1329,7 @@ class AnalyzePrices():
                         marker_color = style['green_color'],
                         width = 1,
                         name = macd_legend_positive,
+                        legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
                         showlegend = True
@@ -1323,6 +1343,7 @@ class AnalyzePrices():
                         marker_color = style['red_color'],
                         width = 1,
                         name = macd_legend_negative,
+                        legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
                         showlegend = True
@@ -1356,11 +1377,13 @@ class AnalyzePrices():
                     go.Scatter(
                         x = macd_histogram_positive.index.astype(str),
                         y = macd_histogram_positive,
+                        mode = 'lines',
                         line_color = style['diff_green_linecolor'],
                         line_width = 2,
                         fill = 'tozeroy',
                         fillcolor = style['diff_green_fillcolor'],
                         name = macd_legend_positive,
+                        legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
                         showlegend = True
@@ -1371,11 +1394,13 @@ class AnalyzePrices():
                     go.Scatter(
                         x = macd_histogram_negative.index.astype(str),
                         y = macd_histogram_negative,
+                        mode = 'lines',
                         line_color = style['diff_red_linecolor'],
                         line_width = 2,
                         fill = 'tozeroy',
                         fillcolor = style['diff_red_fillcolor'],
                         name = macd_legend_negative,
+                        legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
                         showlegend = True
@@ -1391,8 +1416,10 @@ class AnalyzePrices():
                     go.Scatter(
                         x = macd.index.astype(str),
                         y = macd,
+                        mode = 'lines',
                         line = dict(color = style['basecolor']),
                         name = yaxis_title,
+                        legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
                         showlegend = True
@@ -1404,8 +1431,10 @@ class AnalyzePrices():
                 go.Scatter(
                     x = macd_signal.index.astype(str),
                     y = macd_signal,
+                    mode = 'lines',
                     line = dict(color = style['signal_color']),
                     name = f'EMA {macd_signal_window} Signal',
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
                     showlegend = True
@@ -1418,6 +1447,7 @@ class AnalyzePrices():
                 go.Scatter(
                     x = df_price.index,
                     y = df_price,
+                    mode = 'lines',
                     line_color = style['basecolor'],
                     showgrid = False,
                     name = 'Close',
@@ -2025,11 +2055,13 @@ class AnalyzePrices():
                 go.Scatter(
                     x = df_tk.index.astype(str),
                     y = df_tk,
+                    mode = 'lines',
                     line_color = linecolor,
                     line_width = 2,
                     showlegend = True,
                     hoverinfo = 'skip',
                     name = legend_name,
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle                    
                 ),
@@ -2088,6 +2120,8 @@ class AnalyzePrices():
                         fill = 'toself',
                         fillcolor = fillcolor,
                         name = name,
+                        zorder = -10,
+                        legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle
                     ),
@@ -2102,12 +2136,15 @@ class AnalyzePrices():
                 go.Scatter(
                     x = df_tk.index.astype(str),
                     y = df_tk,
+                    mode = 'lines',
                     line_color = linecolor,
                     line_width = 2,
                     # fill = 'tozeroy',
                     # fillcolor = fillcolor,
                     showlegend = False,
                     name = legend_name,
+                    zorder = 5,
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle
                 ),
@@ -2269,8 +2306,10 @@ class AnalyzePrices():
             go.Scatter(
                 x = rsi.index,
                 y = rsi,
+                mode = 'lines',
                 line_color = style['rsi_linecolor'],
                 line_width = 2,
+                legendrank = target_deck * 1000,
                 legendgroup = f'{target_deck}',
                 legendgrouptitle = legendgrouptitle,            
                 name = f'RSI {rsi_type} (%)'
@@ -2291,6 +2330,7 @@ class AnalyzePrices():
                 go.Scatter(
                     x = rsi_hlines.index,
                     y = rsi_hlines['y_max'],
+                    mode = 'lines',
                     line_color = 'black',
                     line_width = 0,
                     hoverinfo = 'skip',            
@@ -2302,10 +2342,12 @@ class AnalyzePrices():
                 go.Scatter(
                     x = rsi_hlines.index,
                     y = rsi_hlines['overbought'],
+                    mode = 'lines',
                     line_color = style['overbought_linecolor'],
                     line_width = 2,
                     fill = 'tonexty',  # fill to previous scatter trace
                     fillcolor = style['overbought_fillcolor'],
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
                     name = f'Overbought > {overbought_threshold}%'
@@ -2316,10 +2358,12 @@ class AnalyzePrices():
                 go.Scatter(
                     x = rsi_hlines.index,
                     y = rsi_hlines['oversold'],
+                    mode = 'lines',
                     line_color = style['oversold_linecolor'],
                     line_width = 2,
                     fill = 'tozeroy',
                     fillcolor = style['oversold_fillcolor'],
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
                     name = f'Oversold < {oversold_threshold}%'
@@ -2332,6 +2376,7 @@ class AnalyzePrices():
                 go.Scatter(
                     x = rsi.index,
                     y = df_price,
+                    mode = 'lines',
                     line_color = style['basecolor'],
                     showgrid = False,
                     name = 'Close',
@@ -2653,9 +2698,11 @@ class AnalyzePrices():
             go.Scatter(
                 x = df.index.astype(str),
                 y = df,
+                mode = 'lines',
                 line = dict(color = overlay_colors[color_idx]),
                 name = name,
                 showlegend = showlegend,
+                legendrank = target_deck * 1000,
                 legendgroup = f'{target_deck}',
                 legendgrouptitle = legendgrouptitle
             ),
@@ -3026,8 +3073,10 @@ class AnalyzePrices():
                 go.Scatter(
                     x = b_line.index.astype(str),
                     y = b_line,
+                    mode = 'lines',
                     line_color = linecolor,
                     name = legend_name,
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle
                 ),
@@ -3329,8 +3378,10 @@ class AnalyzePrices():
                 go.Scatter(
                     x = m_line.index.astype(str),
                     y = m_line,
+                    mode = 'lines',
                     line_color = linecolor,
                     name = legend_name,
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle
                 ),
@@ -3484,7 +3535,7 @@ class AnalyzePrices():
         if 'volume' in price_type:
             zorder = -1
         else:
-            zorder = 0
+            zorder = 10
 
         fig = fig_data['fig']
         fig_y_min = fig_data['y_min'][target_deck]
@@ -3605,8 +3656,8 @@ class AnalyzePrices():
                 row = target_deck, col = 1
             )
 
-        print(f'fig.layout.yaxis {fig.layout.yaxis}')
-        print(f'fig.layout.yaxis2 {fig.layout.yaxis2}')
+        # print(f'fig.layout.yaxis {fig.layout.yaxis}')
+        # print(f'fig.layout.yaxis2 {fig.layout.yaxis2}')
 
         legendgrouptitle = {}
         if deck_type in ['double', 'triple']:
@@ -3627,6 +3678,7 @@ class AnalyzePrices():
                     width = 1,
                     name = legend_name,
                     zorder = zorder,
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
                     showlegend = True
@@ -3640,18 +3692,22 @@ class AnalyzePrices():
                 go.Scatter(
                     x = df_tk.index.astype(str),
                     y = df_tk,
+                    mode = 'lines',
                     line_color = linecolor,
                     fill = fill,
                     fillcolor = fillcolor,
                     showlegend = True,
                     name = legend_name,
                     zorder = zorder,
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle
                 ),
                 row = target_deck, col = 1,
                 secondary_y = secondary_y
             )
+
+        # https://plotly.com/python/reference/layout/shapes/#layout-shapes-items-shape-legendrank
 
         # Update layout and axes
         if add_title:
@@ -3832,6 +3888,7 @@ class AnalyzePrices():
                         increasing = color_dict,
                         decreasing = color_dict,
                         showlegend = showlegend,
+                        legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle
                     ),
@@ -3909,6 +3966,7 @@ class AnalyzePrices():
                         increasing = color_dict,
                         decreasing = color_dict,
                         showlegend = showlegend,
+                        legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle
                     ),
@@ -4202,6 +4260,7 @@ class AnalyzePrices():
                     marker_color = style['green_color'],
                     width = 1,
                     name = diff_positive_name,
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
                     showlegend = True
@@ -4215,6 +4274,7 @@ class AnalyzePrices():
                     marker_color = style['red_color'],
                     width = 1,
                     name = diff_negative_name,
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
                     showlegend = True
@@ -4248,11 +4308,13 @@ class AnalyzePrices():
                 go.Scatter(
                     x = diff_positive.index.astype(str),
                     y = diff_positive,
+                    mode = 'lines',
                     line_color = style['diff_green_linecolor'],
                     line_width = 2,
                     fill = 'tozeroy',
                     fillcolor = style['diff_green_fillcolor'],
                     name = diff_positive_name,
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
                     showlegend = True
@@ -4263,11 +4325,13 @@ class AnalyzePrices():
                 go.Scatter(
                     x = diff_negative.index.astype(str),
                     y = diff_negative,
+                    mode = 'lines',
                     line_color = 'darkred',
                     line_width = 2,
                     fill = 'tozeroy',
                     fillcolor = style['diff_red_fillcolor'],
                     name = diff_negative_name,
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
                     showlegend = True
@@ -4280,9 +4344,11 @@ class AnalyzePrices():
                 go.Scatter(
                     x = diff_signal.index.astype(str),
                     y = diff_signal,
+                    mode = 'lines',
                     line_color = style['signal_color'],
                     line_width = 2,
                     name = signal_name,
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
                     showlegend = True
@@ -4295,6 +4361,7 @@ class AnalyzePrices():
                 go.Scatter(
                     x = p_base.index,
                     y = p_base,
+                    mode = 'lines',
                     line_color = style['basecolor'],
                     showgrid = False,
                     name = p_base_name,
@@ -4454,6 +4521,7 @@ class AnalyzePrices():
                     marker_color = style['green_color'],
                     width = 1,
                     name = diff_positive_name,
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
                     showlegend = True
@@ -4467,6 +4535,7 @@ class AnalyzePrices():
                     marker_color = style['red_color'],
                     width = 1,
                     name = diff_negative_name,
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
                     showlegend = True
@@ -4500,11 +4569,13 @@ class AnalyzePrices():
                 go.Scatter(
                     x = diff_positive.index.astype(str),
                     y = diff_positive,
+                    mode = 'lines',
                     line_color = style['diff_green_linecolor'],
                     line_width = 2,
                     fill = 'tozeroy',
                     fillcolor = style['diff_green_fillcolor'],
                     name = diff_positive_name,
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
                     showlegend = True
@@ -4515,11 +4586,13 @@ class AnalyzePrices():
                 go.Scatter(
                     x = diff_negative.index.astype(str),
                     y = diff_negative,
+                    mode = 'lines',
                     line_color = 'darkred',
                     line_width = 2,
                     fill = 'tozeroy',
                     fillcolor = style['diff_red_fillcolor'],
                     name = diff_negative_name,
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
                     showlegend = True
@@ -4532,9 +4605,11 @@ class AnalyzePrices():
                 go.Scatter(
                     x = diff_signal.index.astype(str),
                     y = diff_signal,
+                    mode = 'lines',
                     line_color = style['signal_color'],
                     line_width = 2,
                     name = signal_name,
+                    legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
                     showlegend = True
@@ -4547,6 +4622,7 @@ class AnalyzePrices():
                 go.Scatter(
                     x = df_price.index,
                     y = df_price,
+                    mode = 'lines',
                     line_color = style['basecolor'],
                     showgrid = False,
                     name = 'Close',

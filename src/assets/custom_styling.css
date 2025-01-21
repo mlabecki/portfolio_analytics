@@ -18,6 +18,7 @@
 
 .mantine-Input-input, .mantine-DatePickerInput-input {
     font-family: Helvetica;
+    text-align: center;
 }
 button, input, select, textarea {
     font-family: Helvetica;

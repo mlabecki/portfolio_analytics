@@ -461,7 +461,119 @@ layout = html.Div([
         style = {'margin-left': '5px'}
     ),
 
-    ##### END TICKERS CONTROLS
+##### END TICKERS CONTROLS
+
+##### BEGIN DATES CONTROLS
+
+    html.Div([
+
+        # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/
+        html.Div(
+            dbc.Button(
+                id = 'collapse-button-dates',
+                class_name = 'ma-1',
+                color = 'primary',
+                size = 'sm',
+                n_clicks = 0,
+                style = collapse_button_css
+            )
+        ),
+
+        dbc.Collapse(
+
+            html.Div(
+
+                id = 'dates-controls',
+                children = [
+
+                    html.Div([
+                        html.Div(
+                            'NARROW DOWN RANGE OF DATES',
+                            style = {
+                                'display': 'block',
+                                'font-size': '14px',
+                                'font-weight': 'bold',
+                                'color': '#007ea7',  # This is native for the YETI theme
+                                'vertical-align': 'top',
+                                'height': '20px',
+                                'margin-top': '5px',
+                                'margin-bottom': '0px',
+                                'margin-left': '7px'
+                            }
+                        ),
+
+                        # Dates selection
+                        html.Div(
+                            id = 'plots-dates-selection-container',
+                            children = [
+                                # Start date
+                                html.Div(
+                                    id = 'plots-start-date-select-container',
+                                    children = [
+                                        html.Div(
+                                            'New Start Date',
+                                            style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px', 'margin-left': '2px'}
+                                        ),
+                                        dmc.DatePickerInput(
+                                            id = 'plots-start-date-input-dmc',
+                                            # maxDate = datetime.today().date(),
+                                            valueFormat = 'YYYY-MM-DD',
+                                            highlightToday = False,
+                                            size = 'sm',
+                                            variant = 'filled',
+                                            w = 140,
+                                            style = {
+                                                'text-align': 'center',
+                                                'border': '1px solid rgb(0, 126, 255)',
+                                                'border-radius': '5px',
+                                                'margin-right': '10px'
+                                            }
+                                        )
+                                    ],
+                                    style = {'display': 'inline-block', 'vertical-align': 'top'}
+                                ),
+                                # End date
+                                html.Div(
+                                    id = 'plots-end-date-select-container',
+                                    children = [
+                                        html.Div(
+                                            'New End Date',
+                                            style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px', 'margin-left': '2px'}
+                                        ),
+                                        dmc.DatePickerInput(
+                                            id = 'plots-end-date-input-dmc',
+                                            # maxDate = datetime.today().date(),
+                                            # value = datetime.today().date(),
+                                            valueFormat = 'YYYY-MM-DD',
+                                            highlightToday = False,
+                                            size = 'sm',
+                                            variant = 'filled',
+                                            w = 140,
+                                            style = {
+                                                'text-align': 'center',
+                                                'border': '1px solid rgb(0, 126, 255)',
+                                                'border-radius': '5px',
+                                                'margin-left': '0px'
+                                            }
+                                        )
+                                    ],
+                                    style = {'display': 'inline-block', 'margin-left': '0px', 'vertical-align': 'top'}
+                                )
+                            ],
+                            style = {'margin-right': '5px', 'margin-bottom': '10px', 'margin-left': '5px'}
+                        )
+                    ])
+                ]
+            ),
+
+            id = 'collapse-dates',
+            is_open = False,
+            style = {'width': '300px'}
+        )],
+        style = {'margin-left': '5px'}
+    ),
+
+    ##### END DATES CONTROLS
 
     ##### BEGIN TEMPLATE CONTROLS
 
@@ -1928,6 +2040,73 @@ layout = html.Div([
                     style = collapse_button_css
                 )
             ),
+            html.Span(
+                id = 'magenta-0',
+                style = {
+                    'display': 'inline-block',
+                    'margin-right': '3px',
+                    'width': '12px',
+                    'height': '12px',
+                    'border': '1px solid rgb(210, 210, 235)',
+                    'border-radius': '2px',
+                    'background-color': theme_style['dark']['overlay_color_theme']['magenta'][0]}
+            ),
+            html.Span(
+                id = 'magenta-1',
+                style = {
+                    'display': 'inline-block',
+                    'margin-right': '3px',
+                    'width': '12px',
+                    'height': '12px',
+                    'border': '1px solid rgb(210, 210, 235)',
+                    'border-radius': '2px',
+                    'background-color': theme_style['dark']['overlay_color_theme']['magenta'][1]}
+            ),
+            html.Span(
+                id = 'magenta-2',
+                style = {
+                    'display': 'inline-block',
+                    'margin-right': '3px',
+                    'width': '12px',
+                    'height': '12px',
+                    'border': '1px solid rgb(210, 210, 235)',
+                    'border-radius': '2px',
+                    'background-color': theme_style['dark']['overlay_color_theme']['magenta'][2]}
+            ),
+            html.Span(
+                id = 'magenta-3',
+                style = {
+                    'display': 'inline-block',
+                    'margin-right': '3px',
+                    'width': '12px',
+                    'height': '12px',
+                    'border': '1px solid rgb(210, 210, 235)',
+                    'border-radius': '2px',
+                    'background-color': theme_style['dark']['overlay_color_theme']['magenta'][3]}
+            ),
+            html.Span(
+                id = 'magenta-4',
+                style = {
+                    'display': 'inline-block',
+                    'margin-right': '3px',
+                    'width': '12px',
+                    'height': '12px',
+                    'border': '1px solid rgb(210, 210, 235)',
+                    'border-radius': '2px',
+                    'background-color': theme_style['dark']['overlay_color_theme']['magenta'][4]}
+            ),
+            html.Span(
+                id = 'magenta-5',
+                style = {
+                    'display': 'inline-block',
+                    'margin-right': '3px',
+                    'width': '12px',
+                    'height': '12px',
+                    'border': '1px solid rgb(210, 210, 235)',
+                    'border-radius': '2px',
+                    'background-color': theme_style['dark']['overlay_color_theme']['magenta'][5]}
+            ),
+
             dbc.Collapse(
                 html.Div(
                     id = 'final-table-selected-tickers',
@@ -2056,6 +2235,21 @@ def toggle_collapse_final_table_selected_tickers(n, is_open):
 )
 def toggle_collapse_tickers(n, is_open):
     title = 'TICKERS'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
+    Output('collapse-button-dates', 'children'),
+    Output('collapse-dates', 'is_open'),
+    Input('collapse-button-dates', 'n_clicks'),
+    State('collapse-dates', 'is_open')
+)
+def toggle_collapse_dates(n, is_open):
+    title = 'DATE RANGE'
     label = f'► {title}' if is_open else f'▼ {title}'
     if n:
         return label, not is_open
@@ -2300,18 +2494,25 @@ def toggle_collapse_ma_ribbon(n, is_open):
     Output('drawdowns-number-input', 'value'),
     Output('drawdowns-price-color-dropdown', 'disabled'),
 
-    Output('plots-start-date', 'children'),
-    Output('plots-end-date', 'children'),
+    Output('plots-start-date-input-dmc', 'value'),
+    Output('plots-end-date-input-dmc', 'value'),
+    Output('plots-start-date-input-dmc', 'minDate'),
+    Output('plots-start-date-input-dmc', 'maxDate'),
+    Output('plots-end-date-input-dmc', 'minDate'),
+    Output('plots-end-date-input-dmc', 'maxDate'),
 
     Input('final-start-date-stored', 'data'),
     Input('final-end-date-stored', 'data'),
     Input('final-selected-tickers-stored', 'data'),
-
+    
     Input({'index': ALL, 'type': 'reset-axes'}, 'n_clicks'),
 
     # tickers options
     ### Input('tickers-dropdown', 'value'),
     Input('dash-table-tickers-to-plot', 'selected_rows'),
+
+    Input('plots-start-date-input-dmc', 'value'),
+    Input('plots-end-date-input-dmc', 'value'),
 
     # template options
     Input('theme-dropdown', 'value'),
@@ -2417,6 +2618,10 @@ def update_plot(
         selected_rows_tickers_to_plot,
         # tk,
 
+        # dates options
+        new_start_date,
+        new_end_date,
+
         # template options
         theme,
         deck_type,
@@ -2509,6 +2714,14 @@ def update_plot(
     selected_tickers = list(selected_tickers_names.keys())
     id_tk_map = {i: tk for i, tk in enumerate(selected_tickers)}
 
+    min_start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+    max_start_date = datetime.strptime(new_end_date, '%Y-%m-%d').date() if new_end_date is not None else datetime.strptime(end_date, '%Y-%m-%d').date()
+    # new_end_min_date = datetime.strptime(new_start_date, '%Y-%m-%d').date() if new_start_date is not None else datetime.strptime(start_date, '%Y-%m-%d').date()
+    min_end_date = datetime.strptime(new_start_date, '%Y-%m-%d').date() if new_start_date is not None else datetime.strptime(start_date, '%Y-%m-%d').date()
+    max_end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+    start_date_value = start_date if new_start_date is None else new_start_date
+    end_date_value = end_date if new_end_date is None else new_end_date
+
     downloaded_data = hist_data.download_yf_data(start_date, end_date, selected_tickers)
 
     tickers_to_plot = [id_tk_map[i] for i in selected_rows_tickers_to_plot] if selected_rows_tickers_to_plot != [] else id_tk_map[0]
@@ -2533,7 +2746,16 @@ def update_plot(
 
     for tk in tickers_to_plot:
 
-        date_index = downloaded_data[tk]['ohlc'].index
+        # date_index = downloaded_data[tk]['ohlc'].index
+        # new_start_date = '2024-06-01'
+        # new_end_date = '2024-12-31'
+        # min_date = datetime.strptime(new_start_date, '%Y-%m-%d').date()
+        # max_date = datetime.strptime(new_end_date, '%Y-%m-%d').date()
+
+        min_date = datetime.strptime(new_start_date, '%Y-%m-%d').date() if new_start_date is not None else datetime.strptime(start_date, '%Y-%m-%d').date()
+        max_date = datetime.strptime(new_end_date, '%Y-%m-%d').date() if new_end_date is not None else datetime.strptime(end_date, '%Y-%m-%d').date()
+
+        date_index = downloaded_data[tk]['ohlc'][min_date: max_date].index
         fig_data = analyze_prices.create_template(
             date_index,
             deck_type = deck_type,
@@ -2554,7 +2776,7 @@ def update_plot(
 
             fig_data = analyze_prices.add_hist_price(
                 fig_data,
-                hist_price,
+                hist_price[min_date: max_date],
                 tk,
                 target_deck = deck_number(deck_type, hist_price_deck_name),
                 secondary_y = True if hist_price_secondary_y == 'Yes' else False,
@@ -2573,7 +2795,7 @@ def update_plot(
 
             fig_data = analyze_prices.add_candlestick(
                 fig_data,
-                df_ohlc,
+                df_ohlc[min_date: max_date],
                 tk,
                 candle_type = candlestick_type.lower(),
                 target_deck = deck_number(deck_type, candlestick_deck_name),
@@ -2590,7 +2812,7 @@ def update_plot(
 
             fig_data = analyze_prices.add_hist_price(
                 fig_data,
-                df_volume,
+                df_volume[min_date: max_date],
                 tk,
                 target_deck = deck_number(deck_type, volume_deck_name),
                 secondary_y = True if volume_secondary_y == 'Yes' else False,
@@ -2609,7 +2831,7 @@ def update_plot(
             drawdown_color = drawdown_color.lower() if drawdown_color is not None else 'red'
             drawdown_price_color_theme = drawdown_price_color_theme.lower() if drawdown_price_color_theme is not None else 'base'
             df_drawdown_price = downloaded_data[tk]['ohlc_adj'] if drawdown_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
-            drawdown_price = df_drawdown_price[drawdown_price_type]
+            drawdown_price = df_drawdown_price[drawdown_price_type][min_date: max_date]
 
             drawdown_data_tk = analyze_prices.summarize_tk_drawdowns(drawdown_price, drawdown_top_by)
             n_drawdowns = drawdown_data_tk['Total Drawdowns']
@@ -2641,7 +2863,7 @@ def update_plot(
             df_bollinger_price = downloaded_data[tk]['ohlc_adj'] if bollinger_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
             bollinger_price = df_bollinger_price[bollinger_price_type]
             bollinger_data = analyze_prices.bollinger_bands(
-                bollinger_price,
+                bollinger_price[min_date: max_date],
                 ma_type_map[bollinger_ma_type],
                 bollinger_window,
                 bollinger_nstd,
@@ -2661,7 +2883,7 @@ def update_plot(
             df_ma_env_price = downloaded_data[tk]['ohlc_adj'] if ma_env_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
             ma_env_price = df_ma_env_price[ma_env_price_type]
             ma_env_list = analyze_prices.ma_envelopes(
-                ma_env_price,
+                ma_env_price[min_date: max_date],
                 ma_type_map[ma_env_ma_type],
                 ma_env_window,
                 ma_env_offset,
@@ -2686,7 +2908,7 @@ def update_plot(
             )
             fig_data = analyze_prices.add_ma_overlays(
                 fig_data,
-                ma_ribbon_price,
+                ma_ribbon_price[min_date: max_date],
                 ma_ribbon_list,
                 target_deck = deck_number(deck_type, ma_ribbon_deck_name),
                 add_yaxis_title = True if ma_ribbon_add_yaxis_title == 'Yes' else False,
@@ -2702,14 +2924,14 @@ def update_plot(
                 if name in price_overlay_adj_price_list:
                     price_list.append({
                         'name': name,
-                        'data': downloaded_data[tk]['ohlc_adj'][name.replace('Adjusted ', '')],
+                        'data': downloaded_data[tk]['ohlc_adj'][name.replace('Adjusted ', '')][min_date: max_date],
                         'show': True
                     })
             for name in ['Close', 'Open', 'High', 'Low']:
                 if name in price_overlay_price_list:
                     price_list.append({
                         'name': name,
-                        'data': downloaded_data[tk]['ohlc'][name],
+                        'data': downloaded_data[tk]['ohlc'][name][min_date: max_date],
                         'show': True
                     })
             if len(price_list) > 0:
@@ -2790,6 +3012,10 @@ def update_plot(
         dd_number_value,
         dd_add_price_disabled,
 
-        start_date,
-        end_date
+        start_date_value,
+        end_date_value,
+        min_start_date,
+        max_start_date,
+        min_end_date,
+        max_end_date
     )
