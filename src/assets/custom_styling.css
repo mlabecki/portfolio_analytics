@@ -59,6 +59,7 @@ button, input, select, textarea {
 }
 
 #add-hist-price-button:hover,
+#add-candlestick-button:hover,
 #add-price-overlays-button:hover,
 #add-volume-button:hover,
 #add-drawdowns-button:hover,

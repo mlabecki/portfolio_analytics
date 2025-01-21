@@ -3481,6 +3481,11 @@ class AnalyzePrices():
         if add_title & (title is None):
             title = f'{tk} {price_type.title()}'
 
+        if 'volume' in price_type:
+            zorder = -1
+        else:
+            zorder = 0
+
         fig = fig_data['fig']
         fig_y_min = fig_data['y_min'][target_deck]
         fig_y_max = fig_data['y_max'][target_deck]
@@ -3557,40 +3562,51 @@ class AnalyzePrices():
             if new_y_max > fig_y_max:
                 reset_y_limits = True
 
+        if secondary_y:
+            reset_y_limits = True
+
+        # Find new y limits and delta if the y range is expanded
+        if reset_y_limits:
+            min_n_intervals = n_yintervals_map['min'][plot_height]
+            max_n_intervals = n_yintervals_map['max'][plot_height]
+            # print(f'new_y_min: {new_y_min}')
+            # print(f'new_y_max: {new_y_max}')
+            # print(f'min_n_intervals: {min_n_intervals}')
+            # print(f'max_n_intervals: {max_n_intervals}')
+            y_lower_limit, y_upper_limit, y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
+            if target_deck > 1:
+                y_upper_limit *= 0.999
+            y_range = (y_lower_limit, y_upper_limit)
+
         if not secondary_y:
-            # Find new y limits and delta if the y range is expanded
-            if reset_y_limits:
-                min_n_intervals = n_yintervals_map['min'][plot_height]
-                max_n_intervals = n_yintervals_map['max'][plot_height]
-                # print(f'new_y_min: {new_y_min}')
-                # print(f'new_y_max: {new_y_max}')
-                # print(f'min_n_intervals: {min_n_intervals}')
-                # print(f'max_n_intervals: {max_n_intervals}')
-                y_lower_limit, y_upper_limit, y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
-                if target_deck > 1:
-                    y_upper_limit *= 0.999
-                y_range = (y_lower_limit, y_upper_limit)
-                fig.update_yaxes(
-                    range = y_range,
-                    title = yaxis_title,
-                    showticklabels = True,
-                    tick0 = y_lower_limit,
-                    dtick = y_delta,
-                    showgrid = True,
-                    zeroline = True,
-                    row = target_deck, col = 1
-                )
-        
-        else:
             fig.update_yaxes(
-                range = None,
+                range = y_range,
                 title = yaxis_title,
                 showticklabels = True,
+                tick0 = y_lower_limit,
+                dtick = y_delta,
+                showgrid = True,
+                zeroline = True,
+                row = target_deck, col = 1,
+                secondary_y = False
+            )
+        else:
+            fig.update_yaxes(
+                # range = None,
+                range = y_range,
+                title = yaxis_title,
+                showticklabels = True,
+                tick0 = y_lower_limit,
+                dtick = y_delta,
                 secondary_y = True,
                 showgrid = False,
                 zeroline = False,
+                # zeroline = True,
                 row = target_deck, col = 1
             )
+
+        print(f'fig.layout.yaxis {fig.layout.yaxis}')
+        print(f'fig.layout.yaxis2 {fig.layout.yaxis2}')
 
         legendgrouptitle = {}
         if deck_type in ['double', 'triple']:
@@ -3610,11 +3626,13 @@ class AnalyzePrices():
                     marker_color = fillcolor,
                     width = 1,
                     name = legend_name,
+                    zorder = zorder,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
                     showlegend = True
                 ),
-                row = target_deck, col = 1
+                row = target_deck, col = 1,
+                secondary_y = secondary_y
             )
 
         else:
@@ -3627,6 +3645,7 @@ class AnalyzePrices():
                     fillcolor = fillcolor,
                     showlegend = True,
                     name = legend_name,
+                    zorder = zorder,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle
                 ),
@@ -3686,7 +3705,8 @@ class AnalyzePrices():
         target_deck = 1,
         add_title = True,
         title_font_size = 32,
-        theme = 'dark'
+        theme = 'dark' #,
+        # color_theme = 'green-red'
     ):
         """
         candle_type: 'hollow' or 'traditional'
@@ -3716,8 +3736,8 @@ class AnalyzePrices():
         # Adjust y range if necessary
         reset_y_limits = False
 
-        min_y = min(df['Low'][~df.isna()])
-        max_y = max(df['High'][~df.isna()])
+        min_y = min(df['Low'][~df['Low'].isna()])
+        max_y = max(df['High'][~df['High'].isna()])
 
         if fig_y_min is None:
             new_y_min = min_y
@@ -3734,30 +3754,26 @@ class AnalyzePrices():
             if new_y_max > fig_y_max:
                 reset_y_limits = True
 
-            # Find new y limits and delta if the y range is expanded
-            if reset_y_limits:
-                
-                min_n_intervals = n_yintervals_map['min'][plot_height]
-                max_n_intervals = n_yintervals_map['max'][plot_height]
-                y_lower_limit, y_upper_limit, y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
-
-                if target_deck > 1:
-                    y_upper_limit *= 0.999
-
-                # print(f'min_n_intervals, max_n_intervals = {min_n_intervals, max_n_intervals}')
-                # print(f'y_lower_limit, y_upper_limit, y_delta = {y_lower_limit, y_upper_limit, y_delta}')
-                # print(f'FINAL new_y_min, new_y_max, y_delta = {new_y_min, new_y_max, y_delta}')
-
-                y_range = (y_lower_limit, y_upper_limit)
-                fig.update_yaxes(
-                    range = y_range,
-                    showticklabels = True,
-                    tick0 = y_lower_limit,
-                    dtick = y_delta,
-                    showgrid = True,
-                    zeroline = True,
-                    row = target_deck, col = 1
-                )
+        # Find new y limits and delta if the y range is expanded
+        if reset_y_limits:
+            min_n_intervals = n_yintervals_map['min'][plot_height]
+            max_n_intervals = n_yintervals_map['max'][plot_height]
+            y_lower_limit, y_upper_limit, y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
+            if target_deck > 1:
+                y_upper_limit *= 0.999
+            # print(f'min_n_intervals, max_n_intervals = {min_n_intervals, max_n_intervals}')
+            # print(f'y_lower_limit, y_upper_limit, y_delta = {y_lower_limit, y_upper_limit, y_delta}')
+            # print(f'FINAL new_y_min, new_y_max, y_delta = {new_y_min, new_y_max, y_delta}')
+            y_range = (y_lower_limit, y_upper_limit)
+            fig.update_yaxes(
+                range = y_range,
+                showticklabels = True,
+                tick0 = y_lower_limit,
+                dtick = y_delta,
+                showgrid = True,
+                zeroline = True,
+                row = target_deck, col = 1
+            )
 
         df['Date'] = df.index.astype(str)
 

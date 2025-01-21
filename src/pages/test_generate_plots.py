@@ -740,6 +740,120 @@ layout = html.Div([
 
     ##### END HISTORICAL PRICE CONTROLS
 
+    ##### BEGIN CANDLESTICK CONTROLS
+
+    html.Div([
+
+        html.Div(
+            dbc.Button(
+                id = 'collapse-button-candlestick',
+                class_name = 'ma-1',
+                color = 'primary',
+                size = 'sm',
+                n_clicks = 0,
+                style = collapse_button_css
+            )
+        ),
+
+        dbc.Collapse(
+
+            html.Div(
+
+                id = 'candlestick-controls',
+                children = [
+
+                    html.Div([
+                        html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id = 'candlestick-deck-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Upper'],
+                            value = 'Upper',
+                            clearable = False,
+                            style = {'width': '120px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='candlestick-adjusted-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '78px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px'}),
+                        dcc.Dropdown(
+                            id='candlestick-add-title-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '92px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Candle Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='candlestick-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Hollow', 'Traditional'],
+                            value = 'Hollow',
+                            clearable = False,
+                            style = {'width': '135px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Candle Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='candlestick-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
+                            # options = candlestick_color_themes,
+                            options = ['Green-Red'],
+                            value = 'Green-Red',
+                            clearable = False,
+                            style = {'width': '160px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        dbc.Button(
+                            'Add To Plot',
+                            id = 'add-candlestick-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'success',
+                            size = 'sm',
+                            style = plots_add_button_css
+                        )],
+                        # style = {'margin-bottom': '5px'}
+                    ),
+
+                ],
+                # style = {'margin-left': '5px'}
+            ), 
+
+            id = 'collapse-candlestick',
+            is_open = False,
+            style = {'width': '300px'}
+        )],
+        style = {'margin-left': '5px'}
+    ), 
+
+    ##### END CANDLESTICK CONTROLS
+
     ##### BEGIN VOLUME CONTROLS
 
     html.Div([
@@ -2060,6 +2174,21 @@ def toggle_collapse_hist_price(n, is_open):
 
 
 @callback(
+    Output('collapse-button-candlestick', 'children'),
+    Output('collapse-candlestick', 'is_open'),
+    Input('collapse-button-candlestick', 'n_clicks'),
+    State('collapse-candlestick', 'is_open')
+)
+def toggle_collapse_candlestick(n, is_open):
+    title = 'CANDLESTICK'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
     Output('collapse-button-volume', 'children'),
     Output('collapse-volume', 'is_open'),
     Input('collapse-button-volume', 'n_clicks'),
@@ -2178,7 +2307,6 @@ def toggle_collapse_ma_ribbon(n, is_open):
     Input('final-end-date-stored', 'data'),
     Input('final-selected-tickers-stored', 'data'),
 
-    # Input('reset-axes', 'n_clicks'),
     Input({'index': ALL, 'type': 'reset-axes'}, 'n_clicks'),
 
     # tickers options
@@ -2203,6 +2331,14 @@ def toggle_collapse_ma_ribbon(n, is_open):
     Input('hist-price-color-theme-dropdown', 'value'),
     Input('hist-price-add-title-dropdown', 'value'),
     Input('add-hist-price-button', 'n_clicks'),
+
+    # Candlestick price options
+    Input('candlestick-deck-dropdown', 'value'),
+    Input('candlestick-adjusted-dropdown', 'value'),
+    Input('candlestick-type-dropdown', 'value'),
+    # Input('candlestick-color-theme-dropdown', 'value'),
+    Input('candlestick-add-title-dropdown', 'value'),
+    Input('add-candlestick-button', 'n_clicks'),
 
     # Volume options
     Input('volume-deck-dropdown', 'value'),
@@ -2229,14 +2365,6 @@ def toggle_collapse_ma_ribbon(n, is_open):
     Input('price-overlays-deck-dropdown', 'value'),
     Input('price-overlays-adj-price-list', 'value'),    
     Input('price-overlays-price-list', 'value'),
-    # Input('price-overlays-adj-close-checkbox', 'value'),
-    # Input('price-overlays-adj-open-checkbox', 'value'),
-    # Input('price-overlays-adj-high-checkbox', 'value'),
-    # Input('price-overlays-adj-low-checkbox', 'value'),
-    # Input('price-overlays-close-checkbox', 'value'),
-    # Input('price-overlays-open-checkbox', 'value'),
-    # Input('price-overlays-high-checkbox', 'value'),
-    # Input('price-overlays-low-checkbox', 'value'),
     Input('price-overlays-add-yaxis-title-dropdown', 'value'),
     Input('price-overlays-color-theme-dropdown', 'value'),
     Input('add-price-overlays-button', 'n_clicks'),
@@ -2308,6 +2436,14 @@ def update_plot(
         hist_price_add_title,
         add_hist_price,
 
+        # historical price options
+        candlestick_deck_name,
+        candlestick_adjusted,
+        candlestick_type,
+        # candlestick_color_theme,
+        candlestick_add_title,
+        add_candlestick,
+
         # volume options
         volume_deck_name,
         volume_secondary_y,
@@ -2333,14 +2469,6 @@ def update_plot(
         price_overlay_deck_name,
         price_overlay_adj_price_list,
         price_overlay_price_list,
-        # price_overlay_show_adj_close,
-        # price_overlay_show_adj_open,
-        # price_overlay_show_adj_high,
-        # price_overlay_show_adj_low,
-        # price_overlay_show_close,
-        # price_overlay_show_open,
-        # price_overlay_show_high,
-        # price_overlay_show_low,
         price_overlay_add_yaxis_title,
         price_overlay_color_theme,
         add_price_overlays,
@@ -2387,20 +2515,8 @@ def update_plot(
 
     tk = tickers_to_plot[0]
 
-    # fig_data = create_graph(theme, tk, drawdown_color, overlay_color_theme)
     theme = theme.lower()
-    # deck_type = deck_type.lower()
     secondary_y = False if sec_y == 'No' else True
-    # fig_data = analyze_prices.create_template(
-    #     date_index,
-    #     deck_type = deck_type,
-    #     secondary_y = secondary_y,
-    #     plot_width = width,
-    #     plot_height_1 = upper_height,
-    #     plot_height_2 = lower_height,
-    #     plot_height_3 = lower_height,
-    #     theme = theme
-    # )
 
     # These are in the list of outputs, so they must stay outside of the if statements
     
@@ -2414,7 +2530,6 @@ def update_plot(
     ################
 
     fig_divs = []
-    # fig_data_all = {}
 
     for tk in tickers_to_plot:
 
@@ -2438,9 +2553,7 @@ def update_plot(
             hist_price = df_hist_price[hist_price_type]
 
             fig_data = analyze_prices.add_hist_price(
-            # fig_data_all[tk] = analyze_prices.add_hist_price(
                 fig_data,
-                # fig_data_all[tk],
                 hist_price,
                 tk,
                 target_deck = deck_number(deck_type, hist_price_deck_name),
@@ -2451,6 +2564,22 @@ def update_plot(
                 theme = theme,
                 color_theme = hist_price_color_theme,
                 fill_below = True if hist_price_fill_below == 'Yes' else False
+            )
+
+        ### Add candlestick
+        if add_candlestick:
+            
+            df_ohlc = downloaded_data[tk]['ohlc_adj'] if candlestick_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
+
+            fig_data = analyze_prices.add_candlestick(
+                fig_data,
+                df_ohlc,
+                tk,
+                candle_type = candlestick_type.lower(),
+                target_deck = deck_number(deck_type, candlestick_deck_name),
+                add_title = True if candlestick_add_title == 'Yes' else False,
+                theme = theme #,
+                # color_theme = candlestick_color_theme
             )
 
         ### Add volume
@@ -2538,7 +2667,7 @@ def update_plot(
                 ma_env_offset,
                 ma_env_nbands
             )
-            big_data = analyze_prices.add_ma_envelopes(
+            fig_data = analyze_prices.add_ma_envelopes(
                 fig_data,
                 ma_env_list,
                 target_deck = deck_number(deck_type, ma_env_deck_name),
@@ -2597,7 +2726,6 @@ def update_plot(
 
         ### Update graph
         fig = fig_data['fig']
-        # fig_div = dcc.Graph(id = f'{tk}-main-graph', figure = fig)
 
         fig_div = html.Div(
             id = f'{tk}-fig-div',
