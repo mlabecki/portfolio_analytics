@@ -564,9 +564,13 @@ class AnalyzePrices():
 
         # print(f'legend_tracegroupgap: {legend_tracegroupgap}')
 
-        legend_tracegroupgap = 24
-
         return legend_tracegroupgap
+
+
+    ##### SET LEGEND TRACEGROUPGAP #####
+
+    def set_legend_tracegroupgap(self):
+        return 20
 
 
     ##### ADD AVERAGE TRUE RATE (PERCENTAGE) #####
@@ -743,7 +747,7 @@ class AnalyzePrices():
                 )
 
             if deck_type in ['double', 'triple']:
-                legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+                legend_tracegroupgap = self.set_legend_tracegroupgap()
                 fig.update_layout(
                     legend_tracegroupgap = legend_tracegroupgap,
                     legend_traceorder = 'grouped'
@@ -1024,7 +1028,7 @@ class AnalyzePrices():
         )
 
         if deck_type in ['double', 'triple']:
-            legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+            legend_tracegroupgap = self.set_legend_tracegroupgap()
             fig_stochastic.update_layout(
                 legend_tracegroupgap = legend_tracegroupgap,
                 legend_traceorder = 'grouped'
@@ -1457,7 +1461,7 @@ class AnalyzePrices():
             )
 
         if deck_type in ['double', 'triple']:
-            legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+            legend_tracegroupgap = self.set_legend_tracegroupgap()
             fig_data['fig'].update_layout(
                 legend_tracegroupgap = legend_tracegroupgap,
                 legend_traceorder = 'grouped'
@@ -2166,7 +2170,7 @@ class AnalyzePrices():
             )
 
         if deck_type in ['double', 'triple']:
-            legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+            legend_tracegroupgap = self.set_legend_tracegroupgap()
             fig.update_layout(
                 legend_tracegroupgap = legend_tracegroupgap,
                 legend_traceorder = 'grouped'
@@ -2406,7 +2410,7 @@ class AnalyzePrices():
         )
 
         if deck_type in ['double', 'triple']:
-            legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+            legend_tracegroupgap = self.set_legend_tracegroupgap()
             fig_rsi.update_layout(
                 legend_tracegroupgap = legend_tracegroupgap,
                 legend_traceorder = 'grouped'
@@ -2795,7 +2799,7 @@ class AnalyzePrices():
                 color_map.update({overlay['name']: overlay['color_idx']})
 
             if deck_type in ['double', 'triple']:
-                legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+                legend_tracegroupgap = self.set_legend_tracegroupgap()
                 fig_data['fig'].update_layout(
                     legend_tracegroupgap = legend_tracegroupgap,
                     legend_traceorder = 'grouped'
@@ -2886,7 +2890,7 @@ class AnalyzePrices():
                 color_map.update({overlay['name']: overlay['color_idx']})
 
             if deck_type in ['double', 'triple']:
-                legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+                legend_tracegroupgap = self.set_legend_tracegroupgap()
                 fig_data['fig'].update_layout(
                     legend_tracegroupgap = legend_tracegroupgap,
                     legend_traceorder = 'grouped'
@@ -3104,7 +3108,7 @@ class AnalyzePrices():
                 )
 
             if deck_type in ['double', 'triple']:
-                legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+                legend_tracegroupgap = self.set_legend_tracegroupgap()
                 fig.update_layout(
                     legend_tracegroupgap = legend_tracegroupgap,
                     legend_traceorder = 'grouped'
@@ -3187,7 +3191,7 @@ class AnalyzePrices():
                 color_map.update({overlay['name']: overlay['color_idx']})
 
             if deck_type in ['double', 'triple']:
-                legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+                legend_tracegroupgap = self.set_legend_tracegroupgap()
                 fig_data['fig'].update_layout(
                     legend_tracegroupgap = legend_tracegroupgap,
                     legend_traceorder = 'grouped'
@@ -3409,7 +3413,7 @@ class AnalyzePrices():
                 )
 
             if deck_type in ['double', 'triple']:
-                legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+                legend_tracegroupgap = self.set_legend_tracegroupgap()
                 fig.update_layout(
                     legend_tracegroupgap = legend_tracegroupgap,
                     legend_traceorder = 'grouped'
@@ -3723,7 +3727,7 @@ class AnalyzePrices():
             )
 
         if deck_type in ['double', 'triple']:
-            legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+            legend_tracegroupgap = self.set_legend_tracegroupgap()
             fig.update_layout(
                 legend_tracegroupgap = legend_tracegroupgap,
                 legend_traceorder = 'grouped'
@@ -3761,8 +3765,8 @@ class AnalyzePrices():
         target_deck = 1,
         add_title = True,
         title_font_size = 32,
-        theme = 'dark' #,
-        # color_theme = 'green-red'
+        theme = 'dark',
+        color_theme = 'green-red'
     ):
         """
         candle_type: 'hollow' or 'traditional'
@@ -3780,8 +3784,8 @@ class AnalyzePrices():
         title_y_pos = fig_data['title_y_pos']
 
         # Colors must be in the RGBA format
-        red_color = style['red_color']
-        green_color = style['green_color']
+        red_color = style['candle_colors'][color_theme.lower()]['red_color']
+        green_color = style['candle_colors'][color_theme.lower()]['green_color']
         red_fill_color = red_color
         green_fill_color = green_color
         red_fill_color_hollow = red_color.replace(', 1)', ', 0.2)')
@@ -3990,7 +3994,7 @@ class AnalyzePrices():
         )
 
         if deck_type in ['double', 'triple']:
-            legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+            legend_tracegroupgap = self.set_legend_tracegroupgap()
             fig.update_layout(
                 legend_tracegroupgap = legend_tracegroupgap,
                 legend_traceorder = 'grouped'
@@ -4082,7 +4086,7 @@ class AnalyzePrices():
                 color_map.update({overlay['name']: overlay['color_idx']})
 
             if deck_type in ['double', 'triple']:
-                legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+                legend_tracegroupgap = self.set_legend_tracegroupgap()
                 fig_data['fig'].update_layout(
                     legend_tracegroupgap = legend_tracegroupgap,
                     legend_traceorder = 'grouped'
@@ -4371,7 +4375,7 @@ class AnalyzePrices():
             )
 
         if deck_type in ['double', 'triple']:
-            legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+            legend_tracegroupgap = self.set_legend_tracegroupgap()
             fig_data['fig'].update_layout(
                 legend_tracegroupgap = legend_tracegroupgap,
                 legend_traceorder = 'grouped'
@@ -4632,7 +4636,7 @@ class AnalyzePrices():
             )
 
         if deck_type in ['double', 'triple']:
-            legend_tracegroupgap = self.adjust_legend_position(fig_data, deck_type)
+            legend_tracegroupgap = self.set_legend_tracegroupgap()
             fig_data['fig'].update_layout(
                 legend_tracegroupgap = legend_tracegroupgap,
                 legend_traceorder = 'grouped'

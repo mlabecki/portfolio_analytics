@@ -266,6 +266,7 @@ def display_table_selected_tickers(
 
 theme = 'dark'
 # overlay_color_theme = 'grasslands'
+candle_colors = [x.title() for x in theme_style[theme]['candle_colors'].keys()]
 overlay_color_themes = [x.title() for x in theme_style[theme]['overlay_color_theme'].keys()]
 # overlay_color_themes = [x.title() for x in theme_style[theme]['overlay_color_theme'].keys()]
 # # print(overlay_color_themes)
@@ -921,7 +922,7 @@ layout = html.Div([
                             options = ['Hollow', 'Traditional'],
                             value = 'Hollow',
                             clearable = False,
-                            style = {'width': '135px'}
+                            style = {'width': '130px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -931,11 +932,10 @@ layout = html.Div([
                         dcc.Dropdown(
                             id='candlestick-color-theme-dropdown',
                             className = 'plots-dropdown-button',
-                            # options = candlestick_color_themes,
-                            options = ['Green-Red'],
+                            options = candle_colors,
                             value = 'Green-Red',
                             clearable = False,
-                            style = {'width': '160px'}
+                            style = {'width': '165px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -2107,6 +2107,73 @@ layout = html.Div([
                     'background-color': theme_style['dark']['overlay_color_theme']['magenta'][5]}
             ),
 
+            html.Span(
+                id = 'magenta-light-0',
+                style = {
+                    'display': 'inline-block',
+                    'margin-right': '3px',
+                    'width': '12px',
+                    'height': '12px',
+                    'border': '1px solid rgb(210, 210, 235)',
+                    'border-radius': '2px',
+                    'background-color': theme_style['light']['overlay_color_theme']['magenta'][0]}
+            ),
+            html.Span(
+                id = 'magenta-light-1',
+                style = {
+                    'display': 'inline-block',
+                    'margin-right': '3px',
+                    'width': '12px',
+                    'height': '12px',
+                    'border': '1px solid rgb(210, 210, 235)',
+                    'border-radius': '2px',
+                    'background-color': theme_style['light']['overlay_color_theme']['magenta'][1]}
+            ),
+            html.Span(
+                id = 'magenta-light-2',
+                style = {
+                    'display': 'inline-block',
+                    'margin-right': '3px',
+                    'width': '12px',
+                    'height': '12px',
+                    'border': '1px solid rgb(210, 210, 235)',
+                    'border-radius': '2px',
+                    'background-color': theme_style['light']['overlay_color_theme']['magenta'][2]}
+            ),
+            html.Span(
+                id = 'magenta-light-3',
+                style = {
+                    'display': 'inline-block',
+                    'margin-right': '3px',
+                    'width': '12px',
+                    'height': '12px',
+                    'border': '1px solid rgb(210, 210, 235)',
+                    'border-radius': '2px',
+                    'background-color': theme_style['light']['overlay_color_theme']['magenta'][3]}
+            ),
+            html.Span(
+                id = 'magenta-light-4',
+                style = {
+                    'display': 'inline-block',
+                    'margin-right': '3px',
+                    'width': '12px',
+                    'height': '12px',
+                    'border': '1px solid rgb(210, 210, 235)',
+                    'border-radius': '2px',
+                    'background-color': theme_style['light']['overlay_color_theme']['magenta'][4]}
+            ),
+            html.Span(
+                id = 'magenta-light-5',
+                style = {
+                    'display': 'inline-block',
+                    'margin-right': '3px',
+                    'width': '12px',
+                    'height': '12px',
+                    'border': '1px solid rgb(210, 210, 235)',
+                    'border-radius': '2px',
+                    'background-color': theme_style['light']['overlay_color_theme']['magenta'][5]}
+            ),
+
             dbc.Collapse(
                 html.Div(
                     id = 'final-table-selected-tickers',
@@ -2537,7 +2604,7 @@ def toggle_collapse_ma_ribbon(n, is_open):
     Input('candlestick-deck-dropdown', 'value'),
     Input('candlestick-adjusted-dropdown', 'value'),
     Input('candlestick-type-dropdown', 'value'),
-    # Input('candlestick-color-theme-dropdown', 'value'),
+    Input('candlestick-color-theme-dropdown', 'value'),
     Input('candlestick-add-title-dropdown', 'value'),
     Input('add-candlestick-button', 'n_clicks'),
 
@@ -2645,7 +2712,7 @@ def update_plot(
         candlestick_deck_name,
         candlestick_adjusted,
         candlestick_type,
-        # candlestick_color_theme,
+        candlestick_color_theme,
         candlestick_add_title,
         add_candlestick,
 
@@ -2714,9 +2781,9 @@ def update_plot(
     selected_tickers = list(selected_tickers_names.keys())
     id_tk_map = {i: tk for i, tk in enumerate(selected_tickers)}
 
+    # NOTE: start_date, end_date, new_start_date and new_end_date are all strings, converted to datetime using strptime()
     min_start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
     max_start_date = datetime.strptime(new_end_date, '%Y-%m-%d').date() if new_end_date is not None else datetime.strptime(end_date, '%Y-%m-%d').date()
-    # new_end_min_date = datetime.strptime(new_start_date, '%Y-%m-%d').date() if new_start_date is not None else datetime.strptime(start_date, '%Y-%m-%d').date()
     min_end_date = datetime.strptime(new_start_date, '%Y-%m-%d').date() if new_start_date is not None else datetime.strptime(start_date, '%Y-%m-%d').date()
     max_end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
     start_date_value = start_date if new_start_date is None else new_start_date
@@ -2800,8 +2867,8 @@ def update_plot(
                 candle_type = candlestick_type.lower(),
                 target_deck = deck_number(deck_type, candlestick_deck_name),
                 add_title = True if candlestick_add_title == 'Yes' else False,
-                theme = theme #,
-                # color_theme = candlestick_color_theme
+                theme = theme,
+                color_theme = candlestick_color_theme
             )
 
         ### Add volume
@@ -2836,7 +2903,13 @@ def update_plot(
             drawdown_data_tk = analyze_prices.summarize_tk_drawdowns(drawdown_price, drawdown_top_by)
             n_drawdowns = drawdown_data_tk['Total Drawdowns']
             dd_number_value = min(n_top, n_drawdowns)
-            selected_drawdown_data = analyze_prices.select_tk_drawdowns(drawdown_data_tk, n_top)
+            selected_drawdown_data = analyze_prices.select_tk_drawdowns(drawdown_data_tk, dd_number_value)
+            # NOTE: If the date range is expanded so that n_drawdowns > n_top, it probably still makes sense to keep the number 
+            # of drawdowns plotted equal to the latest chosen by the user, i.e. n_top, even if it was forced by the range narrowing
+            # earlier. The so-called 'expansion' does not necessarily mean that the previous range will be contained in the new one.
+            # It may happen that the range of dates shift results in n_drawdowns being lower, equal to or much higher than previously.
+            # The app cannot guess how many drawdowns should be displayed after the user has changed the range of dates and n_drawdowns
+            # increases as a result, it must rely on the input from the n_top dropdown.
 
             show_trough_to_recovery = True if 'Recovery' in drawdown_display else False
             dd_top_by = 'length' if drawdown_top_by == 'Total Length' else 'depth'

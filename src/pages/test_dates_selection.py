@@ -146,7 +146,7 @@ layout = html.Div([
                             highlightToday = True,
                             size = 'sm',
                             variant = 'filled',
-                            w = 102,
+                            w = 120,
                             style = {
                                 'border': '1px solid rgb(0, 126, 255)',
                                 'border-radius': '5px',
@@ -174,7 +174,7 @@ layout = html.Div([
                             highlightToday = True,
                             size = 'sm',
                             variant = 'filled',
-                            w = 102,
+                            w = 120,
                             style = {
                                 'border': '1px solid rgb(0, 126, 255)',
                                 'border-radius': '5px',

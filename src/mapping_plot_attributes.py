@@ -103,6 +103,33 @@ theme_style = {
         'x_linecolor':              '#506784',
         'y_linecolor':              '#506784',
 
+        'candle_colors': {
+            'green-red': {
+                'green_color':  'rgba(50, 205, 50, 1)',
+                'red_color':    'rgba(255, 0, 0, 1)'
+            },
+            'teal-tomato': {
+                'green_color':  'rgba(0, 150, 150, 1)',     # lightened teal (0, 128, 128)
+                'red_color':    'rgba(255, 99, 71, 1)'
+            },
+            'blue-salmon': {
+                'green_color':  'rgba(0, 191, 255, 1)',   # deepskyblue
+                'red_color':    'rgba(250, 128, 114, 1)'  # salmon
+            },
+            'gold-orchid': {
+                'green_color':  'rgba(255, 215, 0, 1)',   # gold
+                'red_color':    'rgba(153, 50, 204, 1)'   # darkorchid
+            },
+            'silver-rose': {
+                'green_color':  'rgba(170, 210, 225, 1)',  # silver fill
+                'red_color':    'rgba(205, 92, 92, 1)'     # indianred
+            },
+            'olive-peach': {
+                'green_color':  'rgba(100, 150, 40, 1)',   # darkened yellowgreen (154, 205, 50)
+                'red_color':    'rgba(255, 127, 80, 1)'    # coral
+            }
+        },
+
         'drawdown_colors': {
             'red': {
                 'fill':     'rgba(255, 0, 0, 1)',     # red
@@ -155,7 +182,6 @@ theme_style = {
                 # NEEDS ADJUSTMENT - expand the color scale
                 'rgba(32, 178, 170, 1)',   # lightseagreen
                 'rgba(72, 209, 204, 1)',   # mediumturquoise
-                # 'rgba(64, 224, 208, 1)',   # turquoise
                 'rgba(64, 224, 228, 1)',   # turquoise
                 'rgba(117, 255, 222, 1)',  # aquamarine
                 'rgba(175, 238, 238, 1)',  # paleturquoise
@@ -228,9 +254,7 @@ theme_style = {
                 'rgba(255, 0, 0, 1)',     # red
                 'rgba(255, 165, 0, 1)',   # orange
                 'rgba(255, 255, 0, 1)',   # yellow
-                # 'rgba(0, 255, 0, 1)',   # lime
                 'rgba(34, 139, 34, 1)',   # forestgreen
-                # 'rgba(0, 191, 255, 1)', # deepskyblue
                 'rgba(30, 144, 255, 1)',  # dodgerblue
                 'rgba(148, 0, 211, 1)'    # darkviolet
             ],
@@ -392,6 +416,34 @@ theme_style = {
         'x_linecolor':              'black',
         'y_linecolor':              'black',
 
+
+        'candle_colors': {
+            'green-red': {
+                'green_color':  'rgba(0, 128, 0, 1)',       # green
+                'red_color':    'rgba(178, 34, 34, 1)'      # firebrick
+            },
+            'teal-tomato': {                               
+                'green_color':  'rgba(0, 128, 128, 1)',     
+                'red_color':    'rgba(245, 79, 54, 1)'
+            },
+            'blue-salmon': {
+                'green_color':  'rgba(31, 119, 200, 1)',   #
+                'red_color':    'rgba(235, 100, 90, 1)'    #
+            },
+            'gold-orchid': {
+                'green_color':  'rgba(210, 155, 12, 1)',  # goldenrod modified
+                'red_color':    'rgba(128, 0, 128, 1)'    # purple
+            },
+            'silver-rose': {                               
+                'green_color':  'rgba(98, 108, 118, 1)',   # silver fill
+                'red_color':    'rgba(202, 72, 72, 1)'     # indianred modified
+            },
+            'olive-peach': {
+                'green_color':  'rgba(75, 130, 30, 1)',   # darkened yellowgreen (154, 205, 50)
+                'red_color':    'rgba(224, 107, 60, 1)'   # darkened coral
+            }
+        },
+
         'drawdown_colors': {
             'red': {
                 'fill':     'rgba(178, 34, 34, 1)',   # firebrick
@@ -458,7 +510,7 @@ theme_style = {
             ],
             # https://www.schemecolor.com/everything-green.php
             'grasslands': [
-                'rgba(10, 70, 13, 1)',       # Royal Green darkened
+                'rgba(10, 70, 13, 1)',      # Royal Green darkened
                 'rgba(13, 91, 17, 1)',      # Royal Green
                 'rgba(24, 124, 25, 1)',     # Verse Green
                 'rgba(105, 180, 30, 1)',    # RYB Green
