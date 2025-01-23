@@ -125,7 +125,7 @@ theme_style = {
                 'red_color':    'rgba(215, 90, 90, 1)'     # indianred modified
             },
             'olive-peach': {
-                'green_color':  'rgba(100, 150, 40, 1)',   # darkened yellowgreen (154, 205, 50)
+                'green_color':  'rgba(85, 135, 38, 1)',   # darkened yellowgreen (154, 205, 50) 75, 130, 30
                 'red_color':    'rgba(255, 127, 80, 1)'    # coral
             }
         },
