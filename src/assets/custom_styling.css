@@ -18,6 +18,8 @@
 
 .mantine-Input-input, .mantine-DatePickerInput-input {
     font-family: Helvetica;
+    font-size: 15px;
+    font-weight: normal;
     text-align: center;
 }
 button, input, select, textarea {
@@ -70,6 +72,15 @@ button, input, select, textarea {
 {
     border-color: rgb(152, 242, 178) !important;
     background-color: rgb(152, 242, 178) !important;
+}
+
+.plots-color-icon {
+    display: inline-block;
+    margin-right: 3px;
+    width: 12px;
+    height: 12px;
+    border: 1px solid;
+    border-radius: 2px;
 }
 
 /* https://community.plotly.com/t/style-datatable-tooltip-conditional/28563/2

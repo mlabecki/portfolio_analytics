@@ -347,7 +347,7 @@ portfolio_summary_values_length_css = {
     'font-size': '14px',
 }
 
-# Popover
+# Popover select ticker
 popover_select_ticker_css = {
     'max-width': '400px',
     'font-family': 'Helvetica',
@@ -378,6 +378,77 @@ popover_select_ticker_summary = {
     'padding-top': '8px',
     'padding-left': '5px',
     'display': 'block'
+}
+
+# Popover color themes
+popover_color_themes_css = {
+    'max-width': '400px',
+    'font-family': 'Helvetica',
+    'font-size': '14px',                        
+    'border-radius': '5px'
+}
+popover_color_themes_top_header_css = {
+    'width': '210px',
+    'padding-left': '5px',
+    'margin-top': '2px',
+    'margin-bottom': '0px',
+    'color': 'black',
+    'font-size': '15px',
+    'display': 'block'
+}
+popover_color_themes_header_css = {
+    'width': '210px',
+    'padding-left': '5px',
+    'margin-top': '18px',
+    'margin-bottom': '0px',
+    'color': 'black',
+    'font-size': '15px',
+    'display': 'block'
+}
+popover_overlay_color_themes_keys_css = {
+    'display': 'inline-block',
+    'width': '92px',
+    'padding-left': '5px',
+    'font-weight': 'normal'
+}
+popover_overlay_color_themes_values_dark_css = {
+    'width': '100px',
+    'display': 'inline-block',
+    'text-align': 'center',
+    'border-radius': '3px',
+    'padding': '3px 0px 2px 3px',
+    'background-color': 'black'
+}
+popover_overlay_color_themes_values_light_css = {
+    'width': '100px',
+    'display': 'inline-block',
+    'text-align': 'center',
+    'border-radius': '3px', 
+    'margin-right': '5px',
+    'padding': '3px 0px 2px 3px',
+    'background-color': 'rgb(229, 236, 246)'
+}
+popover_candle_colors_keys_css = {
+    'display': 'inline-block',
+    'width': '100px',
+    'padding-left': '5px',
+    'font-weight': 'normal'
+}
+popover_candle_colors_values_dark_css = {
+    'width': '40px',
+    'display': 'inline-block',
+    'text-align': 'center',
+    'border-radius': '3px',
+    'padding': '3px 0px 2px 3px',
+    'background-color': 'black'
+}
+popover_candle_colors_values_light_css = {
+    'width': '40px',
+    'display': 'inline-block',
+    'text-align': 'center',
+    'border-radius': '3px', 
+    'padding': '3px 0px 2px 3px',
+    'background-color': 'rgb(229, 236, 246)'
 }
 
 # Dates selection page

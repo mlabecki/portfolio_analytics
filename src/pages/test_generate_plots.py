@@ -33,6 +33,7 @@ from utils import *
 from download_data import DownloadData
 from download_info import DownloadInfo
 from analyze_prices import AnalyzePrices
+from build_dash_html import BuildDashHtml
 
 register_page(
     __name__,
@@ -47,6 +48,7 @@ register_page(
 
 hist_data = DownloadData()
 analyze_prices = AnalyzePrices()
+build_dash_html = BuildDashHtml()
 
 
 @callback(
@@ -2030,7 +2032,7 @@ layout = html.Div([
         html.Div(
             [
             # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/
-            html.Div(
+            html.Div([
                 dbc.Button(
                     id = 'collapse-button-final-table-selected-tickers',
                     class_name = 'ma-1',
@@ -2038,141 +2040,74 @@ layout = html.Div([
                     size = 'sm',
                     n_clicks = 0,
                     style = collapse_button_css
+                ),
+                html.Div(
+                    build_dash_html.display_color_themes(),
+                    style = {'display': 'inline-block'}
                 )
-            ),
-            html.Span(
-                id = 'magenta-0',
-                style = {
-                    'display': 'inline-block',
-                    'margin-right': '3px',
-                    'width': '12px',
-                    'height': '12px',
-                    'border': '1px solid rgb(210, 210, 235)',
-                    'border-radius': '2px',
-                    'background-color': theme_style['dark']['overlay_color_theme']['magenta'][0]}
-            ),
-            html.Span(
-                id = 'magenta-1',
-                style = {
-                    'display': 'inline-block',
-                    'margin-right': '3px',
-                    'width': '12px',
-                    'height': '12px',
-                    'border': '1px solid rgb(210, 210, 235)',
-                    'border-radius': '2px',
-                    'background-color': theme_style['dark']['overlay_color_theme']['magenta'][1]}
-            ),
-            html.Span(
-                id = 'magenta-2',
-                style = {
-                    'display': 'inline-block',
-                    'margin-right': '3px',
-                    'width': '12px',
-                    'height': '12px',
-                    'border': '1px solid rgb(210, 210, 235)',
-                    'border-radius': '2px',
-                    'background-color': theme_style['dark']['overlay_color_theme']['magenta'][2]}
-            ),
-            html.Span(
-                id = 'magenta-3',
-                style = {
-                    'display': 'inline-block',
-                    'margin-right': '3px',
-                    'width': '12px',
-                    'height': '12px',
-                    'border': '1px solid rgb(210, 210, 235)',
-                    'border-radius': '2px',
-                    'background-color': theme_style['dark']['overlay_color_theme']['magenta'][3]}
-            ),
-            html.Span(
-                id = 'magenta-4',
-                style = {
-                    'display': 'inline-block',
-                    'margin-right': '3px',
-                    'width': '12px',
-                    'height': '12px',
-                    'border': '1px solid rgb(210, 210, 235)',
-                    'border-radius': '2px',
-                    'background-color': theme_style['dark']['overlay_color_theme']['magenta'][4]}
-            ),
-            html.Span(
-                id = 'magenta-5',
-                style = {
-                    'display': 'inline-block',
-                    'margin-right': '3px',
-                    'width': '12px',
-                    'height': '12px',
-                    'border': '1px solid rgb(210, 210, 235)',
-                    'border-radius': '2px',
-                    'background-color': theme_style['dark']['overlay_color_theme']['magenta'][5]}
-            ),
+            ]),
 
-            html.Span(
-                id = 'magenta-light-0',
-                style = {
-                    'display': 'inline-block',
-                    'margin-right': '3px',
-                    'width': '12px',
-                    'height': '12px',
-                    'border': '1px solid rgb(210, 210, 235)',
-                    'border-radius': '2px',
-                    'background-color': theme_style['light']['overlay_color_theme']['magenta'][0]}
-            ),
-            html.Span(
-                id = 'magenta-light-1',
-                style = {
-                    'display': 'inline-block',
-                    'margin-right': '3px',
-                    'width': '12px',
-                    'height': '12px',
-                    'border': '1px solid rgb(210, 210, 235)',
-                    'border-radius': '2px',
-                    'background-color': theme_style['light']['overlay_color_theme']['magenta'][1]}
-            ),
-            html.Span(
-                id = 'magenta-light-2',
-                style = {
-                    'display': 'inline-block',
-                    'margin-right': '3px',
-                    'width': '12px',
-                    'height': '12px',
-                    'border': '1px solid rgb(210, 210, 235)',
-                    'border-radius': '2px',
-                    'background-color': theme_style['light']['overlay_color_theme']['magenta'][2]}
-            ),
-            html.Span(
-                id = 'magenta-light-3',
-                style = {
-                    'display': 'inline-block',
-                    'margin-right': '3px',
-                    'width': '12px',
-                    'height': '12px',
-                    'border': '1px solid rgb(210, 210, 235)',
-                    'border-radius': '2px',
-                    'background-color': theme_style['light']['overlay_color_theme']['magenta'][3]}
-            ),
-            html.Span(
-                id = 'magenta-light-4',
-                style = {
-                    'display': 'inline-block',
-                    'margin-right': '3px',
-                    'width': '12px',
-                    'height': '12px',
-                    'border': '1px solid rgb(210, 210, 235)',
-                    'border-radius': '2px',
-                    'background-color': theme_style['light']['overlay_color_theme']['magenta'][4]}
-            ),
-            html.Span(
-                id = 'magenta-light-5',
-                style = {
-                    'display': 'inline-block',
-                    'margin-right': '3px',
-                    'width': '12px',
-                    'height': '12px',
-                    'border': '1px solid rgb(210, 210, 235)',
-                    'border-radius': '2px',
-                    'background-color': theme_style['light']['overlay_color_theme']['magenta'][5]}
-            ),
+            # html.Span(
+            #     id = 'magenta-0',
+            #     className = 'plots-color-icon',
+            #     style = {'background-color': theme_style['dark']['overlay_color_theme']['magenta'][0]}
+            # ),
+            # html.Span(
+            #     id = 'magenta-1',
+            #     className = 'plots-color-icon',
+            #     style = {'background-color': theme_style['dark']['overlay_color_theme']['magenta'][1]}
+            # ),
+            # html.Span(
+            #     id = 'magenta-2',
+            #     className = 'plots-color-icon',
+            #     style = {'background-color': theme_style['dark']['overlay_color_theme']['magenta'][2]}
+            # ),
+            # html.Span(
+            #     id = 'magenta-3',
+            #     className = 'plots-color-icon',
+            #     style = {'background-color': theme_style['dark']['overlay_color_theme']['magenta'][3]}
+            # ),
+            # html.Span(
+            #     id = 'magenta-4',
+            #     className = 'plots-color-icon',
+            #     style = {'background-color': theme_style['dark']['overlay_color_theme']['magenta'][4]}
+            # ),
+            # html.Span(
+            #     id = 'magenta-5',
+            #     className = 'plots-color-icon',
+            #     style = {'background-color': theme_style['dark']['overlay_color_theme']['magenta'][5]}
+            # ),
+
+            # html.Span(
+            #     id = 'magenta-light-0',
+            #     className = 'plots-color-icon',
+            #     style = {'background-color': theme_style['light']['overlay_color_theme']['magenta'][0]}
+            # ),
+            # html.Span(
+            #     id = 'magenta-light-1',
+            #     className = 'plots-color-icon',
+            #     style = {'background-color': theme_style['light']['overlay_color_theme']['magenta'][1]}
+            # ),
+            # html.Span(
+            #     id = 'magenta-light-2',
+            #     className = 'plots-color-icon',
+            #     style = {'background-color': theme_style['light']['overlay_color_theme']['magenta'][2]}
+            # ),
+            # html.Span(
+            #     id = 'magenta-light-3',
+            #     className = 'plots-color-icon',
+            #     style = {'background-color': theme_style['light']['overlay_color_theme']['magenta'][3]}
+            # ),
+            # html.Span(
+            #     id = 'magenta-light-4',
+            #     className = 'plots-color-icon',
+            #     style = {'background-color': theme_style['light']['overlay_color_theme']['magenta'][4]}
+            # ),
+            # html.Span(
+            #     id = 'magenta-light-5',
+            #     className = 'plots-color-icon',
+            #     style = {'background-color': theme_style['light']['overlay_color_theme']['magenta'][5]}
+            # ),
 
             dbc.Collapse(
                 html.Div(

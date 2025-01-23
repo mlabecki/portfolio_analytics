@@ -110,18 +110,18 @@ theme_style = {
             },
             'teal-tomato': {
                 'green_color':  'rgba(0, 150, 150, 1)',     # lightened teal (0, 128, 128)
-                'red_color':    'rgba(255, 99, 71, 1)'
+                'red_color':    'rgba(255, 82, 60, 1)'
             },
             'blue-salmon': {
-                'green_color':  'rgba(0, 191, 255, 1)',   # deepskyblue
+                'green_color':  'rgba(0, 185, 225, 1)',   # darkened deepskyblue (0, 191, 255)
                 'red_color':    'rgba(250, 128, 114, 1)'  # salmon
             },
             'gold-orchid': {
                 'green_color':  'rgba(255, 215, 0, 1)',   # gold
-                'red_color':    'rgba(153, 50, 204, 1)'   # darkorchid
+                'red_color':    'rgba(158, 50, 184, 1)'   # modified darkorchid (153, 50, 204)
             },
             'silver-rose': {
-                'green_color':  'rgba(170, 210, 225, 1)',  # silver fill
+                'green_color':  'rgba(190, 205, 215, 1)',  # silver fill modified
                 'red_color':    'rgba(205, 92, 92, 1)'     # indianred
             },
             'olive-peach': {
@@ -278,7 +278,7 @@ theme_style = {
                 'rgba(50, 50, 75, 1)',  #
                 'rgba(90, 90, 110, 1)',  #
                 'rgba(130, 130, 145, 1)',  # 
-                'rgba(170, 170, 195 1)',  #
+                'rgba(170, 170, 195, 1)',  #
                 'rgba(210, 210, 235, 1)',  # 
                 'rgba(240, 240, 255, 1)'   #
             ]
@@ -424,18 +424,18 @@ theme_style = {
             },
             'teal-tomato': {                               
                 'green_color':  'rgba(0, 128, 128, 1)',     
-                'red_color':    'rgba(245, 79, 54, 1)'
+                'red_color':    'rgba(225, 70, 50, 1)'
             },
             'blue-salmon': {
                 'green_color':  'rgba(31, 119, 200, 1)',   #
-                'red_color':    'rgba(235, 100, 90, 1)'    #
+                'red_color':    'rgba(252, 122, 115, 1)'   # 
             },
             'gold-orchid': {
                 'green_color':  'rgba(210, 155, 12, 1)',  # goldenrod modified
                 'red_color':    'rgba(128, 0, 128, 1)'    # purple
             },
             'silver-rose': {                               
-                'green_color':  'rgba(98, 108, 118, 1)',   # silver fill
+                'green_color':  'rgba(112, 130, 138, 1)',  # silver fill modified
                 'red_color':    'rgba(202, 72, 72, 1)'     # indianred modified
             },
             'olive-peach': {
@@ -579,12 +579,12 @@ theme_style = {
                 'rgba(23, 190, 207, 1)'    # cyan
             ],
             'silver': [
-                'rgba(70, 70, 70, 1)'      #
+                'rgba(70, 70, 70, 1)',   #
                 'rgba(100, 100, 100, 1)',  #
                 'rgba(130, 130, 130, 1)',  #
                 'rgba(160, 160, 160, 1)',  # 
                 'rgba(190, 190, 190, 1)',  #
-                'rgba(220, 220, 220, 1)',  # 
+                'rgba(220, 220, 220, 1)'  # 
             ]
         },
 
