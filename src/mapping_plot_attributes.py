@@ -109,7 +109,7 @@ theme_style = {
                 'red_color':    'rgba(255, 0, 0, 1)'
             },
             'teal-tomato': {
-                'green_color':  'rgba(0, 150, 150, 1)',     # lightened teal (0, 128, 128)
+                'green_color':  'rgba(0, 150, 130, 1)',     # modified teal (0, 128, 128)
                 'red_color':    'rgba(255, 82, 60, 1)'
             },
             'blue-salmon': {
@@ -122,7 +122,7 @@ theme_style = {
             },
             'silver-rose': {
                 'green_color':  'rgba(190, 205, 215, 1)',  # silver fill modified
-                'red_color':    'rgba(205, 92, 92, 1)'     # indianred
+                'red_color':    'rgba(215, 90, 90, 1)'     # indianred modified
             },
             'olive-peach': {
                 'green_color':  'rgba(100, 150, 40, 1)',   # darkened yellowgreen (154, 205, 50)
@@ -440,7 +440,7 @@ theme_style = {
             },
             'olive-peach': {
                 'green_color':  'rgba(75, 130, 30, 1)',   # darkened yellowgreen (154, 205, 50)
-                'red_color':    'rgba(224, 107, 60, 1)'   # darkened coral
+                'red_color':    'rgba(232, 128, 60, 1)'   # darkened coral
             }
         },
 
