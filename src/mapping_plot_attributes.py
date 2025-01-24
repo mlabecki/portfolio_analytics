@@ -106,27 +106,33 @@ theme_style = {
         'candle_colors': {
             'green-red': {
                 'green_color':  'rgba(50, 205, 50, 1)',
-                'red_color':    'rgba(255, 0, 0, 1)'
+                'red_color':    'rgba(255, 0, 0, 1)',
+                'base_color':   'rgba(0, 191, 255, 1)'
             },
             'teal-tomato': {
                 'green_color':  'rgba(0, 150, 130, 1)',     # modified teal (0, 128, 128)
-                'red_color':    'rgba(255, 82, 60, 1)'
+                'red_color':    'rgba(255, 82, 60, 1)',
+                'base_color':   'rgba(0, 191, 255, 1)'
             },
             'blue-salmon': {
-                'green_color':  'rgba(0, 185, 225, 1)',   # darkened deepskyblue (0, 191, 255)
-                'red_color':    'rgba(250, 128, 114, 1)'  # salmon
+                'green_color':  'rgba(0, 185, 225, 1)',    # darkened deepskyblue (0, 191, 255)
+                'red_color':    'rgba(250, 128, 114, 1)',  # salmon
+                'base_color':   'rgba(50, 205, 50, 1)'     # grasslands
             },
             'gold-orchid': {
                 'green_color':  'rgba(255, 215, 0, 1)',   # gold
-                'red_color':    'rgba(158, 50, 184, 1)'   # modified darkorchid (153, 50, 204)
+                'red_color':    'rgba(158, 50, 184, 1)',   # modified darkorchid (153, 50, 204)
+                'base_color':   'rgba(0, 191, 255, 1)'
             },
             'silver-rose': {
                 'green_color':  'rgba(190, 205, 215, 1)',  # silver fill modified
-                'red_color':    'rgba(215, 90, 90, 1)'     # indianred modified
+                'red_color':    'rgba(215, 90, 90, 1)',     # indianred modified
+                'base_color':   'rgba(0, 191, 255, 1)'
             },
             'olive-peach': {
                 'green_color':  'rgba(85, 135, 38, 1)',   # darkened yellowgreen (154, 205, 50) 75, 130, 30
-                'red_color':    'rgba(255, 127, 80, 1)'    # coral
+                'red_color':    'rgba(255, 127, 80, 1)',    # coral
+                'base_color':   'rgba(0, 191, 255, 1)'
             }
         },
 
@@ -419,28 +425,34 @@ theme_style = {
 
         'candle_colors': {
             'green-red': {
-                'green_color':  'rgba(0, 128, 0, 1)',       # green
-                'red_color':    'rgba(178, 34, 34, 1)'      # firebrick
+                'green_color':  'rgba(0, 128, 0, 1)',      # green
+                'red_color':    'rgba(178, 34, 34, 1)',    # firebrick
+                'base_color':   'rgba(31, 119, 180, 1)'
             },
             'teal-tomato': {                               
                 'green_color':  'rgba(0, 128, 128, 1)',     
-                'red_color':    'rgba(225, 70, 50, 1)'
+                'red_color':    'rgba(225, 70, 50, 1)',
+                'base_color':   'rgba(31, 119, 180, 1)'
             },
             'blue-salmon': {
-                'green_color':  'rgba(31, 119, 200, 1)',   #
-                'red_color':    'rgba(252, 122, 115, 1)'   # 
+                'green_color':  'rgba(31, 119, 200, 1)',
+                'red_color':    'rgba(252, 122, 115, 1)',
+                'base_color':   'rgba(0, 128, 0, 1)'
             },
             'gold-orchid': {
-                'green_color':  'rgba(210, 155, 12, 1)',  # goldenrod modified
-                'red_color':    'rgba(128, 0, 128, 1)'    # purple
+                'green_color':  'rgba(210, 155, 12, 1)',   # goldenrod modified
+                'red_color':    'rgba(128, 0, 128, 1)',    # purple
+                'base_color':   'rgba(31, 119, 180, 1)'
             },
             'silver-rose': {                               
                 'green_color':  'rgba(112, 130, 138, 1)',  # silver fill modified
-                'red_color':    'rgba(202, 72, 72, 1)'     # indianred modified
+                'red_color':    'rgba(202, 72, 72, 1)',    # indianred modified
+                'base_color':   'rgba(31, 119, 180, 1)'
             },
             'olive-peach': {
-                'green_color':  'rgba(75, 130, 30, 1)',   # darkened yellowgreen (154, 205, 50)
-                'red_color':    'rgba(232, 128, 60, 1)'   # darkened coral
+                'green_color':  'rgba(75, 130, 30, 1)',    # darkened yellowgreen (154, 205, 50)
+                'red_color':    'rgba(232, 128, 60, 1)',   # darkened coral
+                'base_color':   'rgba(31, 119, 180, 1)'
             }
         },
 
@@ -623,11 +635,11 @@ theme_style = {
                 6: [0, 1, 2, 3, 4, 5]   # 
             },
             'grasslands': {
-                1: [1],                 # 
-                2: [1, 3],              # 
-                3: [0, 2, 4],           # 
-                4: [0, 2, 3, 4],        # 
-                5: [0, 1, 2, 3, 4],     # 
+                1: [2],                 # 
+                2: [2, 4],              # 
+                3: [1, 2, 4],           # 
+                4: [1, 2, 3, 4],        # 
+                5: [1, 2, 3, 4, 5],     # 
                 6: [0, 1, 2, 3, 4, 5]   # 
             },
             'sapphire': {

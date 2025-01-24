@@ -1248,13 +1248,13 @@ layout = html.Div([
                             options = drawdown_colors,
                             value = 'Red',
                             clearable = False,
-                            style = {'width': '90px'}
+                            style = {'width': '100px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Price Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        html.Div('Price Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
                             id = 'drawdowns-price-color-dropdown',
                             className = 'plots-dropdown-button',
@@ -1262,7 +1262,7 @@ layout = html.Div([
                             value = 'Sapphire',
                             clearable = False,
                             disabled = False,
-                            style = {'width': '130px'}
+                            style = {'width': '115px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -1275,7 +1275,7 @@ layout = html.Div([
                             options = ['Yes', 'No'],
                             value = 'Yes',
                             clearable = False,
-                            style = {'width': '70px'}
+                            style = {'width': '75px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -2140,6 +2140,7 @@ layout = html.Div([
                             max = 200,
                             step = 1,
                             debounce = True,
+                            disabled = False,
                             style = {'width': '102px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
@@ -2150,12 +2151,13 @@ layout = html.Div([
                         dcc.Dropdown(
                             id = 'macd-signal-color-theme-dropdown',
                             className = 'plots-dropdown-button',
-                            options = ['Grasslands'],
+                            options = overlay_color_themes,
                             # If using overlay_color_themes, use the parameters below to get value:
                             # color_idx = style['overlay_color_selection'][price_color_theme][1][0]
                             # linecolor = style['overlay_color_theme'][price_color_theme][color_idx]
-                            value = 'Grasslands',
+                            value = 'Gold',
                             clearable = False,
+                            disabled = False,
                             style = {'width': '113px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
@@ -2258,12 +2260,10 @@ layout = html.Div([
                         dcc.Dropdown(
                             id='macd-price-color-theme-dropdown',
                             className = 'plots-dropdown-button',
-                            options = ['Grasslands'],
-                            # If using overlay_color_themes, use the parameters below to get value:
-                            # color_idx = style['overlay_color_selection'][price_color_theme][1][0]
-                            # linecolor = style['overlay_color_theme'][price_color_theme][color_idx]
-                            value = 'Grasslands',
+                            options = overlay_color_themes,
+                            value = 'Magenta',
                             clearable = False,
+                            disabled = False,
                             style = {'width': '107px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
@@ -2535,11 +2535,10 @@ def target_deck_options(
     ma_env_deck,
     ma_ribbon_deck,
     price_overlays_deck,
-    macd_deck #,
-    # *args
+    macd_deck
 ):
+    # Number of deck-dropdown inputs
     n = target_deck_options.__code__.co_argcount - 2
-    #n = len(args) - 2  # number of deck-dropdown outputs
 
     deck_changed = False if deck_changed is None else deck_changed
 
@@ -2743,6 +2742,11 @@ def toggle_collapse_macd(n, is_open):
     Output('drawdowns-number-input', 'value'),
     Output('drawdowns-price-color-dropdown', 'disabled'),
 
+    Output('macd-signal-window-input', 'disabled'),
+    Output('macd-signal-color-theme-dropdown', 'disabled'),
+    Output('macd-add-price-dropdown', 'disabled'),
+    Output('macd-price-color-theme-dropdown', 'disabled'),
+
     Output('plots-start-date-input-dmc', 'value'),
     Output('plots-end-date-input-dmc', 'value'),
     Output('plots-start-date-input-dmc', 'minDate'),
@@ -2862,10 +2866,9 @@ def toggle_collapse_macd(n, is_open):
     Input('macd-histogram-type-dropdown', 'value'),
     Input('macd-vol-normalized-dropdown', 'value'),
     Input('macd-add-title-dropdown', 'value'),    
-    # Input('macd-add-yaxis-title-dropdown', 'value'),
-    # Input('macd-color-theme-dropdown', 'value'),
-    # Input('macd-signal-color-theme-dropdown', 'value'),
-    # Input('macd-price-color-theme-dropdown', 'value'),
+    Input('macd-color-theme-dropdown', 'value'),
+    Input('macd-signal-color-theme-dropdown', 'value'),
+    Input('macd-price-color-theme-dropdown', 'value'),
     Input('add-macd-button', 'n_clicks'),
    
 )
@@ -2983,10 +2986,9 @@ def update_plot(
         macd_histogram_type,
         macd_vol_normalized,
         macd_add_title,
-        # macd_add_yaxis_title,
-        # macd_color_theme,
-        # macd_signal_color_theme,
-        # macd_price_color_theme,
+        macd_color_theme,
+        macd_signal_color,
+        macd_price_color,
         add_macd,
 
     ):
@@ -3016,9 +3018,17 @@ def update_plot(
     hist_price_sec_y_disabled = not secondary_y
     volume_sec_y_disabled = not secondary_y
 
-    dd_add_price_disabled = boolean(drawdown_add_price)
+    dd_add_price_disabled = not boolean(drawdown_add_price)
     n_drawdowns = 5 if n_top is None else n_top
     dd_number_value = n_drawdowns
+
+    macd_signal_window_disabled = not boolean(macd_add_signal)
+    macd_signal_color_disabled = not boolean(macd_add_signal)
+    macd_price_color_disabled = not boolean(macd_add_price)
+    if (macd_deck != 'Upper') | (not secondary_y):
+        macd_add_price_disabled = True
+    else:
+        macd_add_price_disabled = False
 
     ################
 
@@ -3248,7 +3258,7 @@ def update_plot(
                 )
             # MACD
             else:
-                macd_data = analyze_prices.get_macd_v(
+                macd_data = analyze_prices.get_macd(
                     close_tk,
                     signal_window = macd_signal_window
                 )
@@ -3264,10 +3274,10 @@ def update_plot(
                 plot_type = 'bar' if macd_plot_type == 'Histogram' else 'scatter',
                 target_deck = deck_number(deck_type, macd_deck),
                 add_title = boolean(macd_add_title),
-                theme = theme #,
-                # color_theme = macd_color_theme,
-                # signal_color = macd_signal_color,
-                # price_color = macd_price_color
+                theme = theme,
+                color_theme = macd_color_theme,
+                signal_color_theme = macd_signal_color,
+                price_color_theme = macd_price_color
             )
 
 
@@ -3336,6 +3346,10 @@ def update_plot(
         n_drawdowns,
         dd_number_value,
         dd_add_price_disabled,
+        macd_signal_window_disabled,
+        macd_signal_color_disabled,
+        macd_add_price_disabled,
+        macd_price_color_disabled,
 
         start_date_value,
         end_date_value,

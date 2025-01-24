@@ -694,14 +694,24 @@ class AnalyzePrices():
                     )
 
             else:
+                
+                min_n_intervals = n_yintervals_map['min'][plot_height]
+                max_n_intervals = n_yintervals_map['max'][plot_height]
+                sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
+                sec_y_range = (sec_y_lower_limit, sec_y_upper_limit)
+
                 fig.update_yaxes(
-                    range = None,
+                    range = sec_y_range,
+                    tick0 = sec_y_lower_limit,
+                    dtick = sec_y_delta,
                     secondary_y = True,
                     showticklabels = True,
                     showgrid = False,
                     zeroline = False,
                     row = target_deck, col = 1
                 )
+
+            ############
 
             legendgrouptitle = {}
             if deck_type in ['double', 'triple']:
@@ -875,6 +885,7 @@ class AnalyzePrices():
 
         fig_stochastic = fig_data['fig']
         deck_type = fig_data['deck_type']
+        plot_height = fig_data['plot_height'][target_deck]
         title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
         has_secondary_y = fig_data['has_secondary_y']
@@ -920,7 +931,8 @@ class AnalyzePrices():
                 legendgrouptitle = legendgrouptitle,
                 name = f'{stochastic_type} {stochastic_label} %K'
             ),
-            row = target_deck, col = 1
+            row = target_deck, col = 1,
+            secondary_y = False
         )
         fig_stochastic.add_trace(
             go.Scatter(
@@ -934,7 +946,8 @@ class AnalyzePrices():
                 legendgrouptitle = legendgrouptitle,
                 name = f'{stochastic_type} {stochastic_label} %D'
             ),
-            row = target_deck, col = 1
+            row = target_deck, col = 1,
+            secondary_y = False
         )
 
         if add_threshold_overlays:
@@ -957,7 +970,8 @@ class AnalyzePrices():
                     hoverinfo = 'skip',
                     showlegend = False
                 ),
-                row = target_deck, col = 1
+                row = target_deck, col = 1,
+                secondary_y = False
             )
             fig_stochastic.add_trace(
                 go.Scatter(
@@ -973,7 +987,8 @@ class AnalyzePrices():
                     legendgrouptitle = legendgrouptitle,
                     name = f'Overbought > {overbought_threshold}%'
                 ),
-                row = target_deck, col = 1
+                row = target_deck, col = 1,
+                secondary_y = False
             )
 
             fig_stochastic.add_trace(
@@ -990,21 +1005,38 @@ class AnalyzePrices():
                     legendgrouptitle = legendgrouptitle,
                     name = f'Oversold < {oversold_threshold}%'
                 ),
-                row = target_deck, col = 1
+                row = target_deck, col = 1,
+                secondary_y = False
             )
 
         if add_price:
+
+            min_n_intervals = n_yintervals_map['min'][plot_height]
+            max_n_intervals = n_yintervals_map['max'][plot_height]
+            sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(min(df_price), max(df_price), min_n_intervals, max_n_intervals)
+            sec_y_range = (sec_y_lower_limit, sec_y_upper_limit)
+
             fig_stochastic.add_trace(
                 go.Scatter(
                     x = k_line.index,
                     y = df_price,
                     mode = 'lines',
                     line_color = style['basecolor'],
-                    showgrid = False,
-                    name = 'Close',
-                    title = 'Close'
+                    name = 'Close'
                 ),
                 secondary_y = True
+            )
+
+            fig_stochastic.update_yaxes(
+                range = sec_y_range,
+                title = 'Close',
+                showticklabels = True,
+                tick0 = sec_y_lower_limit,
+                dtick = sec_y_delta,
+                secondary_y = True,
+                showgrid = False,
+                zeroline = False,
+                row = target_deck, col = 1
             )
 
         # Update layout and axes
@@ -1024,6 +1056,7 @@ class AnalyzePrices():
             range = (0, y_upper_limit),
             title = yaxis_title,
             showticklabels = True,
+            secondary_y = False,
             row = target_deck, col = 1
         )
 
@@ -1131,7 +1164,10 @@ class AnalyzePrices():
         target_deck = 2,
         add_title = False,
         title_font_size = 32,
-        theme = 'dark'
+        theme = 'dark',
+        color_theme = None,
+        signal_color_theme = None,
+        price_color_theme = None
     ):
         """
         Adds MACD with a signal line to a stacked plot
@@ -1159,6 +1195,34 @@ class AnalyzePrices():
         title_y_pos = fig_data['title_y_pos']
         has_secondary_y = fig_data['has_secondary_y']        
 
+        style = theme_style[theme]
+
+        color_theme = 'green-red' if color_theme is None else color_theme.lower()
+        if theme == 'dark':
+            opacity_green = 0.75
+            opacity_red = 0.7
+        else:
+            opacity_green = 0.85
+            opacity_red = 0.85
+        base_color = style['candle_colors'][color_theme]['base_color']            
+        green_color = style['candle_colors'][color_theme]['green_color']
+        diff_green_linecolor = style['candle_colors'][color_theme]['green_color']
+        diff_green_fillcolor = diff_green_linecolor.replace(', 1)', f', {opacity_green})')
+        red_color = style['candle_colors'][color_theme]['red_color']
+        diff_red_linecolor = style['candle_colors'][color_theme]['red_color']
+        diff_red_fillcolor = diff_red_linecolor.replace(', 1)', f', {opacity_red})')
+
+        if signal_color_theme is None:
+            signal_color_theme = 'coral' if color_theme == 'gold-orchid' else 'gold'
+        else:
+            signal_color_theme = signal_color_theme.lower()
+        signal_color_idx = style['overlay_color_selection'][signal_color_theme][1][0]
+        signal_color = style['overlay_color_theme'][signal_color_theme][signal_color_idx]
+
+        price_color_theme = 'base' if price_color_theme is None else price_color_theme.lower()
+        price_color_idx = style['overlay_color_selection'][price_color_theme][1][0]
+        price_color = style['overlay_color_theme'][price_color_theme][price_color_idx]
+
         # Plot price on secondary axis of the upper deck only if it has been created in subplots
 
         if target_deck == 1:
@@ -1169,8 +1233,6 @@ class AnalyzePrices():
         else:
             # If it's the middle or lower deck, just set add_price to False and continue
             add_price = False
-
-        style = theme_style[theme]
 
         if volatility_normalized:
             yaxis_title = f'MACD-V'
@@ -1233,7 +1295,7 @@ class AnalyzePrices():
                     go.Bar(
                         x = macd_positive.index.astype(str),
                         y = macd_positive,
-                        marker_color = style['green_color'],
+                        marker_color = green_color,
                         width = 1,
                         name = macd_legend_positive,
                         legendrank = target_deck * 1000,
@@ -1241,13 +1303,14 @@ class AnalyzePrices():
                         legendgrouptitle = legendgrouptitle,
                         showlegend = True
                     ),
-                    row = target_deck, col = 1
+                    row = target_deck, col = 1,
+                    secondary_y = False
                 )
                 fig_macd.add_trace(
                     go.Bar(
                         x = macd_negative.index.astype(str),
                         y = macd_negative,
-                        marker_color = style['red_color'],
+                        marker_color = red_color,
                         width = 1,
                         name = macd_legend_negative,
                         legendrank = target_deck * 1000,
@@ -1255,7 +1318,8 @@ class AnalyzePrices():
                         legendgrouptitle = legendgrouptitle,
                         showlegend = True
                     ),
-                    row = target_deck, col = 1
+                    row = target_deck, col = 1,
+                    secondary_y = False
                 )
 
             else:
@@ -1285,34 +1349,36 @@ class AnalyzePrices():
                         x = macd_positive.index.astype(str),
                         y = macd_positive,
                         mode = 'lines',
-                        line_color = style['diff_green_linecolor'],
+                        line_color = diff_green_linecolor,
                         line_width = 2,
                         fill = 'tozeroy',
-                        fillcolor = style['diff_green_fillcolor'],
+                        fillcolor = diff_green_fillcolor,
                         name = macd_legend_positive,
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
                         showlegend = True
                     ),
-                    row = target_deck, col = 1
+                    row = target_deck, col = 1,
+                    secondary_y = False
                 )
                 fig_macd.add_trace(
                     go.Scatter(
                         x = macd_negative.index.astype(str),
                         y = macd_negative,
                         mode = 'lines',
-                        line_color = style['diff_red_linecolor'],
+                        line_color = diff_red_linecolor,
                         line_width = 2,
                         fill = 'tozeroy',
-                        fillcolor = style['diff_red_fillcolor'],
+                        fillcolor = diff_red_fillcolor,
                         name = macd_legend_negative,
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
                         showlegend = True
                     ),
-                    row = target_deck, col = 1
+                    row = target_deck, col = 1,
+                    secondary_y = False
                 )
 
         else:
@@ -1330,7 +1396,7 @@ class AnalyzePrices():
                     go.Bar(
                         x = macd_histogram_positive.index.astype(str),
                         y = macd_histogram_positive,
-                        marker_color = style['green_color'],
+                        marker_color = green_color,
                         width = 1,
                         name = macd_legend_positive,
                         legendrank = target_deck * 1000,
@@ -1338,13 +1404,14 @@ class AnalyzePrices():
                         legendgrouptitle = legendgrouptitle,
                         showlegend = True
                     ),
-                    row = target_deck, col = 1
+                    row = target_deck, col = 1,
+                    secondary_y = False
                 )
                 fig_macd.add_trace(
                     go.Bar(
                         x = macd_histogram_negative.index.astype(str),
                         y = macd_histogram_negative,
-                        marker_color = style['red_color'],
+                        marker_color = red_color,
                         width = 1,
                         name = macd_legend_negative,
                         legendrank = target_deck * 1000,
@@ -1352,7 +1419,8 @@ class AnalyzePrices():
                         legendgrouptitle = legendgrouptitle,
                         showlegend = True
                     ),
-                    row = target_deck, col = 1
+                    row = target_deck, col = 1,
+                    secondary_y = False
                 )
 
             else:
@@ -1382,34 +1450,36 @@ class AnalyzePrices():
                         x = macd_histogram_positive.index.astype(str),
                         y = macd_histogram_positive,
                         mode = 'lines',
-                        line_color = style['diff_green_linecolor'],
+                        line_color = diff_green_linecolor,
                         line_width = 2,
                         fill = 'tozeroy',
-                        fillcolor = style['diff_green_fillcolor'],
+                        fillcolor = diff_green_fillcolor,
                         name = macd_legend_positive,
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
                         showlegend = True
                     ),
-                    row = target_deck, col = 1
+                    row = target_deck, col = 1,
+                    secondary_y = False
                 )
                 fig_macd.add_trace(
                     go.Scatter(
                         x = macd_histogram_negative.index.astype(str),
                         y = macd_histogram_negative,
                         mode = 'lines',
-                        line_color = style['diff_red_linecolor'],
+                        line_color = diff_red_linecolor,
                         line_width = 2,
                         fill = 'tozeroy',
-                        fillcolor = style['diff_red_fillcolor'],
+                        fillcolor = diff_red_fillcolor,
                         name = macd_legend_negative,
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
                         showlegend = True
                     ),
-                    row = target_deck, col = 1
+                    row = target_deck, col = 1,
+                    secondary_y = False
                 )
 
         if include_signal:
@@ -1421,14 +1491,15 @@ class AnalyzePrices():
                         x = macd.index.astype(str),
                         y = macd,
                         mode = 'lines',
-                        line = dict(color = style['basecolor']),
+                        line_color = base_color,
                         name = yaxis_title,
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
                         showlegend = True
                     ),
-                    row = target_deck, col = 1
+                    row = target_deck, col = 1,
+                    secondary_y = False
                 )
 
             fig_macd.add_trace(
@@ -1436,29 +1507,54 @@ class AnalyzePrices():
                     x = macd_signal.index.astype(str),
                     y = macd_signal,
                     mode = 'lines',
-                    line = dict(color = style['signal_color']),
+                    line_color = signal_color,
                     name = f'EMA {macd_signal_window} Signal',
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
                     showlegend = True
                 ),
-                row = target_deck, col = 1
+                row = target_deck, col = 1,
+                secondary_y = False
             )
 
+        #############
+
         if add_price:
+            
+            min_n_intervals = n_yintervals_map['min'][plot_height]
+            max_n_intervals = n_yintervals_map['max'][plot_height]
+            # print(f'min(df_price): {min(df_price)}')
+            # print(f'max(df_price): {max(df_price)}')
+            # print(f'min_n_intervals: {min_n_intervals}')
+            # print(f'max_n_intervals: {max_n_intervals}')
+            sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(min(df_price), max(df_price), min_n_intervals, max_n_intervals)
+            sec_y_range = (sec_y_lower_limit, sec_y_upper_limit)
+
             fig_macd.add_trace(
                 go.Scatter(
                     x = df_price.index,
                     y = df_price,
                     mode = 'lines',
-                    line_color = style['basecolor'],
-                    showgrid = False,
-                    name = 'Close',
-                    title = 'Close'
+                    line_color = price_color,
+                    name = 'Close'
                 ),
                 secondary_y = True
             )
+
+            fig_macd.update_yaxes(
+                range = sec_y_range,
+                title = 'Close',
+                showticklabels = True,
+                tick0 = sec_y_lower_limit,
+                dtick = sec_y_delta,
+                secondary_y = True,
+                showgrid = False,
+                zeroline = False,
+                row = target_deck, col = 1
+            )
+
+        ##########
 
         if deck_type in ['double', 'triple']:
             legend_tracegroupgap = self.set_legend_tracegroupgap()
@@ -1490,7 +1586,8 @@ class AnalyzePrices():
             range = (y_macd_min, y_macd_max),
             tick0 = y_macd_min,
             dtick = y_delta,
-            showticklabels = True,        
+            showticklabels = True,
+            secondary_y = False,    
             row = target_deck, col = 1
         )
 
@@ -2272,6 +2369,7 @@ class AnalyzePrices():
 
         fig_rsi = fig_data['fig']    
         deck_type = fig_data['deck_type']
+        plot_height = fig_data['plot_height'][target_deck]        
         title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
         has_secondary_y = fig_data['has_secondary_y']
@@ -2318,7 +2416,8 @@ class AnalyzePrices():
                 legendgrouptitle = legendgrouptitle,            
                 name = f'RSI {rsi_type} (%)'
             ),
-            row = target_deck, col = 1
+            row = target_deck, col = 1,
+            secondary_y = False
         )
 
         if add_threshold_overlays:
@@ -2340,7 +2439,8 @@ class AnalyzePrices():
                     hoverinfo = 'skip',            
                     showlegend = False
                 ),
-                row = target_deck, col = 1
+                row = target_deck, col = 1,
+                secondary_y = False
             )
             fig_rsi.add_trace(
                 go.Scatter(
@@ -2356,7 +2456,8 @@ class AnalyzePrices():
                     legendgrouptitle = legendgrouptitle,
                     name = f'Overbought > {overbought_threshold}%'
                 ),
-                row = target_deck, col = 1
+                row = target_deck, col = 1,
+                secondary_y = False
             )
             fig_rsi.add_trace(
                 go.Scatter(
@@ -2372,22 +2473,43 @@ class AnalyzePrices():
                     legendgrouptitle = legendgrouptitle,
                     name = f'Oversold < {oversold_threshold}%'
                 ),
-                row = target_deck, col = 1
+                row = target_deck, col = 1,
+                secondary_y = False
             )
 
+        ############
+
         if add_price:
+
+            min_n_intervals = n_yintervals_map['min'][plot_height]
+            max_n_intervals = n_yintervals_map['max'][plot_height]
+            sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(min(df_price), max(df_price), min_n_intervals, max_n_intervals)
+            sec_y_range = (sec_y_lower_limit, sec_y_upper_limit)
+
             fig_rsi.add_trace(
                 go.Scatter(
                     x = rsi.index,
                     y = df_price,
                     mode = 'lines',
                     line_color = style['basecolor'],
-                    showgrid = False,
-                    name = 'Close',
-                    title = 'Close'
+                    name = 'Close'
                 ),
                 secondary_y = True
             )
+
+            fig_rsi.update_yaxes(
+                range = sec_y_range,
+                title = 'Close',
+                showticklabels = True,
+                tick0 = sec_y_lower_limit,
+                dtick = sec_y_delta,
+                secondary_y = True,
+                showgrid = False,
+                zeroline = False,
+                row = target_deck, col = 1
+            )
+
+        ##########
 
         # Update layout and axes
         if add_title:
@@ -2406,6 +2528,7 @@ class AnalyzePrices():
             range = (0, y_upper_limit),
             title = yaxis_title,
             showticklabels = True,
+            secondary_y = False,
             row = target_deck, col = 1
         )
 
@@ -3020,10 +3143,12 @@ class AnalyzePrices():
                 if new_y_max > fig_y_max:
                     reset_y_limits = True
 
-            print(f'\nADD BOLLINGER WIDTH')
-            print(f'min_y, max_y = {min_y, max_y}')
-            print(f'fig_y_min, fig_y_max = {fig_y_min, fig_y_max}')
-            print(f'new_y_min, new_y_max = {new_y_min, new_y_max}')
+            # print(f'\nADD BOLLINGER WIDTH')
+            # print(f'min_y, max_y = {min_y, max_y}')
+            # print(f'fig_y_min, fig_y_max = {fig_y_min, fig_y_max}')
+            # print(f'new_y_min, new_y_max = {new_y_min, new_y_max}')
+
+            ##################
 
             if not secondary_y:
 
@@ -3037,9 +3162,9 @@ class AnalyzePrices():
                     if target_deck > 1:
                         y_upper_limit *= 0.999
 
-                    print(f'min_n_intervals, max_n_intervals = {min_n_intervals, max_n_intervals}')
-                    print(f'y_lower_limit, y_upper_limit, y_delta = {y_lower_limit, y_upper_limit, y_delta}')
-                    print(f'FINAL new_y_min, new_y_max, y_delta = {new_y_min, new_y_max, y_delta}')
+                    # print(f'min_n_intervals, max_n_intervals = {min_n_intervals, max_n_intervals}')
+                    # print(f'y_lower_limit, y_upper_limit, y_delta = {y_lower_limit, y_upper_limit, y_delta}')
+                    # print(f'FINAL new_y_min, new_y_max, y_delta = {new_y_min, new_y_max, y_delta}')
 
                     y_range = (y_lower_limit, y_upper_limit)
                     fig.update_yaxes(
@@ -3055,14 +3180,23 @@ class AnalyzePrices():
             
             else:
 
+                min_n_intervals = n_yintervals_map['min'][plot_height]
+                max_n_intervals = n_yintervals_map['max'][plot_height]
+                sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
+                sec_y_range = (sec_y_lower_limit, sec_y_upper_limit)
+
                 fig.update_yaxes(
-                    range = None,
+                    range = sec_y_range,
                     secondary_y = True,
+                    tick0 = sec_y_lower_limit,
+                    dtick = sec_y_delta,
                     showticklabels = True,
                     showgrid = False,
                     zeroline = False,
                     row = target_deck, col = 1
                 )
+
+            ################
 
             legendgrouptitle = {}
             if deck_type in ['double', 'triple']:
@@ -3343,9 +3477,9 @@ class AnalyzePrices():
                     if target_deck > 1:
                         y_upper_limit *= 0.999
 
-                    print(f'min_n_intervals, max_n_intervals = {min_n_intervals, max_n_intervals}')
-                    print(f'y_lower_limit, y_upper_limit, y_delta = {y_lower_limit, y_upper_limit, y_delta}')
-                    print(f'FINAL new_y_min, new_y_max, y_delta = {new_y_min, new_y_max, y_delta}')
+                    # print(f'min_n_intervals, max_n_intervals = {min_n_intervals, max_n_intervals}')
+                    # print(f'y_lower_limit, y_upper_limit, y_delta = {y_lower_limit, y_upper_limit, y_delta}')
+                    # print(f'FINAL new_y_min, new_y_max, y_delta = {new_y_min, new_y_max, y_delta}')
 
                     y_range = (y_lower_limit, y_upper_limit)
                     fig.update_yaxes(
@@ -3360,14 +3494,23 @@ class AnalyzePrices():
 
             else:
 
+                min_n_intervals = n_yintervals_map['min'][plot_height]
+                max_n_intervals = n_yintervals_map['max'][plot_height]
+                sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
+                sec_y_range = (sec_y_lower_limit, sec_y_upper_limit)
+
                 fig.update_yaxes(
-                    range = None,
+                    range = sec_y_range,
                     secondary_y = True,
+                    tick0 = sec_y_lower_limit,
+                    dtick = sec_y_delta,
                     showticklabels = True,
                     showgrid = False,
                     zeroline = False,
                     row = target_deck, col = 1
                 )
+
+            ##################
 
             legendgrouptitle = {}
             if deck_type in ['double', 'triple']:
@@ -3647,7 +3790,6 @@ class AnalyzePrices():
             )
         else:
             fig.update_yaxes(
-                # range = None,
                 range = y_range,
                 title = yaxis_title,
                 showticklabels = True,
@@ -3656,7 +3798,6 @@ class AnalyzePrices():
                 secondary_y = True,
                 showgrid = False,
                 zeroline = False,
-                # zeroline = True,
                 row = target_deck, col = 1
             )
 
@@ -4362,19 +4503,39 @@ class AnalyzePrices():
                 row = target_deck, col = 1
             )
 
+        ############
+
         if add_price:
+
+            min_n_intervals = n_yintervals_map['min'][plot_height]
+            max_n_intervals = n_yintervals_map['max'][plot_height]
+            sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(min(p_base), max(p_base), min_n_intervals, max_n_intervals)
+            sec_y_range = (sec_y_lower_limit, sec_y_upper_limit)
+
             fig_diff.add_trace(
                 go.Scatter(
                     x = p_base.index,
                     y = p_base,
                     mode = 'lines',
                     line_color = style['basecolor'],
-                    showgrid = False,
-                    name = p_base_name,
-                    title = p_base_name
+                    name = p_base_name
                 ),
                 secondary_y = True
             )
+
+            fig_diff.update_yaxes(
+                range = sec_y_range,
+                title = p_base_name,
+                showticklabels = True,
+                tick0 = sec_y_lower_limit,
+                dtick = sec_y_delta,
+                secondary_y = True,
+                showgrid = False,
+                zeroline = False,
+                row = target_deck, col = 1
+            )
+
+        ##########
 
         if deck_type in ['double', 'triple']:
             legend_tracegroupgap = self.set_legend_tracegroupgap()
@@ -4403,12 +4564,14 @@ class AnalyzePrices():
             showticklabels = True,
             tick0 = y_lower_limit,
             dtick = y_delta,
+            secondary_y = False,
             row = target_deck, col = 1
         )
 
         if add_yaxis_title:
             fig_data['fig'].update_yaxes(
                 title = yaxis_title,
+                secondary_y = False,
                 row = target_deck, col = 1
             )
 
@@ -4623,19 +4786,39 @@ class AnalyzePrices():
                 row = target_deck, col = 1
             )
 
+        ##########
+
         if add_price:
+
+            min_n_intervals = n_yintervals_map['min'][plot_height]
+            max_n_intervals = n_yintervals_map['max'][plot_height]
+            sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(min(df_price), max(df_price), min_n_intervals, max_n_intervals)
+            sec_y_range = (sec_y_lower_limit, sec_y_upper_limit)
+
             fig_diff.add_trace(
                 go.Scatter(
                     x = df_price.index,
                     y = df_price,
                     mode = 'lines',
                     line_color = style['basecolor'],
-                    showgrid = False,
-                    name = 'Close',
-                    title = 'Close'
+                    name = 'Close'
                 ),
                 secondary_y = True
             )
+
+            fig_diff.update_yaxes(
+                range = sec_y_range,
+                title = 'Close',
+                showticklabels = True,
+                tick0 = sec_y_lower_limit,
+                dtick = sec_y_delta,
+                secondary_y = True,
+                showgrid = False,
+                zeroline = False,
+                row = target_deck, col = 1
+            )
+
+        ###########
 
         if deck_type in ['double', 'triple']:
             legend_tracegroupgap = self.set_legend_tracegroupgap()
@@ -4664,12 +4847,14 @@ class AnalyzePrices():
             showticklabels = True,
             tick0 = y_lower_limit,
             dtick = y_delta,
+            secondary_y = False,
             row = target_deck, col = 1
         )
 
         if add_yaxis_title:
             fig_data['fig'].update_yaxes(
                 title = yaxis_title,
+                secondary_y = False,
                 row = target_deck, col = 1
             )
 
