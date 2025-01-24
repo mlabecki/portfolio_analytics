@@ -288,6 +288,12 @@ def add_spaces_html(n: int):
     while i < n:
         spaces += '&nbsp;'
         i+=1
-
     return spaces
+
+
+def boolean(s: str):
+    """
+    Converts a dropdown answer string 'Y[y]es' / 'N[n]o' to a boolean value
+    """
+    return True if s.lower() == 'yes' else False
 

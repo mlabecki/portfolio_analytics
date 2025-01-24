@@ -2505,13 +2505,15 @@ def toggle_collapse_template(n, is_open):
     Output('ma-env-deck-dropdown', 'options'),
     Output('ma-ribbon-deck-dropdown', 'options'),
     Output('price-overlays-deck-dropdown', 'options'),
-
+    Output('macd-deck-dropdown', 'options'),
+    
     Output('hist-price-deck-dropdown', 'value'),
     Output('volume-deck-dropdown', 'value'),
     Output('bollinger-deck-dropdown', 'value'),
     Output('ma-env-deck-dropdown', 'value'),
     Output('ma-ribbon-deck-dropdown', 'value'),
     Output('price-overlays-deck-dropdown', 'value'),
+    Output('macd-deck-dropdown', 'value'),
 
     Input('deck-type-dropdown', 'n_clicks'),
     Input('deck-type-dropdown', 'value'),
@@ -2522,6 +2524,7 @@ def toggle_collapse_template(n, is_open):
     Input('ma-env-deck-dropdown', 'value'),
     Input('ma-ribbon-deck-dropdown', 'value'),
     Input('price-overlays-deck-dropdown', 'value'),
+    Input('macd-deck-dropdown', 'value')
 )
 def target_deck_options(
     deck_changed,
@@ -2531,9 +2534,12 @@ def target_deck_options(
     bollinger_deck,
     ma_env_deck,
     ma_ribbon_deck,
-    price_overlays_deck
+    price_overlays_deck,
+    macd_deck #,
+    # *args
 ):
-    n = 6  # number of deck-dropdown outputs
+    n = target_deck_options.__code__.co_argcount - 2
+    #n = len(args) - 2  # number of deck-dropdown outputs
 
     deck_changed = False if deck_changed is None else deck_changed
 
@@ -2548,13 +2554,15 @@ def target_deck_options(
         ma_env_deck_value =         ['Lower'] if (ma_env_deck in ['Middle', 'Lower']) else ['Upper']
         ma_ribbon_deck_value =      ['Lower'] if (ma_ribbon_deck in ['Middle', 'Lower']) else ['Upper']
         price_overlays_deck_value = ['Lower'] if (price_overlays_deck in ['Middle', 'Lower']) else ['Upper']
+        macd_deck_value =           ['Lower'] if (macd_deck in ['Middle', 'Lower']) else ['Upper']
         all_deck_values = \
             hist_price_deck_value + \
             volume_deck_value + \
             bollinger_deck_value + \
             ma_env_deck_value + \
             ma_ribbon_deck_value + \
-            price_overlays_deck_value
+            price_overlays_deck_value + \
+            macd_deck_value
         return tuple([False]) + tuple([k for k in [['Upper', 'Lower']] * n]) + tuple(all_deck_values)
 
     else:
@@ -2565,13 +2573,15 @@ def target_deck_options(
         ma_env_deck_value =         ['Middle'] if (ma_env_deck == 'Lower') & deck_changed else [ma_env_deck]
         ma_ribbon_deck_value =      ['Middle'] if (ma_ribbon_deck == 'Lower') & deck_changed else [ma_ribbon_deck]
         price_overlays_deck_value = ['Middle'] if (price_overlays_deck == 'Lower') & deck_changed else [price_overlays_deck]
+        macd_deck_value = ['Middle'] if (macd_deck == 'Lower') & deck_changed else [macd_deck]
         all_deck_values = \
             hist_price_deck_value + \
             volume_deck_value + \
             bollinger_deck_value + \
             ma_env_deck_value + \
             ma_ribbon_deck_value + \
-            price_overlays_deck_value
+            price_overlays_deck_value + \
+            macd_deck_value
         return tuple([False]) + tuple([k for k in [['Upper', 'Middle', 'Lower']] * n]) + tuple(all_deck_values)
 
 
@@ -2964,19 +2974,19 @@ def update_plot(
         ma_ribbon_color_theme,
         add_ma_ribbon,
 
-        macd_deck_dropdown,
-        macd_adjusted_dropdown,
-        macd_add_price_dropdown,
-        macd_add_signal_dropdown,
-        macd_signal_window_input,
-        macd_plot_type_dropdown,
-        macd_histogram_type_dropdown,
-        macd_vol_normalized_dropdown,
-        macd_add_title_dropdown,
-        # macd_add_yaxis_title_dropdown,
-        # macd_color_theme_dropdown,
-        # macd_signal_color_theme_dropdown,
-        # macd_price_color_theme_dropdown,
+        macd_deck,
+        macd_adjusted,
+        macd_add_price,
+        macd_add_signal,
+        macd_signal_window,
+        macd_plot_type,
+        macd_histogram_type,
+        macd_vol_normalized,
+        macd_add_title,
+        # macd_add_yaxis_title,
+        # macd_color_theme,
+        # macd_signal_color_theme,
+        # macd_price_color_theme,
         add_macd,
 
     ):
@@ -2999,14 +3009,14 @@ def update_plot(
     tk = tickers_to_plot[0]
 
     theme = theme.lower()
-    secondary_y = False if sec_y == 'No' else True
+    secondary_y = boolean(sec_y)
 
     # These are in the list of outputs, so they must stay outside of the if statements
     
     hist_price_sec_y_disabled = not secondary_y
     volume_sec_y_disabled = not secondary_y
 
-    dd_add_price_disabled = True if drawdown_add_price == 'No' else False
+    dd_add_price_disabled = boolean(drawdown_add_price)
     n_drawdowns = 5 if n_top is None else n_top
     dd_number_value = n_drawdowns
 
@@ -3041,7 +3051,7 @@ def update_plot(
         if add_hist_price:
             
             hist_price_color_theme = hist_price_color_theme.lower() if hist_price_color_theme is not None else 'base'
-            df_hist_price = downloaded_data[tk]['ohlc_adj'] if hist_price_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
+            df_hist_price = downloaded_data[tk]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[tk]['ohlc']
             hist_price = df_hist_price[hist_price_type]
 
             fig_data = analyze_prices.add_hist_price(
@@ -3049,19 +3059,19 @@ def update_plot(
                 hist_price[min_date: max_date],
                 tk,
                 target_deck = deck_number(deck_type, hist_price_deck_name),
-                secondary_y = True if hist_price_secondary_y == 'Yes' else False,
+                secondary_y = boolean(hist_price_secondary_y),
                 plot_type = 'bar' if hist_price_plot_type == 'Histogram' else 'scatter',
                 price_type = hist_price_type.lower(),
-                add_title = True if hist_price_add_title == 'Yes' else False,
+                add_title = boolean(hist_price_add_title),
                 theme = theme,
                 color_theme = hist_price_color_theme,
-                fill_below = True if hist_price_fill_below == 'Yes' else False
+                fill_below = boolean(hist_price_fill_below)
             )
 
         ### Add candlestick
         if add_candlestick:
             
-            df_ohlc = downloaded_data[tk]['ohlc_adj'] if candlestick_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
+            df_ohlc = downloaded_data[tk]['ohlc_adj'] if boolean(candlestick_adjusted) else downloaded_data[tk]['ohlc']
 
             fig_data = analyze_prices.add_candlestick(
                 fig_data,
@@ -3069,7 +3079,7 @@ def update_plot(
                 tk,
                 candle_type = candlestick_type.lower(),
                 target_deck = deck_number(deck_type, candlestick_deck_name),
-                add_title = True if candlestick_add_title == 'Yes' else False,
+                add_title = boolean(candlestick_add_title),
                 theme = theme,
                 color_theme = candlestick_color_theme
             )
@@ -3085,22 +3095,22 @@ def update_plot(
                 df_volume[min_date: max_date],
                 tk,
                 target_deck = deck_number(deck_type, volume_deck_name),
-                secondary_y = True if volume_secondary_y == 'Yes' else False,
+                secondary_y = boolean(volume_secondary_y),
                 plot_type = 'bar' if volume_plot_type == 'Histogram' else 'scatter',
                 price_type = 'volume',
-                add_title = True if volume_add_title == 'Yes' else False,
+                add_title = boolean(volume_add_title),
                 theme = theme,
                 color_theme = volume_color_theme,
-                fill_below = True if volume_fill_below == 'Yes' else False
+                fill_below = boolean(volume_fill_below)
             )
 
         ### Add drawdowns
         if add_drawdowns:
 
-            dd_add_title = True if drawdown_add_title =='Yes' else False
+            dd_add_title = boolean(drawdown_add_title)
             drawdown_color = drawdown_color.lower() if drawdown_color is not None else 'red'
             drawdown_price_color_theme = drawdown_price_color_theme.lower() if drawdown_price_color_theme is not None else 'base'
-            df_drawdown_price = downloaded_data[tk]['ohlc_adj'] if drawdown_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
+            df_drawdown_price = downloaded_data[tk]['ohlc_adj'] if boolean(drawdown_adjusted) else downloaded_data[tk]['ohlc']
             drawdown_price = df_drawdown_price[drawdown_price_type][min_date: max_date]
 
             drawdown_data_tk = analyze_prices.summarize_tk_drawdowns(drawdown_price, drawdown_top_by)
@@ -3136,7 +3146,7 @@ def update_plot(
 
         ### Add Bollinger bands
         if add_bollinger:
-            df_bollinger_price = downloaded_data[tk]['ohlc_adj'] if bollinger_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
+            df_bollinger_price = downloaded_data[tk]['ohlc_adj'] if boolean(bollinger_adjusted) else downloaded_data[tk]['ohlc']
             bollinger_price = df_bollinger_price[bollinger_price_type]
             bollinger_data = analyze_prices.bollinger_bands(
                 bollinger_price[min_date: max_date],
@@ -3156,7 +3166,7 @@ def update_plot(
 
         ### Add moving average envelopes
         if add_ma_env:
-            df_ma_env_price = downloaded_data[tk]['ohlc_adj'] if ma_env_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
+            df_ma_env_price = downloaded_data[tk]['ohlc_adj'] if boolean(ma_env_adjusted) else downloaded_data[tk]['ohlc']
             ma_env_price = df_ma_env_price[ma_env_price_type]
             ma_env_list = analyze_prices.ma_envelopes(
                 ma_env_price[min_date: max_date],
@@ -3175,7 +3185,7 @@ def update_plot(
 
         ### Add moving average ribbon
         if add_ma_ribbon:
-            df_ma_ribbon_price = downloaded_data[tk]['ohlc_adj'] if ma_ribbon_adjusted == 'Yes' else downloaded_data[tk]['ohlc']
+            df_ma_ribbon_price = downloaded_data[tk]['ohlc_adj'] if boolean(ma_ribbon_adjusted) else downloaded_data[tk]['ohlc']
             ma_ribbon_price = df_ma_ribbon_price[ma_ribbon_price_type]
             ma_ribbon_list = analyze_prices.get_ma_ribbon(
                 ma_type_map[ma_ribbon_ma_type],
@@ -3187,7 +3197,7 @@ def update_plot(
                 ma_ribbon_price[min_date: max_date],
                 ma_ribbon_list,
                 target_deck = deck_number(deck_type, ma_ribbon_deck_name),
-                add_yaxis_title = True if ma_ribbon_add_yaxis_title == 'Yes' else False,
+                add_yaxis_title = boolean(ma_ribbon_add_yaxis_title),
                 yaxis_title = 'Moving Average',
                 theme = theme,
                 color_theme = ma_ribbon_color_theme
@@ -3215,11 +3225,50 @@ def update_plot(
                     fig_data,
                     price_list,
                     target_deck = deck_number(deck_type, price_overlay_deck_name),
-                    add_yaxis_title = True if price_overlay_add_yaxis_title == 'Yes' else False,
+                    add_yaxis_title = boolean(price_overlay_add_yaxis_title),
                     yaxis_title = 'Price',
                     theme = theme,
                     color_theme = price_overlay_color_theme
                 )
+
+        ### Add macd / macd-v
+        if add_macd:
+            df_macd_prices = downloaded_data[tk]['ohlc_adj'] if boolean(macd_adjusted) else downloaded_data[tk]['ohlc']
+            close_tk = df_macd_prices['Close'][min_date: max_date]
+            #
+            # MACD-V
+            if boolean(macd_vol_normalized):
+                high_tk = df_macd_prices['High'][min_date: max_date]
+                low_tk = df_macd_prices['Low'][min_date: max_date]
+                macd_data = analyze_prices.get_macd_v(
+                    close_tk,
+                    high_tk,
+                    low_tk,
+                    signal_window = macd_signal_window
+                )
+            # MACD
+            else:
+                macd_data = analyze_prices.get_macd_v(
+                    close_tk,
+                    signal_window = macd_signal_window
+                )
+            #
+            fig_data = analyze_prices.add_macd(
+                fig_data,
+                tk,
+                macd_data,
+                add_price = boolean(macd_add_price),
+                volatility_normalized = boolean(macd_vol_normalized),
+                histogram_type = macd_histogram_type.lower(),
+                include_signal = boolean(macd_add_signal),
+                plot_type = 'bar' if macd_plot_type == 'Histogram' else 'scatter',
+                target_deck = deck_number(deck_type, macd_deck),
+                add_title = boolean(macd_add_title),
+                theme = theme #,
+                # color_theme = macd_color_theme,
+                # signal_color = macd_signal_color,
+                # price_color = macd_price_color
+            )
 
 
         ### Update graph
