@@ -2012,6 +2012,289 @@ layout = html.Div([
 
     ##### END MA RIBBON CONTROLS
 
+    ##### BEGIN MACD CONTROLS
+
+    html.Div([
+
+        html.Div(
+            dbc.Button(
+                id = 'collapse-button-macd',
+                class_name = 'ma-1',
+                color = 'primary',
+                size = 'sm',
+                n_clicks = 0,
+                style = collapse_button_css
+            )
+        ),
+
+        dbc.Popover(
+            [
+            html.Span(
+                   'Moving Average Convergence-Divergence',
+                    style = popover_menu_collapse_button_header_css
+                )
+            ], 
+            id = 'popover-collapse-button-macd',
+            target = 'collapse-button-macd',
+            body = False,
+            trigger = 'hover',
+            hide_arrow = True,
+            style = popover_menu_collapse_button_css
+        ),
+
+        dbc.Collapse(
+
+            html.Div(
+
+                id = 'macd-controls',
+                children = [
+
+                    html.Div([
+                        html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id = 'macd-deck-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Upper'],
+                            value = 'Upper',
+                            clearable = False,
+                            style = {'width': '98px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id = 'macd-adjusted-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '78px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            'Is MACD based on prices adjusted for stock splits and dividends?',
+                             style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-macd-adjusted-dropdown',
+                        target = 'macd-adjusted-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
+
+                    html.Div([
+                        html.Div('Vol Normalized', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px'}),
+                        dcc.Dropdown(
+                            id = 'macd-vol-normalized-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '114px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            """MACD-V, or Volatility-Normalized MACD, takes into account High, Low and Close prices,
+                            as well as the Average True Rate.""",
+                             style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-macd-vol-normalized-dropdown',
+                        class_name = 'popover-menu-button',
+                        target = 'macd-vol-normalized-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
+
+                    html.Div([
+                        html.Div('Add Signal', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top'}),
+                        dcc.Dropdown(
+                            id = 'macd-add-signal-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '75px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Signal Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dbc.Input(
+                            id = 'macd-signal-window-input',
+                            className = 'plots-input-button',
+                            type = 'number',
+                            value = 9,
+                            min = 1,
+                            max = 200,
+                            step = 1,
+                            debounce = True,
+                            style = {'width': '102px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Signal Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'macd-signal-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Grasslands'],
+                            # If using overlay_color_themes, use the parameters below to get value:
+                            # color_idx = style['overlay_color_selection'][price_color_theme][1][0]
+                            # linecolor = style['overlay_color_theme'][price_color_theme][color_idx]
+                            value = 'Grasslands',
+                            clearable = False,
+                            style = {'width': '113px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Plot Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top'}),
+                        dcc.Dropdown(
+                            id = 'macd-plot-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Histogram', 'Filled Line'],
+                            value = 'Histogram',
+                            clearable = False,
+                            style = {'width': '103px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Histogram Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top'}),
+                        dcc.Dropdown(
+                            id = 'macd-histogram-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['MACD-Signal', 'MACD-Zero'],
+                            value = 'MACD-Signal',
+                            clearable = False,
+                            style = {'width': '125px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            f"""MACD-Signal: MACD and Signal are plotted as lines and the histogram / filled line is based on their difference.
+                            MACD-Zero: MACD is plotted as histogram / filled line and the Signal is added if selected.""",
+                            style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-macd-histogram-type-dropdown',
+                        target = 'macd-histogram-type-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
+                    
+                    html.Div([
+                        html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top'}),
+                        dcc.Dropdown(
+                            id='macd-add-title-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['No', 'Yes'],
+                            value = 'No',
+                            clearable = False,
+                            style = {'width': '62px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top'}),
+                        dcc.Dropdown(
+                            id = 'macd-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = candle_colors,
+                            value = 'Green-Red',
+                            clearable = False,
+                            style = {'width': '116px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Add Price', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top'}),
+                        dcc.Dropdown(
+                            id = 'macd-add-price-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['No', 'Yes'],
+                            value = 'No',
+                            clearable = False,
+                            style = {'width': '67px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            'Price can only be added to Secondary Y-Axis on the Upper Deck.',
+                             style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-macd-add-price-dropdown',
+                        target = 'macd-add-price-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
+
+                    html.Div([
+                        html.Div('Price Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id='macd-price-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Grasslands'],
+                            # If using overlay_color_themes, use the parameters below to get value:
+                            # color_idx = style['overlay_color_selection'][price_color_theme][1][0]
+                            # linecolor = style['overlay_color_theme'][price_color_theme][color_idx]
+                            value = 'Grasslands',
+                            clearable = False,
+                            style = {'width': '107px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        dbc.Button(
+                            'Add To Plot',
+                            id = f'add-macd-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'success',
+                            size = 'sm',
+                            style = plots_add_button_css
+                        )],
+                        # style = {'margin-bottom': '5px'}
+                    ),
+
+                ],
+                # style = {'margin-left': '5px'}
+            ), 
+
+            id = 'collapse-macd',
+            is_open = False,
+            style = {'width': '300px'}
+        )],
+        style = {'margin-left': '5px'}
+    ), 
+
+    ##### END MACD CONTROLS
+
     ]),
 
     # id = 'collapse-sidebar-menu',
@@ -2046,68 +2329,6 @@ layout = html.Div([
                     style = {'display': 'inline-block'}
                 )
             ]),
-
-            # html.Span(
-            #     id = 'magenta-0',
-            #     className = 'plots-color-icon',
-            #     style = {'background-color': theme_style['dark']['overlay_color_theme']['magenta'][0]}
-            # ),
-            # html.Span(
-            #     id = 'magenta-1',
-            #     className = 'plots-color-icon',
-            #     style = {'background-color': theme_style['dark']['overlay_color_theme']['magenta'][1]}
-            # ),
-            # html.Span(
-            #     id = 'magenta-2',
-            #     className = 'plots-color-icon',
-            #     style = {'background-color': theme_style['dark']['overlay_color_theme']['magenta'][2]}
-            # ),
-            # html.Span(
-            #     id = 'magenta-3',
-            #     className = 'plots-color-icon',
-            #     style = {'background-color': theme_style['dark']['overlay_color_theme']['magenta'][3]}
-            # ),
-            # html.Span(
-            #     id = 'magenta-4',
-            #     className = 'plots-color-icon',
-            #     style = {'background-color': theme_style['dark']['overlay_color_theme']['magenta'][4]}
-            # ),
-            # html.Span(
-            #     id = 'magenta-5',
-            #     className = 'plots-color-icon',
-            #     style = {'background-color': theme_style['dark']['overlay_color_theme']['magenta'][5]}
-            # ),
-
-            # html.Span(
-            #     id = 'magenta-light-0',
-            #     className = 'plots-color-icon',
-            #     style = {'background-color': theme_style['light']['overlay_color_theme']['magenta'][0]}
-            # ),
-            # html.Span(
-            #     id = 'magenta-light-1',
-            #     className = 'plots-color-icon',
-            #     style = {'background-color': theme_style['light']['overlay_color_theme']['magenta'][1]}
-            # ),
-            # html.Span(
-            #     id = 'magenta-light-2',
-            #     className = 'plots-color-icon',
-            #     style = {'background-color': theme_style['light']['overlay_color_theme']['magenta'][2]}
-            # ),
-            # html.Span(
-            #     id = 'magenta-light-3',
-            #     className = 'plots-color-icon',
-            #     style = {'background-color': theme_style['light']['overlay_color_theme']['magenta'][3]}
-            # ),
-            # html.Span(
-            #     id = 'magenta-light-4',
-            #     className = 'plots-color-icon',
-            #     style = {'background-color': theme_style['light']['overlay_color_theme']['magenta'][4]}
-            # ),
-            # html.Span(
-            #     id = 'magenta-light-5',
-            #     className = 'plots-color-icon',
-            #     style = {'background-color': theme_style['light']['overlay_color_theme']['magenta'][5]}
-            # ),
 
             dbc.Collapse(
                 html.Div(
@@ -2478,6 +2699,22 @@ def toggle_collapse_ma_ribbon(n, is_open):
 
 
 @callback(
+    Output('collapse-button-macd', 'children'),
+    Output('collapse-macd', 'is_open'),
+    Input('collapse-button-macd', 'n_clicks'),
+    State('collapse-macd', 'is_open')
+)
+def toggle_collapse_macd(n, is_open):
+    # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
+    title = 'MACD / MACD-V'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
 
     # Output('test-graph', 'figure'),
     # Output('fig_div', 'children', allow_duplicate = True),
@@ -2604,6 +2841,22 @@ def toggle_collapse_ma_ribbon(n, is_open):
     Input('ma-ribbon-add-yaxis-title-dropdown', 'value'),
     Input('ma-ribbon-color-theme-dropdown', 'value'),
     Input('add-ma-ribbon-button', 'n_clicks'),
+
+    # macd options
+    Input('macd-deck-dropdown', 'value'),
+    Input('macd-adjusted-dropdown', 'value'),
+    Input('macd-add-price-dropdown', 'value'),
+    Input('macd-add-signal-dropdown', 'value'),
+    Input('macd-signal-window-input', 'value'),
+    Input('macd-plot-type-dropdown', 'value'),
+    Input('macd-histogram-type-dropdown', 'value'),
+    Input('macd-vol-normalized-dropdown', 'value'),
+    Input('macd-add-title-dropdown', 'value'),    
+    # Input('macd-add-yaxis-title-dropdown', 'value'),
+    # Input('macd-color-theme-dropdown', 'value'),
+    # Input('macd-signal-color-theme-dropdown', 'value'),
+    # Input('macd-price-color-theme-dropdown', 'value'),
+    Input('add-macd-button', 'n_clicks'),
    
 )
 
@@ -2709,7 +2962,22 @@ def update_plot(
         ma_ribbon_nbands,
         ma_ribbon_add_yaxis_title,
         ma_ribbon_color_theme,
-        add_ma_ribbon
+        add_ma_ribbon,
+
+        macd_deck_dropdown,
+        macd_adjusted_dropdown,
+        macd_add_price_dropdown,
+        macd_add_signal_dropdown,
+        macd_signal_window_input,
+        macd_plot_type_dropdown,
+        macd_histogram_type_dropdown,
+        macd_vol_normalized_dropdown,
+        macd_add_title_dropdown,
+        # macd_add_yaxis_title_dropdown,
+        # macd_color_theme_dropdown,
+        # macd_signal_color_theme_dropdown,
+        # macd_price_color_theme_dropdown,
+        add_macd,
 
     ):
 

@@ -216,6 +216,7 @@ class BuildDashHtml():
                     target = 'popover-color-themes-button',
                     body = True,
                     trigger = 'click',
+                    hide_arrow = True,
                     style = popover_color_themes_css
                 ),
             ],

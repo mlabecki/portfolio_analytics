@@ -68,7 +68,8 @@ button, input, select, textarea {
 #add-drawdowns-button:hover,
 #add-bollinger-button:hover,
 #add-ma-env-button:hover,
-#add-ma-ribbon-button:hover
+#add-ma-ribbon-button:hover,
+#add-macd-button:hover
 {
     border-color: rgb(152, 242, 178) !important;
     background-color: rgb(152, 242, 178) !important;
@@ -81,6 +82,10 @@ button, input, select, textarea {
     height: 12px;
     border: 1px solid;
     border-radius: 2px;
+}
+
+.popover-arrow:before, .popover-arrow:after {
+    border-right-color: rgb(211, 211, 211) !important;
 }
 
 /* https://community.plotly.com/t/style-datatable-tooltip-conditional/28563/2
