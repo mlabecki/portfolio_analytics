@@ -1537,6 +1537,7 @@ class AnalyzePrices():
                     y = df_price,
                     mode = 'lines',
                     line_color = price_color,
+                    zorder = 8,
                     name = 'Close'
                 ),
                 secondary_y = True

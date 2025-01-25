@@ -3024,7 +3024,7 @@ def update_plot(
 
     macd_signal_window_disabled = not boolean(macd_add_signal)
     macd_signal_color_disabled = not boolean(macd_add_signal)
-    macd_price_color_disabled = not boolean(macd_add_price)
+    macd_price_color_disabled = False if boolean(macd_add_price) & secondary_y else True
     if (macd_deck != 'Upper') | (not secondary_y):
         macd_add_price_disabled = True
     else:
