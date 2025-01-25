@@ -3014,6 +3014,8 @@ def update_plot(
     secondary_y = boolean(sec_y)
 
     # These are in the list of outputs, so they must stay outside of the if statements
+    # -- should move these to after the plot is updated, so the '_disabled' parameters
+    # could take into account the trace possibly present already on the secondary y-axis
     
     hist_price_sec_y_disabled = not secondary_y
     volume_sec_y_disabled = not secondary_y
@@ -3279,6 +3281,16 @@ def update_plot(
                 signal_color_theme = macd_signal_color,
                 price_color_theme = macd_price_color
             )
+            
+            # Could be problems with duplicate outputs...
+            #
+            # if fig_data['sec_y_source'] == ['macd']:
+            #   for id in list_of_all_sec_y_ids:
+            #       if id != ['macd']:
+            #           element_id = map_element_id_to_sec_id[id]
+            #           element_id_disabled = True
+            #       else:
+            #           element_id_disabled = False
 
 
         ### Update graph

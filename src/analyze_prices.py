@@ -498,7 +498,8 @@ class AnalyzePrices():
             'title_x_pos': title_x_pos,
             'title_y_pos': title_y_pos,
             'overlays': [],
-            'has_secondary_y': secondary_y
+            'has_secondary_y': secondary_y,
+            'sec_y_source': []
         }
 
         return fig_data
@@ -614,6 +615,11 @@ class AnalyzePrices():
                 if not has_secondary_y:
                     print('ERROR: Secondary y axis must be selected when creating the plotting template')
                     return fig_data
+                else:
+                    sec_y_traces = [x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y2')]
+                    if len(sec_y_traces) > 0:
+                        print('ERROR: Secondary y axis is already populated')
+                        return fig_data
             else:
                 # Must check if there are traces on the primary y axis
                 n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
@@ -694,7 +700,7 @@ class AnalyzePrices():
                     )
 
             else:
-                
+
                 min_n_intervals = n_yintervals_map['min'][plot_height]
                 max_n_intervals = n_yintervals_map['max'][plot_height]
                 sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
@@ -767,6 +773,9 @@ class AnalyzePrices():
             if not secondary_y:
                 fig_data['y_min'].update({target_deck: new_y_min})
                 fig_data['y_max'].update({target_deck: new_y_max})
+            else:
+                # Dash callbacks need to disable all other possible sources of traces on secondary y
+                fig_data['sec_y_source'] = ['atr']
 
             color_map = {legend_name: color_idx}
             overlay_idx = len(fig_overlays) + 1
@@ -897,6 +906,11 @@ class AnalyzePrices():
                 if not has_secondary_y:
                     print('ERROR: Secondary y axis must be selected when creating the plotting template')
                     return fig_data
+                else:
+                    sec_y_traces = [x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y2')]
+                    if len(sec_y_traces) > 0:
+                        print('ERROR: Secondary y axis is already populated')
+                        return fig_data                
         else:
             # If it's the middle or lower deck, just set add_price to False and continue
             add_price = False
@@ -1038,6 +1052,8 @@ class AnalyzePrices():
                 zeroline = False,
                 row = target_deck, col = 1
             )
+
+            fig_data['sec_y_source'] = ['stochastic']
 
         # Update layout and axes
         if add_title:
@@ -1193,7 +1209,7 @@ class AnalyzePrices():
         deck_type = fig_data['deck_type']
         title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
-        has_secondary_y = fig_data['has_secondary_y']        
+        has_secondary_y = fig_data['has_secondary_y']
 
         style = theme_style[theme]
 
@@ -1230,6 +1246,11 @@ class AnalyzePrices():
                 if not has_secondary_y:
                     print('ERROR: Secondary y axis must be selected when creating the plotting template')
                     return fig_data
+                else:
+                    sec_y_traces = [x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y2')]
+                    if len(sec_y_traces) > 0:
+                        print('ERROR: Secondary y axis is already populated')
+                        return fig_data           
         else:
             # If it's the middle or lower deck, just set add_price to False and continue
             add_price = False
@@ -1537,7 +1558,7 @@ class AnalyzePrices():
                     y = df_price,
                     mode = 'lines',
                     line_color = price_color,
-                    zorder = 8,
+                    zorder = 100,
                     name = 'Close'
                 ),
                 secondary_y = True
@@ -1554,6 +1575,8 @@ class AnalyzePrices():
                 zeroline = False,
                 row = target_deck, col = 1
             )
+
+            fig_data['sec_y_source'] = ['macd']
 
         ##########
 
@@ -2382,6 +2405,11 @@ class AnalyzePrices():
                 if not has_secondary_y:
                     print('ERROR: Secondary y axis must be selected when creating the plotting template')
                     return fig_data
+                else:
+                    sec_y_traces = [x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y2')]
+                    if len(sec_y_traces) > 0:
+                        print('ERROR: Secondary y axis is already populated')
+                        return fig_data                
         else:
             # If it's the middle or lower deck, just set add_price to False and continue
             add_price = False
@@ -2509,6 +2537,8 @@ class AnalyzePrices():
                 zeroline = False,
                 row = target_deck, col = 1
             )
+
+            fig_data['sec_y_source'] = ['rsi']
 
         ##########
 
@@ -3085,6 +3115,11 @@ class AnalyzePrices():
                 if not has_secondary_y:
                     print('ERROR: Secondary y axis must be selected when creating the plotting template')
                     return fig_data
+                else:
+                    sec_y_traces = [x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y2')]
+                    if len(sec_y_traces) > 0:
+                        print('ERROR: Secondary y axis is already populated')
+                        return fig_data
             else:
                 # Must check if there are traces on the primary y axis
                 n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
@@ -3253,6 +3288,9 @@ class AnalyzePrices():
             if not secondary_y:
                 fig_data['y_min'].update({target_deck: new_y_min})
                 fig_data['y_max'].update({target_deck: new_y_max})
+            else:
+                # Dash callbacks need to disable all other possible sources of traces on secondary y
+                fig_data['sec_y_source'] = ['boll_width']
 
             color_map = {legend_name: color_idx}
             overlay_idx = len(fig_overlays) + 1
@@ -3396,6 +3434,11 @@ class AnalyzePrices():
                 if not has_secondary_y:
                     print('ERROR: Secondary y axis must be selected when creating the plotting template')
                     return fig_data
+                else:
+                    sec_y_traces = [x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y2')]
+                    if len(sec_y_traces) > 0:
+                        print('ERROR: Secondary y axis is already populated')
+                        return fig_data
             else:
                 # Must check if there are traces on the primary y axis
                 n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
@@ -3461,10 +3504,10 @@ class AnalyzePrices():
                 if new_y_max > fig_y_max:
                     reset_y_limits = True
 
-            print(f'\nADD MVOL')
-            print(f'min_y, max_y = {min_y, max_y}')
-            print(f'fig_y_min, fig_y_max = {fig_y_min, fig_y_max}')
-            print(f'new_y_min, new_y_max = {new_y_min, new_y_max}')
+            # print(f'\nADD MVOL')
+            # print(f'min_y, max_y = {min_y, max_y}')
+            # print(f'fig_y_min, fig_y_max = {fig_y_min, fig_y_max}')
+            # print(f'new_y_min, new_y_max = {new_y_min, new_y_max}')
 
             if not secondary_y:
             
@@ -3567,6 +3610,9 @@ class AnalyzePrices():
             if not secondary_y:
                 fig_data['y_min'].update({target_deck: new_y_min})
                 fig_data['y_max'].update({target_deck: new_y_max})
+            else:
+                # Dash callbacks need to disable all other possible sources of traces on secondary y
+                fig_data['sec_y_source'] = ['mvol']
 
             color_map = {legend_name: color_idx}
             overlay_idx = len(fig_overlays) + 1
@@ -3703,6 +3749,11 @@ class AnalyzePrices():
                 if not has_secondary_y:
                     print('ERROR: Secondary y axis must be selected when creating the plotting template')
                     return fig_data
+                else:
+                    sec_y_traces = [x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y2')]
+                    if len(sec_y_traces) > 0:
+                        print('ERROR: Secondary y axis is already populated')
+                        return fig_data
             else:
                 # Must check if there are traces on the primary y axis
                 n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
@@ -3802,9 +3853,6 @@ class AnalyzePrices():
                 row = target_deck, col = 1
             )
 
-        # print(f'fig.layout.yaxis {fig.layout.yaxis}')
-        # print(f'fig.layout.yaxis2 {fig.layout.yaxis2}')
-
         legendgrouptitle = {}
         if deck_type in ['double', 'triple']:
             legendtitle = doubledeck_legendtitle[target_deck] if deck_type == 'double' else tripledeck_legendtitle[target_deck]
@@ -3879,6 +3927,9 @@ class AnalyzePrices():
         if not secondary_y:
             fig_data['y_min'].update({target_deck: new_y_min})
             fig_data['y_max'].update({target_deck: new_y_max})
+        else:
+            # Dash callbacks need to disable all other possible sources of traces on secondary y
+            fig_data['sec_y_source'] = ['hist_price']
 
         color_map = {legend_name: color_idx}
         overlay_idx = len(fig_overlays) + 1
@@ -3892,6 +3943,13 @@ class AnalyzePrices():
             'color_map': color_map
         })
         fig_data.update({'overlays': fig_overlays})
+
+        # print(f'fig.layout.yaxis {fig.layout.yaxis}')
+        print(f'fig.layout.yaxis2\n {fig.layout.yaxis2}')
+        print(f'fig.data\n {fig.data}')
+        sec_y_traces = [x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y2')]
+        print(f'\nsec_y_traces\n {sec_y_traces}')
+
 
         return fig_data
 
@@ -4316,6 +4374,11 @@ class AnalyzePrices():
                 if not has_secondary_y:
                     print('ERROR: Secondary y axis must be selected when creating the plotting template')
                     return fig_data
+                else:
+                    sec_y_traces = [x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y2')]
+                    if len(sec_y_traces) > 0:
+                        print('ERROR: Secondary y axis is already populated')
+                        return fig_data                
         else:
             # If it's the middle or lower deck, just set add_price to False and continue
             add_price = False
@@ -4536,6 +4599,8 @@ class AnalyzePrices():
                 row = target_deck, col = 1
             )
 
+            fig_data['sec_y_source'] = ['diff']            
+
         ##########
 
         if deck_type in ['double', 'triple']:
@@ -4623,6 +4688,11 @@ class AnalyzePrices():
                 if not has_secondary_y:
                     print('ERROR: Secondary y axis must be selected when creating the plotting template')
                     return fig_data
+                else:
+                    sec_y_traces = [x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y2')]
+                    if len(sec_y_traces) > 0:
+                        print('ERROR: Secondary y axis is already populated')
+                        return fig_data                
         else:
             # If it's the middle or lower deck, just set add_price to False and continue
             add_price = False
@@ -4818,6 +4888,8 @@ class AnalyzePrices():
                 zeroline = False,
                 row = target_deck, col = 1
             )
+
+            fig_data['sec_y_source'] = ['diff_stochastic']            
 
         ###########
 
