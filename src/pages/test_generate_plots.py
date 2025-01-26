@@ -2748,6 +2748,7 @@ def toggle_collapse_macd(n, is_open):
     # Output('bollinger-controls', 'style'),
     # Output('template-controls', 'style'),
 
+    Output('add-hist-price-button', 'n_clicks'),
     Output('remove-hist-price-button', 'n_clicks'),
 
     Output('macd-signal-window-input', 'disabled'),
@@ -3085,7 +3086,15 @@ def update_plot(
 
 
         ### Add historical price
-        add_hist_price = 0 if remove_hist_price else add_hist_price
+
+        # add_hist_price = 0 if remove_hist_price else add_hist_price
+        if remove_hist_price & (fig_data is not None):
+            add_hist_price = 0
+            for i, tr in enumerate(fig_data['fig']['data']):
+                if tr['uid'] == 'hist_price':
+                    fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
+                    # fig_data['fig']['data'][i].clear()
+            
         # NOTE: The condition 
         # if add_hist_price & (not remove_hist_price)
         # requires clicking Add To Plot twice in order to restore the plot after it has been removed.
@@ -3108,6 +3117,10 @@ def update_plot(
                 color_theme = hist_price_color_theme,
                 fill_below = boolean(hist_price_fill_below)
             )
+
+        # for i, tr in enumerate(fig_data['fig']['data']):
+        #     trace_uid_to_delete = tr['uid']
+        #     print(f"tr['uid']\n {tr['uid']}")
 
         ### Add candlestick
         if add_candlestick:
@@ -3415,6 +3428,7 @@ def update_plot(
 
         fig_divs,
         
+        add_hist_price,  # update 
         0,  # Clear remove-hist-price-button value
 
         macd_signal_window_disabled,

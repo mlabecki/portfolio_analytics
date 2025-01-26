@@ -3863,6 +3863,12 @@ class AnalyzePrices():
             )
 
         # Add trace
+
+        if 'volume' in price_type.lower():
+            uid = 'volume'
+        else:
+            uid = 'hist_price'
+
         if plot_type == 'bar':
             fig.add_trace(
                 go.Bar(
@@ -3872,6 +3878,7 @@ class AnalyzePrices():
                     width = 1,
                     name = legend_name,
                     zorder = zorder,
+                    uid = uid,
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
@@ -3893,6 +3900,7 @@ class AnalyzePrices():
                     showlegend = True,
                     name = legend_name,
                     zorder = zorder,
+                    uid = uid,
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle
@@ -3948,10 +3956,12 @@ class AnalyzePrices():
         fig_data.update({'overlays': fig_overlays})
 
         # print(f'fig.layout.yaxis {fig.layout.yaxis}')
-        print(f'fig.layout.yaxis2\n {fig.layout.yaxis2}')
-        print(f'fig.data\n {fig.data}')
-        sec_y_traces = [x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y2')]
-        print(f'\nsec_y_traces\n {sec_y_traces}')
+        # print(f'fig.layout.yaxis2\n {fig.layout.yaxis2}')
+        # print(f'fig.data\n {fig.data}')
+        primary_y_traces = [x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y')]
+        secondary_y_traces = [x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y2')]
+        print(f'\nprimary_y_traces\n {primary_y_traces}')
+        print(f'\nsecondary_y_traces\n {secondary_y_traces}')
 
 
         return fig_data
