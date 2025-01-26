@@ -1138,6 +1138,19 @@ layout = html.Div([
                         # style = {'margin-bottom': '5px'}
                     ),
 
+                    html.Div([
+                        dbc.Button(
+                            'Remove From Plot',
+                            id = f'remove-volume-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'danger',
+                            size = 'sm',
+                            style = plots_remove_button_css
+                        )],
+                        # style = {'margin-bottom': '5px'}
+                    ),
+
                 ],
                 # style = {'margin-left': '5px'}
             ), 
@@ -1531,6 +1544,19 @@ layout = html.Div([
                         # style = {'margin-bottom': '5px'}
                     ),
 
+                    html.Div([
+                        dbc.Button(
+                            'Remove From Plot',
+                            id = f'remove-price-overlays-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'danger',
+                            size = 'sm',
+                            style = plots_remove_button_css
+                        )],
+                        # style = {'margin-bottom': '5px'}
+                    ),
+
                 ],
                 # style = {'margin-left': '5px'}
             ), 
@@ -1689,6 +1715,19 @@ layout = html.Div([
                             color = 'success',
                             size = 'sm',
                             style = plots_add_button_css
+                        )],
+                        # style = {'margin-bottom': '5px'}
+                    ),
+
+                    html.Div([
+                        dbc.Button(
+                            'Remove From Plot',
+                            id = f'remove-bollinger-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'danger',
+                            size = 'sm',
+                            style = plots_remove_button_css
                         )],
                         # style = {'margin-bottom': '5px'}
                     ),
@@ -1854,6 +1893,19 @@ layout = html.Div([
                         # style = {'margin-bottom': '5px'}
                     ),
 
+                    html.Div([
+                        dbc.Button(
+                            'Remove From Plot',
+                            id = f'remove-ma-env-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'danger',
+                            size = 'sm',
+                            style = plots_remove_button_css
+                        )],
+                        # style = {'margin-bottom': '5px'}
+                    ),
+
                 ],
                 # style = {'margin-left': '5px'}
             ), 
@@ -2008,6 +2060,19 @@ layout = html.Div([
                             color = 'success',
                             size = 'sm',
                             style = plots_add_button_css
+                        )],
+                        # style = {'margin-bottom': '5px'}
+                    ),
+
+                    html.Div([
+                        dbc.Button(
+                            'Remove From Plot',
+                            id = f'remove-ma-ribbon-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'danger',
+                            size = 'sm',
+                            style = plots_remove_button_css
                         )],
                         # style = {'margin-bottom': '5px'}
                     ),
@@ -2291,6 +2356,19 @@ layout = html.Div([
                             color = 'success',
                             size = 'sm',
                             style = plots_add_button_css
+                        )],
+                        # style = {'margin-bottom': '5px'}
+                    ),
+
+                    html.Div([
+                        dbc.Button(
+                            'Remove From Plot',
+                            id = f'remove-macd-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'danger',
+                            size = 'sm',
+                            style = plots_remove_button_css
                         )],
                         # style = {'margin-bottom': '5px'}
                     ),
@@ -2748,8 +2826,23 @@ def toggle_collapse_macd(n, is_open):
     # Output('bollinger-controls', 'style'),
     # Output('template-controls', 'style'),
 
+    # Add To Plot buttons
     Output('add-hist-price-button', 'n_clicks'),
+    Output('add-volume-button', 'n_clicks'),
+    Output('add-price-overlays-button', 'n_clicks'),
+    Output('add-bollinger-button', 'n_clicks'),
+    Output('add-ma-env-button', 'n_clicks'),
+    Output('add-ma-ribbon-button', 'n_clicks'),
+    Output('add-macd-button', 'n_clicks'),
+
+    # Remove From Plot buttons
     Output('remove-hist-price-button', 'n_clicks'),
+    Output('remove-volume-button', 'n_clicks'),
+    Output('remove-price-overlays-button', 'n_clicks'),
+    Output('remove-bollinger-button', 'n_clicks'),
+    Output('remove-ma-env-button', 'n_clicks'),
+    Output('remove-ma-ribbon-button', 'n_clicks'),
+    Output('remove-macd-button', 'n_clicks'),
 
     Output('macd-signal-window-input', 'disabled'),
     Output('macd-signal-color-theme-dropdown', 'disabled'),
@@ -2822,6 +2915,7 @@ def toggle_collapse_macd(n, is_open):
     Input('volume-color-theme-dropdown', 'value'),
     Input('volume-add-title-dropdown', 'value'),
     Input('add-volume-button', 'n_clicks'),
+    Input('remove-volume-button', 'n_clicks'),
 
     # drawdowns options
     Input('drawdowns-number-input', 'value'),
@@ -2842,6 +2936,7 @@ def toggle_collapse_macd(n, is_open):
     Input('price-overlays-add-yaxis-title-dropdown', 'value'),
     Input('price-overlays-color-theme-dropdown', 'value'),
     Input('add-price-overlays-button', 'n_clicks'),
+    Input('remove-price-overlays-button', 'n_clicks'),
 
     # bollinger options
     Input('bollinger-deck-dropdown', 'value'),
@@ -2853,6 +2948,7 @@ def toggle_collapse_macd(n, is_open):
     Input('bollinger-nbands-input', 'value'),
     Input('bollinger-color-theme-dropdown', 'value'),
     Input('add-bollinger-button', 'n_clicks'),
+    Input('remove-bollinger-button', 'n_clicks'),
 
     # ma envelope options
     Input('ma-env-deck-dropdown', 'value'),
@@ -2864,6 +2960,7 @@ def toggle_collapse_macd(n, is_open):
     Input('ma-env-nbands-input', 'value'),
     Input('ma-env-color-theme-dropdown', 'value'),
     Input('add-ma-env-button', 'n_clicks'),
+    Input('remove-ma-env-button', 'n_clicks'),
    
     # ma ribbon options
     Input('ma-ribbon-deck-dropdown', 'value'),
@@ -2875,6 +2972,7 @@ def toggle_collapse_macd(n, is_open):
     Input('ma-ribbon-add-yaxis-title-dropdown', 'value'),
     Input('ma-ribbon-color-theme-dropdown', 'value'),
     Input('add-ma-ribbon-button', 'n_clicks'),
+    Input('remove-ma-ribbon-button', 'n_clicks'),
 
     # macd options
     Input('macd-deck-dropdown', 'value'),
@@ -2890,6 +2988,7 @@ def toggle_collapse_macd(n, is_open):
     Input('macd-signal-color-theme-dropdown', 'value'),
     Input('macd-price-color-theme-dropdown', 'value'),
     Input('add-macd-button', 'n_clicks'),
+    Input('remove-macd-button', 'n_clicks')
    
 )
 
@@ -2946,6 +3045,7 @@ def update_plot(
         volume_color_theme,
         volume_add_title,
         add_volume,
+        remove_volume,
         
         # drawdowns options
         n_top, 
@@ -2966,6 +3066,7 @@ def update_plot(
         price_overlay_add_yaxis_title,
         price_overlay_color_theme,
         add_price_overlays,
+        remove_price_overlays,
 
         # bollinger options
         bollinger_deck_name,
@@ -2977,6 +3078,7 @@ def update_plot(
         bollinger_nbands,
         bollinger_color_theme,
         add_bollinger,
+        remove_bollinger,
 
         ma_env_deck_name,
         ma_env_adjusted,
@@ -2987,6 +3089,7 @@ def update_plot(
         ma_env_nbands,
         ma_env_color_theme,
         add_ma_env,
+        remove_ma_env,
 
         ma_ribbon_deck_name,
         ma_ribbon_adjusted,
@@ -2997,6 +3100,7 @@ def update_plot(
         ma_ribbon_add_yaxis_title,
         ma_ribbon_color_theme,
         add_ma_ribbon,
+        remove_ma_ribbon,
 
         macd_deck,
         macd_adjusted,
@@ -3011,6 +3115,7 @@ def update_plot(
         macd_signal_color,
         macd_price_color,
         add_macd,
+        remove_macd,
 
     ):
 
@@ -3091,9 +3196,10 @@ def update_plot(
         if remove_hist_price & (fig_data is not None):
             add_hist_price = 0
             for i, tr in enumerate(fig_data['fig']['data']):
-                if tr['uid'] == 'hist_price':
-                    fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
-                    # fig_data['fig']['data'][i].clear()
+                if tr['legendgroup'] != 'dummy':
+                    if 'hist-price' in tr['uid']:
+                        fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
+                        # fig_data['fig']['data'][i].clear()
             
         # NOTE: The condition 
         # if add_hist_price & (not remove_hist_price)
@@ -3139,6 +3245,13 @@ def update_plot(
             )
 
         ### Add volume
+        if remove_volume & (fig_data is not None):
+            add_volume = 0
+            for i, tr in enumerate(fig_data['fig']['data']):
+                if tr['legendgroup'] != 'dummy':
+                    if 'volume' in tr['uid']:
+                        fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
+
         if add_volume:
 
             volume_color_theme = volume_color_theme.lower() if volume_color_theme is not None else 'sapphire'
@@ -3199,6 +3312,13 @@ def update_plot(
             )
 
         ### Add Bollinger bands
+        if remove_bollinger & (fig_data is not None):
+            add_bollinger = 0
+            for i, tr in enumerate(fig_data['fig']['data']):
+                if tr['legendgroup'] != 'dummy':                
+                    if 'bollinger-band' in tr['uid']:
+                        fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
+
         if add_bollinger:
             df_bollinger_price = downloaded_data[tk]['ohlc_adj'] if boolean(bollinger_adjusted) else downloaded_data[tk]['ohlc']
             bollinger_price = df_bollinger_price[bollinger_price_type]
@@ -3219,6 +3339,13 @@ def update_plot(
             )
 
         ### Add moving average envelopes
+        if remove_ma_env & (fig_data is not None):
+            add_ma_env = 0
+            for i, tr in enumerate(fig_data['fig']['data']):
+                if tr['legendgroup'] != 'dummy':                
+                    if 'ma-envelope' in tr['uid']:
+                        fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
+
         if add_ma_env:
             df_ma_env_price = downloaded_data[tk]['ohlc_adj'] if boolean(ma_env_adjusted) else downloaded_data[tk]['ohlc']
             ma_env_price = df_ma_env_price[ma_env_price_type]
@@ -3238,6 +3365,13 @@ def update_plot(
             )
 
         ### Add moving average ribbon
+        if remove_ma_ribbon & (fig_data is not None):
+            add_ma_ribbon = 0
+            for i, tr in enumerate(fig_data['fig']['data']):
+                if tr['legendgroup'] != 'dummy':                
+                    if 'ma-ribbon' in tr['uid']:
+                        fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
+
         if add_ma_ribbon:
             df_ma_ribbon_price = downloaded_data[tk]['ohlc_adj'] if boolean(ma_ribbon_adjusted) else downloaded_data[tk]['ohlc']
             ma_ribbon_price = df_ma_ribbon_price[ma_ribbon_price_type]
@@ -3258,6 +3392,13 @@ def update_plot(
             )
 
         ### Add price overlays
+        if remove_price_overlays & (fig_data is not None):
+            add_price_overlays = 0
+            for i, tr in enumerate(fig_data['fig']['data']):
+                if tr['legendgroup'] != 'dummy':                
+                    if 'price-overlay' in tr['uid']:
+                        fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
+
         if add_price_overlays:
             price_list = []
             for name in ['Adjusted Close', 'Adjusted Open', 'Adjusted High', 'Adjusted Low']:
@@ -3286,6 +3427,13 @@ def update_plot(
                 )
 
         ### Add macd / macd-v
+        if remove_macd & (fig_data is not None):
+            add_macd = 0
+            for i, tr in enumerate(fig_data['fig']['data']):
+                if tr['legendgroup'] != 'dummy':                
+                    if 'macd' in tr['uid']:
+                        fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
+
         if add_macd:
             df_macd_prices = downloaded_data[tk]['ohlc_adj'] if boolean(macd_adjusted) else downloaded_data[tk]['ohlc']
             close_tk = df_macd_prices['Close'][min_date: max_date]
@@ -3429,7 +3577,13 @@ def update_plot(
         fig_divs,
         
         add_hist_price,  # update 
-        0,  # Clear remove-hist-price-button value
+        add_volume,
+        add_price_overlays,
+        add_bollinger,
+        add_ma_env,
+        add_ma_ribbon,
+        add_macd,
+        0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
 
         macd_signal_window_disabled,
         macd_signal_color_disabled,

@@ -75,7 +75,13 @@ button, input, select, textarea {
     background-color: rgb(152, 242, 178) !important;
 }
 
-#remove-hist-price-button:hover
+#remove-hist-price-button:hover,
+#remove-price-overlays-button:hover,
+#remove-volume-button:hover,
+#remove-bollinger-button:hover,
+#remove-ma-env-button:hover,
+#remove-ma-ribbon-button:hover,
+#remove-macd-button:hover
 {
     border-color: rgb(255, 178, 185) !important;
     background-color: rgb(255, 178, 185) !important;

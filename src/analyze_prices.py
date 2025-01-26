@@ -1319,6 +1319,7 @@ class AnalyzePrices():
                         marker_color = green_color,
                         width = 1,
                         name = macd_legend_positive,
+                        uid = 'macd-zero-bar-positive',
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
@@ -1334,6 +1335,7 @@ class AnalyzePrices():
                         marker_color = red_color,
                         width = 1,
                         name = macd_legend_negative,
+                        uid = 'macd-zero-bar-negative',
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
@@ -1375,6 +1377,7 @@ class AnalyzePrices():
                         fill = 'tozeroy',
                         fillcolor = diff_green_fillcolor,
                         name = macd_legend_positive,
+                        uid = 'macd-zero-scatter-positive',
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
@@ -1393,6 +1396,7 @@ class AnalyzePrices():
                         fill = 'tozeroy',
                         fillcolor = diff_red_fillcolor,
                         name = macd_legend_negative,
+                        uid = 'macd-zero-scatter-negative',
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
@@ -1420,6 +1424,7 @@ class AnalyzePrices():
                         marker_color = green_color,
                         width = 1,
                         name = macd_legend_positive,
+                        uid = 'macd-signal-bar-positive',
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
@@ -1435,6 +1440,7 @@ class AnalyzePrices():
                         marker_color = red_color,
                         width = 1,
                         name = macd_legend_negative,
+                        uid = 'macd-signal-bar-negative',
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
@@ -1476,6 +1482,7 @@ class AnalyzePrices():
                         fill = 'tozeroy',
                         fillcolor = diff_green_fillcolor,
                         name = macd_legend_positive,
+                        uid = 'macd-signal-scatter-positive',
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
@@ -1494,6 +1501,7 @@ class AnalyzePrices():
                         fill = 'tozeroy',
                         fillcolor = diff_red_fillcolor,
                         name = macd_legend_negative,
+                        uid = 'macd-signal-scatter-negative',
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
@@ -1514,6 +1522,7 @@ class AnalyzePrices():
                         mode = 'lines',
                         line_color = base_color,
                         name = yaxis_title,
+                        uid = 'macd-line-scatter',
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
@@ -1530,6 +1539,7 @@ class AnalyzePrices():
                     mode = 'lines',
                     line_color = signal_color,
                     name = f'EMA {macd_signal_window} Signal',
+                    uid = 'macd-signal-line-scatter',
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
@@ -1559,6 +1569,7 @@ class AnalyzePrices():
                     mode = 'lines',
                     line_color = price_color,
                     zorder = 100,
+                    uid = 'macd-price-line-scatter',
                     name = 'Close'
                 ),
                 secondary_y = True
@@ -2758,6 +2769,7 @@ class AnalyzePrices():
         df,
         name,
         color_idx,
+        uid,
         showlegend = True,
         target_deck = 1,
         theme = 'dark',
@@ -2859,6 +2871,7 @@ class AnalyzePrices():
                 mode = 'lines',
                 line = dict(color = overlay_colors[color_idx]),
                 name = name,
+                uid = uid,
                 showlegend = showlegend,
                 legendrank = target_deck * 1000,
                 legendgroup = f'{target_deck}',
@@ -2932,7 +2945,8 @@ class AnalyzePrices():
                 ma_overlays.append({
                     'data': ma_data,
                     'name': ma_name,
-                    'color_idx': ma_color_idx
+                    'color_idx': ma_color_idx,
+                    'uid': f'ma-ribbon-{i}'
                 })
                 ma_overlay_names.append(ma_name)
 
@@ -2946,6 +2960,7 @@ class AnalyzePrices():
                     overlay['data'],
                     overlay['name'],
                     overlay['color_idx'],
+                    overlay['uid'],
                     target_deck = target_deck,
                     theme = theme,
                     color_theme = color_theme
@@ -3017,13 +3032,14 @@ class AnalyzePrices():
         bollinger_overlays = []
         bollinger_overlay_names = []
 
-        for boll in bollinger_list:
+        for i, boll in enumerate(bollinger_list):
 
             if boll['name'] not in current_names:
                 bollinger_overlays.append({
                     'data': boll['data'],
                     'name': boll['name'],
-                    'color_idx': overlay_color_idx[abs(boll['idx_offset'])]
+                    'color_idx': overlay_color_idx[abs(boll['idx_offset'])],
+                    'uid': f'bollinger-band-{i}'
                 })
                 bollinger_overlay_names.append(boll['name'])
 
@@ -3037,6 +3053,7 @@ class AnalyzePrices():
                     overlay['data'],
                     overlay['name'],
                     overlay['color_idx'],
+                    overlay['uid'],
                     target_deck = target_deck,
                     theme = theme,
                     color_theme = color_theme
@@ -3337,13 +3354,14 @@ class AnalyzePrices():
         ma_envelope_overlays = []
         ma_envelope_overlay_names = []
 
-        for env in ma_envelope_list:
+        for i, env in enumerate(ma_envelope_list):
 
             if env['name'] not in current_names:
                 ma_envelope_overlays.append({
-                   'data': env['data'],
-                   'name': env['name'],
-                   'color_idx': overlay_color_idx[abs(env['idx_offset'])]
+                    'data': env['data'],
+                    'name': env['name'],
+                    'color_idx': overlay_color_idx[abs(env['idx_offset'])],
+                    'uid': f'ma-envelope-{i}'
                 })
                 ma_envelope_overlay_names.append(env['name'])
 
@@ -3357,6 +3375,7 @@ class AnalyzePrices():
                     overlay['data'],
                     overlay['name'],
                     overlay['color_idx'],
+                    overlay['uid'],
                     target_deck = target_deck,
                     theme = theme,
                     color_theme = color_theme
@@ -3867,7 +3886,7 @@ class AnalyzePrices():
         if 'volume' in price_type.lower():
             uid = 'volume'
         else:
-            uid = 'hist_price'
+            uid = 'hist-price'
 
         if plot_type == 'bar':
             fig.add_trace(
@@ -4280,7 +4299,8 @@ class AnalyzePrices():
                 price_overlays.append({
                     'data': price_data,
                     'name': price_name,
-                    'color_idx': color_idx
+                    'color_idx': color_idx,
+                    'uid': f'price-overlay-{i}'
                 })
                 price_overlay_names.append(price_name)
 
@@ -4294,6 +4314,7 @@ class AnalyzePrices():
                     overlay['data'],
                     overlay['name'],
                     overlay['color_idx'],
+                    overlay['uid'],
                     target_deck = target_deck,
                     theme = theme,
                     color_theme = color_theme
