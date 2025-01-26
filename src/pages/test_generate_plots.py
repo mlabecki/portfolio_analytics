@@ -2572,7 +2572,7 @@ def target_deck_options(
         ma_env_deck_value =         ['Middle'] if (ma_env_deck == 'Lower') & deck_changed else [ma_env_deck]
         ma_ribbon_deck_value =      ['Middle'] if (ma_ribbon_deck == 'Lower') & deck_changed else [ma_ribbon_deck]
         price_overlays_deck_value = ['Middle'] if (price_overlays_deck == 'Lower') & deck_changed else [price_overlays_deck]
-        macd_deck_value = ['Middle'] if (macd_deck == 'Lower') & deck_changed else [macd_deck]
+        macd_deck_value =           ['Middle'] if (macd_deck == 'Lower') & deck_changed else [macd_deck]
         all_deck_values = \
             hist_price_deck_value + \
             volume_deck_value + \
@@ -2735,17 +2735,12 @@ def toggle_collapse_macd(n, is_open):
     # Output('bollinger-controls', 'style'),
     # Output('template-controls', 'style'),
 
-    Output('hist-price-secondary-y-dropdown', 'disabled'),
-    Output('volume-secondary-y-dropdown', 'disabled'),
+    Output('macd-signal-window-input', 'disabled'),
+    Output('macd-signal-color-theme-dropdown', 'disabled'),
 
     Output('drawdowns-number-input', 'max'),
     Output('drawdowns-number-input', 'value'),
     Output('drawdowns-price-color-dropdown', 'disabled'),
-
-    Output('macd-signal-window-input', 'disabled'),
-    Output('macd-signal-color-theme-dropdown', 'disabled'),
-    Output('macd-add-price-dropdown', 'disabled'),
-    Output('macd-price-color-theme-dropdown', 'disabled'),
 
     Output('plots-start-date-input-dmc', 'value'),
     Output('plots-end-date-input-dmc', 'value'),
@@ -2753,6 +2748,14 @@ def toggle_collapse_macd(n, is_open):
     Output('plots-start-date-input-dmc', 'maxDate'),
     Output('plots-end-date-input-dmc', 'minDate'),
     Output('plots-end-date-input-dmc', 'maxDate'),
+
+    # Secondary y disabled outputs
+    Output('hist-price-secondary-y-dropdown', 'disabled'),
+    Output('volume-secondary-y-dropdown', 'disabled'),
+    Output('macd-add-price-dropdown', 'disabled'),
+    Output('macd-price-color-theme-dropdown', 'disabled'),
+
+    ##### Inputs
 
     Input('final-start-date-stored', 'data'),
     Input('final-end-date-stored', 'data'),
@@ -3017,18 +3020,22 @@ def update_plot(
     # -- should move these to after the plot is updated, so the '_disabled' parameters
     # could take into account the trace possibly present already on the secondary y-axis
     
-    hist_price_sec_y_disabled = not secondary_y
-    volume_sec_y_disabled = not secondary_y
-
     dd_add_price_disabled = not boolean(drawdown_add_price)
     n_drawdowns = 5 if n_top is None else n_top
     dd_number_value = n_drawdowns
 
     macd_signal_window_disabled = not boolean(macd_add_signal)
     macd_signal_color_disabled = not boolean(macd_add_signal)
+
+    # Secondary y disabled outputs
+
+    hist_price_sec_y_disabled = not secondary_y
+    volume_sec_y_disabled = not secondary_y
+
     macd_price_color_disabled = False if boolean(macd_add_price) & secondary_y else True
     if (macd_deck != 'Upper') | (not secondary_y):
         macd_add_price_disabled = True
+        macd_price_color_disabled = True
     else:
         macd_add_price_disabled = False
 
@@ -3281,17 +3288,40 @@ def update_plot(
                 signal_color_theme = macd_signal_color,
                 price_color_theme = macd_price_color
             )
-            
-            # Could be problems with duplicate outputs...
-            #
-            # if fig_data['sec_y_source'] == ['macd']:
-            #   for id in list_of_all_sec_y_ids:
-            #       if id != ['macd']:
-            #           element_id = map_element_id_to_sec_id[id]
-            #           element_id_disabled = True
-            #       else:
-            #           element_id_disabled = False
 
+        ######
+
+        map_sec_y_id_to_idx = {
+            'hist_price': [0],                  # hist_price_sec_y_disabled
+            'volume': [1],                      # volume_sec_y_disabled
+            'macd': [2, 3]     #,               # [macd_add_price_disabled, macd_price_color_disabled]
+            # 'atr': [atr_sec_y_disabled],
+            # 'mvol': [mvol_sec_y_disabled],
+            # 'boll_width': [boll_width_sec_y_disabled],
+            # 'stochastic': [stochastic_add_price_disabled, stochastic_price_color_disabled],
+            # 'diff': [diff_add_price_disabled, diff_price_color_disabled],
+            # 'diff_stochastic': [diff_stochastic_add_price_disabled, diff_stochastic_price_color_disabled],
+            # 'rsi': [rsi_add_price_disabled, diff_stochastic_price_color_disabled]
+        }
+
+        # Must assign values to sec_y_disabled_outputs if there are no traces on secondary y
+        sec_y_disabled_outputs = (
+            hist_price_sec_y_disabled,
+            volume_sec_y_disabled,
+            macd_add_price_disabled,
+            macd_price_color_disabled  #,
+            # ...
+        )
+
+        # n_sec_y_disabled_outputs = 15
+        n_sec_y_disabled_outputs = len([idx for v in map_sec_y_id_to_idx.values() for idx in v])
+
+        if len(fig_data['sec_y_source']) > 0:
+            sec_y_disabled_outputs_list = [True for i in range(n_sec_y_disabled_outputs)]
+            sec_y_source = fig_data['sec_y_source'][0]
+            for idx in map_sec_y_id_to_idx[sec_y_source]:
+                sec_y_disabled_outputs_list[idx] = False
+            sec_y_disabled_outputs = tuple(sec_y_disabled_outputs_list)
 
         ### Update graph
         fig = fig_data['fig']
@@ -3342,26 +3372,33 @@ def update_plot(
         fig_divs.append(fig_div)
 
 
-    return (
+    # return 
         # selected_tickers_names[tk],
         # str([selected_tickers_names[tk] for tk in tickers_to_plot]),
         # [selected_tickers_names[tk] for tk in tickers_to_plot],
 
-        fig_divs,
         # drawdown_div_style,
         # bollinger_div_style,
         # template_div_style,
 
-        hist_price_sec_y_disabled,
-        volume_sec_y_disabled,
+        # NOTE: 
+        # All sec_y_disabled, add_price_disabled and price_color_disabled will be in a 15-element tuple
+        # hist_price_sec_y_disabled,
+        # volume_sec_y_disabled,
+        # macd_add_price_disabled,
+        # macd_price_color_disabled,
+
+        ######
+        return (
+
+        fig_divs,
+        
+        macd_signal_window_disabled,
+        macd_signal_color_disabled,
 
         n_drawdowns,
         dd_number_value,
         dd_add_price_disabled,
-        macd_signal_window_disabled,
-        macd_signal_color_disabled,
-        macd_add_price_disabled,
-        macd_price_color_disabled,
 
         start_date_value,
         end_date_value,
@@ -3369,4 +3406,5 @@ def update_plot(
         max_start_date,
         min_end_date,
         max_end_date
-    )
+
+        ) + sec_y_disabled_outputs

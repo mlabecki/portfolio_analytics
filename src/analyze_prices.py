@@ -3929,7 +3929,10 @@ class AnalyzePrices():
             fig_data['y_max'].update({target_deck: new_y_max})
         else:
             # Dash callbacks need to disable all other possible sources of traces on secondary y
-            fig_data['sec_y_source'] = ['hist_price']
+            if 'volume' in price_type.lower():
+                fig_data['sec_y_source'] = ['volume']
+            else:
+                fig_data['sec_y_source'] = ['hist_price']
 
         color_map = {legend_name: color_idx}
         overlay_idx = len(fig_overlays) + 1
