@@ -593,6 +593,23 @@ plots_add_button_css = {
     'background-color': 'rgb(212, 250, 220)',
     'color': 'black'
 }
+plots_remove_button_css = {
+    'display': 'block',
+    'width': '300px',
+    'height': '30px',
+    'margin': '3px 0px 7px 0px',
+    'padding-left': '5px',
+    'padding-right': '10px',
+    'vertical-align': 'middle',
+    'text-align': 'center',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+    'font-weight': 'bold',
+    'border-radius': '5px',
+    'border-color': 'rgb(255, 178, 185)',
+    'background-color': 'rgb(255, 222, 220)',
+    'color': 'black'
+}
 reset_axes_button_css = {
     'display': 'inline-block',
     # 'display': 'flex',

@@ -842,6 +842,19 @@ layout = html.Div([
                         # style = {'margin-bottom': '5px'}
                     ),
 
+                    html.Div([
+                        dbc.Button(
+                            'Remove From Plot',
+                            id = f'remove-hist-price-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'danger',
+                            size = 'sm',
+                            style = plots_remove_button_css
+                        )],
+                        # style = {'margin-bottom': '5px'}
+                    ),
+
                 ],
                 # style = {'margin-left': '5px'}
             ), 
@@ -2735,6 +2748,8 @@ def toggle_collapse_macd(n, is_open):
     # Output('bollinger-controls', 'style'),
     # Output('template-controls', 'style'),
 
+    Output('remove-hist-price-button', 'n_clicks'),
+
     Output('macd-signal-window-input', 'disabled'),
     Output('macd-signal-color-theme-dropdown', 'disabled'),
 
@@ -2788,6 +2803,7 @@ def toggle_collapse_macd(n, is_open):
     Input('hist-price-color-theme-dropdown', 'value'),
     Input('hist-price-add-title-dropdown', 'value'),
     Input('add-hist-price-button', 'n_clicks'),
+    Input('remove-hist-price-button', 'n_clicks'),
 
     # Candlestick price options
     Input('candlestick-deck-dropdown', 'value'),
@@ -2911,6 +2927,7 @@ def update_plot(
         hist_price_color_theme,
         hist_price_add_title,
         add_hist_price,
+        remove_hist_price,
 
         # historical price options
         candlestick_deck_name,
@@ -3066,7 +3083,12 @@ def update_plot(
             theme = theme
         )
 
+
         ### Add historical price
+        add_hist_price = 0 if remove_hist_price else add_hist_price
+        # NOTE: The condition 
+        # if add_hist_price & (not remove_hist_price)
+        # requires clicking Add To Plot twice in order to restore the plot after it has been removed.
         if add_hist_price:
             
             hist_price_color_theme = hist_price_color_theme.lower() if hist_price_color_theme is not None else 'base'
@@ -3393,6 +3415,8 @@ def update_plot(
 
         fig_divs,
         
+        0,  # Clear remove-hist-price-button value
+
         macd_signal_window_disabled,
         macd_signal_color_disabled,
 

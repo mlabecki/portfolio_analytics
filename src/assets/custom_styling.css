@@ -75,6 +75,13 @@ button, input, select, textarea {
     background-color: rgb(152, 242, 178) !important;
 }
 
+#remove-hist-price-button:hover
+{
+    border-color: rgb(254, 158, 168) !important;
+    background-color: rgb(254, 158, 168) !important;
+}
+
+
 .plots-color-icon {
     display: inline-block;
     margin-right: 3px;
