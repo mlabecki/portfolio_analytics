@@ -417,7 +417,7 @@ popover_color_themes_top_header_css = {
     'display': 'block'
 }
 popover_color_themes_header_css = {
-    'width': '210px',
+    'width': '300px',
     'padding-left': '5px',
     'margin-top': '18px',
     'margin-bottom': '0px',

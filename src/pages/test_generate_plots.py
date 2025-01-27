@@ -2219,16 +2219,15 @@ layout = html.Div([
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
                     dbc.Popover([
-                        html.Span(
-                            f"""MACD-Signal: MACD and Signal are plotted as lines and the histogram / filled line is based on their difference.
-                            MACD-Zero: MACD is plotted as histogram / filled line and the Signal is added if selected.""",
-                            style = popover_menu_collapse_button_header_css
-                            )
+                        # NOTE: Must use <BR/>, not <BR>, to break the line inside the popover
+                        dcc.Markdown("""<DIV>MACD-Signal: MACD and Signal are plotted as lines and the histogram / filled line is based on their difference.<BR/>
+                            MACD-Zero: MACD is plotted as histogram / filled line and the Signal is added if selected.</DIV>""", dangerously_allow_html = True),
                         ], 
                         id = 'popover-macd-histogram-type-dropdown',
                         target = 'macd-histogram-type-dropdown',
                         body = False,
                         trigger = 'hover',
+                        # trigger = 'click',
                         hide_arrow = False,
                         style = popover_menu_button_css
                     ),
