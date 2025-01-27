@@ -408,7 +408,7 @@ popover_color_themes_css = {
     'border-radius': '5px'
 }
 popover_color_themes_top_header_css = {
-    'width': '210px',
+    'width': '300px',
     'padding-left': '5px',
     'margin-top': '2px',
     'margin-bottom': '0px',
@@ -577,12 +577,13 @@ link_container_css = {
 
 # Plots
 plots_add_button_css = {
-    'display': 'block',
-    'width': '300px',
+    'display': 'inline-block',
+    'width': '265px',
     'height': '30px',
-    'margin': '3px 0px 7px 0px',
-    'padding-left': '5px',
-    'padding-right': '10px',
+    'margin': '3px 5px 7px 0px',
+    'padding-left': '0px',
+    'padding-right': '0px',
+    'padding-bottom': '2px',
     'vertical-align': 'middle',
     'text-align': 'center',
     'font-family': 'Helvetica',
@@ -594,12 +595,12 @@ plots_add_button_css = {
     'color': 'black'
 }
 plots_remove_button_css = {
-    'display': 'block',
-    'width': '300px',
+    'display': 'inline-block',
+    'width': '30px',
     'height': '30px',
     'margin': '3px 0px 7px 0px',
-    'padding-left': '5px',
-    'padding-right': '10px',
+    'padding-left': '0px',
+    'padding-right': '0px',
     'vertical-align': 'middle',
     'text-align': 'center',
     'font-family': 'Helvetica',

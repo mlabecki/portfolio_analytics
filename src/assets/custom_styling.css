@@ -76,8 +76,10 @@ button, input, select, textarea {
 }
 
 #remove-hist-price-button:hover,
+#remove-candlestick-button:hover,
 #remove-price-overlays-button:hover,
 #remove-volume-button:hover,
+#remove-drawdowns-button:hover,
 #remove-bollinger-button:hover,
 #remove-ma-env-button:hover,
 #remove-ma-ribbon-button:hover,

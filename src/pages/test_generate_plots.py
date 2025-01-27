@@ -829,9 +829,15 @@ layout = html.Div([
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
+                    ##### Add / Remove buttons
                     html.Div([
                         dbc.Button(
                             'Add To Plot',
+                            # 'ADD TO PLOT',
+                            # '🗸',
+                            # '✓',
+                            # '✔',
+                            # https://www.w3schools.com/charsets/ref_utf_dingbats.asp
                             id = f'add-hist-price-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -839,12 +845,13 @@ layout = html.Div([
                             size = 'sm',
                             style = plots_add_button_css
                         )],
-                        # style = {'margin-bottom': '5px'}
+                        style = {'display': 'inline-block'}
                     ),
-
                     html.Div([
                         dbc.Button(
-                            'Remove From Plot',
+                            # '✖',
+                            '✕',
+                            # https://www.w3schools.com/charsets/ref_utf_dingbats.asp
                             id = f'remove-hist-price-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -852,8 +859,8 @@ layout = html.Div([
                             size = 'sm',
                             style = plots_remove_button_css
                         )],
-                        # style = {'margin-bottom': '5px'}
-                    ),
+                        style = {'display': 'inline-block'}
+                    )
 
                 ],
                 # style = {'margin-left': '5px'}
@@ -955,18 +962,31 @@ layout = html.Div([
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
+                    ##### Add / Remove buttons
                     html.Div([
                         dbc.Button(
                             'Add To Plot',
-                            id = 'add-candlestick-button',
+                            id = f'add-candlestick-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
                             color = 'success',
                             size = 'sm',
                             style = plots_add_button_css
                         )],
-                        # style = {'margin-bottom': '5px'}
+                        style = {'display': 'inline-block'}
                     ),
+                    html.Div([
+                        dbc.Button(
+                            '✕',
+                            id = f'remove-candlestick-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'danger',
+                            size = 'sm',
+                            style = plots_remove_button_css
+                        )],
+                        style = {'display': 'inline-block'}
+                    )
 
                 ],
                 # style = {'margin-left': '5px'}
@@ -1083,21 +1103,6 @@ layout = html.Div([
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
-                    # Volume should not be the primary title
-                    #
-                    # html.Div([
-                    #     html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
-                    #     dcc.Dropdown(
-                    #         id='volume-add-title-dropdown',
-                    #         className = 'plots-dropdown-button',
-                    #         options = ['Yes', 'No'],
-                    #         value = 'Yes',
-                    #         clearable = False,
-                    #         style = {'width': '90px'}
-                    #     )],
-                    #     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                    # ),
-
                     html.Div([
                         html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
@@ -1124,7 +1129,8 @@ layout = html.Div([
                         )],
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
-
+ 
+                    ##### Add / Remove buttons
                     html.Div([
                         dbc.Button(
                             'Add To Plot',
@@ -1135,12 +1141,11 @@ layout = html.Div([
                             size = 'sm',
                             style = plots_add_button_css
                         )],
-                        # style = {'margin-bottom': '5px'}
+                        style = {'display': 'inline-block'}
                     ),
-
                     html.Div([
                         dbc.Button(
-                            'Remove From Plot',
+                            '✕',
                             id = f'remove-volume-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -1148,8 +1153,8 @@ layout = html.Div([
                             size = 'sm',
                             style = plots_remove_button_css
                         )],
-                        # style = {'margin-bottom': '5px'}
-                    ),
+                        style = {'display': 'inline-block'}
+                    )
 
                 ],
                 # style = {'margin-left': '5px'}
@@ -1306,6 +1311,7 @@ layout = html.Div([
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
+                    ##### Add / Remove buttons
                     html.Div([
                         dbc.Button(
                             'Add To Plot',
@@ -1316,7 +1322,20 @@ layout = html.Div([
                             size = 'sm',
                             style = plots_add_button_css
                         )],
+                        style = {'display': 'inline-block'}
                     ),
+                    html.Div([
+                        dbc.Button(
+                            '✕',
+                            id = f'remove-drawdowns-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'danger',
+                            size = 'sm',
+                            style = plots_remove_button_css
+                        )],
+                        style = {'display': 'inline-block'}
+                    )
 
                 ],
                 # style = {'margin-left': '5px'}
@@ -1466,71 +1485,7 @@ layout = html.Div([
                         }
                     ),
 
-                    # dbc.Checkbox(
-                    #     id = "price-overlays-adj-close-checkbox",
-                    #     label = "Adjusted Close",
-                    #     value = False,
-                    #     label_style = {'font-family': 'Helvetica', 'font-size': '14px', 'color': 'black', 'margin-right': '5px', 'margin-bottom': '5px'},
-                    #     # label_checked_style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'color': 'darkgreen', 'margin-right': '5px', 'margin-bottom': '5px'},
-                    #     # input_checked_style = {'color': 'darkgreen'},
-                    # ),
-                    # dbc.Checkbox(
-                    #     id = "price-overlays-adj-open-checkbox",
-                    #     label = "Adjusted Open",
-                    #     value = False,
-                    #     label_style = {'font-family': 'Helvetica', 'font-size': '14px', 'color': 'black', 'margin-right': '5px', 'margin-bottom': '5px'},
-                    #     # label_checked_style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'color': 'darkgreen', 'margin-right': '5px', 'margin-bottom': '5px'},
-                    #     # input_checked_style = {'color': 'darkgreen'},
-                    # ),
-                    # dbc.Checkbox(
-                    #     id = "price-overlays-adj-high-checkbox",
-                    #     label = "Adjusted High",
-                    #     value = False,
-                    #     label_style = {'font-family': 'Helvetica', 'font-size': '14px', 'color': 'black', 'margin-right': '5px', 'margin-bottom': '5px'},
-                    #     # label_checked_style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'color': 'darkgreen', 'margin-right': '5px', 'margin-bottom': '5px'},
-                    #     # input_checked_style = {'color': 'darkgreen'},
-                    # ),
-                    # dbc.Checkbox(
-                    #     id = "price-overlays-adj-low-checkbox",
-                    #     label = "Adjusted Low",
-                    #     value = False,
-                    #     label_style = {'font-family': 'Helvetica', 'font-size': '14px', 'color': 'black', 'margin-right': '5px', 'margin-bottom': '5px'},
-                    #     # label_checked_style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'color': 'darkgreen', 'margin-right': '5px', 'margin-bottom': '5px'},
-                    #     # input_checked_style = {'color': 'darkgreen'},
-                    # ),
-                    # dbc.Checkbox(
-                    #     id = "price-overlays-close-checkbox",
-                    #     label = "Close",
-                    #     value = False,
-                    #     label_style = {'font-family': 'Helvetica', 'font-size': '14px', 'color': 'black', 'margin-right': '5px', 'margin-bottom': '5px'},
-                    #     # label_checked_style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'color': 'darkgreen', 'margin-right': '5px', 'margin-bottom': '5px'},
-                    #     # input_checked_style = {'color': 'darkgreen'},
-                    # ),
-                    # dbc.Checkbox(
-                    #     id = "price-overlays-open-checkbox",
-                    #     label = "Open",
-                    #     value = False,
-                    #     label_style = {'font-family': 'Helvetica', 'font-size': '14px', 'color': 'black', 'margin-right': '5px', 'margin-bottom': '5px'},
-                    #     # label_checked_style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'color': 'darkgreen', 'margin-right': '5px', 'margin-bottom': '5px'},
-                    #     # input_checked_style = {'color': 'darkgreen'},
-                    # ),
-                    # dbc.Checkbox(
-                    #     id = "price-overlays-high-checkbox",
-                    #     label = "High",
-                    #     value = False,
-                    #     label_style = {'font-family': 'Helvetica', 'font-size': '14px', 'color': 'black', 'margin-right': '5px', 'margin-bottom': '5px'},
-                    #     # label_checked_style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'color': 'darkgreen', 'margin-right': '5px', 'margin-bottom': '5px'},
-                    #     # input_checked_style = {'color': 'darkgreen'},
-                    # ),
-                    # dbc.Checkbox(
-                    #     id = "price-overlays-low-checkbox",
-                    #     label = "Low",
-                    #     value = False,
-                    #     label_style = {'font-family': 'Helvetica', 'font-size': '14px', 'color': 'black', 'margin-right': '5px', 'margin-bottom': '5px'},
-                    #     # label_checked_style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'color': 'darkgreen', 'margin-right': '5px', 'margin-bottom': '5px'},
-                    #     # input_checked_style = {'color': 'darkgreen'},
-                    # ),
-
+                    ##### Add / Remove buttons
                     html.Div([
                         dbc.Button(
                             'Add To Plot',
@@ -1541,12 +1496,11 @@ layout = html.Div([
                             size = 'sm',
                             style = plots_add_button_css
                         )],
-                        # style = {'margin-bottom': '5px'}
+                        style = {'display': 'inline-block'}
                     ),
-
                     html.Div([
                         dbc.Button(
-                            'Remove From Plot',
+                            '✕',
                             id = f'remove-price-overlays-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -1554,11 +1508,9 @@ layout = html.Div([
                             size = 'sm',
                             style = plots_remove_button_css
                         )],
-                        # style = {'margin-bottom': '5px'}
-                    ),
-
+                        style = {'display': 'inline-block'}
+                    )
                 ],
-                # style = {'margin-left': '5px'}
             ), 
 
             id = 'collapse-price-overlays',
@@ -1706,9 +1658,10 @@ layout = html.Div([
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
+                    ##### Add / Remove buttons
                     html.Div([
                         dbc.Button(
-                            'Add To Plot',
+                            'Add',
                             id = f'add-bollinger-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -1716,12 +1669,11 @@ layout = html.Div([
                             size = 'sm',
                             style = plots_add_button_css
                         )],
-                        # style = {'margin-bottom': '5px'}
+                        style = {'display': 'inline-block'}
                     ),
-
                     html.Div([
                         dbc.Button(
-                            'Remove From Plot',
+                            '✕',
                             id = f'remove-bollinger-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -1729,8 +1681,8 @@ layout = html.Div([
                             size = 'sm',
                             style = plots_remove_button_css
                         )],
-                        # style = {'margin-bottom': '5px'}
-                    ),
+                        style = {'display': 'inline-block'}
+                    )
 
                 ],
                 # style = {'margin-left': '5px'}
@@ -1880,6 +1832,7 @@ layout = html.Div([
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
+                    ##### Add / Remove buttons
                     html.Div([
                         dbc.Button(
                             'Add To Plot',
@@ -1890,12 +1843,11 @@ layout = html.Div([
                             size = 'sm',
                             style = plots_add_button_css
                         )],
-                        # style = {'margin-bottom': '5px'}
+                        style = {'display': 'inline-block'}
                     ),
-
                     html.Div([
                         dbc.Button(
-                            'Remove From Plot',
+                            '✕',
                             id = f'remove-ma-env-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -1903,8 +1855,8 @@ layout = html.Div([
                             size = 'sm',
                             style = plots_remove_button_css
                         )],
-                        # style = {'margin-bottom': '5px'}
-                    ),
+                        style = {'display': 'inline-block'}
+                    )
 
                 ],
                 # style = {'margin-left': '5px'}
@@ -2051,6 +2003,7 @@ layout = html.Div([
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
+                    ##### Add / Remove buttons
                     html.Div([
                         dbc.Button(
                             'Add To Plot',
@@ -2061,12 +2014,11 @@ layout = html.Div([
                             size = 'sm',
                             style = plots_add_button_css
                         )],
-                        # style = {'margin-bottom': '5px'}
+                        style = {'display': 'inline-block'}
                     ),
-
                     html.Div([
                         dbc.Button(
-                            'Remove From Plot',
+                            '✕',
                             id = f'remove-ma-ribbon-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -2074,8 +2026,8 @@ layout = html.Div([
                             size = 'sm',
                             style = plots_remove_button_css
                         )],
-                        # style = {'margin-bottom': '5px'}
-                    ),
+                        style = {'display': 'inline-block'}
+                    )
 
                 ],
                 # style = {'margin-left': '5px'}
@@ -2255,7 +2207,7 @@ layout = html.Div([
                     ),
 
                     html.Div([
-                        html.Div('Histogram Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top'}),
+                        html.Div('Oscillator Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top'}),
                         dcc.Dropdown(
                             id = 'macd-histogram-type-dropdown',
                             className = 'plots-dropdown-button',
@@ -2347,6 +2299,7 @@ layout = html.Div([
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
+                    ##### Add / Remove buttons
                     html.Div([
                         dbc.Button(
                             'Add To Plot',
@@ -2357,12 +2310,11 @@ layout = html.Div([
                             size = 'sm',
                             style = plots_add_button_css
                         )],
-                        # style = {'margin-bottom': '5px'}
+                        style = {'display': 'inline-block'}
                     ),
-
                     html.Div([
                         dbc.Button(
-                            'Remove From Plot',
+                            '✕',
                             id = f'remove-macd-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -2370,8 +2322,8 @@ layout = html.Div([
                             size = 'sm',
                             style = plots_remove_button_css
                         )],
-                        # style = {'margin-bottom': '5px'}
-                    ),
+                        style = {'display': 'inline-block'}
+                    )
 
                 ],
                 # style = {'margin-left': '5px'}
@@ -2828,7 +2780,9 @@ def toggle_collapse_macd(n, is_open):
 
     # Add To Plot buttons
     Output('add-hist-price-button', 'n_clicks'),
+    Output('add-candlestick-button', 'n_clicks'),
     Output('add-volume-button', 'n_clicks'),
+    Output('add-drawdowns-button', 'n_clicks'),
     Output('add-price-overlays-button', 'n_clicks'),
     Output('add-bollinger-button', 'n_clicks'),
     Output('add-ma-env-button', 'n_clicks'),
@@ -2837,7 +2791,9 @@ def toggle_collapse_macd(n, is_open):
 
     # Remove From Plot buttons
     Output('remove-hist-price-button', 'n_clicks'),
+    Output('remove-candlestick-button', 'n_clicks'),
     Output('remove-volume-button', 'n_clicks'),
+    Output('remove-drawdowns-button', 'n_clicks'),
     Output('remove-price-overlays-button', 'n_clicks'),
     Output('remove-bollinger-button', 'n_clicks'),
     Output('remove-ma-env-button', 'n_clicks'),
@@ -2906,6 +2862,7 @@ def toggle_collapse_macd(n, is_open):
     Input('candlestick-color-theme-dropdown', 'value'),
     Input('candlestick-add-title-dropdown', 'value'),
     Input('add-candlestick-button', 'n_clicks'),
+    Input('remove-candlestick-button', 'n_clicks'),    
 
     # Volume options
     Input('volume-deck-dropdown', 'value'),
@@ -2927,7 +2884,8 @@ def toggle_collapse_macd(n, is_open):
     Input('drawdowns-price-color-dropdown', 'value'),
     Input('drawdowns-add-price-dropdown', 'value'),
     Input('drawdowns-add-title-dropdown', 'value'),
-    Input('add-drawdowns-button', 'n_clicks'),    
+    Input('add-drawdowns-button', 'n_clicks'),
+    Input('remove-drawdowns-button', 'n_clicks'),
 
     # price overlay options
     Input('price-overlays-deck-dropdown', 'value'),
@@ -3036,6 +2994,7 @@ def update_plot(
         candlestick_color_theme,
         candlestick_add_title,
         add_candlestick,
+        remove_candlestick,
 
         # volume options
         volume_deck_name,
@@ -3058,6 +3017,7 @@ def update_plot(
         drawdown_add_price,
         drawdown_add_title,
         add_drawdowns,
+        remove_drawdowns,
 
         # price overlays
         price_overlay_deck_name,
@@ -3229,6 +3189,13 @@ def update_plot(
         #     print(f"tr['uid']\n {tr['uid']}")
 
         ### Add candlestick
+        if remove_candlestick & (fig_data is not None):
+            add_candlestick = 0
+            for i, tr in enumerate(fig_data['fig']['data']):
+                if tr['legendgroup'] != 'dummy':
+                    if 'candlestick' in tr['uid']:
+                        fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
+
         if add_candlestick:
             
             df_ohlc = downloaded_data[tk]['ohlc_adj'] if boolean(candlestick_adjusted) else downloaded_data[tk]['ohlc']
@@ -3272,6 +3239,13 @@ def update_plot(
             )
 
         ### Add drawdowns
+        if remove_drawdowns & (fig_data is not None):
+            add_drawdowns = 0
+            for i, tr in enumerate(fig_data['fig']['data']):
+                if tr['legendgroup'] != 'dummy':                
+                    if 'drawdowns' in tr['uid']:
+                        fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
+
         if add_drawdowns:
 
             dd_add_title = boolean(drawdown_add_title)
@@ -3576,14 +3550,16 @@ def update_plot(
 
         fig_divs,
         
-        add_hist_price,  # update 
+        add_hist_price,  # update
+        add_candlestick,
         add_volume,
+        add_drawdowns,
         add_price_overlays,
         add_bollinger,
         add_ma_env,
         add_ma_ribbon,
         add_macd,
-        0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
+        0, 0, 0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
 
         macd_signal_window_disabled,
         macd_signal_color_disabled,
