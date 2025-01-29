@@ -64,6 +64,8 @@ class AnalyzePrices():
         """
         https://stackoverflow.com/questions/40256338/calculating-average-true-range-atr-on-ohlc-data-with-python
 
+        n: number of periods, typically days
+        
         """
         tr_cols = ['tr0', 'tr1', 'tr2']
         df_tr = pd.DataFrame(columns = tr_cols, index = close_tk.index)
@@ -81,6 +83,8 @@ class AnalyzePrices():
             'atr name': f'ATR {n}',
             'atrp name': f'ATRP {n}'
         }
+        # ATRP = Average True Rate Percent 
+        # https://chartschool.stockcharts.com/table-of-contents/technical-indicators-and-overlays/technical-indicators/average-true-range-atr-and-average-true-range-percent-atrp
 
         return atr_data
 
@@ -703,7 +707,7 @@ class AnalyzePrices():
 
                 min_n_intervals = n_yintervals_map['min'][plot_height]
                 max_n_intervals = n_yintervals_map['max'][plot_height]
-                sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
+                sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(min_y, max_y, min_n_intervals, max_n_intervals)
                 sec_y_range = (sec_y_lower_limit, sec_y_upper_limit)
 
                 fig.update_yaxes(
@@ -735,6 +739,7 @@ class AnalyzePrices():
                     mode = 'lines',
                     line_color = linecolor,
                     name = legend_name,
+                    uid = 'atr',
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle
@@ -790,6 +795,11 @@ class AnalyzePrices():
             })
             fig_data.update({'overlays': fig_overlays})
 
+        primary_y_traces = [x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y')]
+        secondary_y_traces = [x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y2')]
+        print(f'\nprimary_y_traces\n {primary_y_traces}')
+        print(f'\nsecondary_y_traces\n {secondary_y_traces}')
+
         return fig_data
 
 
@@ -808,10 +818,28 @@ class AnalyzePrices():
         """
         stochastic_type: 'Fast', 'Slow', 'Full'
         NOTES:
-        1) fast_k_period is also know as the look--back period
+        1) fast_k_period is also know as the look-back period
         2) smoothing_period is the period used in slow %K and full %K
         3) sma_d_period is the %D averaging period used in fast, slow and full stochastics
         4) if sma_d_period == smoothing_period, then the slow and full stochastics become equivalent
+
+        https://chartschool.stockcharts.com/table-of-contents/technical-indicators-and-overlays/technical-indicators/stochastic-oscillator-fast-slow-and-full
+        Fast Stochastic Oscillator:
+            Fast %K = %K basic calculation over 14 periods (fast_k_period = 14)
+            Fast %D = 3-period SMA (sma_d_period = 3) of Fast %K
+        Slow Stochastic Oscillator:
+            Slow %K = Fast %K smoothed with 3-period SMA (smoothing_period = 3)
+            Slow %D = 3-period SMA (sma_d_period = 3) of Slow %K
+        Full Stochastic Oscillator:
+            Full %K = Fast %K smoothed with X-period SMA
+            Full %D = X-period SMA of Full %K
+            The Full Stochastic Oscillator is a fully customizable version of the Slow Stochastic Oscillator.
+            Users can set the look-back period (fast_k_period), the number of periods for slow %K (smoothing_period) 
+            and the number of periods for the %D moving average (sma_d_period). 
+        The default parameters are: 
+            Fast Stochastic Oscillator (14,3)
+            Slow Stochastic Oscillator (14,3)
+            Full Stochastic Oscillator (14,3,3)
 
         """
         fast_low = low_tk.rolling(window = fast_k_period, min_periods = 1).min()
@@ -3238,7 +3266,7 @@ class AnalyzePrices():
 
                 min_n_intervals = n_yintervals_map['min'][plot_height]
                 max_n_intervals = n_yintervals_map['max'][plot_height]
-                sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
+                sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(min_y, max_y, min_n_intervals, max_n_intervals)
                 sec_y_range = (sec_y_lower_limit, sec_y_upper_limit)
 
                 fig.update_yaxes(
@@ -3562,7 +3590,7 @@ class AnalyzePrices():
 
                 min_n_intervals = n_yintervals_map['min'][plot_height]
                 max_n_intervals = n_yintervals_map['max'][plot_height]
-                sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
+                sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(min_y, max_y, min_n_intervals, max_n_intervals)
                 sec_y_range = (sec_y_lower_limit, sec_y_upper_limit)
 
                 fig.update_yaxes(

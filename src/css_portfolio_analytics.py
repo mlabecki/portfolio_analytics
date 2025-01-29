@@ -387,13 +387,16 @@ popover_menu_collapse_button_header_css = {
     'font-size': '14px'
 }
 popover_menu_collapse_button_css = {
-    'max-width': '200px',
+    'max-width': '250px',
     'padding': '5px 0px 6px 10px',
     'border': '2px solid rgb(0, 140, 186)',
     'border-radius': '10px',
     'background-color': 'white'
 }
 popover_menu_button_css = {
+    'color': 'black',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
     'max-width': '300px',
     'padding': '5px 5px 6px 10px',
     'border': '1px solid rgb(211, 211, 211)',

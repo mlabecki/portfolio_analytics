@@ -69,7 +69,8 @@ button, input, select, textarea {
 #add-bollinger-button:hover,
 #add-ma-env-button:hover,
 #add-ma-ribbon-button:hover,
-#add-macd-button:hover
+#add-macd-button:hover,
+#add-atr-button:hover
 {
     border-color: rgb(152, 242, 178) !important;
     background-color: rgb(152, 242, 178) !important;
@@ -83,12 +84,12 @@ button, input, select, textarea {
 #remove-bollinger-button:hover,
 #remove-ma-env-button:hover,
 #remove-ma-ribbon-button:hover,
-#remove-macd-button:hover
+#remove-macd-button:hover,
+#remove-atr-button:hover
 {
     border-color: rgb(255, 178, 185) !important;
     background-color: rgb(255, 178, 185) !important;
 }
-
 
 .plots-color-icon {
     display: inline-block;

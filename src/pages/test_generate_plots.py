@@ -160,6 +160,7 @@ def display_table_selected_tickers(
         editable = False,
         row_selectable = 'multi',
         selected_rows = [0],
+        # selected_rows = [],
         tooltip_data = table_tooltip_data,
         css = [
             {
@@ -2337,6 +2338,197 @@ layout = html.Div([
 
     ##### END MACD CONTROLS
 
+    ##### BEGIN ATR CONTROLS
+
+    html.Div([
+
+        html.Div(
+            dbc.Button(
+                id = 'collapse-button-atr',
+                class_name = 'ma-1',
+                color = 'primary',
+                size = 'sm',
+                n_clicks = 0,
+                style = collapse_button_css
+            )
+        ),
+        dbc.Popover(
+            [
+            html.Span(
+                   """NOTE: Average True Rate can only be plotted on the secondary y-axis or on the middle/lower deck
+                   if the primary y-axis is populated. 
+                   """,
+                    style = popover_menu_collapse_button_header_css
+                )
+            ], 
+            id = 'popover-collapse-button-atr',
+            target = 'collapse-button-atr',
+            body = False,
+            trigger = 'hover',
+            hide_arrow = True,
+            style = popover_menu_collapse_button_css
+        ),
+
+        dbc.Collapse(
+
+            html.Div(
+
+                id = 'atr-controls',
+                children = [
+
+                    html.Div([
+                        html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'atr-deck-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Upper'],
+                            value = 'Upper',
+                            clearable = False,
+                            style = {'width': '100px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+
+                    html.Div([
+                        html.Div('ATR Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'left': '2px'}),
+                        dcc.Dropdown(
+                            id='atr-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Regular', 'Percent'],
+                            value = 'Regular',
+                            clearable = False,
+                            style = {'width': '100px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id='atr-adjusted-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '90px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            'Are the underlying prices adjusted for stock splits and dividends?',
+                             style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-atr-adjusted-dropdown',
+                        target = 'atr-adjusted-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
+
+                    html.Div([
+                        html.Div('Number Of Periods', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                        dbc.Input(
+                            id = 'atr-periods-input',
+                            className = 'plots-input-button',
+                            type = 'number',
+                            value = 14,
+                            min = 1,
+                            step = 1,
+                            debounce = True,
+                            style = {'width': '150px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-bottom': '5px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Add Y-Axis Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id='atr-add-yaxis-title-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '145px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id='atr-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = overlay_color_themes,
+                            value = 'Base',
+                            clearable = False,
+                            style = {'width': '130px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Plot On Secondary Y', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id='atr-secondary-y-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['No', 'Yes'],
+                            value = 'No',
+                            clearable = False,
+                            disabled = True,
+                            style = {'width': '165px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    ##### Add / Remove buttons
+                    html.Div([
+                        dbc.Button(
+                            'Add To Plot',
+                            # 'ADD TO PLOT',
+                            # '🗸',
+                            # '✓',
+                            # '✔',
+                            # https://www.w3schools.com/charsets/ref_utf_dingbats.asp
+                            id = f'add-atr-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'success',
+                            size = 'sm',
+                            style = plots_add_button_css
+                        )],
+                        style = {'display': 'inline-block'}
+                    ),
+                    html.Div([
+                        dbc.Button(
+                            # '✖',
+                            '✕',
+                            # https://www.w3schools.com/charsets/ref_utf_dingbats.asp
+                            id = f'remove-atr-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'danger',
+                            size = 'sm',
+                            style = plots_remove_button_css
+                        )],
+                        style = {'display': 'inline-block'}
+                    )
+                ],
+                # style = {'margin-left': '5px'}
+            ), 
+
+            id = 'collapse-atr',
+            is_open = False,
+            style = {'width': '300px'}
+        )],
+        style = {'margin-left': '5px'}
+    ), 
+
+    ##### END ATR CONTROLS
+
     ]),
 
     # id = 'collapse-sidebar-menu',
@@ -2530,7 +2722,7 @@ def toggle_collapse_dates(n, is_open):
 )
 def toggle_collapse_template(n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
-    title = 'TEMPLATE'
+    title = 'THEME & TEMPLATE'
     label = f'► {title}' if is_open else f'▼ {title}'
     if n:
         return label, not is_open
@@ -2548,6 +2740,7 @@ def toggle_collapse_template(n, is_open):
     Output('ma-ribbon-deck-dropdown', 'options'),
     Output('price-overlays-deck-dropdown', 'options'),
     Output('macd-deck-dropdown', 'options'),
+    Output('atr-deck-dropdown', 'options'),
     
     Output('hist-price-deck-dropdown', 'value'),
     Output('volume-deck-dropdown', 'value'),
@@ -2556,6 +2749,7 @@ def toggle_collapse_template(n, is_open):
     Output('ma-ribbon-deck-dropdown', 'value'),
     Output('price-overlays-deck-dropdown', 'value'),
     Output('macd-deck-dropdown', 'value'),
+    Output('atr-deck-dropdown', 'value'),
 
     Input('deck-type-dropdown', 'n_clicks'),
     Input('deck-type-dropdown', 'value'),
@@ -2566,7 +2760,8 @@ def toggle_collapse_template(n, is_open):
     Input('ma-env-deck-dropdown', 'value'),
     Input('ma-ribbon-deck-dropdown', 'value'),
     Input('price-overlays-deck-dropdown', 'value'),
-    Input('macd-deck-dropdown', 'value')
+    Input('macd-deck-dropdown', 'value'),
+    Input('atr-deck-dropdown', 'value')
 )
 def target_deck_options(
     deck_changed,
@@ -2577,7 +2772,8 @@ def target_deck_options(
     ma_env_deck,
     ma_ribbon_deck,
     price_overlays_deck,
-    macd_deck
+    macd_deck,
+    atr_deck
 ):
     # Number of deck-dropdown inputs
     n = target_deck_options.__code__.co_argcount - 2
@@ -2596,6 +2792,7 @@ def target_deck_options(
         ma_ribbon_deck_value =      ['Lower'] if (ma_ribbon_deck in ['Middle', 'Lower']) else ['Upper']
         price_overlays_deck_value = ['Lower'] if (price_overlays_deck in ['Middle', 'Lower']) else ['Upper']
         macd_deck_value =           ['Lower'] if (macd_deck in ['Middle', 'Lower']) else ['Upper']
+        atr_deck_value =            ['Lower'] if (atr_deck in ['Middle', 'Lower']) else ['Upper']
         all_deck_values = \
             hist_price_deck_value + \
             volume_deck_value + \
@@ -2603,7 +2800,8 @@ def target_deck_options(
             ma_env_deck_value + \
             ma_ribbon_deck_value + \
             price_overlays_deck_value + \
-            macd_deck_value
+            macd_deck_value + \
+            atr_deck_value
         return tuple([False]) + tuple([k for k in [['Upper', 'Lower']] * n]) + tuple(all_deck_values)
 
     else:
@@ -2615,6 +2813,7 @@ def target_deck_options(
         ma_ribbon_deck_value =      ['Middle'] if (ma_ribbon_deck == 'Lower') & deck_changed else [ma_ribbon_deck]
         price_overlays_deck_value = ['Middle'] if (price_overlays_deck == 'Lower') & deck_changed else [price_overlays_deck]
         macd_deck_value =           ['Middle'] if (macd_deck == 'Lower') & deck_changed else [macd_deck]
+        atr_deck_value =            ['Middle'] if (atr_deck == 'Lower') & deck_changed else [atr_deck]        
         all_deck_values = \
             hist_price_deck_value + \
             volume_deck_value + \
@@ -2622,7 +2821,8 @@ def target_deck_options(
             ma_env_deck_value + \
             ma_ribbon_deck_value + \
             price_overlays_deck_value + \
-            macd_deck_value
+            macd_deck_value + \
+            atr_deck_value
         return tuple([False]) + tuple([k for k in [['Upper', 'Middle', 'Lower']] * n]) + tuple(all_deck_values)
 
 
@@ -2766,6 +2966,22 @@ def toggle_collapse_macd(n, is_open):
 
 
 @callback(
+    Output('collapse-button-atr', 'children'),
+    Output('collapse-atr', 'is_open'),
+    Input('collapse-button-atr', 'n_clicks'),
+    State('collapse-atr', 'is_open')
+)
+def toggle_collapse_macd(n, is_open):
+    # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
+    title = 'AVERAGE TRUE RATE'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
 
     # Output('test-graph', 'figure'),
     # Output('fig_div', 'children', allow_duplicate = True),
@@ -2787,6 +3003,7 @@ def toggle_collapse_macd(n, is_open):
     Output('add-ma-env-button', 'n_clicks'),
     Output('add-ma-ribbon-button', 'n_clicks'),
     Output('add-macd-button', 'n_clicks'),
+    Output('add-atr-button', 'n_clicks'),
 
     # Remove From Plot buttons
     Output('remove-hist-price-button', 'n_clicks'),
@@ -2798,6 +3015,7 @@ def toggle_collapse_macd(n, is_open):
     Output('remove-ma-env-button', 'n_clicks'),
     Output('remove-ma-ribbon-button', 'n_clicks'),
     Output('remove-macd-button', 'n_clicks'),
+    Output('remove-atr-button', 'n_clicks'),
 
     Output('macd-signal-window-input', 'disabled'),
     Output('macd-signal-color-theme-dropdown', 'disabled'),
@@ -2816,6 +3034,7 @@ def toggle_collapse_macd(n, is_open):
     # Secondary y disabled outputs
     Output('hist-price-secondary-y-dropdown', 'disabled'),
     Output('volume-secondary-y-dropdown', 'disabled'),
+    Output('atr-secondary-y-dropdown', 'disabled'),
     Output('macd-add-price-dropdown', 'disabled'),
     Output('macd-price-color-theme-dropdown', 'disabled'),
 
@@ -2945,8 +3164,19 @@ def toggle_collapse_macd(n, is_open):
     Input('macd-signal-color-theme-dropdown', 'value'),
     Input('macd-price-color-theme-dropdown', 'value'),
     Input('add-macd-button', 'n_clicks'),
-    Input('remove-macd-button', 'n_clicks')
+    Input('remove-macd-button', 'n_clicks'),
    
+    # Historical price options
+    Input('atr-deck-dropdown', 'value'),
+    Input('atr-adjusted-dropdown', 'value'),
+    Input('atr-periods-input', 'value'),
+    Input('atr-type-dropdown', 'value'),
+    Input('atr-secondary-y-dropdown', 'value'),
+    Input('atr-add-yaxis-title-dropdown', 'value'),
+    Input('atr-color-theme-dropdown', 'value'),
+    Input('add-atr-button', 'n_clicks'),
+    Input('remove-atr-button', 'n_clicks')
+
 )
 
 def update_plot(
@@ -3076,6 +3306,16 @@ def update_plot(
         add_macd,
         remove_macd,
 
+        atr_deck,
+        atr_adjusted,
+        atr_periods,
+        atr_type,
+        atr_secondary_y,
+        atr_add_yaxis_title,
+        atr_color_theme,
+        add_atr,
+        remove_atr
+
     ):
 
     selected_tickers = list(selected_tickers_names.keys())
@@ -3113,6 +3353,7 @@ def update_plot(
 
     hist_price_sec_y_disabled = not secondary_y
     volume_sec_y_disabled = not secondary_y
+    atr_sec_y_disabled = not secondary_y
 
     macd_price_color_disabled = False if boolean(macd_add_price) & secondary_y else True
     if (macd_deck != 'Upper') | (not secondary_y):
@@ -3445,13 +3686,48 @@ def update_plot(
                 price_color_theme = macd_price_color
             )
 
+        # Add ATR / ATRP
+        if remove_atr & (fig_data is not None):
+            add_atr = 0
+            for i, tr in enumerate(fig_data['fig']['data']):
+                if tr['legendgroup'] != 'dummy':
+                    if 'atr' in tr['uid']:
+                        fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
+
+        if add_atr:
+            
+            atr_color_theme = atr_color_theme.lower() if atr_color_theme is not None else 'gold'
+            df_atr = downloaded_data[tk]['ohlc_adj'] if boolean(atr_adjusted) else downloaded_data[tk]['ohlc']
+            atr_close_tk = df_atr['Close'][min_date: max_date]
+            atr_high_tk = df_atr['High'][min_date: max_date]
+            atr_low_tk = df_atr['Low'][min_date: max_date]
+            atr_data = analyze_prices.average_true_rate(
+                atr_close_tk,
+                atr_high_tk,
+                atr_low_tk,
+                atr_periods
+            )
+
+            fig_data = analyze_prices.add_atr(
+                fig_data,
+                atr_data,
+                atr_type = 'atr' if atr_type == 'Regular' else 'atrp',
+                target_deck = deck_number(deck_type, atr_deck),
+                secondary_y = boolean(atr_secondary_y),
+                add_yaxis_title = boolean(atr_add_yaxis_title),
+                theme = theme,
+                color_theme = atr_color_theme
+            )
+
+
         ######
 
         map_sec_y_id_to_idx = {
             'hist_price': [0],                  # hist_price_sec_y_disabled
             'volume': [1],                      # volume_sec_y_disabled
-            'macd': [2, 3]     #,               # [macd_add_price_disabled, macd_price_color_disabled]
-            # 'atr': [atr_sec_y_disabled],
+            'atr': [2],                         # atr_sec_y_disabled,
+            'macd': [3, 4]                      # [macd_add_price_disabled, macd_price_color_disabled]
+            
             # 'mvol': [mvol_sec_y_disabled],
             # 'boll_width': [boll_width_sec_y_disabled],
             # 'stochastic': [stochastic_add_price_disabled, stochastic_price_color_disabled],
@@ -3464,8 +3740,10 @@ def update_plot(
         sec_y_disabled_outputs = (
             hist_price_sec_y_disabled,
             volume_sec_y_disabled,
+            atr_sec_y_disabled,
             macd_add_price_disabled,
-            macd_price_color_disabled  #,
+            macd_price_color_disabled
+            
             # ...
         )
 
@@ -3541,11 +3819,12 @@ def update_plot(
         # All sec_y_disabled, add_price_disabled and price_color_disabled will be in a 15-element tuple
         # hist_price_sec_y_disabled,
         # volume_sec_y_disabled,
+        # atr_sec_y_disabled,
         # macd_add_price_disabled,
         # macd_price_color_disabled,
 
         ######
-        return (
+    return (
 
         fig_divs,
         
@@ -3558,7 +3837,8 @@ def update_plot(
         add_ma_env,
         add_ma_ribbon,
         add_macd,
-        0, 0, 0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
+        add_atr,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
 
         macd_signal_window_disabled,
         macd_signal_color_disabled,
@@ -3574,4 +3854,4 @@ def update_plot(
         min_end_date,
         max_end_date
 
-        ) + sec_y_disabled_outputs
+    ) + sec_y_disabled_outputs

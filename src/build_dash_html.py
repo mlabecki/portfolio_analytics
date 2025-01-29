@@ -174,7 +174,7 @@ class BuildDashHtml():
                         ]),
                     # Candle colors
                         html.B(
-                            'CANDLESTICK & OSCILLATORS',
+                            'CANDLESTICK & DIFFERENCE PLOTS',
                             style = popover_color_themes_header_css
                         ), 
                         html.Div([
