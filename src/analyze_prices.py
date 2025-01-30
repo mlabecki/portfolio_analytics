@@ -3227,11 +3227,6 @@ class AnalyzePrices():
                 if new_y_max > fig_y_max:
                     reset_y_limits = True
 
-            # print(f'\nADD BOLLINGER WIDTH')
-            # print(f'min_y, max_y = {min_y, max_y}')
-            # print(f'fig_y_min, fig_y_max = {fig_y_min, fig_y_max}')
-            # print(f'new_y_min, new_y_max = {new_y_min, new_y_max}')
-
             ##################
 
             if not secondary_y:
@@ -3298,6 +3293,7 @@ class AnalyzePrices():
                     mode = 'lines',
                     line_color = linecolor,
                     name = legend_name,
+                    uid = 'boll-width',
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle

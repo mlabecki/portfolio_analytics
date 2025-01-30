@@ -396,8 +396,8 @@ popover_menu_collapse_button_css = {
 popover_menu_button_css = {
     'color': 'black',
     'font-family': 'Helvetica',
-    'font-size': '14px',
-    'max-width': '300px',
+    'font-size': '13px',
+    'max-width': '320px',
     'padding': '5px 5px 6px 10px',
     'border': '1px solid rgb(211, 211, 211)',
     'border-radius': '10px',
