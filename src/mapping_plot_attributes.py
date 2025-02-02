@@ -44,6 +44,29 @@ n_yintervals_map = {
         1000: 19        
     }
 }
+dtick_map ={
+    'rsi': {
+        100: 20,
+        150: 20,
+        200: 20,
+        250: 20,
+        300: 20,
+        350: 20,
+        400: 20,
+        450: 20,
+        500: 10,
+        550: 10,
+        600: 10,
+        650: 10,
+        700: 10,
+        750: 10,
+        800: 10,
+        850: 10,        
+        900: 10,
+        950: 5,
+        1000: 5        
+    }
+}
 
 n_xticks_map = {
     'width_slope': 31
@@ -117,10 +140,10 @@ theme_style = {
             'blue-salmon': {
                 'green_color':  'rgba(0, 185, 225, 1)',    # darkened deepskyblue (0, 191, 255)
                 'red_color':    'rgba(250, 128, 114, 1)',  # salmon
-                'base_color':   'rgba(50, 205, 50, 1)'     # grasslands
+                'base_color':   'rgba(50, 205, 50, 1)'     # limegreen
             },
             'gold-orchid': {
-                'green_color':  'rgba(255, 215, 0, 1)',   # gold
+                'green_color':  'rgba(255, 215, 0, 1)',    # gold
                 'red_color':    'rgba(158, 50, 184, 1)',   # modified darkorchid (153, 50, 204)
                 'base_color':   'rgba(0, 191, 255, 1)'
             },

@@ -3055,6 +3055,250 @@ layout = html.Div([
 
     ##### END MVOL CONTROLS
 
+    ##### BEGIN RSI CONTROLS
+
+    html.Div([
+
+        html.Div(
+            dbc.Button(
+                id = 'collapse-button-rsi',
+                class_name = 'ma-1',
+                color = 'primary',
+                size = 'sm',
+                n_clicks = 0,
+                style = collapse_button_css
+            )
+        ),
+
+        dbc.Popover(
+            [
+            html.Span(
+                   'Relative Strength Index',
+                    style = popover_menu_collapse_button_header_css
+                )
+            ], 
+            id = 'popover-collapse-button-rsi',
+            target = 'collapse-button-rsi',
+            body = False,
+            trigger = 'hover',
+            hide_arrow = True,
+            style = popover_menu_collapse_button_css
+        ),
+
+        dbc.Collapse(
+
+            html.Div(
+
+                id = 'rsi-controls',
+                children = [
+
+                    html.Div([
+                        html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'rsi-deck-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Upper'],
+                            value = 'Upper',
+                            clearable = False,
+                            style = {'width': '100px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Price Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'rsi-price-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Close', 'Adjusted Close'],
+                            value = 'Close',
+                            clearable = False,
+                            style = {'width': '120px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            'Is RSI based on prices adjusted for stock splits and dividends?',
+                             style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-rsi-price-type-dropdown',
+                        target = 'rsi-price-type-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
+
+                    html.Div([
+                        html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'rsi-add-title-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '70px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('# Of Periods', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                        dbc.Input(
+                            id = 'rsi-periods-input',
+                            className = 'plots-input-button',
+                            type = 'number',
+                            value = 14,
+                            min = 1,
+                            step = 1,
+                            debounce = True,
+                            style = {'width': '120px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-bottom': '5px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Add Overbought/Oversold', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top'}),
+                        dcc.Dropdown(
+                            id = 'rsi-add-overbought-oversold-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '175px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Overbought Level', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'left': '2px'}),
+                        dbc.Input(
+                            id = 'rsi-overbought-level-input',
+                            className = 'plots-input-button',
+                            type = 'number',
+                            value = 70,
+                            min = 1,
+                            max = 99,
+                            step = 1,
+                            debounce = True,
+                            disabled = False,
+                            style = {'width': '150px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Oversold Level', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'left': '2px'}),
+                        dbc.Input(
+                            id = 'rsi-oversold-level-input',
+                            className = 'plots-input-button',
+                            type = 'number',
+                            value = 30,
+                            min = 1,
+                            max = 99,
+                            step = 1,
+                            debounce = True,
+                            disabled = False,
+                            style = {'width': '145px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    
+                    html.Div([
+                        html.Div('RSI Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'rsi-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = overlay_color_themes,
+                            value = 'Gold',
+                            clearable = False,
+                            disabled = False,
+                            style = {'width': '110px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Add Price', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'rsi-add-price-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['No', 'Yes'],
+                            value = 'No',
+                            clearable = False,
+                            style = {'width': '70px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            'Price can only be added to Secondary Y-Axis on the Upper Deck.',
+                             style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-rsi-add-price-dropdown',
+                        target = 'rsi-add-price-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
+
+                    html.Div([
+                        html.Div('Price Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id='rsi-price-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = overlay_color_themes,
+                            value = 'Base',
+                            clearable = False,
+                            disabled = False,
+                            style = {'width': '110px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    ##### Add / Remove buttons
+                    html.Div([
+                        dbc.Button(
+                            'Add To Plot',
+                            id = f'add-rsi-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'success',
+                            size = 'sm',
+                            style = plots_add_button_css
+                        )],
+                        style = {'display': 'inline-block'}
+                    ),
+                    html.Div([
+                        dbc.Button(
+                            '✕',
+                            id = f'remove-rsi-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'danger',
+                            size = 'sm',
+                            style = plots_remove_button_css
+                        )],
+                        style = {'display': 'inline-block'}
+                    )
+
+                ],
+                # style = {'margin-left': '5px'}
+            ), 
+
+            id = 'collapse-rsi',
+            is_open = False,
+            style = {'width': '300px'}
+        )],
+        style = {'margin-left': '5px'}
+    ), 
+
+    ##### END RSI CONTROLS
+
     ]),
 
     # id = 'collapse-sidebar-menu',
@@ -3269,6 +3513,7 @@ def toggle_collapse_template(n, is_open):
     Output('macd-deck-dropdown', 'options'),
     Output('atr-deck-dropdown', 'options'),
     Output('mvol-deck-dropdown', 'options'),
+    Output('rsi-deck-dropdown', 'options'),
     
     Output('hist-price-deck-dropdown', 'value'),
     Output('volume-deck-dropdown', 'value'),
@@ -3280,6 +3525,7 @@ def toggle_collapse_template(n, is_open):
     Output('macd-deck-dropdown', 'value'),
     Output('atr-deck-dropdown', 'value'),
     Output('mvol-deck-dropdown', 'value'),
+    Output('rsi-deck-dropdown', 'value'),
 
     Input('deck-type-dropdown', 'n_clicks'),
     Input('deck-type-dropdown', 'value'),
@@ -3293,7 +3539,8 @@ def toggle_collapse_template(n, is_open):
     Input('price-overlays-deck-dropdown', 'value'),
     Input('macd-deck-dropdown', 'value'),
     Input('atr-deck-dropdown', 'value'),
-    Input('mvol-deck-dropdown', 'value')
+    Input('mvol-deck-dropdown', 'value'),
+    Input('rsi-deck-dropdown', 'value')
 )
 def target_deck_options(
     deck_changed,
@@ -3307,7 +3554,8 @@ def target_deck_options(
     price_overlays_deck,
     macd_deck,
     atr_deck,
-    mvol_deck
+    mvol_deck,
+    rsi_deck
 ):
     # Number of deck-dropdown inputs
     n = target_deck_options.__code__.co_argcount - 2
@@ -3329,6 +3577,7 @@ def target_deck_options(
         macd_deck_value =           ['Lower'] if (macd_deck in ['Middle', 'Lower']) else ['Upper']
         atr_deck_value =            ['Lower'] if (atr_deck in ['Middle', 'Lower']) else ['Upper']
         mvol_deck_value =           ['Lower'] if (mvol_deck in ['Middle', 'Lower']) else ['Upper']
+        rsi_deck_value =            ['Lower'] if (rsi_deck in ['Middle', 'Lower']) else ['Upper']
         all_deck_values = \
             hist_price_deck_value + \
             volume_deck_value + \
@@ -3339,7 +3588,8 @@ def target_deck_options(
             price_overlays_deck_value + \
             macd_deck_value + \
             atr_deck_value + \
-            mvol_deck_value
+            mvol_deck_value + \
+            rsi_deck_value
         return tuple([False]) + tuple([k for k in [['Upper', 'Lower']] * n]) + tuple(all_deck_values)
 
     else:
@@ -3354,6 +3604,7 @@ def target_deck_options(
         macd_deck_value =           ['Middle'] if (macd_deck == 'Lower') & deck_changed else [macd_deck]
         atr_deck_value =            ['Middle'] if (atr_deck == 'Lower') & deck_changed else [atr_deck]
         mvol_deck_value =           ['Middle'] if (mvol_deck == 'Lower') & deck_changed else [mvol_deck]
+        rsi_deck_value =            ['Middle'] if (rsi_deck == 'Lower') & deck_changed else [rsi_deck]
         all_deck_values = \
             hist_price_deck_value + \
             volume_deck_value + \
@@ -3364,7 +3615,8 @@ def target_deck_options(
             price_overlays_deck_value + \
             macd_deck_value + \
             atr_deck_value + \
-            mvol_deck_value
+            mvol_deck_value + \
+            rsi_deck_value
         return tuple([False]) + tuple([k for k in [['Upper', 'Middle', 'Lower']] * n]) + tuple(all_deck_values)
 
 
@@ -3556,6 +3808,22 @@ def toggle_collapse_mvol(n, is_open):
 
 
 @callback(
+    Output('collapse-button-rsi', 'children'),
+    Output('collapse-rsi', 'is_open'),
+    Input('collapse-button-rsi', 'n_clicks'),
+    State('collapse-rsi', 'is_open')
+)
+def toggle_collapse_rsi(n, is_open):
+    # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
+    title = 'RELATIVE STRENGTH INDEX'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
 
     Output('fig-div-container', 'children'),
 
@@ -3572,6 +3840,7 @@ def toggle_collapse_mvol(n, is_open):
     Output('add-macd-button', 'n_clicks'),
     Output('add-atr-button', 'n_clicks'),
     Output('add-mvol-button', 'n_clicks'),
+    Output('add-rsi-button', 'n_clicks'),
 
     # Remove From Plot buttons
     Output('remove-hist-price-button', 'n_clicks'),
@@ -3586,9 +3855,12 @@ def toggle_collapse_mvol(n, is_open):
     Output('remove-macd-button', 'n_clicks'),
     Output('remove-atr-button', 'n_clicks'),
     Output('remove-mvol-button', 'n_clicks'),
+    Output('remove-rsi-button', 'n_clicks'),
 
     Output('macd-signal-window-input', 'disabled'),
     Output('macd-signal-color-theme-dropdown', 'disabled'),
+    Output('rsi-overbought-level-input', 'disabled'),
+    Output('rsi-oversold-level-input', 'disabled'),
 
     Output('drawdowns-number-input', 'max'),
     Output('drawdowns-number-input', 'value'),
@@ -3609,6 +3881,8 @@ def toggle_collapse_mvol(n, is_open):
     Output('mvol-secondary-y-dropdown', 'disabled'),
     Output('macd-add-price-dropdown', 'disabled'),
     Output('macd-price-color-theme-dropdown', 'disabled'),
+    Output('rsi-add-price-dropdown', 'disabled'),
+    Output('rsi-price-color-theme-dropdown', 'disabled'),
 
     ##### Inputs
 
@@ -3774,8 +4048,22 @@ def toggle_collapse_mvol(n, is_open):
     Input('mvol-add-yaxis-title-dropdown', 'value'),
     Input('mvol-color-theme-dropdown', 'value'),
     Input('add-mvol-button', 'n_clicks'),
-    Input('remove-mvol-button', 'n_clicks')
+    Input('remove-mvol-button', 'n_clicks'),
 
+   # MACD inputs
+    Input('rsi-deck-dropdown', 'value'),
+    Input('rsi-price-type-dropdown', 'value'),
+    Input('rsi-add-title-dropdown', 'value'),
+    Input('rsi-periods-input', 'value'),
+    Input('rsi-add-overbought-oversold-dropdown', 'value'),
+    Input('rsi-overbought-level-input', 'value'),
+    Input('rsi-oversold-level-input', 'value'),
+    Input('rsi-color-theme-dropdown', 'value'),
+    Input('rsi-add-price-dropdown', 'value'),
+    Input('rsi-price-color-theme-dropdown', 'value'),
+    Input('add-rsi-button', 'n_clicks'),
+    Input('remove-rsi-button', 'n_clicks')
+ 
 )
 
 def update_plot(
@@ -3930,7 +4218,20 @@ def update_plot(
         mvol_add_yaxis_title,
         mvol_color_theme,
         add_mvol,
-        remove_mvol
+        remove_mvol,
+
+        rsi_deck,
+        rsi_price_type,
+        rsi_add_title,
+        rsi_periods,
+        rsi_add_overbought_oversold,
+        rsi_overbought_level,
+        rsi_oversold_level,
+        rsi_color_theme,
+        rsi_add_price,
+        rsi_price_color_theme,
+        add_rsi,
+        remove_rsi
 
     ):
 
@@ -3964,6 +4265,8 @@ def update_plot(
 
     macd_signal_window_disabled = not boolean(macd_add_signal)
     macd_signal_color_disabled = not boolean(macd_add_signal)
+    rsi_overbought_level_disabled = not boolean(rsi_add_overbought_oversold)
+    rsi_oversold_level_disabled = not boolean(rsi_add_overbought_oversold)
 
     # Secondary y disabled outputs
 
@@ -3979,6 +4282,13 @@ def update_plot(
         macd_price_color_disabled = True
     else:
         macd_add_price_disabled = False
+
+    rsi_price_color_disabled = False if boolean(rsi_add_price) & secondary_y else True
+    if (rsi_deck != 'Upper') | (not secondary_y):
+        rsi_add_price_disabled = True
+        rsi_price_color_disabled = True
+    else:
+        rsi_add_price_disabled = False
 
     ################
 
@@ -4392,6 +4702,39 @@ def update_plot(
                 color_theme = mvol_color_theme
             )
 
+        ### Add RSI
+        if remove_rsi & (fig_data is not None):
+            add_rsi = 0
+            for i, tr in enumerate(fig_data['fig']['data']):
+                if tr['legendgroup'] != 'dummy':                
+                    if 'rsi' in tr['uid']:
+                        fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
+
+        if add_rsi:
+            rsi_prices = downloaded_data[tk]['ohlc_adj']['Close'] if rsi_price_type == 'Adjusted Close' else downloaded_data[tk]['ohlc']['Close']
+            rsi_prices = rsi_prices[min_date: max_date]
+            #
+            rsi_data = analyze_prices.relative_strength(
+                rsi_prices,
+                period = rsi_periods
+            )
+            #
+            fig_data = analyze_prices.add_rsi(
+                fig_data,
+                rsi_data,
+                tk,
+                price_type = rsi_price_type,
+                add_price = boolean(rsi_add_price),
+                target_deck = deck_number(deck_type, rsi_deck),
+                oversold_threshold = rsi_overbought_level,
+                overbought_threshold = rsi_oversold_level,
+                add_threshold_overlays = boolean(rsi_add_overbought_oversold),
+                add_title = boolean(rsi_add_title),
+                theme = theme,
+                rsi_color_theme = rsi_color_theme,
+                price_color_theme = rsi_price_color_theme
+            )
+
         ######
 
         map_sec_y_id_to_idx = {
@@ -4400,12 +4743,12 @@ def update_plot(
             'atr': [2],                         # atr_sec_y_disabled,
             'boll_width': [3],                  # boll_width_sec_y_disabled,
             'mvol': [4],                        # mvol_sec_y_disabled,
-            'macd': [5, 6]                      # [macd_add_price_disabled, macd_price_color_disabled]
+            'macd': [5, 6],                     # [macd_add_price_disabled, macd_price_color_disabled]
+            'rsi': [7, 8]                       # [rsi_add_price_disabled, rsi_price_color_disabled]
             
             # 'stochastic': [stochastic_add_price_disabled, stochastic_price_color_disabled],
             # 'diff': [diff_add_price_disabled, diff_price_color_disabled],
             # 'diff_stochastic': [diff_stochastic_add_price_disabled, diff_stochastic_price_color_disabled],
-            # 'rsi': [rsi_add_price_disabled, diff_stochastic_price_color_disabled]
         }
 
         # Must assign values to sec_y_disabled_outputs if there are no traces on secondary y
@@ -4416,8 +4759,9 @@ def update_plot(
             boll_width_sec_y_disabled,
             mvol_sec_y_disabled,
             macd_add_price_disabled,
-            macd_price_color_disabled
-            
+            macd_price_color_disabled,
+            rsi_add_price_disabled,
+            rsi_price_color_disabled
             # ...
         )
 
@@ -4499,10 +4843,13 @@ def update_plot(
         add_macd,
         add_atr,
         add_mvol,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
+        add_rsi,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
 
         macd_signal_window_disabled,
         macd_signal_color_disabled,
+        rsi_overbought_level_disabled,
+        rsi_oversold_level_disabled,
 
         n_drawdowns,
         dd_number_value,

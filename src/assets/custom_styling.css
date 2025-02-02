@@ -71,7 +71,9 @@ button, input, select, textarea {
 #add-ma-env-button:hover,
 #add-ma-ribbon-button:hover,
 #add-macd-button:hover,
-#add-atr-button:hover
+#add-atr-button:hover,
+#add-mvol-button:hover,
+#add-rsi-button:hover
 {
     border-color: rgb(152, 242, 178) !important;
     background-color: rgb(152, 242, 178) !important;
@@ -87,7 +89,9 @@ button, input, select, textarea {
 #remove-ma-env-button:hover,
 #remove-ma-ribbon-button:hover,
 #remove-macd-button:hover,
-#remove-atr-button:hover
+#remove-atr-button:hover,
+#remove-mvol-button:hover,
+#remove-rsi-button:hover
 {
     border-color: rgb(255, 178, 185) !important;
     background-color: rgb(255, 178, 185) !important;

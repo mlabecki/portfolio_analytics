@@ -215,7 +215,7 @@ class AnalyzePrices():
 
     ##### MOVING VOLATILITY / STANDARD DEVIATION #####
 
-    def moving_std_vol(
+    def moving_volatility_stdev(
         self,
         df_tk,
         ma_type,
@@ -2406,6 +2406,7 @@ class AnalyzePrices():
         fig_data,
         rsi_data,
         tk,
+        price_type = 'Close',
         add_price = False,
         target_deck = 2,
         oversold_threshold = 30,
@@ -2413,13 +2414,17 @@ class AnalyzePrices():
         add_threshold_overlays = True,
         add_title = False,
         title_font_size = 32,
-        theme = 'dark'
+        theme = 'dark',
+        rsi_color_theme = None,
+        price_color_theme = None
     ):
         """
         rsi_data:
             output from relative_strength()
         tk:
             ticker for which to plot RSI
+        price_type:
+            'Close' or 'Adjusted Close'
         add_price:
             Can only add price to secondary_y, which means target_deck must be 1.
             Except for price on secondary_y, no other overlays will be available.
@@ -2440,6 +2445,16 @@ class AnalyzePrices():
         title_y_pos = fig_data['title_y_pos']
         has_secondary_y = fig_data['has_secondary_y']
 
+        style = theme_style[theme]
+
+        rsi_color_theme = 'gold' if rsi_color_theme is None else rsi_color_theme.lower()
+        rsi_color_idx = style['overlay_color_selection'][rsi_color_theme][1][0]
+        rsi_color = style['overlay_color_theme'][rsi_color_theme][rsi_color_idx]
+
+        price_color_theme = 'base' if price_color_theme is None else price_color_theme.lower()
+        price_color_idx = style['overlay_color_selection'][price_color_theme][1][0]
+        price_color = style['overlay_color_theme'][price_color_theme][price_color_idx]
+
         # Plot price on secondary axis of the upper deck only if it has been created in subplots
 
         if target_deck == 1:
@@ -2458,8 +2473,6 @@ class AnalyzePrices():
 
         min_rsi = min(rsi)
         max_rsi = max(rsi)
-
-        style = theme_style[theme]
 
         title_rsi = f'{tk} Relative Strength Index {rsi_type} (%)'
         yaxis_title = f'RSI (%)'
@@ -2480,12 +2493,13 @@ class AnalyzePrices():
                 x = rsi.index,
                 y = rsi,
                 mode = 'lines',
-                line_color = style['rsi_linecolor'],
+                line_color = rsi_color,
                 line_width = 2,
                 legendrank = target_deck * 1000,
                 legendgroup = f'{target_deck}',
                 legendgrouptitle = legendgrouptitle,            
-                name = f'RSI {rsi_type} (%)'
+                name = f'RSI {rsi_type} (%)',
+                uid = 'rsi'
             ),
             row = target_deck, col = 1,
             secondary_y = False
@@ -2507,7 +2521,8 @@ class AnalyzePrices():
                     mode = 'lines',
                     line_color = 'black',
                     line_width = 0,
-                    hoverinfo = 'skip',            
+                    hoverinfo = 'skip',
+                    uid = 'rsi-max',
                     showlegend = False
                 ),
                 row = target_deck, col = 1,
@@ -2525,7 +2540,8 @@ class AnalyzePrices():
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
-                    name = f'Overbought > {overbought_threshold}%'
+                    name = f'Overbought > {overbought_threshold}%',
+                    uid = 'rsi-overbought'
                 ),
                 row = target_deck, col = 1,
                 secondary_y = False
@@ -2542,7 +2558,8 @@ class AnalyzePrices():
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
-                    name = f'Oversold < {oversold_threshold}%'
+                    name = f'Oversold < {oversold_threshold}%',
+                    uid = 'rsi-oversold'
                 ),
                 row = target_deck, col = 1,
                 secondary_y = False
@@ -2562,15 +2579,16 @@ class AnalyzePrices():
                     x = rsi.index,
                     y = df_price,
                     mode = 'lines',
-                    line_color = style['basecolor'],
-                    name = 'Close'
+                    line_color = price_color,
+                    name = price_type,
+                    uid = 'rsi-price'
                 ),
                 secondary_y = True
             )
 
             fig_rsi.update_yaxes(
                 range = sec_y_range,
-                title = 'Close',
+                title = price_type,
                 showticklabels = True,
                 tick0 = sec_y_lower_limit,
                 dtick = sec_y_delta,
@@ -2597,8 +2615,11 @@ class AnalyzePrices():
                 )
             )
 
+        dtick = dtick_map['rsi'][plot_height]
         fig_rsi.update_yaxes(
             range = (0, y_upper_limit),
+            tick0 = 0,
+            dtick = dtick,
             title = yaxis_title,
             showticklabels = True,
             secondary_y = False,
@@ -3618,6 +3639,7 @@ class AnalyzePrices():
                     mode = 'lines',
                     line_color = linecolor,
                     name = legend_name,
+                    uid = 'mvol',
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle
