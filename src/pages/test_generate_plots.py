@@ -649,7 +649,7 @@ layout = html.Div([
                             id = 'width-input',
                             className = 'plots-input-button',
                             type = 'number',
-                            value = 1450,
+                            value = 1350,
                             min = 800,
                             max = 1800,
                             step = 50,
@@ -3069,11 +3069,12 @@ layout = html.Div([
                 style = collapse_button_css
             )
         ),
-
         dbc.Popover(
             [
             html.Span(
-                   'Relative Strength Index',
+                   """NOTE: Relative Strength Index cannot be plotted on the Upper Deck 
+                   if the primary y axis of that deck is already populated.
+                   """,
                     style = popover_menu_collapse_button_header_css
                 )
             ], 
@@ -3100,7 +3101,7 @@ layout = html.Div([
                             options = ['Upper'],
                             value = 'Upper',
                             clearable = False,
-                            style = {'width': '100px'}
+                            style = {'width': '90px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -3113,7 +3114,7 @@ layout = html.Div([
                             options = ['Close', 'Adjusted Close'],
                             value = 'Close',
                             clearable = False,
-                            style = {'width': '120px'}
+                            style = {'width': '130px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -3154,26 +3155,26 @@ layout = html.Div([
                             min = 1,
                             step = 1,
                             debounce = True,
-                            style = {'width': '120px'}
+                            style = {'width': '110px'}
                         )],
                         style = {'display': 'inline-block', 'margin-bottom': '5px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Add Overbought/Oversold', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top'}),
+                        html.Div('Add Overbought/Oversold', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                         dcc.Dropdown(
                             id = 'rsi-add-overbought-oversold-dropdown',
                             className = 'plots-dropdown-button',
                             options = ['Yes', 'No'],
                             value = 'Yes',
                             clearable = False,
-                            style = {'width': '175px'}
+                            style = {'width': '185px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Overbought Level', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'left': '2px'}),
+                        html.Div('% Overbought Level', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                         dbc.Input(
                             id = 'rsi-overbought-level-input',
                             className = 'plots-input-button',
@@ -3190,7 +3191,7 @@ layout = html.Div([
                     ),
 
                     html.Div([
-                        html.Div('Oversold Level', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'left': '2px'}),
+                        html.Div('% Oversold Level', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                         dbc.Input(
                             id = 'rsi-oversold-level-input',
                             className = 'plots-input-button',
@@ -3298,6 +3299,321 @@ layout = html.Div([
     ), 
 
     ##### END RSI CONTROLS
+
+    ##### BEGIN STOCHASTIC CONTROLS
+
+    html.Div([
+
+        html.Div(
+            dbc.Button(
+                id = 'collapse-button-stochastic',
+                class_name = 'ma-1',
+                color = 'primary',
+                size = 'sm',
+                n_clicks = 0,
+                style = collapse_button_css
+            )
+        ),
+        dbc.Popover(
+            [
+            html.Span(
+                   """NOTE: Stochastic Oscillator cannot be plotted on the Upper Deck 
+                   if the primary y axis of that deck is already populated.
+                   """,
+                    style = popover_menu_collapse_button_header_css
+                )
+            ], 
+            id = 'popover-collapse-button-stochastic',
+            target = 'collapse-button-stochastic',
+            body = False,
+            trigger = 'hover',
+            hide_arrow = True,
+            style = popover_menu_collapse_button_css
+        ),
+
+        dbc.Collapse(
+
+            html.Div(
+
+                id = 'stochastic-controls',
+                children = [
+
+                    html.Div([
+                        html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'stochastic-deck-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Upper'],
+                            value = 'Upper',
+                            clearable = False,
+                            style = {'width': '95px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id='stochastic-adjusted-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '75px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            'Are the underlying prices adjusted for stock splits and dividends?',
+                             style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-stochastic-adjusted-dropdown',
+                        target = 'stochastic-adjusted-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
+
+                    html.Div([
+                        html.Div('Stochastic Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'stochastic-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Fast', 'Slow', 'Full'],
+                            value = 'Slow',
+                            clearable = False,
+                            style = {'width': '120px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        # NOTE: Must use <BR/>, not <BR>, to break the line inside the popover
+                        dcc.Markdown("""<DIV>Fast Stochastic: [...].<BR/>
+                            Slow Stochastic: [...].<BR/>
+                            Full Stochastic: [...].<BR/></DIV>""", dangerously_allow_html = True),
+                        ], 
+                        id = 'popover-stochastic-type-dropdown',
+                        target = 'stochastic-type-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
+
+                    html.Div([
+                        html.Div('%K Line Period', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                        dbc.Input(
+                            id = 'stochastic-fast-k-period-input',
+                            className = 'plots-input-button',
+                            type = 'number',
+                            value = 14,
+                            min = 1,
+                            step = 1,
+                            debounce = True,
+                            style = {'width': '135px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-bottom': '5px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('%K Smoothing Period', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                        dbc.Input(
+                            id = 'stochastic-k-smoothing-period-input',
+                            className = 'plots-input-button',
+                            type = 'number',
+                            value = 3,
+                            min = 1,
+                            step = 1,
+                            debounce = True,
+                            style = {'width': '160px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-bottom': '0px', 'margin-right': '0px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('%D Line Period', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                        dbc.Input(
+                            id = 'stochastic-d-period-input',
+                            className = 'plots-input-button',
+                            type = 'number',
+                            value = 3,
+                            min = 1,
+                            step = 1,
+                            debounce = True,
+                            style = {'width': '115px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-bottom': '5px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Add Overbought/Oversold', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'stochastic-add-overbought-oversold-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '180px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('% Overbought Level', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dbc.Input(
+                            id = 'stochastic-overbought-level-input',
+                            className = 'plots-input-button',
+                            type = 'number',
+                            value = 80,
+                            min = 1,
+                            max = 99,
+                            step = 1,
+                            debounce = True,
+                            disabled = False,
+                            style = {'width': '150px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('% Oversold Level', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dbc.Input(
+                            id = 'stochastic-oversold-level-input',
+                            className = 'plots-input-button',
+                            type = 'number',
+                            value = 20,
+                            min = 1,
+                            max = 99,
+                            step = 1,
+                            debounce = True,
+                            disabled = False,
+                            style = {'width': '145px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    
+                    html.Div([
+                        html.Div('%K Line Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'stochastic-k-line-color-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = drawdown_colors,
+                            value = 'Orange',
+                            clearable = False,
+                            disabled = False,
+                            style = {'width': '148px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    
+                    html.Div([
+                        html.Div('%D Line Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'stochastic-d-line-color-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = drawdown_colors,
+                            value = 'Purple',
+                            clearable = False,
+                            disabled = False,
+                            style = {'width': '147px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'stochastic-add-title-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '80px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Add Price', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'stochastic-add-price-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['No', 'Yes'],
+                            value = 'No',
+                            clearable = False,
+                            style = {'width': '85px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            'Price can only be added to Secondary Y-Axis on the Upper Deck.',
+                             style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-stochastic-add-price-dropdown',
+                        target = 'stochastic-add-price-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
+
+                    html.Div([
+                        html.Div('Price Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id='stochastic-price-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = overlay_color_themes,
+                            value = 'Base',
+                            clearable = False,
+                            disabled = False,
+                            style = {'width': '125px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    ##### Add / Remove buttons
+                    html.Div([
+                        dbc.Button(
+                            'Add To Plot',
+                            id = f'add-stochastic-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'success',
+                            size = 'sm',
+                            style = plots_add_button_css
+                        )],
+                        style = {'display': 'inline-block'}
+                    ),
+                    html.Div([
+                        dbc.Button(
+                            '✕',
+                            id = f'remove-stochastic-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'danger',
+                            size = 'sm',
+                            style = plots_remove_button_css
+                        )],
+                        style = {'display': 'inline-block'}
+                    )
+
+                ],
+                # style = {'margin-left': '5px'}
+            ), 
+
+            id = 'collapse-stochastic',
+            is_open = False,
+            style = {'width': '300px'}
+        )],
+        style = {'margin-left': '5px'}
+    ), 
+
+    ##### END STOCHASTIC CONTROLS
 
     ]),
 
@@ -3514,6 +3830,7 @@ def toggle_collapse_template(n, is_open):
     Output('atr-deck-dropdown', 'options'),
     Output('mvol-deck-dropdown', 'options'),
     Output('rsi-deck-dropdown', 'options'),
+    Output('stochastic-deck-dropdown', 'options'),
     
     Output('hist-price-deck-dropdown', 'value'),
     Output('volume-deck-dropdown', 'value'),
@@ -3526,6 +3843,7 @@ def toggle_collapse_template(n, is_open):
     Output('atr-deck-dropdown', 'value'),
     Output('mvol-deck-dropdown', 'value'),
     Output('rsi-deck-dropdown', 'value'),
+    Output('stochastic-deck-dropdown', 'value'),
 
     Input('deck-type-dropdown', 'n_clicks'),
     Input('deck-type-dropdown', 'value'),
@@ -3540,7 +3858,8 @@ def toggle_collapse_template(n, is_open):
     Input('macd-deck-dropdown', 'value'),
     Input('atr-deck-dropdown', 'value'),
     Input('mvol-deck-dropdown', 'value'),
-    Input('rsi-deck-dropdown', 'value')
+    Input('rsi-deck-dropdown', 'value'),
+    Input('stochastic-deck-dropdown', 'value')
 )
 def target_deck_options(
     deck_changed,
@@ -3555,7 +3874,8 @@ def target_deck_options(
     macd_deck,
     atr_deck,
     mvol_deck,
-    rsi_deck
+    rsi_deck,
+    stochastic_deck
 ):
     # Number of deck-dropdown inputs
     n = target_deck_options.__code__.co_argcount - 2
@@ -3578,6 +3898,7 @@ def target_deck_options(
         atr_deck_value =            ['Lower'] if (atr_deck in ['Middle', 'Lower']) else ['Upper']
         mvol_deck_value =           ['Lower'] if (mvol_deck in ['Middle', 'Lower']) else ['Upper']
         rsi_deck_value =            ['Lower'] if (rsi_deck in ['Middle', 'Lower']) else ['Upper']
+        stochastic_deck_value =     ['Lower'] if (stochastic_deck in ['Middle', 'Lower']) else ['Upper']
         all_deck_values = \
             hist_price_deck_value + \
             volume_deck_value + \
@@ -3589,7 +3910,8 @@ def target_deck_options(
             macd_deck_value + \
             atr_deck_value + \
             mvol_deck_value + \
-            rsi_deck_value
+            rsi_deck_value + \
+            stochastic_deck_value
         return tuple([False]) + tuple([k for k in [['Upper', 'Lower']] * n]) + tuple(all_deck_values)
 
     else:
@@ -3605,6 +3927,7 @@ def target_deck_options(
         atr_deck_value =            ['Middle'] if (atr_deck == 'Lower') & deck_changed else [atr_deck]
         mvol_deck_value =           ['Middle'] if (mvol_deck == 'Lower') & deck_changed else [mvol_deck]
         rsi_deck_value =            ['Middle'] if (rsi_deck == 'Lower') & deck_changed else [rsi_deck]
+        stochastic_deck_value =     ['Middle'] if (stochastic_deck == 'Lower') & deck_changed else [stochastic_deck]
         all_deck_values = \
             hist_price_deck_value + \
             volume_deck_value + \
@@ -3616,7 +3939,8 @@ def target_deck_options(
             macd_deck_value + \
             atr_deck_value + \
             mvol_deck_value + \
-            rsi_deck_value
+            rsi_deck_value + \
+            stochastic_deck_value
         return tuple([False]) + tuple([k for k in [['Upper', 'Middle', 'Lower']] * n]) + tuple(all_deck_values)
 
 
@@ -3824,6 +4148,22 @@ def toggle_collapse_rsi(n, is_open):
 
 
 @callback(
+    Output('collapse-button-stochastic', 'children'),
+    Output('collapse-stochastic', 'is_open'),
+    Input('collapse-button-stochastic', 'n_clicks'),
+    State('collapse-stochastic', 'is_open')
+)
+def toggle_collapse_stochastic(n, is_open):
+    # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
+    title = 'STOCHASTIC OSCILLATOR'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
 
     Output('fig-div-container', 'children'),
 
@@ -3841,7 +4181,8 @@ def toggle_collapse_rsi(n, is_open):
     Output('add-atr-button', 'n_clicks'),
     Output('add-mvol-button', 'n_clicks'),
     Output('add-rsi-button', 'n_clicks'),
-
+    Output('add-stochastic-button', 'n_clicks'),
+    
     # Remove From Plot buttons
     Output('remove-hist-price-button', 'n_clicks'),
     Output('remove-candlestick-button', 'n_clicks'),
@@ -3856,11 +4197,14 @@ def toggle_collapse_rsi(n, is_open):
     Output('remove-atr-button', 'n_clicks'),
     Output('remove-mvol-button', 'n_clicks'),
     Output('remove-rsi-button', 'n_clicks'),
+    Output('remove-stochastic-button', 'n_clicks'),
 
     Output('macd-signal-window-input', 'disabled'),
     Output('macd-signal-color-theme-dropdown', 'disabled'),
     Output('rsi-overbought-level-input', 'disabled'),
     Output('rsi-oversold-level-input', 'disabled'),
+    Output('stochastic-overbought-level-input', 'disabled'),
+    Output('stochastic-oversold-level-input', 'disabled'),
 
     Output('drawdowns-number-input', 'max'),
     Output('drawdowns-number-input', 'value'),
@@ -3883,6 +4227,8 @@ def toggle_collapse_rsi(n, is_open):
     Output('macd-price-color-theme-dropdown', 'disabled'),
     Output('rsi-add-price-dropdown', 'disabled'),
     Output('rsi-price-color-theme-dropdown', 'disabled'),
+    Output('stochastic-add-price-dropdown', 'disabled'),
+    Output('stochastic-price-color-theme-dropdown', 'disabled'),
 
     ##### Inputs
 
@@ -4062,7 +4408,24 @@ def toggle_collapse_rsi(n, is_open):
     Input('rsi-add-price-dropdown', 'value'),
     Input('rsi-price-color-theme-dropdown', 'value'),
     Input('add-rsi-button', 'n_clicks'),
-    Input('remove-rsi-button', 'n_clicks')
+    Input('remove-rsi-button', 'n_clicks'),
+
+    Input('stochastic-deck-dropdown', 'value'),
+    Input('stochastic-adjusted-dropdown', 'value'),
+    Input('stochastic-add-title-dropdown', 'value'),
+    Input('stochastic-type-dropdown', 'value'),
+    Input('stochastic-fast-k-period-input', 'value'),
+    Input('stochastic-k-smoothing-period-input', 'value'),
+    Input('stochastic-d-period-input', 'value'),
+    Input('stochastic-add-overbought-oversold-dropdown', 'value'),
+    Input('stochastic-overbought-level-input', 'value'),
+    Input('stochastic-oversold-level-input', 'value'),
+    Input('stochastic-k-line-color-dropdown', 'value'),
+    Input('stochastic-d-line-color-dropdown', 'value'),
+    Input('stochastic-add-price-dropdown', 'value'),
+    Input('stochastic-price-color-theme-dropdown', 'value'),
+    Input('add-stochastic-button', 'n_clicks'),
+    Input('remove-stochastic-button', 'n_clicks')
  
 )
 
@@ -4231,7 +4594,24 @@ def update_plot(
         rsi_add_price,
         rsi_price_color_theme,
         add_rsi,
-        remove_rsi
+        remove_rsi,
+
+        stochastic_deck,
+        stochastic_adjusted,
+        stochastic_add_title,
+        stochastic_type,
+        stochastic_fast_k_period,
+        stochastic_k_smoothing_period,
+        stochastic_d_period,
+        stochastic_add_overbought_oversold,
+        stochastic_overbought_level,
+        stochastic_oversold_level,
+        stochastic_k_line_color,
+        stochastic_d_line_color,
+        stochastic_add_price,
+        stochastic_price_color_theme,
+        add_stochastic,
+        remove_stochastic
 
     ):
 
@@ -4267,6 +4647,8 @@ def update_plot(
     macd_signal_color_disabled = not boolean(macd_add_signal)
     rsi_overbought_level_disabled = not boolean(rsi_add_overbought_oversold)
     rsi_oversold_level_disabled = not boolean(rsi_add_overbought_oversold)
+    stochastic_overbought_level_disabled = not boolean(stochastic_add_overbought_oversold)
+    stochastic_oversold_level_disabled = not boolean(stochastic_add_overbought_oversold)
 
     # Secondary y disabled outputs
 
@@ -4289,6 +4671,13 @@ def update_plot(
         rsi_price_color_disabled = True
     else:
         rsi_add_price_disabled = False
+
+    stochastic_price_color_disabled = False if boolean(stochastic_add_price) & secondary_y else True
+    if (stochastic_deck != 'Upper') | (not secondary_y):
+        stochastic_add_price_disabled = True
+        stochastic_price_color_disabled = True
+    else:
+        stochastic_add_price_disabled = False
 
     ################
 
@@ -4726,13 +5115,53 @@ def update_plot(
                 price_type = rsi_price_type,
                 add_price = boolean(rsi_add_price),
                 target_deck = deck_number(deck_type, rsi_deck),
-                oversold_threshold = rsi_overbought_level,
-                overbought_threshold = rsi_oversold_level,
+                oversold_threshold = rsi_oversold_level,
+                overbought_threshold = rsi_overbought_level,
                 add_threshold_overlays = boolean(rsi_add_overbought_oversold),
                 add_title = boolean(rsi_add_title),
                 theme = theme,
                 rsi_color_theme = rsi_color_theme,
                 price_color_theme = rsi_price_color_theme
+            )
+
+        ### Add Stochastic
+        if remove_stochastic & (fig_data is not None):
+            add_stochastic = 0
+            for i, tr in enumerate(fig_data['fig']['data']):
+                if tr['legendgroup'] != 'dummy':                
+                    if 'stochastic' in tr['uid']:
+                        fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
+
+        if add_stochastic:
+            stochastic_prices = downloaded_data[tk]['ohlc_adj'] if boolean(stochastic_adjusted) else downloaded_data[tk]['ohlc']
+            stochastic_close_tk = stochastic_prices['Close'][min_date: max_date]
+            stochastic_high_tk = stochastic_prices['High'][min_date: max_date]
+            stochastic_low_tk = stochastic_prices['Low'][min_date: max_date]
+            #
+            stochastic_data = analyze_prices.stochastic_oscillator(
+                stochastic_close_tk,
+                stochastic_high_tk,
+                stochastic_low_tk,
+                fast_k_period = stochastic_fast_k_period,
+                smoothing_period = stochastic_k_smoothing_period,
+                sma_d_period = stochastic_d_period,
+                stochastic_type = stochastic_type
+            )
+            #
+            fig_data = analyze_prices.add_stochastic(
+                fig_data,
+                stochastic_data,
+                tk,
+                add_price = boolean(stochastic_add_price),
+                target_deck = deck_number(deck_type, stochastic_deck),
+                oversold_threshold = stochastic_oversold_level,
+                overbought_threshold = stochastic_overbought_level,
+                add_threshold_overlays = boolean(stochastic_add_overbought_oversold),
+                add_title = boolean(stochastic_add_title),
+                theme = theme,
+                k_line_color = stochastic_k_line_color,
+                d_line_color = stochastic_d_line_color,
+                price_color_theme = stochastic_price_color_theme
             )
 
         ######
@@ -4744,9 +5173,9 @@ def update_plot(
             'boll_width': [3],                  # boll_width_sec_y_disabled,
             'mvol': [4],                        # mvol_sec_y_disabled,
             'macd': [5, 6],                     # [macd_add_price_disabled, macd_price_color_disabled]
-            'rsi': [7, 8]                       # [rsi_add_price_disabled, rsi_price_color_disabled]
+            'rsi': [7, 8],                      # [rsi_add_price_disabled, rsi_price_color_disabled]
+            'stochastic': [9, 10]                    # [stochastic_add_price_disabled, stochastic_price_color_disabled],
             
-            # 'stochastic': [stochastic_add_price_disabled, stochastic_price_color_disabled],
             # 'diff': [diff_add_price_disabled, diff_price_color_disabled],
             # 'diff_stochastic': [diff_stochastic_add_price_disabled, diff_stochastic_price_color_disabled],
         }
@@ -4761,7 +5190,9 @@ def update_plot(
             macd_add_price_disabled,
             macd_price_color_disabled,
             rsi_add_price_disabled,
-            rsi_price_color_disabled
+            rsi_price_color_disabled,
+            stochastic_add_price_disabled,
+            stochastic_price_color_disabled
             # ...
         )
 
@@ -4844,12 +5275,15 @@ def update_plot(
         add_atr,
         add_mvol,
         add_rsi,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
+        add_stochastic,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
 
         macd_signal_window_disabled,
         macd_signal_color_disabled,
         rsi_overbought_level_disabled,
         rsi_oversold_level_disabled,
+        stochastic_overbought_level_disabled,
+        stochastic_oversold_level_disabled,
 
         n_drawdowns,
         dd_number_value,

@@ -898,7 +898,11 @@ class AnalyzePrices():
         add_threshold_overlays = True,
         add_title = False,
         title_font_size = 32,
-        theme = 'dark'
+        theme = 'dark',
+        k_line_color = None,
+        d_line_color = None,
+        price_color_theme = None
+
     ):
         """
         stochastic_data: 
@@ -927,6 +931,24 @@ class AnalyzePrices():
         title_y_pos = fig_data['title_y_pos']
         has_secondary_y = fig_data['has_secondary_y']
 
+        if target_deck == 1:
+            n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
+            # If the primary y axis is unavailable, then refuse to plot
+            if n_traces_upper > 0:
+                print(f'ERROR: Primary y axis is already populated')
+                return fig_data
+
+        ############
+
+        style = theme_style[theme]
+
+        k_line_color = 'rgb(225, 100, 0)' if k_line_color is None else k_line_color.lower()  # orange
+        d_line_color = 'rgb(190, 30, 220)' if d_line_color is None else d_line_color.lower()  # purple
+
+        price_color_theme = 'base' if price_color_theme is None else price_color_theme.lower()
+        price_color_idx = style['overlay_color_selection'][price_color_theme][1][0]
+        price_color = style['overlay_color_theme'][price_color_theme][price_color_idx]
+
         # Plot price on secondary axis of the upper deck only if it has been created in subplots
 
         if target_deck == 1:
@@ -946,8 +968,6 @@ class AnalyzePrices():
         min_stochastic = min(min(k_line), min(d_line))
         max_stochastic = max(max(k_line), max(d_line))
 
-        style = theme_style[theme]
-
         title_stochastic = f'{tk} {stochastic_type} {stochastic_label} Stochastic Oscillator (%)'
         yaxis_title = f'Stochastic (%)'
 
@@ -963,30 +983,32 @@ class AnalyzePrices():
             )
         fig_stochastic.add_trace(
             go.Scatter(
-                x = k_line.index,
-                y = k_line,
+                x = d_line.index,
+                y = d_line,
                 mode = 'lines',
-                line_color = style['kline_linecolor'],
+                line_color = d_line_color,
                 line_width = 2,
                 legendrank = target_deck * 1000,
                 legendgroup = f'{target_deck}',
                 legendgrouptitle = legendgrouptitle,
-                name = f'{stochastic_type} {stochastic_label} %K'
+                name = f'{stochastic_type} {stochastic_label} %D',
+                uid = 'stochastic-d'
             ),
             row = target_deck, col = 1,
             secondary_y = False
         )
         fig_stochastic.add_trace(
             go.Scatter(
-                x = d_line.index,
-                y = d_line,
+                x = k_line.index,
+                y = k_line,
                 mode = 'lines',
-                line_color = style['dline_linecolor'],
+                line_color = k_line_color,
                 line_width = 2,
                 legendrank = target_deck * 1000,
                 legendgroup = f'{target_deck}',
                 legendgrouptitle = legendgrouptitle,
-                name = f'{stochastic_type} {stochastic_label} %D'
+                name = f'{stochastic_type} {stochastic_label} %K',
+                uid = 'stochastic-k'
             ),
             row = target_deck, col = 1,
             secondary_y = False
@@ -1007,9 +1029,11 @@ class AnalyzePrices():
                     x = stochastic_hlines.index,
                     y = stochastic_hlines['y_max'],
                     mode = 'lines',
+                    zorder = -1,
                     line_color = 'black',
                     line_width = 0,
                     hoverinfo = 'skip',
+                    uid = 'stochastic-max',
                     showlegend = False
                 ),
                 row = target_deck, col = 1,
@@ -1020,6 +1044,7 @@ class AnalyzePrices():
                     x = stochastic_hlines.index,
                     y = stochastic_hlines['overbought'],
                     mode = 'lines',
+                    zorder = -1,
                     line_color = style['overbought_linecolor'],
                     line_width = 2,
                     fill = 'tonexty',  # fill to previous scatter trace
@@ -1027,12 +1052,12 @@ class AnalyzePrices():
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
-                    name = f'Overbought > {overbought_threshold}%'
+                    name = f'Overbought > {overbought_threshold}%',
+                    uid = 'stochastic-overbought'
                 ),
                 row = target_deck, col = 1,
                 secondary_y = False
             )
-
             fig_stochastic.add_trace(
                 go.Scatter(
                     x = stochastic_hlines.index,
@@ -1042,10 +1067,12 @@ class AnalyzePrices():
                     line_width = 2,
                     fill = 'tozeroy',
                     fillcolor = style['oversold_fillcolor'],
+                    zorder = -1,
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
-                    name = f'Oversold < {oversold_threshold}%'
+                    name = f'Oversold < {oversold_threshold}%',
+                    uid = 'stochastic-oversold'
                 ),
                 row = target_deck, col = 1,
                 secondary_y = False
@@ -1096,8 +1123,11 @@ class AnalyzePrices():
                 )
             )
 
+        dtick = dtick_map['rsi'][plot_height]
         fig_stochastic.update_yaxes(
             range = (0, y_upper_limit),
+            tick0 = 0,
+            dtick = dtick,
             title = yaxis_title,
             showticklabels = True,
             secondary_y = False,
@@ -2445,6 +2475,15 @@ class AnalyzePrices():
         title_y_pos = fig_data['title_y_pos']
         has_secondary_y = fig_data['has_secondary_y']
 
+        if target_deck == 1:
+            n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
+            # If the primary y axis is unavailable, then refuse to plot
+            if n_traces_upper > 0:
+                print(f'ERROR: Primary y axis is already populated')
+                return fig_data
+
+        ############
+
         style = theme_style[theme]
 
         rsi_color_theme = 'gold' if rsi_color_theme is None else rsi_color_theme.lower()
@@ -2519,6 +2558,7 @@ class AnalyzePrices():
                     x = rsi_hlines.index,
                     y = rsi_hlines['y_max'],
                     mode = 'lines',
+                    zorder = -1,
                     line_color = 'black',
                     line_width = 0,
                     hoverinfo = 'skip',
@@ -2537,6 +2577,7 @@ class AnalyzePrices():
                     line_width = 2,
                     fill = 'tonexty',  # fill to previous scatter trace
                     fillcolor = style['overbought_fillcolor'],
+                    zorder = -1,
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
@@ -2555,6 +2596,7 @@ class AnalyzePrices():
                     line_width = 2,
                     fill = 'tozeroy',
                     fillcolor = style['oversold_fillcolor'],
+                    zorder = -1,
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,

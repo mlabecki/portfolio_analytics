@@ -73,7 +73,8 @@ button, input, select, textarea {
 #add-macd-button:hover,
 #add-atr-button:hover,
 #add-mvol-button:hover,
-#add-rsi-button:hover
+#add-rsi-button:hover,
+#add-stochastic-button:hover
 {
     border-color: rgb(152, 242, 178) !important;
     background-color: rgb(152, 242, 178) !important;
@@ -91,7 +92,8 @@ button, input, select, textarea {
 #remove-macd-button:hover,
 #remove-atr-button:hover,
 #remove-mvol-button:hover,
-#remove-rsi-button:hover
+#remove-rsi-button:hover,
+#remove-stochastic-button:hover
 {
     border-color: rgb(255, 178, 185) !important;
     background-color: rgb(255, 178, 185) !important;
