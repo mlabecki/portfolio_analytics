@@ -59,6 +59,7 @@ class AnalyzePrices():
         close_tk,
         high_tk,
         low_tk,
+        adjusted,
         n = 14
     ):
         """
@@ -70,6 +71,8 @@ class AnalyzePrices():
         tr_cols = ['tr0', 'tr1', 'tr2']
         df_tr = pd.DataFrame(columns = tr_cols, index = close_tk.index)
 
+        name_prefix = 'Adjusted ' if adjusted else ''
+
         df_tr['tr0'] = abs(high_tk - low_tk)
         df_tr['tr1'] = abs(high_tk - close_tk.shift())
         df_tr['tr2'] = abs(low_tk - close_tk.shift())
@@ -80,8 +83,8 @@ class AnalyzePrices():
         atr_data = {
             'atr': atr,
             'atrp': atrp,
-            'atr name': f'ATR {n}',
-            'atrp name': f'ATRP {n}'
+            'atr name': f'{name_prefix}ATR {n}',
+            'atrp name': f'{name_prefix}ATRP {n}'
         }
         # ATRP = Average True Rate Percent 
         # https://chartschool.stockcharts.com/table-of-contents/technical-indicators-and-overlays/technical-indicators/average-true-range-atr-and-average-true-range-percent-atrp
@@ -935,7 +938,8 @@ class AnalyzePrices():
         has_secondary_y = fig_data['has_secondary_y']
 
         if target_deck == 1:
-            n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
+            # n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
+            n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y')])
             # If the primary y axis is unavailable, then refuse to plot
             if n_traces_upper > 0:
                 print(f'ERROR: Primary y axis is already populated')
@@ -1193,6 +1197,7 @@ class AnalyzePrices():
         close_tk,
         high_tk,
         low_tk,
+        adjusted,
         signal_window = 9      
     ):
         """
@@ -1206,7 +1211,14 @@ class AnalyzePrices():
             print('Incorrect format of input data')
             exit
 
-        atr_data = self.average_true_rate(close_tk, high_tk, low_tk, n = 26)
+        atr_data = self.average_true_rate(
+            close_tk,
+            high_tk,
+            low_tk,
+            adjusted,    
+            n = 26
+        )
+        
         atr = atr_data['atr']
 
         ema_26 = close_tk.ewm(span = 26).mean()
@@ -1242,6 +1254,7 @@ class AnalyzePrices():
         plot_type = 'bar',
         target_deck = 2,
         add_title = False,
+        adjusted_prices = True,
         title_font_size = 32,
         theme = 'dark',
         color_theme = None,
@@ -1273,6 +1286,16 @@ class AnalyzePrices():
         title_x_pos = fig_data['title_x_pos']
         title_y_pos = fig_data['title_y_pos']
         has_secondary_y = fig_data['has_secondary_y']
+
+        if target_deck == 1:
+            # n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
+            n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y')])
+            # If the primary y axis is unavailable, then refuse to plot
+            if n_traces_upper > 0:
+                print(f'ERROR: Primary y axis is already populated')
+                return fig_data
+
+        price_type_prefix = 'Adjusted ' if adjusted_prices else ''
 
         style = theme_style[theme]
 
@@ -1633,7 +1656,7 @@ class AnalyzePrices():
                     line_color = price_color,
                     zorder = 100,
                     uid = 'macd-price-line-scatter',
-                    name = 'Close'
+                    name = f'{price_type_prefix}Close'
                 ),
                 secondary_y = True
             )
@@ -2481,7 +2504,8 @@ class AnalyzePrices():
         has_secondary_y = fig_data['has_secondary_y']
 
         if target_deck == 1:
-            n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
+            # n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
+            n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y')])
             # If the primary y axis is unavailable, then refuse to plot
             if n_traces_upper > 0:
                 print(f'ERROR: Primary y axis is already populated')
@@ -2725,7 +2749,7 @@ class AnalyzePrices():
         eps = 1e-6
 
         df_mean = self.moving_average(prices, ma_type, window)
-        df_std = self.moving_std_vol(prices, ma_type, window)['std']
+        df_std = self.moving_volatility_stdev(prices, ma_type, window)['std']
 
         bollinger_list = [{
             'data': df_mean,
@@ -3841,7 +3865,7 @@ class AnalyzePrices():
         if add_title & (title is None):
             title = f'{tk} {price_type.title()}'
 
-        if 'volume' in price_type:
+        if 'volume' in price_type.lower():
             zorder = -1
         else:
             zorder = 10
@@ -4092,6 +4116,7 @@ class AnalyzePrices():
         candle_type = 'hollow',
         target_deck = 1,
         add_title = True,
+        adjusted_prices = True,
         title_font_size = 32,
         theme = 'dark',
         color_theme = 'green-red'
@@ -4120,6 +4145,8 @@ class AnalyzePrices():
         green_fill_color_hollow = green_color.replace(', 1)', ', 0.2)')
 
         df = df_ohlc.copy()
+
+        title_prefix = 'Adjusted ' if adjusted_prices else ''
 
         # Adjust y range if necessary
         reset_y_limits = False
@@ -4177,7 +4204,7 @@ class AnalyzePrices():
         if candle_type == 'traditional':
 
             if add_title:
-                title = f'{tk} Prices - Traditional Candles'
+                title = f'{tk} {title_prefix}Prices - Traditional Candles'
 
             shown_green = False
             shown_red = False
@@ -4232,7 +4259,7 @@ class AnalyzePrices():
         else:  # candle_type == 'hollow'
 
             if add_title:
-                title = f'{tk} Prices - Hollow Candles'
+                title = f'{tk} {title_prefix}Prices - Hollow Candles'
 
             df['previousClose'] = df['Close'].shift(1)
 

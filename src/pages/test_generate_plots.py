@@ -653,7 +653,7 @@ layout = html.Div([
                             min = 800,
                             max = 1800,
                             step = 50,
-                            debounce = True,
+                            # debounce = True,
                             style = {'width': '90px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
@@ -669,7 +669,7 @@ layout = html.Div([
                             min = 250,
                             max = 1000,
                             step = 50,
-                            debounce = True,
+                            # debounce = True,
                             style = {'width': '100px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'border-radius': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
@@ -685,7 +685,7 @@ layout = html.Div([
                             min = 100,
                             max = 300,
                             step = 50,
-                            debounce = True,
+                            # debounce = True,
                             style = {'width': '100px'}
                         )],
                         style = {'display': 'inline-block', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
@@ -2387,7 +2387,9 @@ layout = html.Div([
         dbc.Popover(
             [
             html.Span(
-                   'Moving Average Convergence-Divergence',
+                   """NOTE: Moving Average Convergence-Divergence cannot be plotted on the Upper Deck 
+                   if the primary y axis of the Upper Deck is already populated.
+                   """,
                     style = popover_menu_collapse_button_header_css
                 )
             ], 
@@ -3083,7 +3085,7 @@ layout = html.Div([
             [
             html.Span(
                    """NOTE: Relative Strength Index cannot be plotted on the Upper Deck 
-                   if the primary y axis of that deck is already populated.
+                   if the primary y axis of the Upper Deck is already populated.
                    """,
                     style = popover_menu_collapse_button_header_css
                 )
@@ -3329,7 +3331,7 @@ layout = html.Div([
             [
             html.Span(
                    """NOTE: Stochastic Oscillator cannot be plotted on the Upper Deck 
-                   if the primary y axis of that deck is already populated.
+                   if the primary y axis of the Upper Deck is already populated.
                    """,
                     style = popover_menu_collapse_button_header_css
                 )
@@ -4743,6 +4745,8 @@ def update_plot(
             hist_price_color_theme = hist_price_color_theme.lower() if hist_price_color_theme is not None else 'base'
             df_hist_price = downloaded_data[tk]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[tk]['ohlc']
             hist_price = df_hist_price[hist_price_type]
+            if boolean(hist_price_adjusted):
+                hist_price_type = 'adjusted ' + hist_price_type
 
             fig_data = analyze_prices.add_hist_price(
                 fig_data,
@@ -4751,7 +4755,7 @@ def update_plot(
                 target_deck = deck_number(deck_type, hist_price_deck_name),
                 secondary_y = boolean(hist_price_secondary_y),
                 plot_type = 'bar' if hist_price_plot_type == 'Histogram' else 'scatter',
-                price_type = hist_price_type.lower(),
+                price_type = hist_price_type,
                 add_title = boolean(hist_price_add_title),
                 theme = theme,
                 color_theme = hist_price_color_theme,
@@ -4781,6 +4785,7 @@ def update_plot(
                 candle_type = candlestick_type.lower(),
                 target_deck = deck_number(deck_type, candlestick_deck_name),
                 add_title = boolean(candlestick_add_title),
+                adjusted_prices = boolean(candlestick_adjusted),
                 theme = theme,
                 color_theme = candlestick_color_theme
             )
@@ -4841,6 +4846,8 @@ def update_plot(
 
             show_trough_to_recovery = True if 'Recovery' in drawdown_display else False
             dd_top_by = 'length' if drawdown_top_by == 'Total Length' else 'depth'
+            if boolean(drawdown_adjusted):
+                drawdown_price_type = 'adjusted ' + drawdown_price_type
 
             fig_data = analyze_prices.add_drawdowns(
                 fig_data,
@@ -4850,7 +4857,7 @@ def update_plot(
                 n_top_drawdowns = n_top,
                 target_deck = 1,
                 add_price = not dd_add_price_disabled,
-                price_type = drawdown_price_type.lower(),
+                price_type = drawdown_price_type,
                 top_by = dd_top_by,
                 show_trough_to_recovery = show_trough_to_recovery,
                 add_title = dd_add_title,
@@ -5022,6 +5029,7 @@ def update_plot(
                     close_tk,
                     high_tk,
                     low_tk,
+                    boolean(macd_adjusted),
                     signal_window = macd_signal_window
                 )
             # MACD
@@ -5042,6 +5050,7 @@ def update_plot(
                 plot_type = 'bar' if macd_plot_type == 'Histogram' else 'scatter',
                 target_deck = deck_number(deck_type, macd_deck),
                 add_title = boolean(macd_add_title),
+                adjusted_prices = boolean(macd_adjusted),
                 theme = theme,
                 color_theme = macd_color_theme,
                 signal_color_theme = macd_signal_color,
@@ -5067,6 +5076,7 @@ def update_plot(
                 atr_close_tk,
                 atr_high_tk,
                 atr_low_tk,
+                boolean(atr_adjusted),
                 atr_periods
             )
 
