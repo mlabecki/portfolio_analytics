@@ -581,8 +581,8 @@ link_container_css = {
 # Plots
 plots_add_button_css = {
     'display': 'inline-block',
-    'width': '265px',
-    'height': '30px',
+    'width': '220px',
+    'height': '32px',
     'margin': '3px 5px 7px 0px',
     'padding-left': '0px',
     'padding-right': '0px',
@@ -599,8 +599,8 @@ plots_add_button_css = {
 }
 plots_remove_button_css = {
     'display': 'inline-block',
-    'width': '30px',
-    'height': '30px',
+    'width': '75px',
+    'height': '32px',
     'margin': '3px 0px 7px 0px',
     'padding-left': '0px',
     'padding-right': '0px',

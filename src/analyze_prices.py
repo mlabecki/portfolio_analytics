@@ -890,6 +890,7 @@ class AnalyzePrices():
         self,
         fig_data,
         stochastic_data,
+        adjusted,
         tk,
         add_price = False,
         target_deck = 2,
@@ -907,6 +908,8 @@ class AnalyzePrices():
         """
         stochastic_data: 
             output from stochastic_oscillator()
+        adjusted:
+            is stochastic_data based on adjusted prices?
         tk: 
             ticker for which to plot the stochastic %K and %D lines
         add_price:
@@ -1080,6 +1083,8 @@ class AnalyzePrices():
 
         if add_price:
 
+            price_type = 'Adjusted Close' if adjusted else 'Close'
+
             min_n_intervals = n_yintervals_map['min'][plot_height]
             max_n_intervals = n_yintervals_map['max'][plot_height]
             sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(min(df_price), max(df_price), min_n_intervals, max_n_intervals)
@@ -1090,15 +1095,15 @@ class AnalyzePrices():
                     x = k_line.index,
                     y = df_price,
                     mode = 'lines',
-                    line_color = style['basecolor'],
-                    name = 'Close'
+                    line_color = price_color,
+                    name = price_type
                 ),
                 secondary_y = True
             )
 
             fig_stochastic.update_yaxes(
                 range = sec_y_range,
-                title = 'Close',
+                title = price_type,
                 showticklabels = True,
                 tick0 = sec_y_lower_limit,
                 dtick = sec_y_delta,
@@ -1123,7 +1128,7 @@ class AnalyzePrices():
                 )
             )
 
-        dtick = dtick_map['rsi'][plot_height]
+        dtick = dtick_map['rsi'][plot_height]  # the 'rsi' map applies to the stochastic, as well
         fig_stochastic.update_yaxes(
             range = (0, y_upper_limit),
             tick0 = 0,
@@ -1153,7 +1158,7 @@ class AnalyzePrices():
     def get_macd(
         self,
         close_tk,
-        signal_window = 9      
+        signal_window = 9
     ):
         """
         Only Close price is used to calculate MACD

@@ -864,8 +864,8 @@ layout = html.Div([
                     ),
                     html.Div([
                         dbc.Button(
-                            # '✖',
-                            '✕',
+                            # '✕',
+                            'Remove',
                             # https://www.w3schools.com/charsets/ref_utf_dingbats.asp
                             id = f'remove-hist-price-button',
                             n_clicks = 0,
@@ -1005,7 +1005,8 @@ layout = html.Div([
                     ),
                     html.Div([
                         dbc.Button(
-                            '✕',
+                            # '✕',
+                            'Remove',
                             id = f'remove-candlestick-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -1173,7 +1174,8 @@ layout = html.Div([
                     ),
                     html.Div([
                         dbc.Button(
-                            '✕',
+                            # '✕',
+                            'Remove',
                             id = f'remove-volume-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -1367,7 +1369,8 @@ layout = html.Div([
                     ),
                     html.Div([
                         dbc.Button(
-                            '✕',
+                            # '✕',
+                            'Remove',
                             id = f'remove-drawdowns-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -1541,7 +1544,8 @@ layout = html.Div([
                     ),
                     html.Div([
                         dbc.Button(
-                            '✕',
+                            # '✕',
+                            'Remove',
                             id = f'remove-price-overlays-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -1726,7 +1730,8 @@ layout = html.Div([
                     ),
                     html.Div([
                         dbc.Button(
-                            '✕',
+                            # '✕',
+                            'Remove',
                             id = f'remove-bollinger-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -1966,7 +1971,8 @@ layout = html.Div([
                     ),
                     html.Div([
                         dbc.Button(
-                            '✕',
+                            # '✕',
+                            'Remove',
                             id = f'remove-boll-width-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -2153,7 +2159,8 @@ layout = html.Div([
                     ),
                     html.Div([
                         dbc.Button(
-                            '✕',
+                            # '✕',
+                            'Remove',
                             id = f'remove-ma-env-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -2337,7 +2344,8 @@ layout = html.Div([
                     ),
                     html.Div([
                         dbc.Button(
-                            '✕',
+                            # '✕',
+                            'Remove',
                             id = f'remove-ma-ribbon-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -2629,7 +2637,8 @@ layout = html.Div([
                     ),
                     html.Div([
                         dbc.Button(
-                            '✕',
+                            # '✕',
+                            'Remove',
                             id = f'remove-macd-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -2819,8 +2828,8 @@ layout = html.Div([
                     ),
                     html.Div([
                         dbc.Button(
-                            # '✖',
-                            '✕',
+                            # '✕',
+                            'Remove',
                             # https://www.w3schools.com/charsets/ref_utf_dingbats.asp
                             id = f'remove-atr-button',
                             n_clicks = 0,
@@ -3031,7 +3040,8 @@ layout = html.Div([
                     ),
                     html.Div([
                         dbc.Button(
-                            '✕',
+                            # '✕',
+                            'Remove',
                             id = f'remove-mvol-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -3185,7 +3195,7 @@ layout = html.Div([
                             step = 1,
                             debounce = True,
                             disabled = False,
-                            style = {'width': '150px'}
+                            style = {'width': '155px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -3202,7 +3212,7 @@ layout = html.Div([
                             step = 1,
                             debounce = True,
                             disabled = False,
-                            style = {'width': '145px'}
+                            style = {'width': '140px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -3276,7 +3286,8 @@ layout = html.Div([
                     ),
                     html.Div([
                         dbc.Button(
-                            '✕',
+                            # '✕',
+                            'Remove',
                             id = f'remove-rsi-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -3413,7 +3424,7 @@ layout = html.Div([
                             min = 1,
                             step = 1,
                             debounce = True,
-                            style = {'width': '135px'}
+                            style = {'width': '127px'}
                         )],
                         style = {'display': 'inline-block', 'margin-bottom': '5px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -3428,7 +3439,7 @@ layout = html.Div([
                             min = 1,
                             step = 1,
                             debounce = True,
-                            style = {'width': '160px'}
+                            style = {'width': '168px'}
                         )],
                         style = {'display': 'inline-block', 'margin-bottom': '0px', 'margin-right': '0px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -3473,7 +3484,7 @@ layout = html.Div([
                             step = 1,
                             debounce = True,
                             disabled = False,
-                            style = {'width': '150px'}
+                            style = {'width': '155px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -3490,7 +3501,7 @@ layout = html.Div([
                             step = 1,
                             debounce = True,
                             disabled = False,
-                            style = {'width': '145px'}
+                            style = {'width': '140px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -3591,7 +3602,8 @@ layout = html.Div([
                     ),
                     html.Div([
                         dbc.Button(
-                            '✕',
+                            # '✕',
+                            'Remove',
                             id = f'remove-stochastic-button',
                             n_clicks = 0,
                             class_name = 'ma-1',
@@ -4206,6 +4218,9 @@ def toggle_collapse_stochastic(n, is_open):
     Output('stochastic-overbought-level-input', 'disabled'),
     Output('stochastic-oversold-level-input', 'disabled'),
 
+    Output('stochastic-k-smoothing-period-input', 'disabled'),
+    Output('stochastic-type-dropdown', 'value'),
+
     Output('drawdowns-number-input', 'max'),
     Output('drawdowns-number-input', 'value'),
     Output('drawdowns-price-color-dropdown', 'disabled'),
@@ -4672,6 +4687,8 @@ def update_plot(
     else:
         rsi_add_price_disabled = False
 
+    stochastic_k_smoothing_period_disabled = True if stochastic_type == 'Fast' else False
+    stochastic_type = 'Full' if stochastic_k_smoothing_period != stochastic_d_period else stochastic_type
     stochastic_price_color_disabled = False if boolean(stochastic_add_price) & secondary_y else True
     if (stochastic_deck != 'Upper') | (not secondary_y):
         stochastic_add_price_disabled = True
@@ -5151,6 +5168,7 @@ def update_plot(
             fig_data = analyze_prices.add_stochastic(
                 fig_data,
                 stochastic_data,
+                stochastic_adjusted,
                 tk,
                 add_price = boolean(stochastic_add_price),
                 target_deck = deck_number(deck_type, stochastic_deck),
@@ -5284,6 +5302,9 @@ def update_plot(
         rsi_oversold_level_disabled,
         stochastic_overbought_level_disabled,
         stochastic_oversold_level_disabled,
+
+        stochastic_k_smoothing_period_disabled,
+        stochastic_type,
 
         n_drawdowns,
         dd_number_value,
