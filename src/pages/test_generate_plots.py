@@ -653,7 +653,7 @@ layout = html.Div([
                             min = 800,
                             max = 1800,
                             step = 50,
-                            # debounce = True,
+                            debounce = True,
                             style = {'width': '90px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
@@ -669,7 +669,7 @@ layout = html.Div([
                             min = 250,
                             max = 1000,
                             step = 50,
-                            # debounce = True,
+                            debounce = True,
                             style = {'width': '100px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'border-radius': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
@@ -685,7 +685,7 @@ layout = html.Div([
                             min = 100,
                             max = 300,
                             step = 50,
-                            # debounce = True,
+                            debounce = True,
                             style = {'width': '100px'}
                         )],
                         style = {'display': 'inline-block', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
@@ -842,6 +842,19 @@ layout = html.Div([
                             style = {'width': '165px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            'Secondary Y-Axis can be activated from the THEME & TEMPLATE menu.',
+                             style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-hist-price-secondary-y-dropdown',
+                        target = 'hist-price-secondary-y-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
                     ),
 
                     ##### Add / Remove buttons
@@ -1158,7 +1171,20 @@ layout = html.Div([
                         )],
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
- 
+                    dbc.Popover([
+                        html.Span(
+                            'Secondary Y-Axis can be activated from the THEME & TEMPLATE menu.',
+                             style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-volume-secondary-y-dropdown',
+                        target = 'volume-secondary-y-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
+
                     ##### Add / Remove buttons
                     html.Div([
                         dbc.Button(
@@ -1955,6 +1981,19 @@ layout = html.Div([
                         )],
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
+                    dbc.Popover([
+                        html.Span(
+                            'Secondary Y-Axis can be activated from the THEME & TEMPLATE menu.',
+                             style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-boll-width-secondary-y-dropdown',
+                        target = 'boll-width-secondary-y-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
 
                     ##### Add / Remove buttons
                     html.Div([
@@ -2387,7 +2426,7 @@ layout = html.Div([
         dbc.Popover(
             [
             html.Span(
-                   """NOTE: Moving Average Convergence-Divergence cannot be plotted on the Upper Deck 
+                   """NOTE: Moving Average Convergence Divergence cannot be plotted on the Upper Deck 
                    if the primary y axis of the Upper Deck is already populated.
                    """,
                     style = popover_menu_collapse_button_header_css
@@ -2598,7 +2637,7 @@ layout = html.Div([
                     ),
                     dbc.Popover([
                         html.Span(
-                            'Price can only be added to Secondary Y-Axis on the Upper Deck.',
+                            'Price can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis can be activated from the THEME & TEMPLATE menu.',
                              style = popover_menu_collapse_button_header_css
                             )
                         ], 
@@ -2663,6 +2702,246 @@ layout = html.Div([
     ), 
 
     ##### END MACD CONTROLS
+
+    ##### BEGIN DIFFERENTIAL CONTROLS
+
+    html.Div([
+
+        html.Div(
+            dbc.Button(
+                id = 'collapse-button-diff',
+                class_name = 'ma-1',
+                color = 'primary',
+                size = 'sm',
+                n_clicks = 0,
+                style = collapse_button_css
+            )
+        ),
+        dbc.Popover(
+            [
+            html.Span(
+                   """NOTE: Differential plot cannot be placed on the Upper Deck 
+                   if the primary y-axis of the Upper Deck is populated.
+                   """,
+                    style = popover_menu_collapse_button_header_css
+                )
+            ], 
+            id = 'popover-collapse-button-diff',
+            target = 'collapse-button-diff',
+            body = False,
+            trigger = 'hover',
+            hide_arrow = True,
+            style = popover_menu_collapse_button_css
+        ),
+
+        dbc.Collapse(
+
+            html.Div(
+
+                id = 'diff-controls',
+                children = [
+
+                    html.Div([
+                        html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id = 'diff-deck-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Upper'],
+                            value = 'Upper',
+                            clearable = False,
+                            style = {'width': '110px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Plot Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'diff-plot-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Histogram', 'Filled Line'],
+                            value = 'Histogram',
+                            clearable = False,
+                            style = {'width': '110px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id='diff-add-title-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['No', 'Yes'],
+                            value = 'No',
+                            clearable = False,
+                            style = {'width': '70px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'diff-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = candle_colors,
+                            value = 'Green-Red',
+                            clearable = False,
+                            style = {'width': '116px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Add Price', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top'}),
+                        dcc.Dropdown(
+                            id = 'diff-add-price-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['No', 'Yes'],
+                            value = 'No',
+                            clearable = False,
+                            style = {'width': '67px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            'Price can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis can be activated from the THEME & TEMPLATE menu.',
+                             style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-diff-add-price-dropdown',
+                        target = 'diff-add-price-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
+
+                    html.Div([
+                        html.Div('Price Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id='diff-price-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = overlay_color_themes,
+                            value = 'Magenta',
+                            clearable = False,
+                            disabled = False,
+                            style = {'width': '107px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    # html.Div([
+                    #     html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                    #     dcc.Dropdown(
+                    #         id = 'diff-adjusted-dropdown',
+                    #         className = 'plots-dropdown-button',
+                    #         options = ['Yes', 'No'],
+                    #         value = 'Yes',
+                    #         clearable = False,
+                    #         style = {'width': '78px'}
+                    #     )],
+                    #     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    # ),
+                    # dbc.Popover([
+                    #     html.Span(
+                    #         'Is MACD based on prices adjusted for stock splits and dividends?',
+                    #          style = popover_menu_collapse_button_header_css
+                    #         )
+                    #     ], 
+                    #     id = 'popover-macd-adjusted-dropdown',
+                    #     target = 'macd-adjusted-dropdown',
+                    #     body = False,
+                    #     trigger = 'hover',
+                    #     hide_arrow = False,
+                    #     style = popover_menu_button_css
+                    # ),
+
+                    html.Div([
+                        html.Div('Add Signal', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'diff-add-signal-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '78px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Signal Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dbc.Input(
+                            id = 'diff-signal-window-input',
+                            className = 'plots-input-button',
+                            type = 'number',
+                            value = 9,
+                            min = 1,
+                            max = 200,
+                            step = 1,
+                            debounce = True,
+                            disabled = False,
+                            style = {'width': '105px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Signal Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'diff-signal-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = overlay_color_themes,
+                            value = 'Gold',
+                            clearable = False,
+                            disabled = False,
+                            style = {'width': '107px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    ##### Add / Remove buttons
+                    html.Div([
+                        dbc.Button(
+                            'Add To Plot',
+                            id = f'add-diff-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'success',
+                            size = 'sm',
+                            style = plots_add_button_css
+                        )],
+                        style = {'display': 'inline-block'}
+                    ),
+                    html.Div([
+                        dbc.Button(
+                            # '✕',
+                            'Remove',
+                            id = f'remove-diff-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'danger',
+                            size = 'sm',
+                            style = plots_remove_button_css
+                        )],
+                        style = {'display': 'inline-block'}
+                    )
+
+                ],
+                # style = {'margin-left': '5px'}
+            ), 
+
+            id = 'collapse-diff',
+            is_open = False,
+            style = {'width': '300px'}
+        )],
+        style = {'margin-left': '5px'}
+    ), 
+
+    ##### END DIFFERENTIAL CONTROLS
 
     ##### BEGIN ATR CONTROLS
 
@@ -2808,6 +3087,19 @@ layout = html.Div([
                             style = {'width': '160px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            'Secondary Y-Axis can be activated from the THEME & TEMPLATE menu.',
+                             style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-atr-secondary-y-dropdown',
+                        target = 'atr-secondary-y-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
                     ),
 
                     ##### Add / Remove buttons
@@ -3025,6 +3317,19 @@ layout = html.Div([
                             style = {'width': '160px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            'Secondary Y-Axis can be activated from the THEME & TEMPLATE menu.',
+                             style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-mvol-secondary-y-dropdown',
+                        target = 'mvol-secondary-y-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
                     ),
 
                     ##### Add / Remove buttons
@@ -3247,7 +3552,7 @@ layout = html.Div([
                     ),
                     dbc.Popover([
                         html.Span(
-                            'Price can only be added to Secondary Y-Axis on the Upper Deck.',
+                            'Price can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis can be activated from the THEME & TEMPLATE menu.',
                              style = popover_menu_collapse_button_header_css
                             )
                         ], 
@@ -3563,7 +3868,7 @@ layout = html.Div([
                     ),
                     dbc.Popover([
                         html.Span(
-                            'Price can only be added to Secondary Y-Axis on the Upper Deck.',
+                            'Price can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis can be activated from the THEME & TEMPLATE menu.',
                              style = popover_menu_collapse_button_header_css
                             )
                         ], 
@@ -4106,6 +4411,22 @@ def toggle_collapse_ma_ribbon(n, is_open):
 def toggle_collapse_macd(n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
     title = 'MACD / MACD-V'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
+    Output('collapse-button-diff', 'children'),
+    Output('collapse-diff', 'is_open'),
+    Input('collapse-button-diff', 'n_clicks'),
+    State('collapse-diff', 'is_open')
+)
+def toggle_collapse_diff(n, is_open):
+    # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
+    title = 'DIFFERENTIAL PLOT'
     label = f'► {title}' if is_open else f'▼ {title}'
     if n:
         return label, not is_open

@@ -4508,9 +4508,9 @@ class AnalyzePrices():
             'Low': low_tk
         }
         reverse_diff:
-            if True, the (p2 - p1) difference will be used instead of (p1 - p2)
+            if True, the (p2 - p1) differential will be used instead of (p1 - p2)
         add_signal:
-            if True, a signal will be added that is a moving average of the calculated difference
+            if True, a signal will be added that is a moving average of the calculated differential
         add_price:
             Can only add price to secondary_y, which means target_deck must be 1.
             Except for price on secondary_y, no other overlays will be available.
