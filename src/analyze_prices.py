@@ -3832,7 +3832,7 @@ class AnalyzePrices():
         target_deck = 1,
         secondary_y = False,
         plot_type = 'scatter',
-        price_type = 'adjusted close',
+        price_type = 'Adjusted Close',
         add_title = True,
         title = None,
         title_font_size = 32,
