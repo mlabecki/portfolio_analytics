@@ -1288,12 +1288,28 @@ class AnalyzePrices():
         has_secondary_y = fig_data['has_secondary_y']
 
         if target_deck == 1:
+            
             # n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
             n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y')])
             # If the primary y axis is unavailable, then refuse to plot
             if n_traces_upper > 0:
                 print(f'ERROR: Primary y axis is already populated')
                 return fig_data
+
+            if add_price:
+                if not has_secondary_y:
+                    print('ERROR: Secondary y axis must be selected when creating the plotting template')
+                    return fig_data
+                else:
+                    sec_y_traces = [x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y2')]
+                    if len(sec_y_traces) > 0:
+                        print('ERROR: Secondary y axis is already populated')
+                        return fig_data           
+        else:
+            # If it's the middle or lower deck, just set add_price to False and continue
+            add_price = False
+
+        ##############
 
         price_type_prefix = 'Adjusted ' if adjusted_prices else ''
 
@@ -1306,7 +1322,7 @@ class AnalyzePrices():
         else:
             opacity_green = 0.85
             opacity_red = 0.85
-        base_color = style['candle_colors'][color_theme]['base_color']            
+        base_color = style['candle_colors'][color_theme]['base_color']          
         green_color = style['candle_colors'][color_theme]['green_color']
         diff_green_linecolor = style['candle_colors'][color_theme]['green_color']
         diff_green_fillcolor = diff_green_linecolor.replace(', 1)', f', {opacity_green})')
@@ -1325,21 +1341,7 @@ class AnalyzePrices():
         price_color_idx = style['overlay_color_selection'][price_color_theme][1][0]
         price_color = style['overlay_color_theme'][price_color_theme][price_color_idx]
 
-        # Plot price on secondary axis of the upper deck only if it has been created in subplots
-
-        if target_deck == 1:
-            if add_price:
-                if not has_secondary_y:
-                    print('ERROR: Secondary y axis must be selected when creating the plotting template')
-                    return fig_data
-                else:
-                    sec_y_traces = [x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y2')]
-                    if len(sec_y_traces) > 0:
-                        print('ERROR: Secondary y axis is already populated')
-                        return fig_data           
-        else:
-            # If it's the middle or lower deck, just set add_price to False and continue
-            add_price = False
+        ############
 
         if volatility_normalized:
             yaxis_title = f'MACD-V'
@@ -4480,9 +4482,337 @@ class AnalyzePrices():
         return fig_data
 
 
-    ##### ADD OSCILLATOR (DIFFERENTIAL) PLOT #####
+    ##### ADD DIFFERENTIAL PLOT #####
 
     def add_diff(
+        self,
+        fig_data,
+        tk,
+        p1,
+        p2,
+        p1_name,
+        p2_name,
+        target_deck = 2,
+        plot_type = 'filled line',
+        add_signal = True,
+        signal_ma_type = 'sma',
+        signal_window = 10,
+        add_price = False,
+        add_title = False,
+        add_yaxis_title = True,
+        title_font_size = 32,
+        theme = 'dark',
+        color_theme = None,
+        signal_color_theme = None,
+        price_color_theme = None
+    ):
+        """
+        add_signal:
+            if True, a signal will be added that is a moving average of the calculated differential
+        add_price:
+            This is really an option to plot p1 on the secondary y-axis of the upper deck.
+            Except for p1 on secondary_y, no other overlays will be available.
+            None of the traces added by add_diff() will be appended to the overlay list.
+        """
+
+        fig_diff = fig_data['fig']
+        plot_height = fig_data['plot_height'][target_deck]
+        deck_type = fig_data['deck_type']
+        title_x_pos = fig_data['title_x_pos']
+        title_y_pos = fig_data['title_y_pos']
+        has_secondary_y = fig_data['has_secondary_y']
+
+        if target_deck == 1:
+            
+            # n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
+            n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y')])
+            # If the primary y axis is unavailable, then refuse to plot
+            if n_traces_upper > 0:
+                print(f'ERROR: Primary y axis is already populated')
+                return fig_data
+
+            if add_price:
+                if not has_secondary_y:
+                    print('ERROR: Secondary y axis must be selected when creating the plotting template')
+                    return fig_data
+                else:
+                    sec_y_traces = [x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y2')]
+                    if len(sec_y_traces) > 0:
+                        print('ERROR: Secondary y axis is already populated')
+                        return fig_data                
+        else:
+            # If it's the middle or lower deck, just set add_price to False and continue
+            add_price = False
+
+        ############
+
+        style = theme_style[theme]
+
+        color_theme = 'green-red' if color_theme is None else color_theme.lower()
+        if theme == 'dark':
+            opacity_green = 0.75
+            opacity_red = 0.7
+        else:
+            opacity_green = 0.85
+            opacity_red = 0.85
+     
+        green_color = style['candle_colors'][color_theme]['green_color']
+        diff_green_linecolor = style['candle_colors'][color_theme]['green_color']
+        diff_green_fillcolor = diff_green_linecolor.replace(', 1)', f', {opacity_green})')
+        red_color = style['candle_colors'][color_theme]['red_color']
+        diff_red_linecolor = style['candle_colors'][color_theme]['red_color']
+        diff_red_fillcolor = diff_red_linecolor.replace(', 1)', f', {opacity_red})')
+
+        if signal_color_theme is None:
+            signal_color_theme = 'coral' if color_theme == 'gold-orchid' else 'gold'
+        else:
+            signal_color_theme = signal_color_theme.lower()
+        signal_color_idx = style['overlay_color_selection'][signal_color_theme][1][0]
+        signal_color = style['overlay_color_theme'][signal_color_theme][signal_color_idx]
+
+        price_color_theme = 'base' if price_color_theme is None else price_color_theme.lower()
+        price_color_idx = style['overlay_color_selection'][price_color_theme][1][0]
+        price_color = style['overlay_color_theme'][price_color_theme][price_color_idx]
+
+        ##################
+
+        legendgrouptitle = {}
+        if deck_type in ['double', 'triple']:
+            legendtitle = doubledeck_legendtitle[target_deck] if deck_type == 'double' else tripledeck_legendtitle[target_deck]
+            legendgrouptitle = dict(
+                text = legendtitle,
+                font_size = 16,
+                font_weight = 'normal'
+            )
+
+        diff = p1 - p2
+        diff_title = f'{tk} {p1_name} - {p2_name} Differential'
+        diff_positive_name = f'{p1_name} > {p2_name}'
+        diff_negative_name = f'{p1_name} < {p2_name}'
+
+        yaxis_title_1 = 'MA' if 'MA' in p1_name else 'Price'
+        yaxis_title_2 = 'MA' if 'MA' in p2_name else 'Price'
+        if target_deck == 1:
+            yaxis_title = f'{yaxis_title_1} - {yaxis_title_2} Differential'
+        else:
+            yaxis_title = f'{yaxis_title_1} - {yaxis_title_2}<BR>Differential'
+
+        ###
+        diff_signal = self.moving_average(diff, signal_ma_type, signal_window)
+        signal_name = f'{signal_ma_type.upper()} {signal_window} Signal'
+
+        # By definition, the range of signal will not exceed the range of diff
+        min_diff = min(diff)
+        max_diff = max(diff)
+        min_n_intervals = n_yintervals_map['min'][plot_height]
+        max_n_intervals = n_yintervals_map['max'][plot_height]
+        y_lower_limit, y_upper_limit, y_delta = set_axis_limits(min_diff, max_diff, min_n_intervals = min_n_intervals, max_n_intervals = max_n_intervals)
+
+        if target_deck > 1:
+            y_upper_limit *= 0.999 
+
+        diff_positive = diff.copy()
+        diff_negative = diff.copy()
+
+        if plot_type.lower() == 'histogram':
+
+            diff_positive.iloc[np.where(diff_positive < 0)] = np.nan
+            diff_negative.iloc[np.where(diff_negative >= 0)] = np.nan
+
+            fig_diff.add_trace(
+                go.Bar(
+                    x = diff_positive.index.astype(str),
+                    y = diff_positive,
+                    marker_color = green_color,
+                    width = 1,
+                    # Shorten 'Adjusted' to 'Adj' in the legend
+                    name = diff_positive_name.replace('usted', ''),
+                    legendrank = target_deck * 1000,
+                    legendgroup = f'{target_deck}',
+                    legendgrouptitle = legendgrouptitle,
+                    showlegend = True
+                ),
+                row = target_deck, col = 1
+            )
+            fig_diff.add_trace(
+                go.Bar(
+                    x = diff_negative.index.astype(str),
+                    y = diff_negative,
+                    marker_color = red_color,
+                    width = 1,
+                    # Shorten 'Adjusted' to 'Adj' in the legend
+                    name = diff_negative_name.replace('usted', ''),
+                    legendrank = target_deck * 1000,
+                    legendgroup = f'{target_deck}',
+                    legendgrouptitle = legendgrouptitle,
+                    showlegend = True
+                ),
+                row = target_deck, col = 1
+            )
+
+        else:
+            # 'filled line'
+
+            prev_v = diff.iloc[0]
+            diff_positive.iloc[0] = prev_v if prev_v >= 0 else np.nan
+            diff_negative.iloc[0] = prev_v if prev_v < 0 else np.nan
+
+            for idx in diff.index[1:]:
+
+                curr_v = diff.loc[idx]
+
+                if np.sign(curr_v) != np.sign(prev_v):
+                    # Set both diff copies to 0 if the value is changing sign
+                    diff_positive[idx] = 0
+                    diff_negative[idx] = 0
+                else:
+                    # Set both diff copies to current value or NaN
+                    diff_positive[idx] = curr_v if curr_v >= 0 else np.nan
+                    diff_negative[idx] = curr_v if curr_v < 0 else np.nan
+
+                prev_v = curr_v
+
+            fig_diff.add_trace(
+                go.Scatter(
+                    x = diff_positive.index.astype(str),
+                    y = diff_positive,
+                    mode = 'lines',
+                    line_color = diff_green_linecolor,
+                    line_width = 2,
+                    fill = 'tozeroy',
+                    fillcolor = diff_green_fillcolor,
+                    # Shorten 'Adjusted' to 'Adj' in the legend
+                    name = diff_positive_name.replace('usted', ''),
+                    legendrank = target_deck * 1000,
+                    legendgroup = f'{target_deck}',
+                    legendgrouptitle = legendgrouptitle,
+                    showlegend = True
+                ),
+                row = target_deck, col = 1
+            )
+            fig_diff.add_trace(
+                go.Scatter(
+                    x = diff_negative.index.astype(str),
+                    y = diff_negative,
+                    mode = 'lines',
+                    line_color = diff_red_linecolor,
+                    line_width = 2,
+                    fill = 'tozeroy',
+                    fillcolor = diff_red_fillcolor,
+                    # Shorten 'Adjusted' to 'Adj' in the legend
+                    name = diff_negative_name.replace('usted', ''),
+                    legendrank = target_deck * 1000,
+                    legendgroup = f'{target_deck}',
+                    legendgrouptitle = legendgrouptitle,
+                    showlegend = True
+                ),
+                row = target_deck, col = 1
+            )
+
+        if add_signal:
+            fig_diff.add_trace(
+                go.Scatter(
+                    x = diff_signal.index.astype(str),
+                    y = diff_signal,
+                    mode = 'lines',
+                    line_color = signal_color,
+                    line_width = 2,
+                    name = signal_name,
+                    legendrank = target_deck * 1000,
+                    legendgroup = f'{target_deck}',
+                    legendgrouptitle = legendgrouptitle,
+                    showlegend = True
+                ),
+                row = target_deck, col = 1
+            )
+
+        ############
+
+        if add_price:
+
+            min_n_intervals = n_yintervals_map['min'][plot_height]
+            max_n_intervals = n_yintervals_map['max'][plot_height]
+            sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(min(p1), max(p1), min_n_intervals, max_n_intervals)
+            sec_y_range = (sec_y_lower_limit, sec_y_upper_limit)
+
+            fig_diff.add_trace(
+                go.Scatter(
+                    x = p1.index,
+                    y = p1,
+                    mode = 'lines',
+                    line_color = price_color,
+                    zorder = 100,
+                    name = p1_name
+                ),
+                secondary_y = True
+            )
+
+            fig_diff.update_yaxes(
+                range = sec_y_range,
+                title = p1_name,
+                showticklabels = True,
+                tick0 = sec_y_lower_limit,
+                dtick = sec_y_delta,
+                secondary_y = True,
+                showgrid = False,
+                zeroline = False,
+                row = target_deck, col = 1
+            )
+
+            fig_data['sec_y_source'] = ['diff_1']
+            # Must introduce a diff index (1, 2, 3), then
+            # fig_data['sec_y_source'] = [f'diff_{idx}']
+
+        ##########
+
+        if deck_type in ['double', 'triple']:
+            legend_tracegroupgap = self.set_legend_tracegroupgap()
+            fig_data['fig'].update_layout(
+                legend_tracegroupgap = legend_tracegroupgap,
+                legend_traceorder = 'grouped'
+            )
+
+        # Update layout and axes
+
+        if add_title & (target_deck == 1):
+
+            fig_diff.update_layout(
+                title = dict(
+                    text = diff_title,
+                    font_size = title_font_size,
+                    y = title_y_pos,
+                    x = title_x_pos,
+                    xanchor = 'center',
+                    yanchor = 'middle'
+                )
+            )
+
+        fig_diff.update_yaxes(
+            range = (y_lower_limit, y_upper_limit),
+            showticklabels = True,
+            tick0 = y_lower_limit,
+            dtick = y_delta,
+            secondary_y = False,
+            row = target_deck, col = 1
+        )
+
+        if add_yaxis_title:
+            fig_data['fig'].update_yaxes(
+                title = yaxis_title,
+                secondary_y = False,
+                row = target_deck, col = 1
+            )
+
+        fig_data.update({'fig': fig_diff})
+        fig_data['y_min'].update({target_deck: min_diff})
+        fig_data['y_max'].update({target_deck: max_diff})
+
+        return fig_data
+
+
+    ##### ADD DIFFERENTIAL PLOT - LEGACY #####
+
+    def add_diff_legacy(
         self,
         fig_data,
         tk,
@@ -4758,7 +5088,7 @@ class AnalyzePrices():
                 row = target_deck, col = 1
             )
 
-            fig_data['sec_y_source'] = ['diff']            
+            fig_data['sec_y_source'] = ['diff']
 
         ##########
 
@@ -4807,7 +5137,7 @@ class AnalyzePrices():
         return fig_data
 
 
-    ##### ADD STOCHASTIC DIFFERENCE PLOT #####
+    ##### ADD STOCHASTIC DIFFERENTIAL PLOT #####
 
     def add_diff_stochastic(
         self,
