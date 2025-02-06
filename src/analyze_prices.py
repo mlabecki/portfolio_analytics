@@ -4613,6 +4613,8 @@ class AnalyzePrices():
 
         diff_positive = diff.copy()
         diff_negative = diff.copy()
+        diff_positive.index = diff.index
+        diff_negative.index = diff.index
 
         if plot_type.lower() == 'histogram':
 
@@ -4737,7 +4739,7 @@ class AnalyzePrices():
 
             fig_diff.add_trace(
                 go.Scatter(
-                    x = p1.index,
+                    x = p1.index.astype(str),
                     y = p1,
                     mode = 'lines',
                     line_color = price_color,

@@ -2618,8 +2618,8 @@ layout = html.Div([
                         dcc.Dropdown(
                             id='macd-add-title-dropdown',
                             className = 'plots-dropdown-button',
-                            options = ['No', 'Yes'],
-                            value = 'No',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
                             clearable = False,
                             style = {'width': '62px'}
                         )],
@@ -2788,8 +2788,8 @@ layout = html.Div([
                         dcc.Dropdown(
                             id='diff-1-add-title-dropdown',
                             className = 'plots-dropdown-button',
-                            options = ['No', 'Yes'],
-                            value = 'No',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
                             clearable = False,
                             style = {'width': '70px'}
                         )],
@@ -5699,8 +5699,8 @@ def update_plot(
 
         if add_diff_1:
             
-            adj_prices = downloaded_data[tk]['ohlc_adj']
-            prices = downloaded_data[tk]['ohlc']
+            adj_prices = downloaded_data[tk]['ohlc_adj'][min_date: max_date]
+            prices = downloaded_data[tk]['ohlc'][min_date: max_date]
             
             line_1_ma_type = ma_type_map[diff_1_line_1_ma_type]
             line_2_ma_type = ma_type_map[diff_1_line_2_ma_type]
