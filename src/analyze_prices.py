@@ -4593,9 +4593,9 @@ class AnalyzePrices():
         yaxis_title_1 = 'MA' if 'MA' in p1_name else 'Price'
         yaxis_title_2 = 'MA' if 'MA' in p2_name else 'Price'
         if target_deck == 1:
-            yaxis_title = f'{yaxis_title_1} - {yaxis_title_2} Differential'
+            yaxis_title = f'{yaxis_title_1}-{yaxis_title_2} Differential'
         else:
-            yaxis_title = f'{yaxis_title_1} - {yaxis_title_2}<BR>Differential'
+            yaxis_title = f'{yaxis_title_1}-{yaxis_title_2}<BR>Differential'
 
         ###
         diff_signal = self.moving_average(diff, signal_ma_type, signal_window)
@@ -4613,8 +4613,6 @@ class AnalyzePrices():
 
         diff_positive = diff.copy()
         diff_negative = diff.copy()
-        diff_positive.index = diff.index
-        diff_negative.index = diff.index
 
         if plot_type.lower() == 'histogram':
 

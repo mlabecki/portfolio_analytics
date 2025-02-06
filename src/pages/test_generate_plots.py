@@ -2765,7 +2765,7 @@ layout = html.Div([
                             options = ['Upper'],
                             value = 'Upper',
                             clearable = False,
-                            style = {'width': '110px'}
+                            style = {'width': '80px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -2778,46 +2778,33 @@ layout = html.Div([
                             options = ['Histogram', 'Filled Line'],
                             value = 'Histogram',
                             clearable = False,
-                            style = {'width': '110px'}
+                            style = {'width': '97px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
-                        dcc.Dropdown(
-                            id='diff-1-add-title-dropdown',
-                            className = 'plots-dropdown-button',
-                            options = ['Yes', 'No'],
-                            value = 'Yes',
-                            clearable = False,
-                            style = {'width': '70px'}
-                        )],
-                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                    ),
-
-                    html.Div([
-                        html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
                         dcc.Dropdown(
                             id = 'diff-1-color-theme-dropdown',
                             className = 'plots-dropdown-button',
                             options = candle_colors,
                             value = 'Green-Red',
                             clearable = False,
-                            style = {'width': '116px'}
+                            style = {'width': '113px'}
                         )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
                     html.Div([
-                        html.Div('Add Line 1', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top'}),
+                        html.Div('Add Line 1', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                         dcc.Dropdown(
                             id = 'diff-1-add-price-dropdown',
                             className = 'plots-dropdown-button',
                             options = ['No', 'Yes'],
                             value = 'No',
                             clearable = False,
-                            style = {'width': '67px'}
+                            style = {'width': '80px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -2835,16 +2822,28 @@ layout = html.Div([
                         style = popover_menu_button_css
                     ),
                     html.Div([
-                        html.Div('Price Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        html.Div('Line 1 Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                         dcc.Dropdown(
                             id='diff-1-price-color-theme-dropdown',
                             className = 'plots-dropdown-button',
                             options = overlay_color_themes,
-                            value = 'Magenta',
+                            value = 'Sapphire',
                             clearable = False,
                             disabled = False,
                             #style = {'width': '107px'}
-                            style = {'width': '250px'}
+                            style = {'width': '140px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    html.Div([
+                        html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id='diff-1-add-title-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '70px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
@@ -3000,7 +2999,32 @@ layout = html.Div([
                     ),
 
                     ### Line 2, Row 1
-                    html.Div('Define Line 2', style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'text-decoration': 'underline', 'width': '300px', 'padding-left': '2px', 'vertical-align': 'top'}),
+                    html.Div(
+                        'Define Line 2',
+                        id = 'diff-1-define-line-2',
+                        style = {
+                            'font-family': 'Helvetica',
+                            'font-size': '14px',
+                            'font-weight': 'bold',
+                            'text-decoration': 'underline',
+                            'width': '300px',
+                            'padding-left': '2px',
+                            'vertical-align': 'top'
+                        }
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            'Line 2 must differ from Line 1',
+                             style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-diff-1-define-line-2',
+                        target = 'diff-1-define-line-2',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
                     html.Div([
                         html.Div('Line Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
                         dcc.Dropdown(
@@ -5706,6 +5730,8 @@ def update_plot(
             line_2_ma_type = ma_type_map[diff_1_line_2_ma_type]
 
             p1 = adj_prices[diff_1_line_1_price_type] if boolean(diff_1_line_1_adjusted) else prices[diff_1_line_1_price_type]
+            p2 = adj_prices[diff_1_line_2_price_type] if boolean(diff_1_line_2_adjusted) else prices[diff_1_line_2_price_type]
+                
             if diff_1_line_1_line_type == 'Moving Average':
                 p1 = analyze_prices.moving_average(p1, line_1_ma_type, diff_1_line_1_window)
                 p1_name = f'{line_1_ma_type.upper()} {diff_1_line_1_window}'
@@ -5714,7 +5740,6 @@ def update_plot(
                 adj_prefix_line_1 = 'Adjusted ' if boolean(diff_1_line_1_adjusted) else ''
                 p1_name = f'{adj_prefix_line_1}{diff_1_line_1_price_type}'
 
-            p2 = adj_prices[diff_1_line_2_price_type] if boolean(diff_1_line_2_adjusted) else prices[diff_1_line_2_price_type]
             if diff_1_line_2_line_type == 'Moving Average':
                 p2 = analyze_prices.moving_average(p2, line_2_ma_type, diff_1_line_2_window)
                 p2_name = f'{line_2_ma_type.upper()} {diff_1_line_2_window}'
@@ -5723,25 +5748,26 @@ def update_plot(
                 adj_prefix_line_2 = 'Adjusted ' if boolean(diff_1_line_2_adjusted) else ''
                 p2_name = f'{adj_prefix_line_2}{diff_1_line_2_price_type}'
 
-            fig_data = analyze_prices.add_diff(
-                fig_data,
-                tk,
-                p1,
-                p2,
-                p1_name,
-                p2_name,
-                target_deck = deck_number(deck_type, diff_1_deck),
-                plot_type = diff_1_plot_type,
-                add_signal = boolean(diff_1_add_signal), 
-                signal_ma_type = ma_type_map[diff_1_signal_ma_type],
-                signal_window = diff_1_signal_window,
-                add_price = boolean(diff_1_add_price),
-                add_title = boolean(diff_1_add_title),
-                theme = theme,
-                color_theme = diff_1_color_theme,
-                signal_color_theme = diff_1_signal_color,
-                price_color_theme = diff_1_price_color
-            )
+            if not p1.equals(p2):
+                fig_data = analyze_prices.add_diff(
+                    fig_data,
+                    tk,
+                    p1,
+                    p2,
+                    p1_name,
+                    p2_name,
+                    target_deck = deck_number(deck_type, diff_1_deck),
+                    plot_type = diff_1_plot_type,
+                    add_signal = boolean(diff_1_add_signal), 
+                    signal_ma_type = ma_type_map[diff_1_signal_ma_type],
+                    signal_window = diff_1_signal_window,
+                    add_price = boolean(diff_1_add_price),
+                    add_title = boolean(diff_1_add_title),
+                    theme = theme,
+                    color_theme = diff_1_color_theme,
+                    signal_color_theme = diff_1_signal_color,
+                    price_color_theme = diff_1_price_color
+                )
 
         # Add ATR / ATRP
         if remove_atr & (fig_data is not None):
