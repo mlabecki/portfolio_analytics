@@ -3873,6 +3873,8 @@ class AnalyzePrices():
         else:
             zorder = 10
 
+        uid_prefix = 'dollar-' if 'dollar' in price_type.lower() else ''
+
         fig = fig_data['fig']
         fig_y_min = fig_data['y_min'][target_deck]
         fig_y_max = fig_data['y_max'][target_deck]
@@ -4007,7 +4009,7 @@ class AnalyzePrices():
         # Add trace
 
         if 'volume' in price_type.lower():
-            uid = 'volume'
+            uid = f'{uid_prefix}volume'
         else:
             uid = 'hist-price'
 
@@ -5266,14 +5268,14 @@ class AnalyzePrices():
             p2_name = '%D'
             diff = p1 - p2
             diff_title = f'{tk} {stochastic_type} {stochastic_label} Stochastic %K-%D Differential'
-            yaxis_title = '%K − %D'
+            yaxis_title = f'{stochastic_label} %K − %D'
 
         else:
             p1_name = '%D'
             p2_name = '%K'
             diff = p2 - p1
             diff_title = f'{tk} {stochastic_type} {stochastic_label} Stochastic %D-%K Differential'
-            yaxis_title = '%D − %K'
+            yaxis_title = f'{stochastic_label} %D − %K'
 
         diff_positive_name = f'{stochastic_label} {p1_name} > {p2_name}'
         diff_negative_name = f'{stochastic_label} {p1_name} < {p2_name}'        
@@ -5343,10 +5345,19 @@ class AnalyzePrices():
 
                 curr_v = diff.loc[idx]
 
+                # The 2 lines below don't work because there are missing diff_positive or diff_negative
+                # data points while fill to zero is still in effect.
+                # diff_positive[idx] = curr_v if curr_v >= 0 else np.nan
+                # diff_negative[idx] = curr_v if curr_v < 0 else np.nan
+
                 if np.sign(curr_v) != np.sign(prev_v):
-                    # Set both diff copies to 0 if the value is changing sign
+                    # The best solution is to set both diff copies to 0 if the value is changing sign
                     diff_positive[idx] = 0
                     diff_negative[idx] = 0
+                    # The 2 lines below don't work because there could be missing diff_positive or diff_negative
+                    # data points while fill to zero is still in effect.
+                    # diff_positive[idx] = max(curr_v - prev_v, 0)
+                    # diff_negative[idx] = min(curr_v - prev_v, 0)
                 else:
                     # Set both diff copies to current value or NaN
                     diff_positive[idx] = curr_v if curr_v >= 0 else np.nan

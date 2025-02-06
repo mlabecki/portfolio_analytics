@@ -1241,6 +1241,199 @@ layout = html.Div([
 
     ##### END VOLUME CONTROLS
 
+    ##### BEGIN VOLUME CONTROLS
+
+    html.Div([
+
+        html.Div(
+            dbc.Button(
+                id = 'collapse-button-dollar-volume',
+                class_name = 'ma-1',
+                color = 'primary',
+                size = 'sm',
+                n_clicks = 0,
+                style = collapse_button_css
+            )
+        ),
+        dbc.Popover(
+            [
+            html.Span(
+                    """NOTE: Volume can only be plotted on the secondary y-axis or on the middle/lower deck
+                    if the primary y-axis is populated. 
+                    """,
+                    style = popover_menu_collapse_button_header_css
+                )
+            ], 
+            id = 'popover-collapse-button-dollar-volume',
+            target = 'collapse-button-dollar-volume',
+            body = False,
+            trigger = 'hover',
+            hide_arrow = True,
+            style = popover_menu_collapse_button_css
+        ),
+
+        dbc.Collapse(
+
+            html.Div(
+
+                id = 'dollar-volume-controls',
+                children = [
+
+                    html.Div([
+                        html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id = 'dollar-volume-deck-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Upper'],
+                            value = 'Upper',
+                            clearable = False,
+                            style = {'width': '110px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Price Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='dollar-volume-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Close', 'High', 'Low', 'Open'],
+                            value = 'Close',
+                            clearable = False,
+                            style = {'width': '100px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    html.Div([
+                        html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='dollar-volume-adjusted-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '80px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Plot Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id='dollar-volume-plot-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Histogram', 'Line'],
+                            value = 'Histogram',
+                            clearable = False,
+                            style = {'width': '105px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    html.Div([
+                        html.Div('Fill Below', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id='dollar-volume-fill-below-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '80px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    html.Div([
+                        html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id='dollar-volume-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = overlay_color_themes,
+                            value = 'Base',
+                            clearable = False,
+                            style = {'width': '105px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id='dollar-volume-add-title-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['No', 'Yes'],
+                            value = 'No',
+                            clearable = False,
+                            style = {'width': '95px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Plot On Secondary Y', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dcc.Dropdown(
+                            id='dollar-volume-secondary-y-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['No', 'Yes'],
+                            value = 'No',
+                            clearable = False,
+                            disabled = True,
+                            style = {'width': '200px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            'Secondary Y-Axis can be activated from the THEME & TEMPLATE menu.',
+                             style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-dollar-volume-secondary-y-dropdown',
+                        target = 'dollar-volume-secondary-y-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
+
+                    ##### Add / Remove buttons
+                    html.Div([
+                        dbc.Button(
+                            'Add To Plot',
+                            id = f'add-dollar-volume-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'success',
+                            size = 'sm',
+                            style = plots_add_button_css
+                        )],
+                        style = {'display': 'inline-block'}
+                    ),
+                    html.Div([
+                        dbc.Button(
+                            # '✕',
+                            'Remove',
+                            id = f'remove-dollar-volume-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'danger',
+                            size = 'sm',
+                            style = plots_remove_button_css
+                        )],
+                        style = {'display': 'inline-block'}
+                    )
+
+                ],
+                # style = {'margin-left': '5px'}
+            ), 
+
+            id = 'collapse-dollar-volume',
+            is_open = False,
+            style = {'width': '300px'}
+        )],
+        style = {'margin-left': '5px'}
+    ), 
+
+    ##### END DOLLAR VOLUME CONTROLS
+
     ##### BEGIN DRAWDOWN CONTROLS
 
     html.Div([
@@ -2586,6 +2779,20 @@ layout = html.Div([
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
+                    dbc.Popover([
+                        html.Span(
+                            """NOTE: Histogram will plot the accurate daily data. Filled Line will plot at zero whenever MACD/MACD-V 
+                            changes sign, which is to avoid both positive and negative line fills on any given day.""",
+                            style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-macd-plot-type-dropdown',
+                        target = 'macd-plot-type-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
 
                     html.Div([
                         html.Div('Oscillator Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top'}),
@@ -2781,6 +2988,20 @@ layout = html.Div([
                             style = {'width': '97px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            """NOTE: Histogram will plot the accurate daily data. Filled Line will plot at zero whenever the Differential 
+                            changes sign, which is to avoid both positive and negative line fills on any given day.""",
+                            style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-diff-1-plot-type-dropdown',
+                        target = 'diff-1-plot-type-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
                     ),
 
                     html.Div([
@@ -3244,6 +3465,20 @@ layout = html.Div([
                             style = {'width': '102px'}
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            """NOTE: Histogram will plot the accurate daily data. Filled Line will plot at zero whenever the Stochastic Differential 
+                            changes sign, which is to avoid both positive and negative line fills on any given day.""",
+                            style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-diff-stochastic-plot-type-dropdown',
+                        target = 'diff-stochastic-plot-type-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
                     ),
 
                     html.Div([
@@ -4741,6 +4976,7 @@ def toggle_collapse_template(n, is_open):
 
     Output('hist-price-deck-dropdown', 'options'),
     Output('volume-deck-dropdown', 'options'),
+    Output('dollar-volume-deck-dropdown', 'options'),    
     Output('bollinger-deck-dropdown', 'options'),
     Output('boll-width-deck-dropdown', 'options'),
     Output('ma-env-deck-dropdown', 'options'),
@@ -4756,6 +4992,7 @@ def toggle_collapse_template(n, is_open):
 
     Output('hist-price-deck-dropdown', 'value'),
     Output('volume-deck-dropdown', 'value'),
+    Output('dollar-volume-deck-dropdown', 'value'),    
     Output('bollinger-deck-dropdown', 'value'),
     Output('boll-width-deck-dropdown', 'value'),
     Output('ma-env-deck-dropdown', 'value'),
@@ -4774,6 +5011,7 @@ def toggle_collapse_template(n, is_open):
 
     Input('hist-price-deck-dropdown', 'value'),
     Input('volume-deck-dropdown', 'value'),
+    Input('dollar-volume-deck-dropdown', 'value'), 
     Input('bollinger-deck-dropdown', 'value'),
     Input('boll-width-deck-dropdown', 'value'),
     Input('ma-env-deck-dropdown', 'value'),
@@ -4792,6 +5030,7 @@ def target_deck_options(
     deck_type,
     hist_price_deck,
     volume_deck,
+    dollar_volume_deck,    
     bollinger_deck,
     boll_width_deck,
     ma_env_deck,
@@ -4817,6 +5056,7 @@ def target_deck_options(
         
         hist_price_deck_value =         ['Lower'] if (hist_price_deck in ['Middle', 'Lower']) else ['Upper']
         volume_deck_value =             ['Lower'] if (volume_deck in ['Middle', 'Lower']) else ['Upper']
+        dollar_volume_deck_value =      ['Lower'] if (dollar_volume_deck in ['Middle', 'Lower']) else ['Upper']
         bollinger_deck_value =          ['Lower'] if (bollinger_deck in ['Middle', 'Lower']) else ['Upper']
         boll_width_deck_value =         ['Lower'] if (boll_width_deck in ['Middle', 'Lower']) else ['Upper']
         ma_env_deck_value =             ['Lower'] if (ma_env_deck in ['Middle', 'Lower']) else ['Upper']
@@ -4832,6 +5072,7 @@ def target_deck_options(
         all_deck_values = \
             hist_price_deck_value + \
             volume_deck_value + \
+            dollar_volume_deck_value + \
             bollinger_deck_value + \
             boll_width_deck_value + \
             ma_env_deck_value + \
@@ -4850,6 +5091,7 @@ def target_deck_options(
 
         hist_price_deck_value =         ['Middle'] if (hist_price_deck == 'Lower') & deck_changed else [hist_price_deck]
         volume_deck_value =             ['Middle'] if (volume_deck == 'Lower') & deck_changed else [volume_deck]
+        dollar_volume_deck_value =      ['Middle'] if (dollar_volume_deck == 'Lower') & deck_changed else [volume_deck]        
         bollinger_deck_value =          ['Middle'] if (bollinger_deck == 'Lower') & deck_changed else [bollinger_deck]
         boll_width_deck_value =         ['Middle'] if (boll_width_deck in ['Middle', 'Lower']) else ['boll_width_deck']
         ma_env_deck_value =             ['Middle'] if (ma_env_deck == 'Lower') & deck_changed else [ma_env_deck]
@@ -4865,6 +5107,7 @@ def target_deck_options(
         all_deck_values = \
             hist_price_deck_value + \
             volume_deck_value + \
+            dollar_volume_deck_value + \
             bollinger_deck_value + \
             boll_width_deck_value + \
             ma_env_deck_value + \
@@ -4918,6 +5161,21 @@ def toggle_collapse_candlestick(n, is_open):
 )
 def toggle_collapse_volume(n, is_open):
     title = 'VOLUME'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
+    Output('collapse-button-dollar-volume', 'children'),
+    Output('collapse-dollar-volume', 'is_open'),
+    Input('collapse-button-dollar-volume', 'n_clicks'),
+    State('collapse-dollar-volume', 'is_open')
+)
+def toggle_collapse_dollar_volume(n, is_open):
+    title = 'DOLLAR VOLUME'
     label = f'► {title}' if is_open else f'▼ {title}'
     if n:
         return label, not is_open
@@ -5155,6 +5413,7 @@ def toggle_collapse_stochastic(n, is_open):
     Output('add-hist-price-button', 'n_clicks'),
     Output('add-candlestick-button', 'n_clicks'),
     Output('add-volume-button', 'n_clicks'),
+    Output('add-dollar-volume-button', 'n_clicks'),    
     Output('add-drawdowns-button', 'n_clicks'),
     Output('add-price-overlays-button', 'n_clicks'),
     Output('add-bollinger-button', 'n_clicks'),
@@ -5173,6 +5432,7 @@ def toggle_collapse_stochastic(n, is_open):
     Output('remove-hist-price-button', 'n_clicks'),
     Output('remove-candlestick-button', 'n_clicks'),
     Output('remove-volume-button', 'n_clicks'),
+    Output('remove-dollar-volume-button', 'n_clicks'),    
     Output('remove-drawdowns-button', 'n_clicks'),
     Output('remove-price-overlays-button', 'n_clicks'),
     Output('remove-bollinger-button', 'n_clicks'),
@@ -5225,6 +5485,7 @@ def toggle_collapse_stochastic(n, is_open):
     # Secondary y disabled outputs
     Output('hist-price-secondary-y-dropdown', 'disabled'),
     Output('volume-secondary-y-dropdown', 'disabled'),
+    Output('dollar-volume-secondary-y-dropdown', 'disabled'),    
     Output('atr-secondary-y-dropdown', 'disabled'),
     Output('boll-width-secondary-y-dropdown', 'disabled'),
     Output('mvol-secondary-y-dropdown', 'disabled'),
@@ -5293,6 +5554,18 @@ def toggle_collapse_stochastic(n, is_open):
     Input('volume-add-title-dropdown', 'value'),
     Input('add-volume-button', 'n_clicks'),
     Input('remove-volume-button', 'n_clicks'),
+
+    # Dollar Volume inputs
+    Input('dollar-volume-deck-dropdown', 'value'),
+    Input('dollar-volume-type-dropdown', 'value'),
+    Input('dollar-volume-adjusted-dropdown', 'value'),
+    Input('dollar-volume-secondary-y-dropdown', 'value'),
+    Input('dollar-volume-plot-type-dropdown', 'value'),
+    Input('dollar-volume-fill-below-dropdown', 'value'),
+    Input('dollar-volume-color-theme-dropdown', 'value'),
+    Input('dollar-volume-add-title-dropdown', 'value'),
+    Input('add-dollar-volume-button', 'n_clicks'),
+    Input('remove-dollar-volume-button', 'n_clicks'),
 
     # Drawdowns inputs
     Input('drawdowns-number-input', 'value'),
@@ -5533,7 +5806,18 @@ def update_plot(
         volume_add_title,
         add_volume,
         remove_volume,
-        
+
+        dollar_volume_deck_name,
+        dollar_volume_type,
+        dollar_volume_adjusted,
+        dollar_volume_secondary_y,
+        dollar_volume_plot_type,
+        dollar_volume_fill_below,
+        dollar_volume_color_theme,
+        dollar_volume_add_title,
+        add_dollar_volume,
+        remove_dollar_volume,
+
         n_top, 
         drawdown_top_by, 
         drawdown_display,
@@ -5763,6 +6047,7 @@ def update_plot(
 
     hist_price_sec_y_disabled = not secondary_y
     volume_sec_y_disabled = not secondary_y
+    dollar_volume_sec_y_disabled = not secondary_y    
     atr_sec_y_disabled = not secondary_y
     boll_width_sec_y_disabled = not secondary_y
     mvol_sec_y_disabled = not secondary_y
@@ -5899,7 +6184,7 @@ def update_plot(
                 color_theme = candlestick_color_theme
             )
 
-        ### Add volume
+        ### Add Volume
         if remove_volume & (fig_data is not None):
             add_volume = 0
             for i, tr in enumerate(fig_data['fig']['data']):
@@ -5924,6 +6209,33 @@ def update_plot(
                 theme = theme,
                 color_theme = volume_color_theme,
                 fill_below = boolean(volume_fill_below)
+            )
+
+        ### Add Dollar Volume
+        if remove_dollar_volume & (fig_data is not None):
+            add_dollar_volume = 0
+            for i, tr in enumerate(fig_data['fig']['data']):
+                if tr['legendgroup'] != 'dummy':
+                    if 'dollar-volume' in tr['uid']:
+                        fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
+
+        if add_dollar_volume:
+
+            dollar_volume_color_theme = volume_color_theme.lower() if volume_color_theme is not None else 'sapphire'
+            df_dollar_volume = downloaded_data[tk]['dollar_volume']
+
+            fig_data = analyze_prices.add_hist_price(
+                fig_data,
+                df_dollar_volume[min_date: max_date],
+                tk,
+                target_deck = deck_number(deck_type, dollar_volume_deck_name),
+                secondary_y = boolean(dollar_volume_secondary_y),
+                plot_type = 'bar' if dollar_volume_plot_type == 'Histogram' else 'scatter',
+                price_type = 'dollar volume',
+                add_title = boolean(dollar_volume_add_title),
+                theme = theme,
+                color_theme = dollar_volume_color_theme,
+                fill_below = boolean(dollar_volume_fill_below)
             )
 
         ### Add drawdowns
@@ -6407,14 +6719,15 @@ def update_plot(
         map_sec_y_id_to_idx = {
             'hist_price': [0],                  # hist_price_sec_y_disabled
             'volume': [1],                      # volume_sec_y_disabled
-            'atr': [2],                         # atr_sec_y_disabled
-            'boll_width': [3],                  # boll_width_sec_y_disabled
-            'mvol': [4],                        # mvol_sec_y_disabled
-            'macd': [5, 6],                     # [macd_add_price_disabled, macd_price_color_disabled]
-            'rsi': [7, 8],                      # [rsi_add_price_disabled, rsi_price_color_disabled]
-            'stochastic': [9, 10],              # [stochastic_add_price_disabled, stochastic_price_color_disabled]
-            'diff_1': [11, 12],                 # [diff_1_add_price_disabled, diff_1_price_color_disabled]
-            'diff_stochastic': [13, 14, 15]     # [diff_stochastic_add_line_disabled, diff_stochastic_added_line_color_disabled, diff_stochastic_added_line_type_disabled]
+            'dollar_volume': [2],               # volume_sec_y_disabled            
+            'atr': [3],                         # atr_sec_y_disabled
+            'boll_width': [4],                  # boll_width_sec_y_disabled
+            'mvol': [5],                        # mvol_sec_y_disabled
+            'macd': [6, 7],                     # [macd_add_price_disabled, macd_price_color_disabled]
+            'rsi': [8, 9],                      # [rsi_add_price_disabled, rsi_price_color_disabled]
+            'stochastic': [10, 11],              # [stochastic_add_price_disabled, stochastic_price_color_disabled]
+            'diff_1': [12, 13],                 # [diff_1_add_price_disabled, diff_1_price_color_disabled]
+            'diff_stochastic': [14, 15, 16]     # [diff_stochastic_add_line_disabled, diff_stochastic_added_line_color_disabled, diff_stochastic_added_line_type_disabled]
             # 'diff': [diff_add_price_disabled, diff_price_color_disabled],
             # 'diff_stochastic': [diff_stochastic_add_price_disabled, diff_stochastic_price_color_disabled],
         }
@@ -6423,6 +6736,7 @@ def update_plot(
         sec_y_disabled_outputs = (
             hist_price_sec_y_disabled,
             volume_sec_y_disabled,
+            dollar_volume_sec_y_disabled,            
             atr_sec_y_disabled,
             boll_width_sec_y_disabled,
             mvol_sec_y_disabled,
@@ -6509,6 +6823,7 @@ def update_plot(
         add_hist_price,  # update
         add_candlestick,
         add_volume,
+        add_dollar_volume,        
         add_drawdowns,
         add_price_overlays,
         add_bollinger,
@@ -6522,7 +6837,7 @@ def update_plot(
         add_stochastic,
         add_diff_1,
         add_diff_stochastic,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
 
         macd_signal_window_disabled,
         macd_signal_color_disabled,
@@ -6562,12 +6877,6 @@ def update_plot(
     ) + sec_y_disabled_outputs
 
 #######################
-#
-# 1. Fix add_diff()
-#    a) Allow different price types, there should be different p_base
-#       price types for p1, p2 and signal lines.
-#    b) Change titles, replacing 'Oscillator' with 'Differential', as appropriate.
-#    c) Get rid of the 'reverse' parameter.
-# 
-# 2. Remove restriction on drawdowns to be plotted only on the upper deck.
+
+# Remove restriction on drawdowns to be plotted only on the upper deck.
 # 
