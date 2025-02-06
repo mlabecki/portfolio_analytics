@@ -1100,7 +1100,8 @@ class AnalyzePrices():
                     y = df_price,
                     mode = 'lines',
                     line_color = price_color,
-                    name = price_type
+                    name = price_type,
+                    uid = 'stochastic-price'
                 ),
                 secondary_y = True
             )
@@ -4501,6 +4502,7 @@ class AnalyzePrices():
         add_title = False,
         add_yaxis_title = True,
         title_font_size = 32,
+        uid_idx = 1,
         theme = 'dark',
         color_theme = None,
         signal_color_theme = None,
@@ -4627,6 +4629,7 @@ class AnalyzePrices():
                     width = 1,
                     # Shorten 'Adjusted' to 'Adj' in the legend
                     name = diff_positive_name.replace('usted', ''),
+                    uid = f'diff-{uid_idx}-histogram-positive',
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
@@ -4642,6 +4645,7 @@ class AnalyzePrices():
                     width = 1,
                     # Shorten 'Adjusted' to 'Adj' in the legend
                     name = diff_negative_name.replace('usted', ''),
+                    uid = f'diff-{uid_idx}-histogram-negative',
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
@@ -4683,6 +4687,7 @@ class AnalyzePrices():
                     fillcolor = diff_green_fillcolor,
                     # Shorten 'Adjusted' to 'Adj' in the legend
                     name = diff_positive_name.replace('usted', ''),
+                    uid = f'diff-{uid_idx}-filled-line-positive',
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
@@ -4701,6 +4706,7 @@ class AnalyzePrices():
                     fillcolor = diff_red_fillcolor,
                     # Shorten 'Adjusted' to 'Adj' in the legend
                     name = diff_negative_name.replace('usted', ''),
+                    uid = f'diff-{uid_idx}-filled-line-negative',
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
@@ -4718,6 +4724,7 @@ class AnalyzePrices():
                     line_color = signal_color,
                     line_width = 2,
                     name = signal_name,
+                    uid = f'diff-{uid_idx}-signal',
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
@@ -4742,7 +4749,8 @@ class AnalyzePrices():
                     mode = 'lines',
                     line_color = price_color,
                     zorder = 100,
-                    name = p1_name
+                    name = p1_name,
+                    uid = f'diff-{uid_idx}-line-1',
                 ),
                 secondary_y = True
             )
@@ -5142,23 +5150,34 @@ class AnalyzePrices():
     def add_diff_stochastic(
         self,
         fig_data,
-        tk,
         stochastic_data,
+        adjusted,
+        tk,
         target_deck = 2,
-        reverse_diff = False,    
-        plot_type = 'filled_line',
+        flip_sign = False,    
+        plot_type = 'filled line',
         add_signal = False,
-        add_price = False,
         signal_type = 'sma',
         signal_window = 10,
+        signal_color_theme = None,
+        add_line = False,
+        added_line_type = 'price',
+        added_line_color_theme = None,
         add_yaxis_title = True,
         add_title = False,
         title_font_size = 32,
-        theme = 'dark'
+        theme = 'dark',
+        color_theme = None
     ):
         """
-        reverse_diff:
+        stochastic_data: 
+            output from stochastic_oscillator()
+        adjusted:
+            is stochastic_data based on adjusted prices?
+        flip_sign:
             if True, the %D-%K line difference will be plotted instead of %K-%D
+        added_line_type:
+            'price', 'k-line' or 'd-line'
         add_signal:
             if True, signal will be added that is a moving average of the k-d line difference
         """
@@ -5173,7 +5192,7 @@ class AnalyzePrices():
         # Plot price on secondary axis of the upper deck only if it has been created in subplots
 
         if target_deck == 1:
-            if add_price:
+            if add_line:
                 if not has_secondary_y:
                     print('ERROR: Secondary y axis must be selected when creating the plotting template')
                     return fig_data
@@ -5183,14 +5202,54 @@ class AnalyzePrices():
                         print('ERROR: Secondary y axis is already populated')
                         return fig_data                
         else:
-            # If it's the middle or lower deck, just set add_price to False and continue
-            add_price = False
+            # If it's the middle or lower deck, just set add_line to False and continue
+            add_line = False
 
         stochastic_type = stochastic_data['type']
         stochastic_label = stochastic_data['label']
         p1 = stochastic_data['k_line']
         p2 = stochastic_data['d_line']
-        df_price = stochastic_data['price']
+        if added_line_type.lower() in ['k line', 'k-line', 'k_line', '%k', '%k line']:
+            added_line = stochastic_data['k_line']
+            added_line_name = f'{stochastic_type} {stochastic_label} %K'
+        elif added_line_type.lower() in ['d line', 'd-line', 'd_line', '%d', '%d line']:
+            added_line = stochastic_data['D_line']
+            added_line_name = f'{stochastic_type} {stochastic_label} %D'
+        else: 
+            added_line = stochastic_data['price']
+            added_line_name = 'Adjusted Close' if adjusted else 'Close'
+
+        ############
+
+        style = theme_style[theme]
+
+        color_theme = 'green-red' if color_theme is None else color_theme.lower()
+        if theme == 'dark':
+            opacity_green = 0.75
+            opacity_red = 0.7
+        else:
+            opacity_green = 0.85
+            opacity_red = 0.85
+     
+        green_color = style['candle_colors'][color_theme]['green_color']
+        diff_green_linecolor = style['candle_colors'][color_theme]['green_color']
+        diff_green_fillcolor = diff_green_linecolor.replace(', 1)', f', {opacity_green})')
+        red_color = style['candle_colors'][color_theme]['red_color']
+        diff_red_linecolor = style['candle_colors'][color_theme]['red_color']
+        diff_red_fillcolor = diff_red_linecolor.replace(', 1)', f', {opacity_red})')
+
+        if signal_color_theme is None:
+            signal_color_theme = 'coral' if color_theme == 'gold-orchid' else 'gold'
+        else:
+            signal_color_theme = signal_color_theme.lower()
+        signal_color_idx = style['overlay_color_selection'][signal_color_theme][1][0]
+        signal_color = style['overlay_color_theme'][signal_color_theme][signal_color_idx]
+
+        added_line_color_theme = 'base' if added_line_color_theme is None else added_line_color_theme.lower()
+        added_line_color_idx = style['overlay_color_selection'][added_line_color_theme][1][0]
+        added_line_color = style['overlay_color_theme'][added_line_color_theme][added_line_color_idx]
+
+        ##################
 
         legendgrouptitle = {}
         if deck_type in ['double', 'triple']:
@@ -5201,20 +5260,18 @@ class AnalyzePrices():
                 font_weight = 'normal'
             )
 
-        style = theme_style[theme]
-
-        if not reverse_diff:
+        if not flip_sign:
             p1_name = '%K'
             p2_name = '%D'
             diff = p1 - p2
-            diff_title = f'{tk} {stochastic_type} {stochastic_label} Stochastic %K-%D Difference'
+            diff_title = f'{tk} {stochastic_type} {stochastic_label} Stochastic %K-%D Differential'
             yaxis_title = f'%K-%D'
 
         else:
             p1_name = '%D'
             p2_name = '%K'
             diff = p2 - p1
-            diff_title = f'{tk} {stochastic_type} {stochastic_label} Stochastic %D-%K Difference'
+            diff_title = f'{tk} {stochastic_type} {stochastic_label} Stochastic %D-%K Differential'
             yaxis_title = f'%D-%K'
 
         diff_positive_name = f'{stochastic_label} {p1_name} > {p2_name}'
@@ -5238,7 +5295,7 @@ class AnalyzePrices():
         diff_positive = diff.copy()
         diff_negative = diff.copy()
 
-        if plot_type == 'bar':
+        if plot_type.lower() == 'histogram':
 
             diff_positive.iloc[np.where(diff_positive < 0)] = np.nan
             diff_negative.iloc[np.where(diff_negative >= 0)] = np.nan
@@ -5247,9 +5304,10 @@ class AnalyzePrices():
                 go.Bar(
                     x = diff_positive.index.astype(str),
                     y = diff_positive,
-                    marker_color = style['green_color'],
+                    marker_color = green_color,
                     width = 1,
                     name = diff_positive_name,
+                    uid = 'diff-stochastic-histogram-positive',
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
@@ -5261,9 +5319,10 @@ class AnalyzePrices():
                 go.Bar(
                     x = diff_negative.index.astype(str),
                     y = diff_negative,
-                    marker_color = style['red_color'],
+                    marker_color = red_color,
                     width = 1,
                     name = diff_negative_name,
+                    uid = 'diff-stochastic-histogram-negative',
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
@@ -5299,11 +5358,12 @@ class AnalyzePrices():
                     x = diff_positive.index.astype(str),
                     y = diff_positive,
                     mode = 'lines',
-                    line_color = style['diff_green_linecolor'],
+                    line_color = diff_green_linecolor,
                     line_width = 2,
                     fill = 'tozeroy',
-                    fillcolor = style['diff_green_fillcolor'],
+                    fillcolor = diff_green_fillcolor,
                     name = diff_positive_name,
+                    uid = 'diff-stochastic-filled-line-positive',
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
@@ -5316,11 +5376,12 @@ class AnalyzePrices():
                     x = diff_negative.index.astype(str),
                     y = diff_negative,
                     mode = 'lines',
-                    line_color = 'darkred',
+                    line_color = diff_red_linecolor,
                     line_width = 2,
                     fill = 'tozeroy',
-                    fillcolor = style['diff_red_fillcolor'],
+                    fillcolor = diff_red_fillcolor,
                     name = diff_negative_name,
+                    uid = 'diff-stochastic-filled-line-negative',
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
@@ -5335,9 +5396,10 @@ class AnalyzePrices():
                     x = diff_signal.index.astype(str),
                     y = diff_signal,
                     mode = 'lines',
-                    line_color = style['signal_color'],
+                    line_color = signal_color,
                     line_width = 2,
                     name = signal_name,
+                    uid = 'diff-stochastic-signal',
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
@@ -5348,27 +5410,28 @@ class AnalyzePrices():
 
         ##########
 
-        if add_price:
+        if add_line:
 
             min_n_intervals = n_yintervals_map['min'][plot_height]
             max_n_intervals = n_yintervals_map['max'][plot_height]
-            sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(min(df_price), max(df_price), min_n_intervals, max_n_intervals)
+            sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(min(added_line), max(added_line), min_n_intervals, max_n_intervals)
             sec_y_range = (sec_y_lower_limit, sec_y_upper_limit)
 
             fig_diff.add_trace(
                 go.Scatter(
-                    x = df_price.index,
-                    y = df_price,
+                    x = added_line.index,
+                    y = added_line,
                     mode = 'lines',
-                    line_color = style['basecolor'],
-                    name = 'Close'
+                    line_color = added_line_color,
+                    name = added_line_name,
+                    uid = 'diff-stochastic-added-line'
                 ),
                 secondary_y = True
             )
 
             fig_diff.update_yaxes(
                 range = sec_y_range,
-                title = 'Close',
+                title = added_line_name,
                 showticklabels = True,
                 tick0 = sec_y_lower_limit,
                 dtick = sec_y_delta,
