@@ -5164,6 +5164,7 @@ class AnalyzePrices():
         added_line_type = 'price',
         added_line_color_theme = None,
         add_yaxis_title = True,
+        
         add_title = False,
         title_font_size = 32,
         theme = 'dark',
@@ -5211,10 +5212,10 @@ class AnalyzePrices():
         p2 = stochastic_data['d_line']
         if added_line_type.lower() in ['k line', 'k-line', 'k_line', '%k', '%k line']:
             added_line = stochastic_data['k_line']
-            added_line_name = f'{stochastic_type} {stochastic_label} %K'
+            added_line_name = f'{stochastic_label} %K'
         elif added_line_type.lower() in ['d line', 'd-line', 'd_line', '%d', '%d line']:
-            added_line = stochastic_data['D_line']
-            added_line_name = f'{stochastic_type} {stochastic_label} %D'
+            added_line = stochastic_data['d_line']
+            added_line_name = f'{stochastic_label} %D'
         else: 
             added_line = stochastic_data['price']
             added_line_name = 'Adjusted Close' if adjusted else 'Close'
@@ -5265,14 +5266,14 @@ class AnalyzePrices():
             p2_name = '%D'
             diff = p1 - p2
             diff_title = f'{tk} {stochastic_type} {stochastic_label} Stochastic %K-%D Differential'
-            yaxis_title = f'%K-%D'
+            yaxis_title = '%K − %D'
 
         else:
             p1_name = '%D'
             p2_name = '%K'
             diff = p2 - p1
             diff_title = f'{tk} {stochastic_type} {stochastic_label} Stochastic %D-%K Differential'
-            yaxis_title = f'%D-%K'
+            yaxis_title = '%D − %K'
 
         diff_positive_name = f'{stochastic_label} {p1_name} > {p2_name}'
         diff_negative_name = f'{stochastic_label} {p1_name} < {p2_name}'        

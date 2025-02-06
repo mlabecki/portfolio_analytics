@@ -3182,26 +3182,6 @@ layout = html.Div([
 
     ##### END DIFFERENTIAL No. 1 CONTROLS
 
-    # diff_stochastic_deck,
-    # diff_stochastic_plot_type,
-    # diff_stochastic_adjusted,
-    # diff_stochastic_add_title,
-    # diff_stochastic_color_theme,
-    # diff_stochastic_type,
-    # diff_stochastic_fast_k_period,
-    # diff_stochastic_k_smoothing_period,
-    # diff_stochastic_d_period,
-    # diff_stochastic_sign,
-    # diff_stochastic_add_signal,
-    # diff_stochastic_signal_ma_type,
-    # diff_stochastic_signal_window,
-    # diff_stochastic_signal_color,
-    # diff_stochastic_add_line,
-    # diff_stochastic_added_line_type,
-    # diff_stochastic_added_line_color_theme,
-    # add_diff_stochastic,
-    # remove_diff_stochastic
-
     ##### BEGIN STOCHASTIC DIFFERENTIAL CONTROLS
 
     html.Div([
@@ -3321,8 +3301,8 @@ layout = html.Div([
                              style = popover_menu_collapse_button_header_css
                             )
                         ], 
-                        id = 'popover-diff-diff-stochastic-adjusted-dropdown',
-                        target = 'diff-diff-stochastic-adjusted-dropdown',
+                        id = 'popover-diff-stochastic-adjusted-dropdown',
+                        target = 'diff-stochastic-adjusted-dropdown',
                         body = False,
                         trigger = 'hover',
                         hide_arrow = False,
@@ -6408,7 +6388,7 @@ def update_plot(
                 diff_stochastic_adjusted,
                 tk,
                 target_deck = deck_number(deck_type, diff_stochastic_deck),
-                flip_sign = True if diff_stochastic_sign == '%D - %K'  else False,
+                flip_sign = True if diff_stochastic_sign.startswith('%D') else False,
                 plot_type = diff_stochastic_plot_type,
                 add_signal = boolean(diff_stochastic_add_signal),
                 signal_type = ma_type_map[diff_stochastic_signal_ma_type],
