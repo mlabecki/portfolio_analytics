@@ -1241,6 +1241,82 @@ class AnalyzePrices():
         return macd_v_data
 
 
+    ##### IMPULSE MACD #####
+
+    def get_impulse_macd(
+        self,
+        close_tk,
+        high_tk,
+        low_tk,
+        smma_length = 34,
+        signal_length = 9
+    ):
+        """
+        close_tk, high_tk, low_tk: 
+            series of Close, High and Low daily price values for ticker tk
+    
+            Steps:
+        1.  Calculate SMMA for High and Low:
+            Compute the Smoothed Moving Average (SMMA) for the high and low prices over a specified period.
+            This helps in identifying the range within which the price is moving.
+        2.  Calculate ZLEMA:
+            Compute the Zero Lag Exponential Moving Average (ZLEMA) for the average of the high, low, and 
+            close prices over the same period. The ZLEMA is used to reduce lag and provide a more responsive indicator2.
+        3.  Calculate the Impulse MACD Value (md):
+            Subtract the SMMA of the high from the ZLEMA. If the ZLEMA is above the SMMA of the high,
+            the result is positive; if below, the result is negative.
+        4.  Calculate the Signal Line (sb):
+            Compute the SMMA of the Impulse MACD values over a shorter period (e.g., 9 periods).
+            This line helps in identifying the overall trend direction.
+        5.  Calculate the Histogram (sh):
+            Subtract the Signal Line from the Impulse MACD value to get the histogram. The histogram provides
+            visual representation of the difference between the Impulse MACD and its Signal Line, helping traders 
+            identify potential buy or sell signals.
+
+        References: 
+        https://www.tradingview.com/script/qt6xLfLi-Impulse-MACD-LazyBear/
+        https://www.multicharts.com/discussion/viewtopic.php?t=54441
+
+        """
+
+        def calc_smma(series, length):
+            # Smoothed Moving Average
+            n = len(series)
+            smma = pd.Series(data = [0.0] * n, index = series.index)
+            smma.iloc[0] = series[:length].mean()
+            for i in range(1, n):
+                smma.iloc[i] = (smma.iloc[i - 1] * (length - 1) + series.iloc[i]) / length
+            return smma
+
+        def calc_zlema(series, length):
+            # Zero Lag Exponential Moving Average
+            ema1 = series.ewm(span = length, adjust = False).mean()
+            ema2 = ema1.ewm(span = length, adjust = False).mean()
+            d = ema1 - ema2
+            zlema = ema1 + d
+            return zlema
+
+        # Impulse MACD
+        smma_high = calc_smma(high_tk, smma_length)
+        # smma_low = calc_smma(low_tk, smma_length)
+        avg_tk = (high_tk + low_tk + close_tk) / 3
+        zlema = calc_zlema(avg_tk, smma_length)
+        impulse_macd = zlema - smma_high
+        impulse_macd_signal = calc_smma(impulse_macd, signal_length)
+        impulse_macd_histogram = impulse_macd - impulse_macd_signal
+
+        impulse_macd_data = {
+            'MACD': impulse_macd,
+            'MACD Signal': impulse_macd_signal,
+            'MACD Signal Window': signal_length,
+            'MACD SMMA Window': smma_length,
+            'MACD Histogram': impulse_macd_histogram,
+            'price': close_tk
+        }
+
+        return impulse_macd_data
+
+
     ##### ADD MACD/MACD-V #####
 
     def add_macd(
@@ -1249,13 +1325,14 @@ class AnalyzePrices():
         tk_macd,
         macd_data,
         add_price = False, 
-        volatility_normalized = True,
+        volatility_normalized = False,
         histogram_type = 'macd-signal',
         include_signal = True,
         plot_type = 'bar',
         target_deck = 2,
         add_title = False,
         adjusted_prices = True,
+        impulse_macd = False,
         title_font_size = 32,
         theme = 'dark',
         color_theme = None,
@@ -1279,6 +1356,8 @@ class AnalyzePrices():
             None of the traces added by add_macd will be appended to the overlay list.
             To simplify, and because of the way MACD-V is defined, the only price option
             available for overlay is Close.
+        impulse_macd:
+            If True, use uid 'impulse' else 'macd'
         """
 
         fig_macd = fig_data['fig']
@@ -1313,6 +1392,7 @@ class AnalyzePrices():
         ##############
 
         price_type_prefix = 'Adjusted ' if adjusted_prices else ''
+        uid_core = 'impulse' if impulse_macd else 'macd'
 
         style = theme_style[theme]
 
@@ -1344,14 +1424,19 @@ class AnalyzePrices():
 
         ############
 
-        if volatility_normalized:
-            yaxis_title = f'MACD-V'
+        if impulse_macd:
+            yaxis_title = f'Impulse MACD'
         else:
-            yaxis_title = f'MACD'
+            if volatility_normalized:
+                yaxis_title = f'MACD-V'
+            else:
+                yaxis_title = f'MACD'
 
         macd = macd_data['MACD']
         macd_histogram = macd_data['MACD Histogram']
         df_price = macd_data['price']
+        if impulse_macd:
+            smma_window = macd_data['MACD SMMA Window']
 
         if histogram_type == 'macd-signal':
             macd_legend_positive = f'{yaxis_title} > Signal'
@@ -1363,12 +1448,16 @@ class AnalyzePrices():
         if include_signal:
             macd_signal = macd_data['MACD Signal']
             macd_signal_window = macd_data['MACD Signal Window']
-            min_macd = min(min(macd), min(macd_signal))
-            max_macd = max(max(macd), max(macd_signal))
+            if histogram_type == 'macd-signal':
+                min_macd = min(min(macd_histogram), min(macd_signal), min(macd))
+                max_macd = max(max(macd_histogram), max(macd_signal), max(macd))
+            else:
+                min_macd = min(min(macd), min(macd_signal))
+                max_macd = max(max(macd), max(macd_signal))
         else:
             if histogram_type == 'macd-signal':
-                min_macd = min(macd_histogram)
-                max_macd = max(macd_histogram)
+                min_macd = min(min(macd_histogram), min(macd))
+                max_macd = max(max(macd_histogram), max(macd))
             else:
                 min_macd = min(macd)
                 max_macd = max(macd)
@@ -1408,7 +1497,7 @@ class AnalyzePrices():
                         marker_color = green_color,
                         width = 1,
                         name = macd_legend_positive,
-                        uid = 'macd-zero-bar-positive',
+                        uid = f'{uid_core}-zero-bar-positive',
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
@@ -1424,7 +1513,7 @@ class AnalyzePrices():
                         marker_color = red_color,
                         width = 1,
                         name = macd_legend_negative,
-                        uid = 'macd-zero-bar-negative',
+                        uid = f'{uid_core}-zero-bar-negative',
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
@@ -1466,7 +1555,7 @@ class AnalyzePrices():
                         fill = 'tozeroy',
                         fillcolor = diff_green_fillcolor,
                         name = macd_legend_positive,
-                        uid = 'macd-zero-scatter-positive',
+                        uid = f'{uid_core}-zero-scatter-positive',
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
@@ -1485,7 +1574,7 @@ class AnalyzePrices():
                         fill = 'tozeroy',
                         fillcolor = diff_red_fillcolor,
                         name = macd_legend_negative,
-                        uid = 'macd-zero-scatter-negative',
+                        uid = f'{uid_core}-zero-scatter-negative',
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
@@ -1513,7 +1602,7 @@ class AnalyzePrices():
                         marker_color = green_color,
                         width = 1,
                         name = macd_legend_positive,
-                        uid = 'macd-signal-bar-positive',
+                        uid = f'{uid_core}-signal-bar-positive',
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
@@ -1529,7 +1618,7 @@ class AnalyzePrices():
                         marker_color = red_color,
                         width = 1,
                         name = macd_legend_negative,
-                        uid = 'macd-signal-bar-negative',
+                        uid = f'{uid_core}-signal-bar-negative',
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
@@ -1571,7 +1660,7 @@ class AnalyzePrices():
                         fill = 'tozeroy',
                         fillcolor = diff_green_fillcolor,
                         name = macd_legend_positive,
-                        uid = 'macd-signal-scatter-positive',
+                        uid = f'{uid_core}-signal-scatter-positive',
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
@@ -1590,7 +1679,7 @@ class AnalyzePrices():
                         fill = 'tozeroy',
                         fillcolor = diff_red_fillcolor,
                         name = macd_legend_negative,
-                        uid = 'macd-signal-scatter-negative',
+                        uid = f'{uid_core}-signal-scatter-negative',
                         legendrank = target_deck * 1000,
                         legendgroup = f'{target_deck}',
                         legendgrouptitle = legendgrouptitle,
@@ -1599,27 +1688,27 @@ class AnalyzePrices():
                     row = target_deck, col = 1,
                     secondary_y = False
                 )
+
+        if histogram_type != 'macd-zero':
+
+            fig_macd.add_trace(
+                go.Scatter(
+                    x = macd.index.astype(str),
+                    y = macd,
+                    mode = 'lines',
+                    line_color = base_color,
+                    name = yaxis_title,
+                    uid = f'{uid_core}-line-scatter',
+                    legendrank = target_deck * 1000,
+                    legendgroup = f'{target_deck}',
+                    legendgrouptitle = legendgrouptitle,
+                    showlegend = True
+                ),
+                row = target_deck, col = 1,
+                secondary_y = False
+            )
 
         if include_signal:
-
-            if histogram_type != 'macd-zero':
-
-                fig_macd.add_trace(
-                    go.Scatter(
-                        x = macd.index.astype(str),
-                        y = macd,
-                        mode = 'lines',
-                        line_color = base_color,
-                        name = yaxis_title,
-                        uid = 'macd-line-scatter',
-                        legendrank = target_deck * 1000,
-                        legendgroup = f'{target_deck}',
-                        legendgrouptitle = legendgrouptitle,
-                        showlegend = True
-                    ),
-                    row = target_deck, col = 1,
-                    secondary_y = False
-                )
 
             fig_macd.add_trace(
                 go.Scatter(
@@ -1628,7 +1717,7 @@ class AnalyzePrices():
                     mode = 'lines',
                     line_color = signal_color,
                     name = f'EMA {macd_signal_window} Signal',
-                    uid = 'macd-signal-line-scatter',
+                    uid = f'{uid_core}-signal-line-scatter',
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
@@ -1658,7 +1747,7 @@ class AnalyzePrices():
                     mode = 'lines',
                     line_color = price_color,
                     zorder = 100,
-                    uid = 'macd-price-line-scatter',
+                    uid = f'{uid_core}-price-line-scatter',
                     name = f'{price_type_prefix}Close'
                 ),
                 secondary_y = True
@@ -1666,7 +1755,7 @@ class AnalyzePrices():
 
             fig_macd.update_yaxes(
                 range = sec_y_range,
-                title = 'Close',
+                title = f'{price_type_prefix}Close',
                 showticklabels = True,
                 tick0 = sec_y_lower_limit,
                 dtick = sec_y_delta,
@@ -1689,10 +1778,13 @@ class AnalyzePrices():
 
         if add_title & (target_deck == 1):
 
-            if volatility_normalized:
-                title_macd = f'{tk_macd} Volatility-Normalized MACD(12, 26)'
+            if impulse_macd:
+                title_macd = f'{tk_macd} Impulse MACD({smma_window})'
             else:
-                title_macd = f'{tk_macd} MACD(12, 26)'
+                if volatility_normalized:
+                    title_macd = f'{tk_macd} Volatility-Normalized MACD(12, 26)'
+                else:
+                    title_macd = f'{tk_macd} MACD(12, 26)'
 
             fig_macd.update_layout(
                 title = dict(

@@ -1060,8 +1060,8 @@ layout = html.Div([
         dbc.Popover(
             [
             html.Span(
-                    """NOTE: Volume can only be plotted on the secondary y-axis or on the middle/lower deck
-                    if the primary y-axis is populated. 
+                    """NOTE: Volume can only be plotted on the Secondary Y-Axis or on the Middle/Lower Deck
+                    if the Primary Y-Axis is populated. 
                     """,
                     style = popover_menu_collapse_button_header_css
                 )
@@ -1241,7 +1241,7 @@ layout = html.Div([
 
     ##### END VOLUME CONTROLS
 
-    ##### BEGIN VOLUME CONTROLS
+    ##### BEGIN DOLLAR VOLUME CONTROLS
 
     html.Div([
 
@@ -1258,8 +1258,8 @@ layout = html.Div([
         dbc.Popover(
             [
             html.Span(
-                    """NOTE: Volume can only be plotted on the secondary y-axis or on the middle/lower deck
-                    if the primary y-axis is populated. 
+                    """NOTE: Volume can only be plotted on the Secondary Y-Axis or on the Middle/Lower deck
+                    if the Primary Y-Axis is populated. 
                     """,
                     style = popover_menu_collapse_button_header_css
                 )
@@ -2007,8 +2007,8 @@ layout = html.Div([
         dbc.Popover(
             [
             html.Span(
-                    """NOTE: Bollinger Bandwidth / %B can only be plotted on the secondary y-axis or on the middle/lower deck
-                    if the primary y-axis is populated. 
+                    """NOTE: Bollinger Bandwidth / %B can only be plotted on the Secondary Y-Axis or on the Middle/Lower deck
+                    if the Primary Y-Axis is populated. 
                     """,
                     style = popover_menu_collapse_button_header_css
                 )
@@ -2636,7 +2636,7 @@ layout = html.Div([
             [
             html.Span(
                    """NOTE: Moving Average Convergence Divergence cannot be plotted on the Upper Deck 
-                   if the primary y axis of the Upper Deck is already populated.
+                   if the primary y axis of the Upper Deck is populated.
                    """,
                     style = popover_menu_collapse_button_header_css
                 )
@@ -2700,8 +2700,8 @@ layout = html.Div([
                         dcc.Dropdown(
                             id = 'macd-vol-normalized-dropdown',
                             className = 'plots-dropdown-button',
-                            options = ['Yes', 'No'],
-                            value = 'Yes',
+                            options = ['No', 'Yes'],
+                            value = 'No',
                             clearable = False,
                             style = {'width': '114px'}
                         )],
@@ -2925,6 +2925,317 @@ layout = html.Div([
     ), 
 
     ##### END MACD CONTROLS
+
+    ##### BEGIN IMPULSE MACD CONTROLS
+
+    html.Div([
+
+        html.Div(
+            dbc.Button(
+                id = 'collapse-button-impulse-macd',
+                class_name = 'ma-1',
+                color = 'primary',
+                size = 'sm',
+                n_clicks = 0,
+                style = collapse_button_css
+            )
+        ),
+
+        dbc.Popover(
+            [
+            html.Span(
+                   """NOTE: Impulse Moving Average Convergence Divergence cannot be plotted on the Upper Deck 
+                   if the primary y axis of the Upper Deck is populated.
+                   """,
+                    style = popover_menu_collapse_button_header_css
+                )
+            ], 
+            id = 'popover-collapse-button-impulse-macd',
+            target = 'collapse-button-impulse-macd',
+            body = False,
+            trigger = 'hover',
+            hide_arrow = True,
+            style = popover_menu_collapse_button_css
+        ),
+
+        dbc.Collapse(
+
+            html.Div(
+
+                id = 'impulse-macd-controls',
+                children = [
+
+                    html.Div([
+                        html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'impulse-macd-deck-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Upper'],
+                            value = 'Upper',
+                            clearable = False,
+                            style = {'width': '98px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'impulse-macd-adjusted-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '78px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            'Is Impulse MACD based on prices adjusted for stock splits and dividends?',
+                             style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-impulse-macd-adjusted-dropdown',
+                        target = 'impulse-macd-adjusted-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
+
+                    html.Div([
+                        html.Div('SMMA Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                        dbc.Input(
+                            id = 'impulse-macd-smma-window-input',
+                            className = 'plots-input-button',
+                            type = 'number',
+                            value = 34,
+                            min = 1,
+                            max = 200,
+                            step = 1,
+                            debounce = True,
+                            disabled = False,
+                            style = {'width': '114px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            'The length of the Smoothed Moving Average (SMMA) period used in the Impulse MACD calculation..',
+                             style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-impulse-macd-smma-window-input',
+                        target = 'impulse-macd-smma-window-input',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
+
+                    html.Div([
+                        html.Div('Add Signal', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top'}),
+                        dcc.Dropdown(
+                            id = 'impulse-macd-add-signal-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '75px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Signal Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                        dbc.Input(
+                            id = 'impulse-macd-signal-window-input',
+                            className = 'plots-input-button',
+                            type = 'number',
+                            value = 9,
+                            min = 1,
+                            max = 200,
+                            step = 1,
+                            debounce = True,
+                            disabled = False,
+                            style = {'width': '102px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Signal Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'impulse-macd-signal-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = overlay_color_themes,
+                            value = 'Gold',
+                            clearable = False,
+                            disabled = False,
+                            style = {'width': '113px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Plot Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'impulse-macd-plot-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Histogram', 'Filled Line'],
+                            value = 'Histogram',
+                            clearable = False,
+                            style = {'width': '103px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            """NOTE: Histogram will plot the accurate daily data. Filled Line will plot at zero whenever MACD/MACD-V 
+                            changes sign, which is to avoid both positive and negative line fills on any given day.""",
+                            style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-impulse-macd-plot-type-dropdown',
+                        target = 'impulse-macd-plot-type-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
+
+                    html.Div([
+                        html.Div('Oscillator Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'impulse-macd-histogram-type-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['MACD-Signal', 'MACD-Zero'],
+                            value = 'MACD-Signal',
+                            clearable = False,
+                            style = {'width': '125px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        # NOTE: Must use <BR/>, not <BR>, to break the line inside the popover
+                        dcc.Markdown("""<DIV>MACD-Signal: Impulse MACD and Signal are plotted as lines and the histogram / filled line is based on their difference.<BR/>
+                            MACD-Zero: Impulse MACD is plotted as histogram / filled line and the Signal is added if selected.</DIV>""", dangerously_allow_html = True),
+                        ], 
+                        id = 'popover-impulse-macd-histogram-type-dropdown',
+                        target = 'impulse-macd-histogram-type-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        # trigger = 'click',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
+                    
+                    html.Div([
+                        html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top'}),
+                        dcc.Dropdown(
+                            id='impulse-macd-add-title-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['Yes', 'No'],
+                            value = 'Yes',
+                            clearable = False,
+                            style = {'width': '62px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id = 'impulse-macd-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = candle_colors,
+                            value = 'Green-Red',
+                            clearable = False,
+                            style = {'width': '116px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    html.Div([
+                        html.Div('Add Price', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top'}),
+                        dcc.Dropdown(
+                            id = 'impulse-macd-add-price-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = ['No', 'Yes'],
+                            value = 'No',
+                            clearable = False,
+                            style = {'width': '67px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+                    dbc.Popover([
+                        html.Span(
+                            'Price can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis can be activated from the THEME & TEMPLATE menu.',
+                             style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-impulse-macd-add-price-dropdown',
+                        target = 'impulse-macd-add-price-dropdown',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = False,
+                        style = popover_menu_button_css
+                    ),
+
+                    html.Div([
+                        html.Div('Price Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                        dcc.Dropdown(
+                            id='impulse-macd-price-color-theme-dropdown',
+                            className = 'plots-dropdown-button',
+                            options = overlay_color_themes,
+                            value = 'Magenta',
+                            clearable = False,
+                            disabled = False,
+                            style = {'width': '107px'}
+                        )],
+                        style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                    ),
+
+                    ##### Add / Remove buttons
+                    html.Div([
+                        dbc.Button(
+                            'Add To Plot',
+                            id = f'add-impulse-macd-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'success',
+                            size = 'sm',
+                            style = plots_add_button_css
+                        )],
+                        style = {'display': 'inline-block'}
+                    ),
+                    html.Div([
+                        dbc.Button(
+                            # '✕',
+                            'Remove',
+                            id = f'remove-impulse-macd-button',
+                            n_clicks = 0,
+                            class_name = 'ma-1',
+                            color = 'danger',
+                            size = 'sm',
+                            style = plots_remove_button_css
+                        )],
+                        style = {'display': 'inline-block'}
+                    )
+
+                ],
+                # style = {'margin-left': '5px'}
+            ), 
+
+            id = 'collapse-impulse-macd',
+            is_open = False,
+            style = {'width': '300px'}
+        )],
+        style = {'margin-left': '5px'}
+    ), 
+
+    ##### END IMPULSE MACD CONTROLS
 
     ##### BEGIN DIFFERENTIAL PLOT 1 CONTROLS
 
@@ -3421,7 +3732,7 @@ layout = html.Div([
             [
             html.Span(
                    """NOTE: Stochastic Differential cannot be plotted on the Upper Deck 
-                   if the primary y axis of the Upper Deck is populated.
+                   if the Primary Y-Axis of the Upper Deck is populated.
                    """,
                     style = popover_menu_collapse_button_header_css
                 )
@@ -3796,8 +4107,8 @@ layout = html.Div([
         dbc.Popover(
             [
             html.Span(
-                    """NOTE: Average True Rate can only be plotted on the secondary y-axis or on the middle/lower deck
-                    if the primary y-axis is populated. 
+                    """NOTE: Average True Rate can only be plotted on the Secondary Y-Axis or on the Middle/Lower deck
+                    if the Primary Y-Axis is populated. 
                     """,
                     style = popover_menu_collapse_button_header_css
                 )
@@ -4000,8 +4311,8 @@ layout = html.Div([
         dbc.Popover(
             [
             html.Span(
-                    """NOTE: Moving Volatility / Standard Deviation can only be plotted on the secondary y-axis or on the middle/lower deck
-                    if the primary y-axis is populated. 
+                    """NOTE: Moving Volatility / Standard Deviation can only be plotted on the Secondary Y-Axis or on the Middle/Lower Deck
+                    if the Primary Y-Axis is populated. 
                     """,
                     style = popover_menu_collapse_button_header_css
                 )
@@ -4226,7 +4537,7 @@ layout = html.Div([
             [
             html.Span(
                    """NOTE: Relative Strength Index cannot be plotted on the Upper Deck 
-                   if the primary y axis of the Upper Deck is already populated.
+                   if the Primary Y-Axis of the Upper Deck is populated.
                    """,
                     style = popover_menu_collapse_button_header_css
                 )
@@ -4472,7 +4783,7 @@ layout = html.Div([
             [
             html.Span(
                    """NOTE: Stochastic Oscillator cannot be plotted on the Upper Deck 
-                   if the primary y axis of the Upper Deck is already populated.
+                   if the Primary Y-Axis of the Upper Deck is populated.
                    """,
                     style = popover_menu_collapse_button_header_css
                 )
@@ -4983,6 +5294,7 @@ def toggle_collapse_template(n, is_open):
     Output('ma-ribbon-deck-dropdown', 'options'),
     Output('price-overlays-deck-dropdown', 'options'),
     Output('macd-deck-dropdown', 'options'),
+    Output('impulse-macd-deck-dropdown', 'options'),
     Output('atr-deck-dropdown', 'options'),
     Output('mvol-deck-dropdown', 'options'),
     Output('rsi-deck-dropdown', 'options'),
@@ -4999,6 +5311,7 @@ def toggle_collapse_template(n, is_open):
     Output('ma-ribbon-deck-dropdown', 'value'),
     Output('price-overlays-deck-dropdown', 'value'),
     Output('macd-deck-dropdown', 'value'),
+    Output('impulse-macd-deck-dropdown', 'value'),
     Output('atr-deck-dropdown', 'value'),
     Output('mvol-deck-dropdown', 'value'),
     Output('rsi-deck-dropdown', 'value'),
@@ -5018,6 +5331,7 @@ def toggle_collapse_template(n, is_open):
     Input('ma-ribbon-deck-dropdown', 'value'),
     Input('price-overlays-deck-dropdown', 'value'),
     Input('macd-deck-dropdown', 'value'),
+    Input('impulse-macd-deck-dropdown', 'value'),
     Input('atr-deck-dropdown', 'value'),
     Input('mvol-deck-dropdown', 'value'),
     Input('rsi-deck-dropdown', 'value'),
@@ -5037,6 +5351,7 @@ def target_deck_options(
     ma_ribbon_deck,
     price_overlays_deck,
     macd_deck,
+    impulse_macd_deck,    
     atr_deck,
     mvol_deck,
     rsi_deck,
@@ -5063,6 +5378,7 @@ def target_deck_options(
         ma_ribbon_deck_value =          ['Lower'] if (ma_ribbon_deck in ['Middle', 'Lower']) else ['Upper']
         price_overlays_deck_value =     ['Lower'] if (price_overlays_deck in ['Middle', 'Lower']) else ['Upper']
         macd_deck_value =               ['Lower'] if (macd_deck in ['Middle', 'Lower']) else ['Upper']
+        impulse_macd_deck_value =       ['Lower'] if (impulse_macd_deck in ['Middle', 'Lower']) else ['Upper']        
         atr_deck_value =                ['Lower'] if (atr_deck in ['Middle', 'Lower']) else ['Upper']
         mvol_deck_value =               ['Lower'] if (mvol_deck in ['Middle', 'Lower']) else ['Upper']
         rsi_deck_value =                ['Lower'] if (rsi_deck in ['Middle', 'Lower']) else ['Upper']
@@ -5079,6 +5395,7 @@ def target_deck_options(
             ma_ribbon_deck_value + \
             price_overlays_deck_value + \
             macd_deck_value + \
+            impulse_macd_deck_value + \
             atr_deck_value + \
             mvol_deck_value + \
             rsi_deck_value + \
@@ -5098,6 +5415,7 @@ def target_deck_options(
         ma_ribbon_deck_value =          ['Middle'] if (ma_ribbon_deck == 'Lower') & deck_changed else [ma_ribbon_deck]
         price_overlays_deck_value =     ['Middle'] if (price_overlays_deck == 'Lower') & deck_changed else [price_overlays_deck]
         macd_deck_value =               ['Middle'] if (macd_deck == 'Lower') & deck_changed else [macd_deck]
+        impulse_macd_deck_value =       ['Middle'] if (impulse_macd_deck == 'Lower') & deck_changed else [impulse_macd_deck]        
         atr_deck_value =                ['Middle'] if (atr_deck == 'Lower') & deck_changed else [atr_deck]
         mvol_deck_value =               ['Middle'] if (mvol_deck == 'Lower') & deck_changed else [mvol_deck]
         rsi_deck_value =                ['Middle'] if (rsi_deck == 'Lower') & deck_changed else [rsi_deck]
@@ -5114,6 +5432,7 @@ def target_deck_options(
             ma_ribbon_deck_value + \
             price_overlays_deck_value + \
             macd_deck_value + \
+            impulse_macd_deck_value + \
             atr_deck_value + \
             mvol_deck_value + \
             rsi_deck_value + \
@@ -5294,6 +5613,22 @@ def toggle_collapse_macd(n, is_open):
 
 
 @callback(
+    Output('collapse-button-impulse-macd', 'children'),
+    Output('collapse-impulse-macd', 'is_open'),
+    Input('collapse-button-impulse-macd', 'n_clicks'),
+    State('collapse-impulse-macd', 'is_open')
+)
+def toggle_collapse_impulse_macd(n, is_open):
+    # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
+    title = 'IMPULSE MACD'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
     Output('collapse-button-diff-1', 'children'),
     Output('collapse-diff-1', 'is_open'),
     Input('collapse-button-diff-1', 'n_clicks'),
@@ -5421,6 +5756,7 @@ def toggle_collapse_stochastic(n, is_open):
     Output('add-ma-env-button', 'n_clicks'),
     Output('add-ma-ribbon-button', 'n_clicks'),
     Output('add-macd-button', 'n_clicks'),
+    Output('add-impulse-macd-button', 'n_clicks'),    
     Output('add-atr-button', 'n_clicks'),
     Output('add-mvol-button', 'n_clicks'),
     Output('add-rsi-button', 'n_clicks'),
@@ -5440,6 +5776,7 @@ def toggle_collapse_stochastic(n, is_open):
     Output('remove-ma-env-button', 'n_clicks'),
     Output('remove-ma-ribbon-button', 'n_clicks'),
     Output('remove-macd-button', 'n_clicks'),
+    Output('remove-impulse-macd-button', 'n_clicks'),    
     Output('remove-atr-button', 'n_clicks'),
     Output('remove-mvol-button', 'n_clicks'),
     Output('remove-rsi-button', 'n_clicks'),
@@ -5449,6 +5786,8 @@ def toggle_collapse_stochastic(n, is_open):
 
     Output('macd-signal-window-input', 'disabled'),
     Output('macd-signal-color-theme-dropdown', 'disabled'),
+    Output('impulse-macd-signal-window-input', 'disabled'),
+    Output('impulse-macd-signal-color-theme-dropdown', 'disabled'),
     Output('rsi-overbought-level-input', 'disabled'),
     Output('rsi-oversold-level-input', 'disabled'),
     Output('stochastic-overbought-level-input', 'disabled'),
@@ -5491,6 +5830,8 @@ def toggle_collapse_stochastic(n, is_open):
     Output('mvol-secondary-y-dropdown', 'disabled'),
     Output('macd-add-price-dropdown', 'disabled'),
     Output('macd-price-color-theme-dropdown', 'disabled'),
+    Output('impulse-macd-add-price-dropdown', 'disabled'),
+    Output('impulse-macd-price-color-theme-dropdown', 'disabled'),
     Output('rsi-add-price-dropdown', 'disabled'),
     Output('rsi-price-color-theme-dropdown', 'disabled'),
     Output('stochastic-add-price-dropdown', 'disabled'),
@@ -5654,7 +5995,23 @@ def toggle_collapse_stochastic(n, is_open):
     Input('macd-price-color-theme-dropdown', 'value'),
     Input('add-macd-button', 'n_clicks'),
     Input('remove-macd-button', 'n_clicks'),
-   
+
+    # Impulse MACD inputs
+    Input('impulse-macd-deck-dropdown', 'value'),
+    Input('impulse-macd-adjusted-dropdown', 'value'),
+    Input('impulse-macd-add-price-dropdown', 'value'),
+    Input('impulse-macd-smma-window-input', 'value'),    
+    Input('impulse-macd-add-signal-dropdown', 'value'),
+    Input('impulse-macd-signal-window-input', 'value'),
+    Input('impulse-macd-plot-type-dropdown', 'value'),
+    Input('impulse-macd-histogram-type-dropdown', 'value'),
+    Input('impulse-macd-add-title-dropdown', 'value'),    
+    Input('impulse-macd-color-theme-dropdown', 'value'),
+    Input('impulse-macd-signal-color-theme-dropdown', 'value'),
+    Input('impulse-macd-price-color-theme-dropdown', 'value'),
+    Input('add-impulse-macd-button', 'n_clicks'),
+    Input('remove-impulse-macd-button', 'n_clicks'),
+
     # Differential 1 inputs
     Input('diff-1-deck-dropdown', 'value'),
     Input('diff-1-plot-type-dropdown', 'value'),
@@ -5899,6 +6256,21 @@ def update_plot(
         add_macd,
         remove_macd,
 
+        impulse_macd_deck,
+        impulse_macd_adjusted,
+        impulse_macd_add_price,
+        impulse_macd_smma_window,
+        impulse_macd_add_signal,
+        impulse_macd_signal_window,
+        impulse_macd_plot_type,
+        impulse_macd_histogram_type,
+        impulse_macd_add_title,
+        impulse_macd_color_theme,
+        impulse_macd_signal_color,
+        impulse_macd_price_color,
+        add_impulse_macd,
+        remove_impulse_macd,
+
         diff_1_deck,
         diff_1_plot_type,
         diff_1_add_title,
@@ -6026,6 +6398,8 @@ def update_plot(
 
     macd_signal_window_disabled = not boolean(macd_add_signal)
     macd_signal_color_disabled = not boolean(macd_add_signal)
+    impulse_macd_signal_window_disabled = not boolean(impulse_macd_add_signal)
+    impulse_macd_signal_color_disabled = not boolean(impulse_macd_add_signal)
     rsi_overbought_level_disabled = not boolean(rsi_add_overbought_oversold)
     rsi_oversold_level_disabled = not boolean(rsi_add_overbought_oversold)
     stochastic_overbought_level_disabled = not boolean(stochastic_add_overbought_oversold)
@@ -6058,6 +6432,13 @@ def update_plot(
         macd_price_color_disabled = True
     else:
         macd_add_price_disabled = False
+
+    impulse_macd_price_color_disabled = False if boolean(impulse_macd_add_price) & secondary_y else True
+    if (impulse_macd_deck != 'Upper') | (not secondary_y):
+        impulse_macd_add_price_disabled = True
+        impulse_macd_price_color_disabled = True
+    else:
+        impulse_macd_add_price_disabled = False
 
     diff_1_price_color_disabled = False if boolean(diff_1_add_price) & secondary_y else True
     if (diff_1_deck != 'Upper') | (not secondary_y):
@@ -6478,6 +6859,46 @@ def update_plot(
                 price_color_theme = macd_price_color
             )
 
+        ### Add Impulse MACD
+        if remove_impulse_macd & (fig_data is not None):
+            add_impulse_macd = 0
+            for i, tr in enumerate(fig_data['fig']['data']):
+                if tr['legendgroup'] != 'dummy':                
+                    if 'impulse' in tr['uid']:
+                        fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
+
+        if add_impulse_macd:
+            df_macd_prices = downloaded_data[tk]['ohlc_adj'] if boolean(impulse_macd_adjusted) else downloaded_data[tk]['ohlc']
+            close_tk = df_macd_prices['Close'][min_date: max_date]
+            high_tk = df_macd_prices['High'][min_date: max_date]
+            low_tk = df_macd_prices['Low'][min_date: max_date]
+            impulse_macd_data = analyze_prices.get_impulse_macd(
+                close_tk,
+                high_tk,
+                low_tk,
+                smma_length = impulse_macd_smma_window,
+                signal_length = impulse_macd_signal_window
+            )
+            #
+            fig_data = analyze_prices.add_macd(
+                fig_data,
+                tk,
+                impulse_macd_data,
+                add_price = boolean(impulse_macd_add_price),
+                volatility_normalized = False,
+                histogram_type = impulse_macd_histogram_type.lower(),
+                include_signal = boolean(impulse_macd_add_signal),
+                plot_type = 'bar' if impulse_macd_plot_type == 'Histogram' else 'scatter',
+                target_deck = deck_number(deck_type, impulse_macd_deck),
+                add_title = boolean(impulse_macd_add_title),
+                adjusted_prices = boolean(impulse_macd_adjusted),
+                impulse_macd = True,
+                theme = theme,
+                color_theme = impulse_macd_color_theme,
+                signal_color_theme = impulse_macd_signal_color,
+                price_color_theme = impulse_macd_price_color
+            )
+
         ### Add Differential 1
         if remove_diff_1 & (fig_data is not None):
             add_diff_1 = 0
@@ -6724,12 +7145,11 @@ def update_plot(
             'boll_width': [4],                  # boll_width_sec_y_disabled
             'mvol': [5],                        # mvol_sec_y_disabled
             'macd': [6, 7],                     # [macd_add_price_disabled, macd_price_color_disabled]
-            'rsi': [8, 9],                      # [rsi_add_price_disabled, rsi_price_color_disabled]
-            'stochastic': [10, 11],              # [stochastic_add_price_disabled, stochastic_price_color_disabled]
-            'diff_1': [12, 13],                 # [diff_1_add_price_disabled, diff_1_price_color_disabled]
-            'diff_stochastic': [14, 15, 16]     # [diff_stochastic_add_line_disabled, diff_stochastic_added_line_color_disabled, diff_stochastic_added_line_type_disabled]
-            # 'diff': [diff_add_price_disabled, diff_price_color_disabled],
-            # 'diff_stochastic': [diff_stochastic_add_price_disabled, diff_stochastic_price_color_disabled],
+            'impulse_macd': [8, 9],             # [impulse_macd_add_price_disabled, impulse_macd_price_color_disabled]            
+            'rsi': [10, 11],                    # [rsi_add_price_disabled, rsi_price_color_disabled]
+            'stochastic': [12, 13],             # [stochastic_add_price_disabled, stochastic_price_color_disabled]
+            'diff_1': [14, 15],                 # [diff_1_add_price_disabled, diff_1_price_color_disabled]
+            'diff_stochastic': [16, 17, 18]     # [diff_stochastic_add_line_disabled, diff_stochastic_added_line_color_disabled, diff_stochastic_added_line_type_disabled]
         }
 
         # Must assign values to sec_y_disabled_outputs if there are no traces on secondary y
@@ -6742,6 +7162,8 @@ def update_plot(
             mvol_sec_y_disabled,
             macd_add_price_disabled,
             macd_price_color_disabled,
+            impulse_macd_add_price_disabled,
+            impulse_macd_price_color_disabled,
             rsi_add_price_disabled,
             rsi_price_color_disabled,
             stochastic_add_price_disabled,
@@ -6754,7 +7176,6 @@ def update_plot(
             # ...
         )
 
-        # n_sec_y_disabled_outputs = 15
         n_sec_y_disabled_outputs = len([idx for v in map_sec_y_id_to_idx.values() for idx in v])
 
         if len(fig_data['sec_y_source']) > 0:
@@ -6831,16 +7252,19 @@ def update_plot(
         add_ma_env,
         add_ma_ribbon,
         add_macd,
+        add_impulse_macd,
         add_atr,
         add_mvol,
         add_rsi,
         add_stochastic,
         add_diff_1,
         add_diff_stochastic,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
 
         macd_signal_window_disabled,
         macd_signal_color_disabled,
+        impulse_macd_signal_window_disabled,
+        impulse_macd_signal_color_disabled,
         rsi_overbought_level_disabled,
         rsi_oversold_level_disabled,
         stochastic_overbought_level_disabled,
