@@ -125,13 +125,15 @@ class DownloadData():
             df_ohlc = data[ohlc_cols]  # a dataframe, but e.g. df_ohlc['Close'] is a series
             df_ohlc_adj = data_adj[ohlc_cols]  # a dataframe
             df_volume = data['Volume']  # a series, not dataframe
-            df_dollar_volume = df_volume * df_ohlc_adj['Close']  # a series, not dataframe
+            df_dollar_volume = df_volume * df_ohlc['Close']  # a series, not dataframe
+            df_dollar_volume_adj = df_volume * df_ohlc_adj['Close']  # a series, not dataframe
 
             downloaded_data[tk] = {
                 'ohlc': df_ohlc,
                 'ohlc_adj': df_ohlc_adj,
                 'volume': df_volume,
-                'dollar_volume': df_dollar_volume
+                'dollar_volume': df_dollar_volume,
+                'dollar_volume_adj': df_dollar_volume_adj
             }
 
         session.cache.clear()

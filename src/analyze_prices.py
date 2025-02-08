@@ -3090,6 +3090,7 @@ class AnalyzePrices():
                 line = dict(color = overlay_colors[color_idx]),
                 name = name,
                 uid = uid,
+                zorder = 10,
                 showlegend = showlegend,
                 legendrank = target_deck * 1000,
                 legendgroup = f'{target_deck}',
@@ -3963,7 +3964,7 @@ class AnalyzePrices():
         if 'volume' in price_type.lower():
             zorder = -1
         else:
-            zorder = 10
+            zorder = 5
 
         uid_prefix = 'dollar-' if 'dollar' in price_type.lower() else ''
 

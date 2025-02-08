@@ -235,12 +235,27 @@ collapse_button_table_css = {
 }
 collapse_button_css = {
     'display': 'inline-block',
-    'margin-right': '5px',
+    # 'margin-right': '5px',
     # 'margin-left': '5px',
     'text-align': 'left',
     'font-family': 'Helvetica',
     'font-weight': 'bold',
     'width': '300px'
+}
+collapse_button_css = {
+    'display': 'inline-block',
+    'text-align': 'left',
+    'font-family': 'Helvetica',
+    'font-weight': 'bold',
+    'width': '300px'
+}
+collapse_button_right_margin_css = {
+    'display': 'inline-block',
+    'text-align': 'left',
+    'font-family': 'Helvetica',
+    'font-weight': 'bold',
+    'width': '300px',
+    'margin-right': '5px'
 }
 collapse_button_menu_css = {
     'display': 'inline-block',
@@ -581,7 +596,7 @@ link_container_css = {
 # Plots
 plots_add_button_css = {
     'display': 'inline-block',
-    'width': '220px',
+    'width': '215px',
     'height': '32px',
     'margin': '3px 5px 7px 0px',
     'padding-left': '0px',
@@ -599,7 +614,7 @@ plots_add_button_css = {
 }
 plots_remove_button_css = {
     'display': 'inline-block',
-    'width': '75px',
+    'width': '80px',
     'height': '32px',
     'margin': '3px 0px 7px 0px',
     'padding-left': '0px',
@@ -625,7 +640,6 @@ reset_axes_button_css = {
     'margin-bottom': '0px',
     'padding-left': '6px',
     'padding-right': '7px',
-    'margin-top': 'auto',
     'text-align': 'center',
     'font-family': 'Helvetica',
     'font-weight': 'bold',
@@ -633,4 +647,18 @@ reset_axes_button_css = {
     'vertical-align': 'middle',
     # 'float': 'top'
     'float': 'right'
+}
+added_to_plot_indicator_css = {
+    'display': 'inline-block',
+    'width': '5px',
+    'height': '30px',
+    'vertical-align': 'bottom',
+    'background-color': 'rgb(5, 65, 100)'
+}
+not_added_to_plot_indicator_css = {
+    'display': 'inline-block',
+    'width': '5px',
+    'height': '30px',
+    'vertical-align': 'bottom',
+    'background-color': 'white'
 }

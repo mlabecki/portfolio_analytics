@@ -707,7 +707,7 @@ layout = html.Div([
 
     html.Div([
 
-        html.Div(
+        html.Div([
             dbc.Button(
                 id = 'collapse-button-hist-price',
                 class_name = 'ma-1',
@@ -715,8 +715,12 @@ layout = html.Div([
                 size = 'sm',
                 n_clicks = 0,
                 style = collapse_button_css
+            ),
+            html.Div(
+                id = 'added-to-plot-indicator-hist-price',
+                style = not_added_to_plot_indicator_css
             )
-        ),
+        ]),
 
         dbc.Collapse(
 
@@ -907,7 +911,7 @@ layout = html.Div([
 
     html.Div([
 
-        html.Div(
+        html.Div([
             dbc.Button(
                 id = 'collapse-button-candlestick',
                 class_name = 'ma-1',
@@ -915,8 +919,12 @@ layout = html.Div([
                 size = 'sm',
                 n_clicks = 0,
                 style = collapse_button_css
+            ),
+            html.Div(
+                id = 'added-to-plot-indicator-candlestick',
+                style = not_added_to_plot_indicator_css
             )
-        ),
+        ]),
 
         dbc.Collapse(
 
@@ -1047,7 +1055,7 @@ layout = html.Div([
 
     html.Div([
 
-        html.Div(
+        html.Div([
             dbc.Button(
                 id = 'collapse-button-volume',
                 class_name = 'ma-1',
@@ -1055,8 +1063,12 @@ layout = html.Div([
                 size = 'sm',
                 n_clicks = 0,
                 style = collapse_button_css
+            ),
+            html.Div(
+                id = 'added-to-plot-indicator-volume',
+                style = not_added_to_plot_indicator_css
             )
-        ),
+        ]),
         dbc.Popover(
             [
             html.Span(
@@ -1093,34 +1105,6 @@ layout = html.Div([
                         )],
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
-
-                    # Keep for Dollar Volume
-                    #
-                    # html.Div([
-                    #     html.Div('Price Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
-                    #     dcc.Dropdown(
-                    #         id='dollar-volume-type-dropdown',
-                    #         className = 'plots-dropdown-button',
-                    #         options = ['Close', 'High', 'Low', 'Open'],
-                    #         value = 'Close',
-                    #         clearable = False,
-                    #         style = {'width': '100px'}
-                    #     )],
-                    #     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                    # ),
-# 
-                    # html.Div([
-                    #     html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
-                    #     dcc.Dropdown(
-                    #         id='dollar-volume-adjusted-dropdown',
-                    #         className = 'plots-dropdown-button',
-                    #         options = ['Yes', 'No'],
-                    #         value = 'Yes',
-                    #         clearable = False,
-                    #         style = {'width': '75px'}
-                    #     )],
-                    #     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                    # ),
 
                     html.Div([
                         html.Div('Plot Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
@@ -1245,7 +1229,7 @@ layout = html.Div([
 
     html.Div([
 
-        html.Div(
+        html.Div([
             dbc.Button(
                 id = 'collapse-button-dollar-volume',
                 class_name = 'ma-1',
@@ -1253,8 +1237,12 @@ layout = html.Div([
                 size = 'sm',
                 n_clicks = 0,
                 style = collapse_button_css
+            ),
+            html.Div(
+                id = 'added-to-plot-indicator-dollar-volume',
+                style = not_added_to_plot_indicator_css
             )
-        ),
+        ]),
         dbc.Popover(
             [
             html.Span(
@@ -1292,18 +1280,6 @@ layout = html.Div([
                         style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                     ),
 
-                    html.Div([
-                        html.Div('Price Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
-                        dcc.Dropdown(
-                            id='dollar-volume-type-dropdown',
-                            className = 'plots-dropdown-button',
-                            options = ['Close', 'High', 'Low', 'Open'],
-                            value = 'Close',
-                            clearable = False,
-                            style = {'width': '100px'}
-                        )],
-                        style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                    ),
                     html.Div([
                         html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
                         dcc.Dropdown(
@@ -1438,7 +1414,7 @@ layout = html.Div([
 
     html.Div([
 
-        html.Div(
+        html.Div([
             dbc.Button(
                 id = 'collapse-button-drawdowns',
                 class_name = 'ma-1',
@@ -1446,8 +1422,12 @@ layout = html.Div([
                 size = 'sm',
                 n_clicks = 0,
                 style = collapse_button_css
+            ),
+            html.Div(
+                id = 'added-to-plot-indicator-drawdowns',
+                style = not_added_to_plot_indicator_css
             )
-        ),
+        ]),
 
         dbc.Collapse(
 
@@ -1633,7 +1613,7 @@ layout = html.Div([
 
     html.Div([
 
-        html.Div(
+        html.Div([
             dbc.Button(
                 id = 'collapse-button-price-overlays',
                 class_name = 'ma-1',
@@ -1641,8 +1621,12 @@ layout = html.Div([
                 size = 'sm',
                 n_clicks = 0,
                 style = collapse_button_css
+            ),
+            html.Div(
+                id = 'added-to-plot-indicator-price-overlays',
+                style = not_added_to_plot_indicator_css
             )
-        ),
+        ]),
 
         dbc.Collapse(
 
@@ -1806,7 +1790,7 @@ layout = html.Div([
 
     html.Div([
 
-        html.Div(
+        html.Div([
             dbc.Button(
                 id = 'collapse-button-bollinger',
                 class_name = 'ma-1',
@@ -1814,8 +1798,12 @@ layout = html.Div([
                 size = 'sm',
                 n_clicks = 0,
                 style = collapse_button_css
+            ),
+            html.Div(
+                id = 'added-to-plot-indicator-bollinger',
+                style = not_added_to_plot_indicator_css
             )
-        ),
+        ]),
 
         dbc.Collapse(
 
@@ -1994,7 +1982,7 @@ layout = html.Div([
 
     html.Div([
 
-        html.Div(
+        html.Div([
             dbc.Button(
                 id = 'collapse-button-boll-width',
                 class_name = 'ma-1',
@@ -2002,8 +1990,12 @@ layout = html.Div([
                 size = 'sm',
                 n_clicks = 0,
                 style = collapse_button_css
+            ),
+            html.Div(
+                id = 'added-to-plot-indicator-boll-width',
+                style = not_added_to_plot_indicator_css
             )
-        ),
+        ]),
         dbc.Popover(
             [
             html.Span(
@@ -2248,7 +2240,7 @@ layout = html.Div([
 
     html.Div([
 
-        html.Div(
+        html.Div([
             dbc.Button(
                 id = 'collapse-button-ma-env',
                 class_name = 'ma-1',
@@ -2256,8 +2248,12 @@ layout = html.Div([
                 size = 'sm',
                 n_clicks = 0,
                 style = collapse_button_css
+            ),
+            html.Div(
+                id = 'added-to-plot-indicator-ma-env',
+                style = not_added_to_plot_indicator_css
             )
-        ),
+        ]),
 
         dbc.Collapse(
 
@@ -2436,7 +2432,7 @@ layout = html.Div([
 
     html.Div([
 
-        html.Div(
+        html.Div([
             dbc.Button(
                 id = 'collapse-button-ma-ribbon',
                 class_name = 'ma-1',
@@ -2444,8 +2440,12 @@ layout = html.Div([
                 size = 'sm',
                 n_clicks = 0,
                 style = collapse_button_css
+            ),
+            html.Div(
+                id = 'added-to-plot-indicator-ma-ribbon',
+                style = not_added_to_plot_indicator_css
             )
-        ),
+        ]),
 
         dbc.Collapse(
 
@@ -2621,7 +2621,7 @@ layout = html.Div([
 
     html.Div([
 
-        html.Div(
+        html.Div([
             dbc.Button(
                 id = 'collapse-button-macd',
                 class_name = 'ma-1',
@@ -2629,14 +2629,17 @@ layout = html.Div([
                 size = 'sm',
                 n_clicks = 0,
                 style = collapse_button_css
+            ),
+            html.Div(
+                id = 'added-to-plot-indicator-macd',
+                style = not_added_to_plot_indicator_css
             )
-        ),
-
+        ]),
         dbc.Popover(
             [
             html.Span(
                    """NOTE: Moving Average Convergence Divergence cannot be plotted on the Upper Deck 
-                   if the primary y axis of the Upper Deck is populated.
+                   if the Primary Y-Axis of the Upper Deck is populated.
                    """,
                     style = popover_menu_collapse_button_header_css
                 )
@@ -2930,7 +2933,7 @@ layout = html.Div([
 
     html.Div([
 
-        html.Div(
+        html.Div([
             dbc.Button(
                 id = 'collapse-button-impulse-macd',
                 class_name = 'ma-1',
@@ -2938,14 +2941,17 @@ layout = html.Div([
                 size = 'sm',
                 n_clicks = 0,
                 style = collapse_button_css
+            ),
+            html.Div(
+                id = 'added-to-plot-indicator-impulse-macd',
+                style = not_added_to_plot_indicator_css
             )
-        ),
-
+        ]),
         dbc.Popover(
             [
             html.Span(
                    """NOTE: Impulse Moving Average Convergence Divergence cannot be plotted on the Upper Deck 
-                   if the primary y axis of the Upper Deck is populated.
+                   if the Primary Y-Axis of the Upper Deck is populated.
                    """,
                     style = popover_menu_collapse_button_header_css
                 )
@@ -3241,7 +3247,7 @@ layout = html.Div([
 
     html.Div([
 
-        html.Div(
+        html.Div([
             dbc.Button(
                 id = 'collapse-button-diff-1',
                 class_name = 'ma-1',
@@ -3249,13 +3255,17 @@ layout = html.Div([
                 size = 'sm',
                 n_clicks = 0,
                 style = collapse_button_css
+            ),
+            html.Div(
+                id = 'added-to-plot-indicator-diff-1',
+                style = not_added_to_plot_indicator_css
             )
-        ),
+        ]),
         dbc.Popover(
             [
             html.Span(
                    """NOTE: Differential plot cannot be placed on the Upper Deck 
-                   if the primary y-axis of the Upper Deck is populated.
+                   if the Primary Y-Axis of the Upper Deck is populated.
                    """,
                     style = popover_menu_collapse_button_header_css
                 )
@@ -3557,6 +3567,7 @@ layout = html.Div([
                         hide_arrow = False,
                         style = popover_menu_button_css
                     ),
+
                     html.Div([
                         html.Div('Line Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
                         dcc.Dropdown(
@@ -3642,38 +3653,6 @@ layout = html.Div([
                         ]
                     ),
 
-                    # # Signal Line, checkbox
-                    # dbc.Checklist(
-                    #     id = 'diff-1-add-signal-checkbox',
-                    #     options = [{'label': 'Add Signal Line', 'value': 'Signal'}],
-                    #     value = [],
-                    #     style = {'margin-left': '5px'},
-                    #     label_style = {
-                    #         'width': '250px',
-                    #         'font-family': 'Helvetica',
-                    #         'font-size': '14px',
-                    #         'font-weight': 'bold',
-                    #         'color': 'black',
-                    #         'text-decoration': 'underline',
-                    #         'margin-right': '0px',
-                    #         'margin-bottom': '0px'
-                    #     },
-                    #     label_checked_style = {
-                    #         'width': '250px',
-                    #         'font-family': 'Helvetica',
-                    #         'text-decoration': 'underline',
-                    #         'font-size': '14px',
-                    #         'font-weight': 'bold',
-                    #         # 'color': 'rgb(0, 126, 255)'
-                    #     },
-                    #     # input_style = {'width': '24px'},
-                    #     input_checked_style = {
-                    #         'background-color': 'rgb(0, 126, 255)',
-                    #         'border-color': 'rgb(0, 126, 255)'
-                    #     },
-                    #     inline = True,
-                    # ),
-
                     ##### Add / Remove buttons
                     html.Div([
                         dbc.Button(
@@ -3718,7 +3697,7 @@ layout = html.Div([
 
     html.Div([
 
-        html.Div(
+        html.Div([
             dbc.Button(
                 id = 'collapse-button-diff-stochastic',
                 class_name = 'ma-1',
@@ -3726,8 +3705,12 @@ layout = html.Div([
                 size = 'sm',
                 n_clicks = 0,
                 style = collapse_button_css
+            ),
+            html.Div(
+                id = 'added-to-plot-indicator-diff-stochastic',
+                style = not_added_to_plot_indicator_css
             )
-        ),
+        ]),
         dbc.Popover(
             [
             html.Span(
@@ -4094,7 +4077,7 @@ layout = html.Div([
 
     html.Div([
 
-        html.Div(
+        html.Div([
             dbc.Button(
                 id = 'collapse-button-atr',
                 class_name = 'ma-1',
@@ -4102,8 +4085,12 @@ layout = html.Div([
                 size = 'sm',
                 n_clicks = 0,
                 style = collapse_button_css
+            ),
+            html.Div(
+                id = 'added-to-plot-indicator-atr',
+                style = not_added_to_plot_indicator_css
             )
-        ),
+        ]),
         dbc.Popover(
             [
             html.Span(
@@ -4298,7 +4285,7 @@ layout = html.Div([
 
     html.Div([
 
-        html.Div(
+        html.Div([
             dbc.Button(
                 id = 'collapse-button-mvol',
                 class_name = 'ma-1',
@@ -4306,8 +4293,12 @@ layout = html.Div([
                 size = 'sm',
                 n_clicks = 0,
                 style = collapse_button_css
+            ),
+            html.Div(
+                id = 'added-to-plot-indicator-mvol',
+                style = not_added_to_plot_indicator_css
             )
-        ),
+        ]),
         dbc.Popover(
             [
             html.Span(
@@ -4523,7 +4514,7 @@ layout = html.Div([
 
     html.Div([
 
-        html.Div(
+        html.Div([
             dbc.Button(
                 id = 'collapse-button-rsi',
                 class_name = 'ma-1',
@@ -4531,8 +4522,12 @@ layout = html.Div([
                 size = 'sm',
                 n_clicks = 0,
                 style = collapse_button_css
+            ),
+            html.Div(
+                id = 'added-to-plot-indicator-rsi',
+                style = not_added_to_plot_indicator_css
             )
-        ),
+        ]),
         dbc.Popover(
             [
             html.Span(
@@ -4769,7 +4764,7 @@ layout = html.Div([
 
     html.Div([
 
-        html.Div(
+        html.Div([
             dbc.Button(
                 id = 'collapse-button-stochastic',
                 class_name = 'ma-1',
@@ -4777,8 +4772,12 @@ layout = html.Div([
                 size = 'sm',
                 n_clicks = 0,
                 style = collapse_button_css
+            ),
+            html.Div(
+                id = 'added-to-plot-indicator-stochastic',
+                style = not_added_to_plot_indicator_css
             )
-        ),
+        ]),
         dbc.Popover(
             [
             html.Span(
@@ -5108,7 +5107,7 @@ layout = html.Div([
                     color = 'primary',
                     size = 'sm',
                     n_clicks = 0,
-                    style = collapse_button_css
+                    style = collapse_button_right_margin_css
                 ),
                 html.Div(
                     build_dash_html.display_color_themes(),
@@ -5211,7 +5210,6 @@ layout = html.Div([
     State('collapse-sidebar-menu', 'is_open')
 )
 def toggle_collapse_drawdowns(n, is_open):
-    # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
     title = ''  # 'MENU'
     label = f'▼ {title}' if is_open else f'► {title}'
     if n:
@@ -5784,6 +5782,26 @@ def toggle_collapse_stochastic(n, is_open):
     Output('remove-diff-1-button', 'n_clicks'),
     Output('remove-diff-stochastic-button', 'n_clicks'),
 
+    # Added To plot Indicators
+    Output('added-to-plot-indicator-hist-price', 'style'),
+    Output('added-to-plot-indicator-candlestick', 'style'),
+    Output('added-to-plot-indicator-volume', 'style'),
+    Output('added-to-plot-indicator-dollar-volume', 'style'),
+    Output('added-to-plot-indicator-drawdowns', 'style'),
+    Output('added-to-plot-indicator-price-overlays', 'style'),
+    Output('added-to-plot-indicator-bollinger', 'style'),
+    Output('added-to-plot-indicator-boll-width', 'style'),
+    Output('added-to-plot-indicator-ma-env', 'style'),
+    Output('added-to-plot-indicator-ma-ribbon', 'style'),
+    Output('added-to-plot-indicator-macd', 'style'),
+    Output('added-to-plot-indicator-impulse-macd', 'style'),
+    Output('added-to-plot-indicator-atr', 'style'),
+    Output('added-to-plot-indicator-mvol', 'style'),
+    Output('added-to-plot-indicator-rsi', 'style'),
+    Output('added-to-plot-indicator-stochastic', 'style'),
+    Output('added-to-plot-indicator-diff-1', 'style'),
+    Output('added-to-plot-indicator-diff-stochastic', 'style'),
+
     Output('macd-signal-window-input', 'disabled'),
     Output('macd-signal-color-theme-dropdown', 'disabled'),
     Output('impulse-macd-signal-window-input', 'disabled'),
@@ -5898,7 +5916,6 @@ def toggle_collapse_stochastic(n, is_open):
 
     # Dollar Volume inputs
     Input('dollar-volume-deck-dropdown', 'value'),
-    Input('dollar-volume-type-dropdown', 'value'),
     Input('dollar-volume-adjusted-dropdown', 'value'),
     Input('dollar-volume-secondary-y-dropdown', 'value'),
     Input('dollar-volume-plot-type-dropdown', 'value'),
@@ -6165,7 +6182,6 @@ def update_plot(
         remove_volume,
 
         dollar_volume_deck_name,
-        dollar_volume_type,
         dollar_volume_adjusted,
         dollar_volume_secondary_y,
         dollar_volume_plot_type,
@@ -6474,6 +6490,26 @@ def update_plot(
     else:
         diff_stochastic_add_line_disabled = False
 
+    # Added To plot indicators
+    added_to_plot_indicator_hist_price_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_candlestick_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_volume_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_dollar_volume_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_drawdowns_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_price_overlays_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_bollinger_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_boll_width_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_ma_env_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_ma_ribbon_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_macd_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_impulse_macd_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_atr_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_mvol_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_rsi_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_stochastic_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_diff_1_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_diff_stochastic_style = not_added_to_plot_indicator_css
+
     ################
 
     fig_divs = []
@@ -6537,6 +6573,8 @@ def update_plot(
                 fill_below = boolean(hist_price_fill_below)
             )
 
+            added_to_plot_indicator_hist_price_style = added_to_plot_indicator_css
+
         # for i, tr in enumerate(fig_data['fig']['data']):
         #     trace_uid_to_delete = tr['uid']
         #     print(f"tr['uid']\n {tr['uid']}")
@@ -6565,6 +6603,8 @@ def update_plot(
                 color_theme = candlestick_color_theme
             )
 
+            added_to_plot_indicator_candlestick_style = added_to_plot_indicator_css
+
         ### Add Volume
         if remove_volume & (fig_data is not None):
             add_volume = 0
@@ -6592,6 +6632,8 @@ def update_plot(
                 fill_below = boolean(volume_fill_below)
             )
 
+            added_to_plot_indicator_volume_style = added_to_plot_indicator_css
+
         ### Add Dollar Volume
         if remove_dollar_volume & (fig_data is not None):
             add_dollar_volume = 0
@@ -6602,8 +6644,8 @@ def update_plot(
 
         if add_dollar_volume:
 
-            dollar_volume_color_theme = volume_color_theme.lower() if volume_color_theme is not None else 'sapphire'
-            df_dollar_volume = downloaded_data[tk]['dollar_volume']
+            dollar_volume_color_theme = volume_color_theme.lower() if dollar_volume_color_theme is not None else 'sapphire'
+            df_dollar_volume = downloaded_data[tk]['dollar_volume_adj'] if boolean(dollar_volume_adjusted) else downloaded_data[tk]['dollar_volume']
 
             fig_data = analyze_prices.add_hist_price(
                 fig_data,
@@ -6618,6 +6660,8 @@ def update_plot(
                 color_theme = dollar_volume_color_theme,
                 fill_below = boolean(dollar_volume_fill_below)
             )
+
+            added_to_plot_indicator_dollar_volume_style = added_to_plot_indicator_css
 
         ### Add drawdowns
         if remove_drawdowns & (fig_data is not None):
@@ -6668,6 +6712,8 @@ def update_plot(
                 drawdown_color = drawdown_color
             )
 
+            added_to_plot_indicator_drawdowns_style = added_to_plot_indicator_css
+
         ### Add Bollinger bands
         if remove_bollinger & (fig_data is not None):
             add_bollinger = 0
@@ -6694,6 +6740,7 @@ def update_plot(
                 theme = theme,
                 color_theme = bollinger_color_theme
             )
+            added_to_plot_indicator_bollinger_style = added_to_plot_indicator_css
 
         ### Add Bollinger Width
         if remove_boll_width & (fig_data is not None):
@@ -6722,6 +6769,7 @@ def update_plot(
                 theme = theme,
                 color_theme = boll_width_color_theme
             )
+            added_to_plot_indicator_boll_width_style = added_to_plot_indicator_css
 
         ### Add moving average envelopes
         if remove_ma_env & (fig_data is not None):
@@ -6748,6 +6796,7 @@ def update_plot(
                 theme = theme,
                 color_theme = ma_env_color_theme
             )
+            added_to_plot_indicator_ma_env_style = added_to_plot_indicator_css
 
         ### Add moving average ribbon
         if remove_ma_ribbon & (fig_data is not None):
@@ -6775,6 +6824,7 @@ def update_plot(
                 theme = theme,
                 color_theme = ma_ribbon_color_theme
             )
+            added_to_plot_indicator_ma_ribbon_style = added_to_plot_indicator_css
 
         ### Add price overlays
         if remove_price_overlays & (fig_data is not None):
@@ -6810,6 +6860,7 @@ def update_plot(
                     theme = theme,
                     color_theme = price_overlay_color_theme
                 )
+            added_to_plot_indicator_price_overlays_style = added_to_plot_indicator_css
 
         ### Add MACD / MACD-V
         if remove_macd & (fig_data is not None):
@@ -6858,6 +6909,7 @@ def update_plot(
                 signal_color_theme = macd_signal_color,
                 price_color_theme = macd_price_color
             )
+            added_to_plot_indicator_macd_style = added_to_plot_indicator_css
 
         ### Add Impulse MACD
         if remove_impulse_macd & (fig_data is not None):
@@ -6898,6 +6950,7 @@ def update_plot(
                 signal_color_theme = impulse_macd_signal_color,
                 price_color_theme = impulse_macd_price_color
             )
+            added_to_plot_indicator_impulse_macd_style = added_to_plot_indicator_css
 
         ### Add Differential 1
         if remove_diff_1 & (fig_data is not None):
@@ -6956,6 +7009,8 @@ def update_plot(
                     price_color_theme = diff_1_price_color
                 )
 
+            added_to_plot_indicator_diff_1_style = added_to_plot_indicator_css
+
         # Add ATR / ATRP
         if remove_atr & (fig_data is not None):
             add_atr = 0
@@ -6965,7 +7020,6 @@ def update_plot(
                         fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
         if add_atr:
-            
             atr_color_theme = atr_color_theme.lower() if atr_color_theme is not None else 'gold'
             df_atr = downloaded_data[tk]['ohlc_adj'] if boolean(atr_adjusted) else downloaded_data[tk]['ohlc']
             atr_close_tk = df_atr['Close'][min_date: max_date]
@@ -6978,7 +7032,6 @@ def update_plot(
                 boolean(atr_adjusted),
                 atr_periods
             )
-
             fig_data = analyze_prices.add_atr(
                 fig_data,
                 atr_data,
@@ -6989,6 +7042,7 @@ def update_plot(
                 theme = theme,
                 color_theme = atr_color_theme
             )
+            added_to_plot_indicator_atr_style = added_to_plot_indicator_css
 
         ### Add MVol / MStD
         if remove_mvol & (fig_data is not None):
@@ -7016,6 +7070,7 @@ def update_plot(
                 theme = theme,
                 color_theme = mvol_color_theme
             )
+            added_to_plot_indicator_mvol_style = added_to_plot_indicator_css
 
         ### Add RSI
         if remove_rsi & (fig_data is not None):
@@ -7049,6 +7104,7 @@ def update_plot(
                 rsi_color_theme = rsi_color_theme,
                 price_color_theme = rsi_price_color_theme
             )
+            added_to_plot_indicator_rsi_style = added_to_plot_indicator_css
 
         ### Add Stochastic
         if remove_stochastic & (fig_data is not None):
@@ -7090,6 +7146,7 @@ def update_plot(
                 d_line_color = stochastic_d_line_color,
                 price_color_theme = stochastic_price_color_theme
             )
+            added_to_plot_indicator_stochastic_style = added_to_plot_indicator_css
 
         ### Add Diff Stochastic
         if remove_diff_stochastic & (fig_data is not None):
@@ -7134,6 +7191,7 @@ def update_plot(
                 theme = theme,
                 color_theme = diff_stochastic_color_theme
             )
+            added_to_plot_indicator_diff_stochastic_style = added_to_plot_indicator_css
 
         ######
 
@@ -7260,6 +7318,25 @@ def update_plot(
         add_diff_1,
         add_diff_stochastic,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
+
+        added_to_plot_indicator_hist_price_style,
+        added_to_plot_indicator_candlestick_style,
+        added_to_plot_indicator_volume_style,
+        added_to_plot_indicator_dollar_volume_style,
+        added_to_plot_indicator_drawdowns_style,
+        added_to_plot_indicator_price_overlays_style,
+        added_to_plot_indicator_bollinger_style,
+        added_to_plot_indicator_boll_width_style,
+        added_to_plot_indicator_ma_env_style,
+        added_to_plot_indicator_ma_ribbon_style,
+        added_to_plot_indicator_macd_style,
+        added_to_plot_indicator_impulse_macd_style,
+        added_to_plot_indicator_atr_style,
+        added_to_plot_indicator_mvol_style,
+        added_to_plot_indicator_rsi_style,
+        added_to_plot_indicator_stochastic_style,
+        added_to_plot_indicator_diff_1_style,
+        added_to_plot_indicator_diff_stochastic_style,
 
         macd_signal_window_disabled,
         macd_signal_color_disabled,
