@@ -242,12 +242,13 @@ collapse_button_css = {
     'font-weight': 'bold',
     'width': '300px'
 }
-collapse_button_css = {
+collapse_button_plot_category_css = {
     'display': 'inline-block',
     'text-align': 'left',
     'font-family': 'Helvetica',
     'font-weight': 'bold',
-    'width': '300px'
+    'width': '300px',
+    'background-color': 'rgb(0, 166, 166)'
 }
 collapse_button_right_margin_css = {
     'display': 'inline-block',
@@ -651,14 +652,14 @@ reset_axes_button_css = {
 added_to_plot_indicator_css = {
     'display': 'inline-block',
     'width': '5px',
-    'height': '30px',
-    'vertical-align': 'bottom',
+    'height': '29px',
+    'vertical-align': 'middle',
     'background-color': 'rgb(5, 65, 100)'
 }
 not_added_to_plot_indicator_css = {
     'display': 'inline-block',
     'width': '5px',
-    'height': '30px',
-    'vertical-align': 'bottom',
+    'height': '29px',
+    'vertical-align': 'middle',
     'background-color': 'white'
 }

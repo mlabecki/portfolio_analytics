@@ -109,6 +109,13 @@ button, input, select, textarea {
     background-color: rgb(255, 178, 185) !important;
 }
 
+#collapse-button-prices-tab:hover,
+#collapse-button-volume-tab:hover
+{
+    border-color: rgb(0, 96, 116) !important;
+    background-color: rgb(0, 96, 116) !important;
+}
+
 .plots-color-icon {
     display: inline-block;
     margin-right: 3px;
