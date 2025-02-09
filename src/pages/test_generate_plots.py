@@ -4868,7 +4868,6 @@ layout = html.Div([
             html.Div([
 
                 ##### BEGIN DIFFERENTIAL PLOT 1 CONTROLS
-                # Category: DIFFERENTIAL PLOTS
 
                 html.Div([
                 
@@ -5317,6 +5316,906 @@ layout = html.Div([
                 ), 
 
                 ##### END DIFFERENTIAL No. 1 CONTROLS
+
+                ##### BEGIN DIFFERENTIAL PLOT 2 CONTROLS
+
+                html.Div([
+                
+                    html.Div([
+                        dbc.Button(
+                            id = 'collapse-button-diff-2',
+                            class_name = 'ma-1',
+                            color = 'primary',
+                            size = 'sm',
+                            n_clicks = 0,
+                            style = collapse_button_css
+                        ),
+                        html.Div(
+                            id = 'added-to-plot-indicator-diff-2',
+                            style = not_added_to_plot_indicator_css
+                        )
+                    ],
+                    style = {'width': '310px', 'display': 'flex', 'flex-wrap': 'nowrap'}
+                    ),
+                    dbc.Popover(
+                        [
+                        html.Span(
+                               """NOTE: Differential plot cannot be placed on the Upper Deck 
+                               if the Primary Y-Axis of the Upper Deck is populated.
+                               """,
+                                style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-collapse-button-diff-2',
+                        target = 'collapse-button-diff-2',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = True,
+                        style = popover_menu_collapse_button_css
+                    ),
+
+                    dbc.Collapse(
+                    
+                        html.Div(
+                        
+                            id = 'diff-2-controls',
+                            children = [
+                            
+                                html.Div([
+                                    html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                                    dcc.Dropdown(
+                                        id = 'diff-2-deck-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Upper'],
+                                        value = 'Upper',
+                                        clearable = False,
+                                        style = {'width': '80px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Plot Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'diff-2-plot-type-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Histogram', 'Filled Line'],
+                                        value = 'Histogram',
+                                        clearable = False,
+                                        style = {'width': '97px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        """NOTE: Histogram will plot the accurate daily data. Filled Line will plot at zero whenever the Differential 
+                                        changes sign, which is to avoid both positive and negative line fills on any given day.""",
+                                        style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-diff-2-plot-type-dropdown',
+                                    target = 'diff-2-plot-type-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'diff-2-color-theme-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = candle_colors,
+                                        value = 'Green-Red',
+                                        clearable = False,
+                                        style = {'width': '113px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Add Line 1', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'diff-2-add-price-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['No', 'Yes'],
+                                        value = 'No',
+                                        clearable = False,
+                                        style = {'width': '80px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Line 1 can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS for this option to be available.',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-diff-2-add-price-dropdown',
+                                    target = 'diff-2-add-price-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+                                html.Div([
+                                    html.Div('Line 1 Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='diff-2-price-color-theme-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = overlay_color_themes,
+                                        value = 'Sapphire',
+                                        clearable = False,
+                                        disabled = False,
+                                        #style = {'width': '107px'}
+                                        style = {'width': '140px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                html.Div([
+                                    html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='diff-2-add-title-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
+                                        clearable = False,
+                                        style = {'width': '70px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                ### Signal Line, Row 1
+                                # html.Div('Signal Line', style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'text-decoration': 'underline', 'width': '310px', 'padding-left': '2px', 'vertical-align': 'top'}),                            
+                                html.Div([
+                                    html.Div('Add Signal', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'diff-2-add-signal-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['No', 'Yes'],
+                                        value = 'No',
+                                        clearable = False,
+                                        style = {'width': '90px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                html.Div([
+                                    html.Div('Signal Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'diff-2-signal-ma-type-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Simple', 'Exponential', 'Double Exponential', 'Triple Exponential', 'Weighted', 'Welles Wilder'],
+                                        value = 'Simple',
+                                        clearable = False,
+                                        style = {'width': '205px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),                    
+                                ### Signal Line, Row 2
+                                html.Div(
+                                    id = 'diff-2-signal-line-row-2-container',
+                                    hidden = False,
+                                    children = [
+                                        html.Div([
+                                            html.Div('Signal Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            dbc.Input(
+                                                id = 'diff-2-signal-window-input',
+                                                className = 'plots-input-button',
+                                                type = 'number',
+                                                value = 10,
+                                                min = 1,
+                                                max = 200,
+                                                step = 1,
+                                                debounce = True,
+                                                disabled = False,
+                                                style = {'width': '135px'}
+                                            )],
+                                            style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                        ),
+                                        html.Div([
+                                            html.Div('Signal Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            dcc.Dropdown(
+                                                id = 'diff-2-signal-color-theme-dropdown',
+                                                className = 'plots-dropdown-button',
+                                                options = overlay_color_themes,
+                                                value = 'Gold',
+                                                clearable = False,
+                                                disabled = False,
+                                                style = {'width': '160px'}
+                                            )],
+                                            style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                        ),
+                                    ]
+                                ),
+
+                                ### Line 1, Row 1
+                                html.Div('Define Line 1', style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'text-decoration': 'underline', 'width': '310px', 'padding-left': '2px', 'vertical-align': 'top'}),
+                                html.Div([
+                                    html.Div('Line Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'diff-2-line-1-line-type-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Price', 'Moving Average'],
+                                        value = 'Price',
+                                        clearable = False,
+                                        style = {'width': '140px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                html.Div([
+                                    html.Div('Price Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='diff-2-line-1-price-type-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Close', 'High', 'Low', 'Open'],
+                                        value = 'Close',
+                                        clearable = False,
+                                        style = {'width': '85px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                html.Div([
+                                    html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='diff-2-line-1-adjusted-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
+                                        clearable = False,
+                                        style = {'width': '65px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Is Line 1 base price adjusted for stock splits and dividends?',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-diff-2-line-1-adjusted-dropdown',
+                                    target = 'diff-2-line-1-adjusted-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+                                ### Line 1, Row 2
+                                html.Div(
+                                    id = 'diff-2-line-1-ma-options',
+                                    hidden = False,
+                                    children = [
+                                        html.Div([
+                                            html.Div('Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            dcc.Dropdown(
+                                                id = 'diff-2-line-1-ma-type-dropdown',
+                                                className = 'plots-dropdown-button',
+                                                options = ['Simple', 'Exponential', 'Double Exponential', 'Triple Exponential', 'Weighted', 'Welles Wilder'],
+                                                value = 'Simple',
+                                                clearable = False,
+                                                style = {'width': '180px'}
+                                            )],
+                                            style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                        ),
+                                        html.Div([
+                                            html.Div('Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            dbc.Input(
+                                                id = 'diff-2-line-1-window-input',
+                                                className = 'plots-input-button',
+                                                type = 'number',
+                                                value = 10,
+                                                min = 1,
+                                                max = 200,
+                                                step = 1,
+                                                debounce = True,
+                                                disabled = False,
+                                                style = {'width': '115px'}
+                                            )],
+                                            style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                        )
+                                    ]
+                                ),
+
+                                ### Line 2, Row 1
+                                html.Div(
+                                    'Define Line 2',
+                                    id = 'diff-2-define-line-2',
+                                    style = {
+                                        'font-family': 'Helvetica',
+                                        'font-size': '14px',
+                                        'font-weight': 'bold',
+                                        'text-decoration': 'underline',
+                                        'width': '310px',
+                                        'padding-left': '2px',
+                                        'vertical-align': 'top'
+                                    }
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Line 2 must differ from Line 1',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-diff-2-define-line-2',
+                                    target = 'diff-2-define-line-2',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('Line Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'diff-2-line-2-line-type-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Price', 'Moving Average'],
+                                        value = 'Price',
+                                        clearable = False,
+                                        style = {'width': '140px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                html.Div([
+                                    html.Div('Price Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='diff-2-line-2-price-type-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Close', 'High', 'Low', 'Open'],
+                                        value = 'Close',
+                                        clearable = False,
+                                        style = {'width': '85px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                html.Div([
+                                    html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='diff-2-line-2-adjusted-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
+                                        clearable = False,
+                                        style = {'width': '65px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Is Line 2 base price adjusted for stock splits and dividends?',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-diff-2-line-2-adjusted-dropdown',
+                                    target = 'diff-2-line-2-adjusted-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+                                ### Line 2, Row 2
+                                html.Div(
+                                    id = 'diff-2-line-2-ma-options',
+                                    hidden = False,
+                                    children = [
+                                        html.Div([
+                                            html.Div('Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            dcc.Dropdown(
+                                                id = 'diff-2-line-2-ma-type-dropdown',
+                                                className = 'plots-dropdown-button',
+                                                options = ['Simple', 'Exponential', 'Double Exponential', 'Triple Exponential', 'Weighted', 'Welles Wilder'],
+                                                value = 'Simple',
+                                                clearable = False,
+                                                style = {'width': '180px'}
+                                            )],
+                                            style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                        ),
+                                        html.Div([
+                                            html.Div('Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            dbc.Input(
+                                                id = 'diff-2-line-2-window-input',
+                                                className = 'plots-input-button',
+                                                type = 'number',
+                                                value = 10,
+                                                min = 1,
+                                                max = 200,
+                                                step = 1,
+                                                debounce = True,
+                                                disabled = False,
+                                                style = {'width': '115px'}
+                                            )],
+                                            style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                        )
+                                    ]
+                                ),
+
+                                ##### Add / Remove buttons
+                                html.Div([
+                                    dbc.Button(
+                                        'Add To Plot',
+                                        id = f'add-diff-2-button',
+                                        n_clicks = 0,
+                                        class_name = 'ma-1',
+                                        color = 'success',
+                                        size = 'sm',
+                                        style = plots_add_button_css
+                                    )],
+                                    style = {'display': 'inline-block'}
+                                ),
+                                html.Div([
+                                    dbc.Button(
+                                        # '✕',
+                                        'Remove',
+                                        id = f'remove-diff-2-button',
+                                        n_clicks = 0,
+                                        class_name = 'ma-1',
+                                        color = 'danger',
+                                        size = 'sm',
+                                        style = plots_remove_button_css
+                                    )],
+                                    style = {'display': 'inline-block'}
+                                )
+                            ],
+                        ), 
+
+                        id = 'collapse-diff-2',
+                        is_open = False,
+                        style = {'width': '310px'}
+                    )],
+                    style = {'margin-left': '5px'}
+                ), 
+
+                ##### END DIFFERENTIAL No. 2 CONTROLS
+
+                ##### BEGIN DIFFERENTIAL PLOT 3 CONTROLS
+
+                html.Div([
+                
+                    html.Div([
+                        dbc.Button(
+                            id = 'collapse-button-diff-3',
+                            class_name = 'ma-1',
+                            color = 'primary',
+                            size = 'sm',
+                            n_clicks = 0,
+                            style = collapse_button_css
+                        ),
+                        html.Div(
+                            id = 'added-to-plot-indicator-diff-3',
+                            style = not_added_to_plot_indicator_css
+                        )
+                    ],
+                    style = {'width': '310px', 'display': 'flex', 'flex-wrap': 'nowrap'}
+                    ),
+                    dbc.Popover(
+                        [
+                        html.Span(
+                               """NOTE: Differential plot cannot be placed on the Upper Deck 
+                               if the Primary Y-Axis of the Upper Deck is populated.
+                               """,
+                                style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-collapse-button-diff-3',
+                        target = 'collapse-button-diff-3',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = True,
+                        style = popover_menu_collapse_button_css
+                    ),
+
+                    dbc.Collapse(
+                    
+                        html.Div(
+                        
+                            id = 'diff-3-controls',
+                            children = [
+                            
+                                html.Div([
+                                    html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                                    dcc.Dropdown(
+                                        id = 'diff-3-deck-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Upper'],
+                                        value = 'Upper',
+                                        clearable = False,
+                                        style = {'width': '80px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Plot Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'diff-3-plot-type-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Histogram', 'Filled Line'],
+                                        value = 'Histogram',
+                                        clearable = False,
+                                        style = {'width': '97px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        """NOTE: Histogram will plot the accurate daily data. Filled Line will plot at zero whenever the Differential 
+                                        changes sign, which is to avoid both positive and negative line fills on any given day.""",
+                                        style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-diff-2-plot-type-dropdown',
+                                    target = 'diff-3-plot-type-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'diff-3-color-theme-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = candle_colors,
+                                        value = 'Green-Red',
+                                        clearable = False,
+                                        style = {'width': '113px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Add Line 1', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'diff-3-add-price-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['No', 'Yes'],
+                                        value = 'No',
+                                        clearable = False,
+                                        style = {'width': '80px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Line 1 can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS for this option to be available.',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-diff-3-add-price-dropdown',
+                                    target = 'diff-3-add-price-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+                                html.Div([
+                                    html.Div('Line 1 Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='diff-3-price-color-theme-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = overlay_color_themes,
+                                        value = 'Sapphire',
+                                        clearable = False,
+                                        disabled = False,
+                                        #style = {'width': '107px'}
+                                        style = {'width': '140px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                html.Div([
+                                    html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='diff-3-add-title-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
+                                        clearable = False,
+                                        style = {'width': '70px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                ### Signal Line, Row 1
+                                # html.Div('Signal Line', style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'text-decoration': 'underline', 'width': '310px', 'padding-left': '2px', 'vertical-align': 'top'}),                            
+                                html.Div([
+                                    html.Div('Add Signal', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'diff-3-add-signal-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['No', 'Yes'],
+                                        value = 'No',
+                                        clearable = False,
+                                        style = {'width': '90px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                html.Div([
+                                    html.Div('Signal Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'diff-3-signal-ma-type-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Simple', 'Exponential', 'Double Exponential', 'Triple Exponential', 'Weighted', 'Welles Wilder'],
+                                        value = 'Simple',
+                                        clearable = False,
+                                        style = {'width': '205px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),                    
+                                ### Signal Line, Row 2
+                                html.Div(
+                                    id = 'diff-3-signal-line-row-2-container',
+                                    hidden = False,
+                                    children = [
+                                        html.Div([
+                                            html.Div('Signal Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            dbc.Input(
+                                                id = 'diff-3-signal-window-input',
+                                                className = 'plots-input-button',
+                                                type = 'number',
+                                                value = 10,
+                                                min = 1,
+                                                max = 200,
+                                                step = 1,
+                                                debounce = True,
+                                                disabled = False,
+                                                style = {'width': '135px'}
+                                            )],
+                                            style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                        ),
+                                        html.Div([
+                                            html.Div('Signal Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            dcc.Dropdown(
+                                                id = 'diff-3-signal-color-theme-dropdown',
+                                                className = 'plots-dropdown-button',
+                                                options = overlay_color_themes,
+                                                value = 'Gold',
+                                                clearable = False,
+                                                disabled = False,
+                                                style = {'width': '160px'}
+                                            )],
+                                            style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                        ),
+                                    ]
+                                ),
+
+                                ### Line 1, Row 1
+                                html.Div('Define Line 1', style = {'font-family': 'Helvetica', 'font-size': '14px', 'font-weight': 'bold', 'text-decoration': 'underline', 'width': '310px', 'padding-left': '2px', 'vertical-align': 'top'}),
+                                html.Div([
+                                    html.Div('Line Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'diff-3-line-1-line-type-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Price', 'Moving Average'],
+                                        value = 'Price',
+                                        clearable = False,
+                                        style = {'width': '140px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                html.Div([
+                                    html.Div('Price Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='diff-3-line-1-price-type-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Close', 'High', 'Low', 'Open'],
+                                        value = 'Close',
+                                        clearable = False,
+                                        style = {'width': '85px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                html.Div([
+                                    html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='diff-3-line-1-adjusted-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
+                                        clearable = False,
+                                        style = {'width': '65px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Is Line 1 base price adjusted for stock splits and dividends?',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-diff-3-line-1-adjusted-dropdown',
+                                    target = 'diff-3-line-1-adjusted-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+                                ### Line 1, Row 2
+                                html.Div(
+                                    id = 'diff-3-line-1-ma-options',
+                                    hidden = False,
+                                    children = [
+                                        html.Div([
+                                            html.Div('Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            dcc.Dropdown(
+                                                id = 'diff-3-line-1-ma-type-dropdown',
+                                                className = 'plots-dropdown-button',
+                                                options = ['Simple', 'Exponential', 'Double Exponential', 'Triple Exponential', 'Weighted', 'Welles Wilder'],
+                                                value = 'Simple',
+                                                clearable = False,
+                                                style = {'width': '180px'}
+                                            )],
+                                            style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                        ),
+                                        html.Div([
+                                            html.Div('Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            dbc.Input(
+                                                id = 'diff-3-line-1-window-input',
+                                                className = 'plots-input-button',
+                                                type = 'number',
+                                                value = 10,
+                                                min = 1,
+                                                max = 200,
+                                                step = 1,
+                                                debounce = True,
+                                                disabled = False,
+                                                style = {'width': '115px'}
+                                            )],
+                                            style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                        )
+                                    ]
+                                ),
+
+                                ### Line 2, Row 1
+                                html.Div(
+                                    'Define Line 2',
+                                    id = 'diff-3-define-line-2',
+                                    style = {
+                                        'font-family': 'Helvetica',
+                                        'font-size': '14px',
+                                        'font-weight': 'bold',
+                                        'text-decoration': 'underline',
+                                        'width': '310px',
+                                        'padding-left': '2px',
+                                        'vertical-align': 'top'
+                                    }
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Line 2 must differ from Line 1',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-diff-3-define-line-2',
+                                    target = 'diff-3-define-line-2',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('Line Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'diff-3-line-2-line-type-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Price', 'Moving Average'],
+                                        value = 'Price',
+                                        clearable = False,
+                                        style = {'width': '140px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                html.Div([
+                                    html.Div('Price Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='diff-3-line-2-price-type-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Close', 'High', 'Low', 'Open'],
+                                        value = 'Close',
+                                        clearable = False,
+                                        style = {'width': '85px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                html.Div([
+                                    html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='diff-3-line-2-adjusted-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
+                                        clearable = False,
+                                        style = {'width': '65px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Is Line 2 base price adjusted for stock splits and dividends?',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-diff-3-line-2-adjusted-dropdown',
+                                    target = 'diff-3-line-2-adjusted-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+                                ### Line 2, Row 2
+                                html.Div(
+                                    id = 'diff-3-line-2-ma-options',
+                                    hidden = False,
+                                    children = [
+                                        html.Div([
+                                            html.Div('Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            dcc.Dropdown(
+                                                id = 'diff-3-line-2-ma-type-dropdown',
+                                                className = 'plots-dropdown-button',
+                                                options = ['Simple', 'Exponential', 'Double Exponential', 'Triple Exponential', 'Weighted', 'Welles Wilder'],
+                                                value = 'Simple',
+                                                clearable = False,
+                                                style = {'width': '180px'}
+                                            )],
+                                            style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                        ),
+                                        html.Div([
+                                            html.Div('Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            dbc.Input(
+                                                id = 'diff-3-line-2-window-input',
+                                                className = 'plots-input-button',
+                                                type = 'number',
+                                                value = 10,
+                                                min = 1,
+                                                max = 200,
+                                                step = 1,
+                                                debounce = True,
+                                                disabled = False,
+                                                style = {'width': '115px'}
+                                            )],
+                                            style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                        )
+                                    ]
+                                ),
+
+                                ##### Add / Remove buttons
+                                html.Div([
+                                    dbc.Button(
+                                        'Add To Plot',
+                                        id = f'add-diff-3-button',
+                                        n_clicks = 0,
+                                        class_name = 'ma-1',
+                                        color = 'success',
+                                        size = 'sm',
+                                        style = plots_add_button_css
+                                    )],
+                                    style = {'display': 'inline-block'}
+                                ),
+                                html.Div([
+                                    dbc.Button(
+                                        # '✕',
+                                        'Remove',
+                                        id = f'remove-diff-3-button',
+                                        n_clicks = 0,
+                                        class_name = 'ma-1',
+                                        color = 'danger',
+                                        size = 'sm',
+                                        style = plots_remove_button_css
+                                    )],
+                                    style = {'display': 'inline-block'}
+                                )
+                            ],
+                        ), 
+
+                        id = 'collapse-diff-3',
+                        is_open = False,
+                        style = {'width': '310px'}
+                    )],
+                    style = {'margin-left': '5px'}
+                ), 
+
+                ##### END DIFFERENTIAL No. 3 CONTROLS
 
                 ##### BEGIN STOCHASTIC DIFFERENTIAL CONTROLS
 
@@ -5929,6 +6828,8 @@ def toggle_collapse_template(n, is_open):
     Output('rsi-deck-dropdown', 'options'),
     Output('stochastic-deck-dropdown', 'options'),
     Output('diff-1-deck-dropdown', 'options'),
+    Output('diff-2-deck-dropdown', 'options'),
+    Output('diff-3-deck-dropdown', 'options'),
     Output('diff-stochastic-deck-dropdown', 'options'),
 
     Output('hist-price-deck-dropdown', 'value'),
@@ -5947,6 +6848,8 @@ def toggle_collapse_template(n, is_open):
     Output('rsi-deck-dropdown', 'value'),
     Output('stochastic-deck-dropdown', 'value'),
     Output('diff-1-deck-dropdown', 'value'),
+    Output('diff-2-deck-dropdown', 'value'),
+    Output('diff-3-deck-dropdown', 'value'),
     Output('diff-stochastic-deck-dropdown', 'value'),
 
     Input('deck-type-dropdown', 'n_clicks'),
@@ -5968,6 +6871,8 @@ def toggle_collapse_template(n, is_open):
     Input('rsi-deck-dropdown', 'value'),
     Input('stochastic-deck-dropdown', 'value'),
     Input('diff-1-deck-dropdown', 'value'),
+    Input('diff-2-deck-dropdown', 'value'),
+    Input('diff-3-deck-dropdown', 'value'),
     Input('diff-stochastic-deck-dropdown', 'value')
 )
 def target_deck_options(
@@ -5989,6 +6894,8 @@ def target_deck_options(
     rsi_deck,
     stochastic_deck,
     diff_1_deck,
+    diff_2_deck,
+    diff_3_deck,
     diff_stochastic_deck
 ):
     # Number of deck-dropdown inputs
@@ -6017,6 +6924,8 @@ def target_deck_options(
         rsi_deck_value =                ['Lower'] if (rsi_deck in ['Middle', 'Lower']) else ['Upper']
         stochastic_deck_value =         ['Lower'] if (stochastic_deck in ['Middle', 'Lower']) else ['Upper']
         diff_1_deck_value =             ['Lower'] if (diff_1_deck in ['Middle', 'Lower']) else ['Upper']
+        diff_2_deck_value =             ['Lower'] if (diff_2_deck in ['Middle', 'Lower']) else ['Upper']
+        diff_3_deck_value =             ['Lower'] if (diff_3_deck in ['Middle', 'Lower']) else ['Upper']
         diff_stochastic_deck_value =    ['Lower'] if (diff_stochastic_deck in ['Middle', 'Lower']) else ['Upper']
         all_deck_values = \
             hist_price_deck_value + \
@@ -6035,6 +6944,8 @@ def target_deck_options(
             rsi_deck_value + \
             stochastic_deck_value + \
             diff_1_deck_value + \
+            diff_2_deck_value + \
+            diff_3_deck_value + \
             diff_stochastic_deck_value
         return tuple([False]) + tuple([k for k in [['Upper', 'Lower']] * n]) + tuple(all_deck_values)
 
@@ -6056,6 +6967,8 @@ def target_deck_options(
         rsi_deck_value =                ['Middle'] if (rsi_deck == 'Lower') & deck_changed else [rsi_deck]
         stochastic_deck_value =         ['Middle'] if (stochastic_deck == 'Lower') & deck_changed else [stochastic_deck]
         diff_1_deck_value =             ['Middle'] if (diff_1_deck == 'Lower') & deck_changed else [diff_1_deck]
+        diff_2_deck_value =             ['Middle'] if (diff_2_deck == 'Lower') & deck_changed else [diff_2_deck]
+        diff_3_deck_value =             ['Middle'] if (diff_3_deck == 'Lower') & deck_changed else [diff_3_deck]
         diff_stochastic_deck_value =    ['Middle'] if (diff_stochastic_deck == 'Lower') & deck_changed else [diff_stochastic_deck]
         all_deck_values = \
             hist_price_deck_value + \
@@ -6074,6 +6987,8 @@ def target_deck_options(
             rsi_deck_value + \
             stochastic_deck_value + \
             diff_1_deck_value + \
+            diff_2_deck_value + \
+            diff_3_deck_value + \
             diff_stochastic_deck_value
         return tuple([False]) + tuple([k for k in [['Upper', 'Middle', 'Lower']] * n]) + tuple(all_deck_values)
 
@@ -6388,6 +7303,38 @@ def toggle_collapse_diff_1(n, is_open):
 
 
 @callback(
+    Output('collapse-button-diff-2', 'children'),
+    Output('collapse-diff-2', 'is_open'),
+    Input('collapse-button-diff-2', 'n_clicks'),
+    State('collapse-diff-2', 'is_open')
+)
+def toggle_collapse_diff_2(n, is_open):
+    # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
+    title = 'DIFFERENTIAL No. 2'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
+    Output('collapse-button-diff-3', 'children'),
+    Output('collapse-diff-3', 'is_open'),
+    Input('collapse-button-diff-3', 'n_clicks'),
+    State('collapse-diff-3', 'is_open')
+)
+def toggle_collapse_diff_3(n, is_open):
+    # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
+    title = 'DIFFERENTIAL No. 3'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
     Output('collapse-button-diff-stochastic', 'children'),
     Output('collapse-diff-stochastic', 'is_open'),
     Input('collapse-button-diff-stochastic', 'n_clicks'),
@@ -6522,6 +7469,8 @@ def toggle_collapse_stochastic(n, is_open):
     Output('add-rsi-button', 'n_clicks'),
     Output('add-stochastic-button', 'n_clicks'),
     Output('add-diff-1-button', 'n_clicks'),
+    Output('add-diff-2-button', 'n_clicks'),
+    Output('add-diff-3-button', 'n_clicks'),
     Output('add-diff-stochastic-button', 'n_clicks'),
     
     # Remove From Plot buttons
@@ -6543,6 +7492,8 @@ def toggle_collapse_stochastic(n, is_open):
     Output('remove-rsi-button', 'n_clicks'),
     Output('remove-stochastic-button', 'n_clicks'),
     Output('remove-diff-1-button', 'n_clicks'),
+    Output('remove-diff-2-button', 'n_clicks'),
+    Output('remove-diff-3-button', 'n_clicks'),
     Output('remove-diff-stochastic-button', 'n_clicks'),
 
     # Added To plot Indicators
@@ -6571,6 +7522,8 @@ def toggle_collapse_stochastic(n, is_open):
     Output('added-to-plot-indicator-rsi', 'style'),
     Output('added-to-plot-indicator-stochastic', 'style'),
     Output('added-to-plot-indicator-diff-1', 'style'),
+    Output('added-to-plot-indicator-diff-2', 'style'),
+    Output('added-to-plot-indicator-diff-3', 'style'),
     Output('added-to-plot-indicator-diff-stochastic', 'style'),
 
     #
@@ -6589,6 +7542,18 @@ def toggle_collapse_stochastic(n, is_open):
     Output('diff-1-signal-line-row-2-container', 'hidden'),
     Output('diff-1-line-1-ma-options', 'hidden'),
     Output('diff-1-line-2-ma-options', 'hidden'),
+    Output('diff-2-signal-ma-type-dropdown', 'disabled'),
+    Output('diff-2-signal-window-input', 'disabled'),
+    Output('diff-2-signal-color-theme-dropdown', 'disabled'),
+    Output('diff-2-signal-line-row-2-container', 'hidden'),
+    Output('diff-2-line-1-ma-options', 'hidden'),
+    Output('diff-2-line-2-ma-options', 'hidden'),
+    Output('diff-3-signal-ma-type-dropdown', 'disabled'),
+    Output('diff-3-signal-window-input', 'disabled'),
+    Output('diff-3-signal-color-theme-dropdown', 'disabled'),
+    Output('diff-3-signal-line-row-2-container', 'hidden'),
+    Output('diff-3-line-1-ma-options', 'hidden'),
+    Output('diff-3-line-2-ma-options', 'hidden'),
 
     Output('diff-stochastic-signal-ma-type-dropdown', 'disabled'),
     Output('diff-stochastic-signal-window-input', 'disabled'),
@@ -6629,6 +7594,10 @@ def toggle_collapse_stochastic(n, is_open):
     Output('stochastic-price-color-theme-dropdown', 'disabled'),
     Output('diff-1-add-price-dropdown', 'disabled'),
     Output('diff-1-price-color-theme-dropdown', 'disabled'),
+    Output('diff-2-add-price-dropdown', 'disabled'),
+    Output('diff-2-price-color-theme-dropdown', 'disabled'),
+    Output('diff-3-add-price-dropdown', 'disabled'),
+    Output('diff-3-price-color-theme-dropdown', 'disabled'),
     Output('diff-stochastic-add-line-dropdown', 'disabled'),
     Output('diff-stochastic-added-line-type-dropdown', 'disabled'),
     Output('diff-stochastic-added-line-color-theme-dropdown', 'disabled'),
@@ -6825,6 +7794,54 @@ def toggle_collapse_stochastic(n, is_open):
     Input('diff-1-line-2-window-input', 'value'),
     Input('add-diff-1-button', 'n_clicks'),
     Input('remove-diff-1-button', 'n_clicks'),
+
+    # Differential 2 inputs
+    Input('diff-2-deck-dropdown', 'value'),
+    Input('diff-2-plot-type-dropdown', 'value'),
+    Input('diff-2-add-title-dropdown', 'value'),    
+    Input('diff-2-color-theme-dropdown', 'value'),
+    Input('diff-2-add-price-dropdown', 'value'),
+    Input('diff-2-price-color-theme-dropdown', 'value'),
+    Input('diff-2-add-signal-dropdown', 'value'),
+    Input('diff-2-signal-ma-type-dropdown', 'value'),
+    Input('diff-2-signal-window-input', 'value'),
+    Input('diff-2-signal-color-theme-dropdown', 'value'),
+    Input('diff-2-line-1-line-type-dropdown', 'value'),
+    Input('diff-2-line-1-price-type-dropdown', 'value'),
+    Input('diff-2-line-1-adjusted-dropdown', 'value'),
+    Input('diff-2-line-1-ma-type-dropdown', 'value'),
+    Input('diff-2-line-1-window-input', 'value'),
+    Input('diff-2-line-2-line-type-dropdown', 'value'),
+    Input('diff-2-line-2-price-type-dropdown', 'value'), 
+    Input('diff-2-line-2-adjusted-dropdown', 'value'),
+    Input('diff-2-line-2-ma-type-dropdown', 'value'),
+    Input('diff-2-line-2-window-input', 'value'),
+    Input('add-diff-2-button', 'n_clicks'),
+    Input('remove-diff-2-button', 'n_clicks'),
+
+    # Differential 3 inputs
+    Input('diff-3-deck-dropdown', 'value'),
+    Input('diff-3-plot-type-dropdown', 'value'),
+    Input('diff-3-add-title-dropdown', 'value'),    
+    Input('diff-3-color-theme-dropdown', 'value'),
+    Input('diff-3-add-price-dropdown', 'value'),
+    Input('diff-3-price-color-theme-dropdown', 'value'),
+    Input('diff-3-add-signal-dropdown', 'value'),
+    Input('diff-3-signal-ma-type-dropdown', 'value'),
+    Input('diff-3-signal-window-input', 'value'),
+    Input('diff-3-signal-color-theme-dropdown', 'value'),
+    Input('diff-3-line-1-line-type-dropdown', 'value'),
+    Input('diff-3-line-1-price-type-dropdown', 'value'),
+    Input('diff-3-line-1-adjusted-dropdown', 'value'),
+    Input('diff-3-line-1-ma-type-dropdown', 'value'),
+    Input('diff-3-line-1-window-input', 'value'),
+    Input('diff-3-line-2-line-type-dropdown', 'value'),
+    Input('diff-3-line-2-price-type-dropdown', 'value'), 
+    Input('diff-3-line-2-adjusted-dropdown', 'value'),
+    Input('diff-3-line-2-ma-type-dropdown', 'value'),
+    Input('diff-3-line-2-window-input', 'value'),
+    Input('add-diff-3-button', 'n_clicks'),
+    Input('remove-diff-3-button', 'n_clicks'),
 
     # Average True Rate inputs
     Input('atr-deck-dropdown', 'value'),
@@ -7094,6 +8111,52 @@ def update_plot(
         add_diff_1,
         remove_diff_1,
 
+        diff_2_deck,
+        diff_2_plot_type,
+        diff_2_add_title,
+        diff_2_color_theme,
+        diff_2_add_price,
+        diff_2_price_color,
+        diff_2_add_signal,
+        diff_2_signal_ma_type,
+        diff_2_signal_window,
+        diff_2_signal_color,
+        diff_2_line_1_line_type,
+        diff_2_line_1_price_type,
+        diff_2_line_1_adjusted,
+        diff_2_line_1_ma_type,
+        diff_2_line_1_window,
+        diff_2_line_2_line_type,
+        diff_2_line_2_price_type,
+        diff_2_line_2_adjusted,
+        diff_2_line_2_ma_type,
+        diff_2_line_2_window,
+        add_diff_2,
+        remove_diff_2,
+
+        diff_3_deck,
+        diff_3_plot_type,
+        diff_3_add_title,
+        diff_3_color_theme,
+        diff_3_add_price,
+        diff_3_price_color,
+        diff_3_add_signal,
+        diff_3_signal_ma_type,
+        diff_3_signal_window,
+        diff_3_signal_color,
+        diff_3_line_1_line_type,
+        diff_3_line_1_price_type,
+        diff_3_line_1_adjusted,
+        diff_3_line_1_ma_type,
+        diff_3_line_1_window,
+        diff_3_line_2_line_type,
+        diff_3_line_2_price_type,
+        diff_3_line_2_adjusted,
+        diff_3_line_2_ma_type,
+        diff_3_line_2_window,
+        add_diff_3,
+        remove_diff_3,
+
         atr_deck,
         atr_adjusted,
         atr_periods,
@@ -7221,6 +8284,18 @@ def update_plot(
     diff_1_signal_line_row_2_hidden = not boolean(diff_1_add_signal)
     diff_1_line_1_ma_options_hidden = True if diff_1_line_1_line_type == 'Price' else False
     diff_1_line_2_ma_options_hidden = True if diff_1_line_2_line_type == 'Price' else False
+    diff_2_signal_ma_type_disabled = not boolean(diff_2_add_signal)
+    diff_2_signal_window_disabled = not boolean(diff_2_add_signal)
+    diff_2_signal_color_disabled = not boolean(diff_2_add_signal)
+    diff_2_signal_line_row_2_hidden = not boolean(diff_2_add_signal)
+    diff_2_line_1_ma_options_hidden = True if diff_2_line_1_line_type == 'Price' else False
+    diff_2_line_2_ma_options_hidden = True if diff_2_line_2_line_type == 'Price' else False
+    diff_3_signal_ma_type_disabled = not boolean(diff_3_add_signal)
+    diff_3_signal_window_disabled = not boolean(diff_3_add_signal)
+    diff_3_signal_color_disabled = not boolean(diff_3_add_signal)
+    diff_3_signal_line_row_2_hidden = not boolean(diff_3_add_signal)
+    diff_3_line_1_ma_options_hidden = True if diff_3_line_1_line_type == 'Price' else False
+    diff_3_line_2_ma_options_hidden = True if diff_3_line_2_line_type == 'Price' else False
 
     diff_stochastic_signal_ma_type_disabled = not boolean(diff_stochastic_add_signal)
     diff_stochastic_signal_window_disabled = not boolean(diff_stochastic_add_signal)
@@ -7257,6 +8332,20 @@ def update_plot(
         diff_1_price_color_disabled = True
     else:
         diff_1_add_price_disabled = False
+
+    diff_2_price_color_disabled = False if boolean(diff_2_add_price) & secondary_y else True
+    if (diff_2_deck != 'Upper') | (not secondary_y):
+        diff_2_add_price_disabled = True
+        diff_2_price_color_disabled = True
+    else:
+        diff_2_add_price_disabled = False
+
+    diff_3_price_color_disabled = False if boolean(diff_3_add_price) & secondary_y else True
+    if (diff_3_deck != 'Upper') | (not secondary_y):
+        diff_3_add_price_disabled = True
+        diff_3_price_color_disabled = True
+    else:
+        diff_3_add_price_disabled = False
 
     rsi_price_color_disabled = False if boolean(rsi_add_price) & secondary_y else True
     if (rsi_deck != 'Upper') | (not secondary_y):
@@ -7311,6 +8400,8 @@ def update_plot(
     added_to_plot_indicator_rsi_style = not_added_to_plot_indicator_css
     added_to_plot_indicator_stochastic_style = not_added_to_plot_indicator_css
     added_to_plot_indicator_diff_1_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_diff_2_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_diff_3_style = not_added_to_plot_indicator_css
     added_to_plot_indicator_diff_stochastic_style = not_added_to_plot_indicator_css
 
     ################
@@ -7779,6 +8870,125 @@ def update_plot(
             added_to_plot_indicator_diff_1_style = added_to_plot_indicator_css
             added_to_plot_indicator_differential_tab_style = added_to_plot_indicator_css
 
+        ### Add Differential 2
+        if remove_diff_2 & (fig_data is not None):
+            add_diff_2 = 0
+            for i, tr in enumerate(fig_data['fig']['data']):
+                if tr['legendgroup'] != 'dummy':                
+                    if 'diff-2' in tr['uid']:
+                        fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
+
+        if add_diff_2:
+            
+            adj_prices = downloaded_data[tk]['ohlc_adj'][min_date: max_date]
+            prices = downloaded_data[tk]['ohlc'][min_date: max_date]
+            
+            line_1_ma_type = ma_type_map[diff_2_line_1_ma_type]
+            line_2_ma_type = ma_type_map[diff_2_line_2_ma_type]
+
+            p1 = adj_prices[diff_2_line_1_price_type] if boolean(diff_2_line_1_adjusted) else prices[diff_2_line_1_price_type]
+            p2 = adj_prices[diff_2_line_2_price_type] if boolean(diff_2_line_2_adjusted) else prices[diff_2_line_2_price_type]
+                
+            if diff_2_line_1_line_type == 'Moving Average':
+                p1 = analyze_prices.moving_average(p1, line_1_ma_type, diff_2_line_1_window)
+                p1_name = f'{line_1_ma_type.upper()} {diff_2_line_1_window}'
+            else:
+                # Price
+                adj_prefix_line_1 = 'Adjusted ' if boolean(diff_2_line_1_adjusted) else ''
+                p1_name = f'{adj_prefix_line_1}{diff_2_line_1_price_type}'
+
+            if diff_2_line_2_line_type == 'Moving Average':
+                p2 = analyze_prices.moving_average(p2, line_2_ma_type, diff_2_line_2_window)
+                p2_name = f'{line_2_ma_type.upper()} {diff_2_line_2_window}'
+            else:
+                # Price
+                adj_prefix_line_2 = 'Adjusted ' if boolean(diff_2_line_2_adjusted) else ''
+                p2_name = f'{adj_prefix_line_2}{diff_2_line_2_price_type}'
+
+            if not p1.equals(p2):
+                fig_data = analyze_prices.add_diff(
+                    fig_data,
+                    tk,
+                    p1,
+                    p2,
+                    p1_name,
+                    p2_name,
+                    target_deck = deck_number(deck_type, diff_2_deck),
+                    plot_type = diff_2_plot_type,
+                    add_signal = boolean(diff_2_add_signal), 
+                    signal_ma_type = ma_type_map[diff_2_signal_ma_type],
+                    signal_window = diff_2_signal_window,
+                    add_price = boolean(diff_2_add_price),
+                    add_title = boolean(diff_2_add_title),
+                    uid_idx = 1,
+                    theme = theme,
+                    color_theme = diff_2_color_theme,
+                    signal_color_theme = diff_2_signal_color,
+                    price_color_theme = diff_2_price_color
+                )
+
+            added_to_plot_indicator_diff_2_style = added_to_plot_indicator_css
+            added_to_plot_indicator_differential_tab_style = added_to_plot_indicator_css
+
+        ### Add Differential 3
+        if remove_diff_3 & (fig_data is not None):
+            add_diff_3 = 0
+            for i, tr in enumerate(fig_data['fig']['data']):
+                if tr['legendgroup'] != 'dummy':                
+                    if 'diff-3' in tr['uid']:
+                        fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
+
+        if add_diff_3:
+            
+            adj_prices = downloaded_data[tk]['ohlc_adj'][min_date: max_date]
+            prices = downloaded_data[tk]['ohlc'][min_date: max_date]
+            
+            line_1_ma_type = ma_type_map[diff_3_line_1_ma_type]
+            line_2_ma_type = ma_type_map[diff_3_line_2_ma_type]
+
+            p1 = adj_prices[diff_3_line_1_price_type] if boolean(diff_3_line_1_adjusted) else prices[diff_2_line_1_price_type]
+            p2 = adj_prices[diff_3_line_2_price_type] if boolean(diff_3_line_2_adjusted) else prices[diff_2_line_2_price_type]
+                
+            if diff_3_line_1_line_type == 'Moving Average':
+                p1 = analyze_prices.moving_average(p1, line_1_ma_type, diff_3_line_1_window)
+                p1_name = f'{line_1_ma_type.upper()} {diff_3_line_1_window}'
+            else:
+                # Price
+                adj_prefix_line_1 = 'Adjusted ' if boolean(diff_3_line_1_adjusted) else ''
+                p1_name = f'{adj_prefix_line_1}{diff_3_line_1_price_type}'
+
+            if diff_3_line_2_line_type == 'Moving Average':
+                p2 = analyze_prices.moving_average(p2, line_2_ma_type, diff_3_line_2_window)
+                p2_name = f'{line_2_ma_type.upper()} {diff_3_line_2_window}'
+            else:
+                # Price
+                adj_prefix_line_2 = 'Adjusted ' if boolean(diff_3_line_2_adjusted) else ''
+                p2_name = f'{adj_prefix_line_2}{diff_3_line_2_price_type}'
+
+            if not p1.equals(p2):
+                fig_data = analyze_prices.add_diff(
+                    fig_data,
+                    tk,
+                    p1,
+                    p2,
+                    p1_name,
+                    p2_name,
+                    target_deck = deck_number(deck_type, diff_3_deck),
+                    plot_type = diff_3_plot_type,
+                    add_signal = boolean(diff_3_add_signal), 
+                    signal_ma_type = ma_type_map[diff_3_signal_ma_type],
+                    signal_window = diff_3_signal_window,
+                    add_price = boolean(diff_3_add_price),
+                    add_title = boolean(diff_3_add_title),
+                    uid_idx = 1,
+                    theme = theme,
+                    color_theme = diff_3_color_theme,
+                    signal_color_theme = diff_3_signal_color,
+                    price_color_theme = diff_3_price_color
+                )
+
+            added_to_plot_indicator_diff_3_style = added_to_plot_indicator_css
+            added_to_plot_indicator_differential_tab_style = added_to_plot_indicator_css
 
         ### Add Diff Stochastic
         if remove_diff_stochastic & (fig_data is not None):
@@ -8076,7 +9286,9 @@ def update_plot(
             'rsi': [11, 12],                    # [rsi_add_price_disabled, rsi_price_color_disabled]
             'stochastic': [13, 14],             # [stochastic_add_price_disabled, stochastic_price_color_disabled]
             'diff_1': [15, 16],                 # [diff_1_add_price_disabled, diff_1_price_color_disabled]
-            'diff_stochastic': [17, 18, 19]     # [diff_stochastic_add_line_disabled, diff_stochastic_added_line_color_disabled, diff_stochastic_added_line_type_disabled]
+            'diff_2': [17, 18],                 # [diff_1_add_price_disabled, diff_1_price_color_disabled]
+            'diff_3': [19, 20],                 # [diff_1_add_price_disabled, diff_1_price_color_disabled]
+            'diff_stochastic': [21, 22, 23]     # [diff_stochastic_add_line_disabled, diff_stochastic_added_line_color_disabled, diff_stochastic_added_line_type_disabled]
         }
 
         # Must assign values to sec_y_disabled_outputs if there are no traces on secondary y
@@ -8098,10 +9310,13 @@ def update_plot(
             stochastic_price_color_disabled,
             diff_1_add_price_disabled,
             diff_1_price_color_disabled,
+            diff_2_add_price_disabled,
+            diff_2_price_color_disabled,
+            diff_3_add_price_disabled,
+            diff_3_price_color_disabled,
             diff_stochastic_add_line_disabled,
             diff_stochastic_added_line_type_disabled,
             diff_stochastic_added_line_color_disabled
-            # ...
         )
 
         n_sec_y_disabled_outputs = len([idx for v in map_sec_y_id_to_idx.values() for idx in v])
@@ -8187,8 +9402,10 @@ def update_plot(
         add_rsi,
         add_stochastic,
         add_diff_1,
+        add_diff_2,
+        add_diff_3,
         add_diff_stochastic,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
 
         added_to_plot_indicator_prices_tab_style,
         added_to_plot_indicator_volume_tab_style,
@@ -8215,6 +9432,8 @@ def update_plot(
         added_to_plot_indicator_rsi_style,
         added_to_plot_indicator_stochastic_style,
         added_to_plot_indicator_diff_1_style,
+        added_to_plot_indicator_diff_2_style,
+        added_to_plot_indicator_diff_3_style,
         added_to_plot_indicator_diff_stochastic_style,
 
         macd_signal_window_disabled,
@@ -8232,6 +9451,18 @@ def update_plot(
         diff_1_signal_line_row_2_hidden,
         diff_1_line_1_ma_options_hidden,
         diff_1_line_2_ma_options_hidden,
+        diff_2_signal_ma_type_disabled,
+        diff_2_signal_window_disabled,
+        diff_2_signal_color_disabled,
+        diff_2_signal_line_row_2_hidden,
+        diff_2_line_1_ma_options_hidden,
+        diff_2_line_2_ma_options_hidden,
+        diff_3_signal_ma_type_disabled,
+        diff_3_signal_window_disabled,
+        diff_3_signal_color_disabled,
+        diff_3_signal_line_row_2_hidden,
+        diff_3_line_1_ma_options_hidden,
+        diff_3_line_2_ma_options_hidden,
 
         diff_stochastic_signal_ma_type_disabled,
         diff_stochastic_signal_window_disabled,
