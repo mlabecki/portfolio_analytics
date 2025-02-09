@@ -240,14 +240,29 @@ collapse_button_css = {
     'text-align': 'left',
     'font-family': 'Helvetica',
     'font-weight': 'bold',
-    'width': '300px'
+    'width': '310px'
+}
+collapse_button_general_settings_css = {
+    'display': 'inline-block',
+    'text-align': 'left',
+    'font-family': 'Helvetica',
+    'font-weight': 'bold',
+    'width': '305px'
+}
+collapse_button_general_settings_tab_css = {
+    'display': 'inline-block',
+    'text-align': 'left',
+    'font-family': 'Helvetica',
+    'font-weight': 'bold',
+    'width': '310px',
+    'background-color': 'rgb(0, 166, 166)'
 }
 collapse_button_plot_category_css = {
     'display': 'inline-block',
     'text-align': 'left',
     'font-family': 'Helvetica',
     'font-weight': 'bold',
-    'width': '300px',
+    'width': '315px',
     'background-color': 'rgb(0, 166, 166)'
 }
 collapse_button_right_margin_css = {
@@ -255,7 +270,7 @@ collapse_button_right_margin_css = {
     'text-align': 'left',
     'font-family': 'Helvetica',
     'font-weight': 'bold',
-    'width': '300px',
+    'width': '310px',
     'margin-right': '5px'
 }
 collapse_button_menu_css = {
@@ -403,7 +418,7 @@ popover_menu_collapse_button_header_css = {
     'font-size': '14px'
 }
 popover_menu_collapse_button_css = {
-    'max-width': '250px',
+    'max-width': '335px',
     'padding': '5px 0px 6px 10px',
     'border': '2px solid rgb(0, 140, 186)',
     'border-radius': '10px',
@@ -597,7 +612,7 @@ link_container_css = {
 # Plots
 plots_add_button_css = {
     'display': 'inline-block',
-    'width': '215px',
+    'width': '220px',
     'height': '32px',
     'margin': '3px 5px 7px 0px',
     'padding-left': '0px',
@@ -653,13 +668,13 @@ added_to_plot_indicator_css = {
     'display': 'inline-block',
     'width': '5px',
     'height': '29px',
-    'vertical-align': 'middle',
+    'vertical-align': 'bottom',
     'background-color': 'rgb(5, 65, 100)'
 }
 not_added_to_plot_indicator_css = {
     'display': 'inline-block',
     'width': '5px',
     'height': '29px',
-    'vertical-align': 'middle',
+    'vertical-align': 'bottom',
     'background-color': 'white'
 }

@@ -109,11 +109,16 @@ button, input, select, textarea {
     background-color: rgb(255, 178, 185) !important;
 }
 
+#collapse-button-general-tab:hover,
 #collapse-button-prices-tab:hover,
-#collapse-button-volume-tab:hover
+#collapse-button-volume-tab:hover,
+#collapse-button-trend-tab:hover,
+#collapse-button-differential-tab:hover,
+#collapse-button-volatility-tab:hover,
+#collapse-button-momentum-tab:hover
 {
-    border-color: rgb(0, 96, 116) !important;
-    background-color: rgb(0, 96, 116) !important;
+    border-color: rgb(0, 115, 125) !important;
+    background-color: rgb(0, 115, 125) !important;
 }
 
 .plots-color-icon {
