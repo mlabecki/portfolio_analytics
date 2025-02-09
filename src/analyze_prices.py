@@ -2191,6 +2191,58 @@ class AnalyzePrices():
         return selected_drawdown_data
 
 
+    ##### GET ULCER INDEX #####
+
+    def get_ulcer_index(
+        self,
+        prices,
+        window = 14
+
+    ):
+        """
+        prices:
+            series of historical prices for a given ticker
+        return:     
+            ulcer_index_data = {
+                'ulcer_index': roll_ulcer_tk,
+                'total_ulcer': total_ulcer,
+                'max_ulcer': max_ulcer,
+                'max_ulcer_date': max_ulcer_date
+            }
+        """
+
+        drawdowns_tk = pd.Series(index = prices.index)
+        returns = prices / prices.shift(1) - 1
+        returns_tk = pd.Series(returns, index = prices.index).dropna()
+
+        drawdowns_tk.iloc[0] = 0
+
+        for i, idx in enumerate(drawdowns_tk.index[1:]):
+            idx_prev = drawdowns_tk.index[i]
+            current_drawdown = (1 + returns_tk[idx]) * (1 + drawdowns_tk[idx_prev]) - 1
+            drawdowns_tk[idx] = np.min([current_drawdown, 0])
+
+        drawdowns_tk = drawdowns_tk.astype(float) * 100
+        drawdowns_tk_squared = drawdowns_tk * drawdowns_tk
+        n = len(drawdowns_tk_squared)
+
+        roll_ulcer = np.sqrt(drawdowns_tk_squared.rolling(window = window, min_periods = 1).sum() / window)
+        roll_ulcer_tk = pd.Series(roll_ulcer)
+
+        total_ulcer = np.sqrt(drawdowns_tk_squared.sum() / n)
+        max_ulcer = roll_ulcer_tk.max()
+        max_ulcer_date = roll_ulcer_tk.index[roll_ulcer_tk == max_ulcer][0]
+
+        ulcer_index_data = {
+            'ulcer_index': roll_ulcer_tk,
+            'total_ulcer': total_ulcer,
+            'max_ulcer': max_ulcer,
+            'max_ulcer_date': max_ulcer_date
+        }
+
+        return ulcer_index_data
+
+
     ##### ADD DRAWDOWNS #####
 
     def add_drawdowns(
@@ -2336,6 +2388,7 @@ class AnalyzePrices():
                 dtick = y_delta,
                 showgrid = True,
                 zeroline = True,
+                secondary_y = False,
                 row = target_deck, col = 1
             )
 
@@ -3822,6 +3875,234 @@ class AnalyzePrices():
                 yaxes = [y for y in dir(fig['layout']) if y.startswith('yaxis')]
                 yaxis_idx = target_deck - 1 + has_secondary_y
                 current_title = fig['layout'][yaxes[yaxis_idx]]['title']['text']
+
+                if current_title is None:
+                    new_yaxis_title = yaxis_title
+                else:
+                    new_yaxis_title = f'{current_title}<BR>{yaxis_title}' if target_deck > 1 else current_title
+
+                fig.update_yaxes(
+                    title = new_yaxis_title,
+                    row = target_deck, col = 1,
+                    secondary_y = secondary_y
+                )
+
+            if deck_type in ['double', 'triple']:
+                legend_tracegroupgap = self.set_legend_tracegroupgap()
+                fig.update_layout(
+                    legend_tracegroupgap = legend_tracegroupgap,
+                    legend_traceorder = 'grouped'
+                )
+
+            fig_data.update({'fig': fig})
+            if not secondary_y:
+                fig_data['y_min'].update({target_deck: new_y_min})
+                fig_data['y_max'].update({target_deck: new_y_max})
+            else:
+                # Dash callbacks need to disable all other possible sources of traces on secondary y
+                fig_data['sec_y_source'] = ['mvol']
+
+            color_map = {legend_name: color_idx}
+            overlay_idx = len(fig_overlays) + 1
+            overlay_name = f'OV{overlay_idx}'
+            overlay_components = legend_name
+            fig_overlays.append({
+                'name': overlay_name,
+                'deck': target_deck,
+                'color_theme': color_theme,
+                'components': overlay_components,
+                'color_map': color_map
+            })
+            fig_data.update({'overlays': fig_overlays})
+
+        return fig_data
+
+
+    ##### ADD ULCER INDEX #####
+
+    def add_ulcer_index(
+        self,
+        fig_data,
+        ulcer_data,
+        window = 14,
+        target_deck = 2,
+        secondary_y = False,
+        add_yaxis_title = None,
+        yaxis_title = 'Ulcer Index',
+        theme = 'dark',
+        color_theme = 'gold'
+    ):
+        """
+        secondary_y is True if target_deck == 1
+        secondary_y is False if target_deck == 2 or 3
+        """
+
+        theme = theme.lower()
+        color_theme = color_theme.lower()
+
+        style = theme_style[theme]
+
+        fig = fig_data['fig']
+        fig_y_min = fig_data['y_min'][target_deck]
+        fig_y_max = fig_data['y_max'][target_deck]
+        plot_height = fig_data['plot_height'][target_deck]
+        deck_type = fig_data['deck_type']
+        fig_overlays = fig_data['overlays']
+        has_secondary_y = fig_data['has_secondary_y']
+
+        # Plot on secondary axis only if it has been created in subplots
+        # Plot on primary axis of upper deck only if it is available, i.e. if there are no traces plotted there
+
+        if target_deck == 1:
+            if secondary_y:
+                if not has_secondary_y:
+                    print('ERROR: Secondary y axis must be selected when creating the plotting template')
+                    return fig_data
+                else:
+                    sec_y_traces = [x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y2')]
+                    if len(sec_y_traces) > 0:
+                        print('ERROR: Secondary y axis is already populated')
+                        return fig_data
+            else:
+                # Must check if there are traces on the primary y axis
+                n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
+                # If the primary y axis is unavailable, then refuse to plot
+                if n_traces_upper > 0:
+                    print(f'ERROR: Can only plot Ulcer Index on the secondary y axis or in the middle/lower deck')
+                    return fig_data
+        else:
+            # If it's the middle or lower deck, just set secondary_y to False and continue
+            secondary_y = False
+
+        #####
+
+        add_yaxis_title = secondary_y if add_yaxis_title is None else add_yaxis_title
+        legend_name = f'{yaxis_title} ({window})'
+
+        ulcer_line = ulcer_data['ulcer_index']
+
+        current_names = [trace['name'] for trace in fig_data['fig']['data'] if (trace['legendgroup'] == str(target_deck))]
+
+        if legend_name in current_names:
+            print(f'{legend_name} has already been plotted in this deck')
+
+        else:
+
+            style = theme_style[theme]
+
+            color_idx = style['overlay_color_selection'][color_theme][1][0]
+            linecolor = style['overlay_color_theme'][color_theme][color_idx]
+
+            # Adjust y range if necessary
+            reset_y_limits = False
+
+            min_y = min(ulcer_line[~ulcer_line.isna()])
+            max_y = max(ulcer_line[~ulcer_line.isna()])
+
+            if fig_y_min is None:
+                new_y_min = min_y
+                reset_y_limits = True
+            else:
+                new_y_min = min(min_y, fig_y_min)
+                if new_y_min < fig_y_min:
+                    reset_y_limits = True
+
+            if fig_y_max is None:
+                new_y_max = max_y
+                reset_y_limits = True
+            else:
+                new_y_max = max(max_y, fig_y_max)
+                if new_y_max > fig_y_max:
+                    reset_y_limits = True
+
+            # print(f'\nADD ULCER INDEX')
+            # print(f'min_y, max_y = {min_y, max_y}')
+            # print(f'fig_y_min, fig_y_max = {fig_y_min, fig_y_max}')
+            # print(f'new_y_min, new_y_max = {new_y_min, new_y_max}')
+
+            if not secondary_y:
+            
+                # Find new y limits and delta if the y range is expanded
+                if reset_y_limits:
+                    
+                    min_n_intervals = n_yintervals_map['min'][plot_height]
+                    max_n_intervals = n_yintervals_map['max'][plot_height]
+                    y_lower_limit, y_upper_limit, y_delta = set_axis_limits(new_y_min, new_y_max, min_n_intervals, max_n_intervals)
+
+                    if target_deck > 1:
+                        y_upper_limit *= 0.999
+
+                    # print(f'min_n_intervals, max_n_intervals = {min_n_intervals, max_n_intervals}')
+                    # print(f'y_lower_limit, y_upper_limit, y_delta = {y_lower_limit, y_upper_limit, y_delta}')
+                    # print(f'FINAL new_y_min, new_y_max, y_delta = {new_y_min, new_y_max, y_delta}')
+
+                    y_range = (y_lower_limit, y_upper_limit)
+                    fig.update_yaxes(
+                        range = y_range,
+                        showticklabels = True,
+                        tick0 = y_lower_limit,
+                        dtick = y_delta,
+                        showgrid = True,
+                        zeroline = True,
+                        row = target_deck, col = 1
+                    )
+
+            else:
+
+                min_n_intervals = n_yintervals_map['min'][plot_height]
+                max_n_intervals = n_yintervals_map['max'][plot_height]
+                sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(min_y, max_y, min_n_intervals, max_n_intervals)
+                sec_y_range = (sec_y_lower_limit, sec_y_upper_limit)
+
+                fig.update_yaxes(
+                    range = sec_y_range,
+                    secondary_y = True,
+                    tick0 = sec_y_lower_limit,
+                    dtick = sec_y_delta,
+                    showticklabels = True,
+                    showgrid = False,
+                    zeroline = False,
+                    row = target_deck, col = 1
+                )
+
+            ##################
+
+            legendgrouptitle = {}
+            if deck_type in ['double', 'triple']:
+                legendtitle = doubledeck_legendtitle[target_deck] if deck_type == 'double' else tripledeck_legendtitle[target_deck]
+                legendgrouptitle = dict(
+                    text = legendtitle,
+                    font_size = 16,
+                    font_weight = 'normal'
+                )
+
+            fig.add_trace(
+                go.Scatter(
+                    x = ulcer_line.index.astype(str),
+                    y = ulcer_line,
+                    mode = 'lines',
+                    line_color = linecolor,
+                    name = legend_name,
+                    uid = 'ulcer',
+                    legendrank = target_deck * 1000,
+                    legendgroup = f'{target_deck}',
+                    legendgrouptitle = legendgrouptitle
+                ),
+                row = target_deck, col = 1,
+                secondary_y = secondary_y
+            )
+
+            # Update layout and axes
+
+            if add_yaxis_title:
+
+                yaxes = [y for y in dir(fig['layout']) if y.startswith('yaxis')]
+                yaxis_idx = target_deck - 1 + has_secondary_y
+                current_title = fig['layout'][yaxes[yaxis_idx]]['title']['text']
+
+                print('add_ulcer_index()')
+                print(f'yaxis_idx = {yaxis_idx}')
+                print(f'current_title = {current_title}')
 
                 if current_title is None:
                     new_yaxis_title = yaxis_title

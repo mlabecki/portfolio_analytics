@@ -417,12 +417,30 @@ popover_menu_collapse_button_header_css = {
     'font-family': 'Helvetica',
     'font-size': '14px'
 }
+# popover_menu_tab_collapse_button_header_css = {
+#     'color': 'black',
+#     'font-family': 'Helvetica',
+#     'font-size': '13px',
+#     'font-weight': 'bold',
+#     'padding-right': '5px'
+# }
 popover_menu_collapse_button_css = {
     'max-width': '335px',
     'padding': '5px 0px 6px 10px',
     'border': '2px solid rgb(0, 140, 186)',
     'border-radius': '10px',
     'background-color': 'white'
+}
+popover_menu_tab_collapse_button_css = {
+    'max-width': '335px',
+    'padding': '5px 10px 6px 10px',
+    'border': '2px solid rgb(0, 166, 166)',
+    'border-radius': '10px',
+    'background-color': 'rgb(245, 255, 255)',
+    'color': 'black',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+    'font-weight': 'bold'
 }
 popover_menu_button_css = {
     'color': 'black',
