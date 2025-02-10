@@ -257,13 +257,13 @@ def display_table_selected_tickers(
 #    date_index = df_close.index
 #
 #    sort_by = ['Total Length', '% Depth']
-#    portfolio_drawdown_data = {}
+#    portfolio_drawdowns_data = {}
 #
 #    for tk in tickers:
-#        drawdown_data = analyze_prices.summarize_tk_drawdowns(df_close, tk, sort_by)
-#        n_drawdowns = drawdown_data['Total Drawdowns']
-#        drawdown_numbers = [x for x in range(n_drawdowns + 1)[1:]]
-#        portfolio_drawdown_data.update({tk: drawdown_data})
+#        drawdowns_data = analyze_prices.summarize_tk_drawdowns(df_close, tk, sort_by)
+#        n_drawdowns = drawdowns_data['Total Drawdowns']
+#        drawdowns_numbers = [x for x in range(n_drawdowns + 1)[1:]]
+#        portfolio_drawdowns_data.update({tk: drawdowns_data})
 #
 ##############
 
@@ -273,8 +273,8 @@ candle_colors = [x.title() for x in theme_style[theme]['candle_colors'].keys()]
 overlay_color_themes = [x.title() for x in theme_style[theme]['overlay_color_theme'].keys()]
 # overlay_color_themes = [x.title() for x in theme_style[theme]['overlay_color_theme'].keys()]
 # # print(overlay_color_themes)
-# # drawdown_colors = list(theme_style[theme]['drawdown_colors'].keys())
-drawdown_colors = [x.title() for x in theme_style[theme]['drawdown_colors'].keys()]
+# # drawdowns_colors = list(theme_style[theme]['drawdowns_colors'].keys())
+drawdowns_colors = [x.title() for x in theme_style[theme]['drawdown_colors'].keys()]
 # 
 # # deck_type = 'triple'
 # # deck_type = 'single'
@@ -1133,20 +1133,33 @@ layout = html.Div([
                                         options = ['Hollow', 'Traditional'],
                                         value = 'Hollow',
                                         clearable = False,
-                                        style = {'width': '132px'}
+                                        style = {'width': '100px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
 
                                 html.Div([
-                                    html.Div('Candle Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id='candlestick-color-theme-dropdown',
                                         className = 'plots-dropdown-button',
                                         options = candle_colors,
                                         value = 'Green-Red',
                                         clearable = False,
-                                        style = {'width': '168px'}
+                                        style = {'width': '120px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Y-Axis Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '0px'}),
+                                    dcc.Dropdown(
+                                        id='candlestick-add-yaxis-title-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
+                                        clearable = False,
+                                        style = {'width': '75px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -1225,7 +1238,7 @@ layout = html.Div([
                                         options = ['Upper'],
                                         value = 'Upper',
                                         clearable = False,
-                                        style = {'width': '79px'}
+                                        style = {'width': '100px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -1238,20 +1251,20 @@ layout = html.Div([
                                         options = overlay_color_themes,
                                         value = 'Gold',
                                         clearable = False,
-                                        style = {'width': '108px'}
+                                        style = {'width': '115px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
 
                                 html.Div([
-                                    html.Div('Y-Axis Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px'}),
+                                    html.Div('Y-Axis Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id='price-overlays-add-yaxis-title-dropdown',
                                         className = 'plots-dropdown-button',
                                         options = ['No', 'Yes'],
                                         value = 'No',
                                         clearable = False,
-                                        style = {'width': '107px'}
+                                        style = {'width': '80px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -1397,57 +1410,58 @@ layout = html.Div([
                             children = [
                             
                                 html.Div([
-                                    html.Div('Top DD #', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                                    html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                                    dcc.Dropdown(
+                                        id = 'drawdowns-deck-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Upper'],
+                                        value = 'Upper',
+                                        clearable = False,
+                                        style = {'width': '115px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Drawdown Display', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id  ='drawdowns-display-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Peak To Trough', 'Peak To Recovery'],
+                                        value = 'Peak To Trough',
+                                        clearable = False,
+                                        style = {'width': '185px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-bottom': '0px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('# Of Top Drawdowns', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-bottom': '0px'}),
                                     dbc.Input(
                                         id = 'drawdowns-number-input',
                                         className = 'plots-input-button',
                                         type = 'number',
                                         value = 5,
                                         min = 0,
+                                        max = 20,
                                         step = 1,
                                         debounce = True,
-                                        style = {'width': '63px'}
+                                        style = {'width': '150px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-bottom': '5px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
 
                                 html.Div([
-                                    html.Div('Top DD By', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    html.Div('Sort Drawdowns By', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id = 'drawdowns-topby-dropdown',
                                         className = 'plots-dropdown-button',
                                         options = ['% Depth', 'Total Length'],
                                         value = '% Depth',
                                         clearable = False,
-                                        style = {'width': '112px'}
+                                        style = {'width': '150px'}
                                     )],
-                                    style = {'display': 'inline-block', 'margin-bottom': '5px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
-
-                                html.Div([
-                                    html.Div('DD Display', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
-                                    dcc.Dropdown(
-                                        id  ='drawdowns-display-dropdown',
-                                        className = 'plots-dropdown-button',
-                                        options = ['To Trough', 'To Recovery'],
-                                        value = 'To Trough',
-                                        clearable = False,
-                                        style = {'width': '115px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
-
-                                html.Div([
-                                    html.Div('Add Price', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
-                                    dcc.Dropdown(
-                                        id = 'drawdowns-add-price-dropdown',
-                                        className = 'plots-dropdown-button',
-                                        options = ['Yes', 'No'],
-                                        value = 'Yes',
-                                        clearable = False,
-                                        style = {'width': '85px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                    style = {'display': 'inline-block', 'margin-bottom': '0px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
 
                                 html.Div([
@@ -1458,11 +1472,10 @@ layout = html.Div([
                                         options = ['Close', 'High', 'Open', 'Low'],
                                         value = 'Close',
                                         clearable = False,
-                                        style = {'width': '115px'}
+                                        style = {'width': '85px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
-
                                 html.Div([
                                     html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
@@ -1471,9 +1484,9 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '90px'}
+                                        style = {'width': '70px'}
                                     )],
-                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 dbc.Popover([
                                     html.Span(
@@ -1490,31 +1503,18 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('DD Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Add Price', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
-                                        id = 'drawdowns-color-dropdown',
+                                        id = 'drawdowns-add-price-dropdown',
                                         className = 'plots-dropdown-button',
-                                        options = drawdown_colors,
-                                        value = 'Red',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '100px'}
+                                        style = {'width': '70px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
 
-                                html.Div([
-                                    html.Div('Price Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
-                                    dcc.Dropdown(
-                                        id = 'drawdowns-price-color-dropdown',
-                                        className = 'plots-dropdown-button',
-                                        options = overlay_color_themes,
-                                        value = 'Sapphire',
-                                        clearable = False,
-                                        disabled = False,
-                                        style = {'width': '115px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
 
                                 html.Div([
                                     html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
@@ -1524,7 +1524,34 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '75px'}
+                                        style = {'width': '65px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Drawdown Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'drawdowns-color-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = drawdowns_colors,
+                                        value = 'Red',
+                                        clearable = False,
+                                        style = {'width': '150px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Price Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'drawdowns-price-color-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = overlay_color_themes,
+                                        value = 'Sapphire',
+                                        clearable = False,
+                                        disabled = False,
+                                        style = {'width': '150px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -2370,7 +2397,7 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('MA Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id='ma-env-ma-type-dropdown',
                                         className = 'plots-dropdown-button',
@@ -2559,7 +2586,7 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                                    html.Div('MA Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
                                     dcc.Dropdown(
                                         id='ma-ribbon-ma-type-dropdown',
                                         className = 'plots-dropdown-button',
@@ -3364,7 +3391,7 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '75px'}
+                                        style = {'width': '80px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3393,7 +3420,7 @@ layout = html.Div([
                                         max = 5,
                                         step = 1,
                                         debounce = True,
-                                        style = {'width': '85px'}
+                                        style = {'width': '90px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3415,7 +3442,7 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('St Dev Factor', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('SD Factor', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dbc.Input(
                                         id = 'bollinger-nstd-input',
                                         className = 'plots-input-button',
@@ -3431,14 +3458,14 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Moving Ave / St Dev Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('MA Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id='bollinger-ma-type-dropdown',
                                         className = 'plots-dropdown-button',
                                         options = ['Simple', 'Exponential', 'Weighted'],
                                         value = 'Simple',
                                         clearable = False,
-                                        style = {'width': '182px'}
+                                        style = {'width': '175px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3451,7 +3478,7 @@ layout = html.Div([
                                         options = overlay_color_themes,
                                         value = 'Gold',
                                         clearable = False,
-                                        style = {'width': '113px'}
+                                        style = {'width': '125px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3625,7 +3652,7 @@ layout = html.Div([
                                         options = ['Bandwidth', '%B'],
                                         value = 'Bandwidth',
                                         clearable = False,
-                                        style = {'width': '105px'}
+                                        style = {'width': '135px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3644,7 +3671,7 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '0px'}),
+                                    html.Div('Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dbc.Input(
                                         id = 'boll-width-window-input',
                                         className = 'plots-input-button',
@@ -3654,13 +3681,13 @@ layout = html.Div([
                                         max = 100,
                                         step = 1,
                                         debounce = True,
-                                        style = {'width': '90px'}
+                                        style = {'width': '80px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
 
                                 html.Div([
-                                    html.Div('St Dev Factor', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '0px'}),
+                                    html.Div('SD Factor', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dbc.Input(
                                         id = 'boll-width-nstd-input',
                                         className = 'plots-input-button',
@@ -3670,20 +3697,20 @@ layout = html.Div([
                                         max = 10,
                                         step = 0.1,
                                         debounce = True,
-                                        style = {'width': '95px'}
+                                        style = {'width': '80px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
 
                                 html.Div([
-                                    html.Div('Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('MA Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id='boll-width-ma-type-dropdown',
                                         className = 'plots-dropdown-button',
                                         options = ['Simple', 'Exponential', 'Weighted'],
                                         value = 'Simple',
                                         clearable = False,
-                                        style = {'width': '145px'}
+                                        style = {'width': '112px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3696,13 +3723,13 @@ layout = html.Div([
                                         options = overlay_color_themes,
                                         value = 'Gold',
                                         clearable = False,
-                                        style = {'width': '113px'}
+                                        style = {'width': '108px'}
                                     )],
-                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
 
                                 html.Div([
-                                    html.Div('Y-Axis Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Y-Axis Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '0px'}),
                                     dcc.Dropdown(
                                         id='boll-width-add-yaxis-title-dropdown',
                                         className = 'plots-dropdown-button',
@@ -3711,7 +3738,7 @@ layout = html.Div([
                                         clearable = False,
                                         style = {'width': '75px'}
                                     )],
-                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 dbc.Popover([
                                     html.Span(
@@ -4136,7 +4163,7 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '1px'}),
+                                    html.Div('MA Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '1px'}),
                                     dcc.Dropdown(
                                         id='mvol-ma-type-dropdown',
                                         className = 'plots-dropdown-button',
@@ -4962,7 +4989,7 @@ layout = html.Div([
                                     dcc.Dropdown(
                                         id = 'stochastic-k-line-color-dropdown',
                                         className = 'plots-dropdown-button',
-                                        options = drawdown_colors,
+                                        options = drawdowns_colors,
                                         value = 'Orange',
                                         clearable = False,
                                         disabled = False,
@@ -4976,7 +5003,7 @@ layout = html.Div([
                                     dcc.Dropdown(
                                         id = 'stochastic-d-line-color-dropdown',
                                         className = 'plots-dropdown-button',
-                                        options = drawdown_colors,
+                                        options = drawdowns_colors,
                                         value = 'Purple',
                                         clearable = False,
                                         disabled = False,
@@ -5292,7 +5319,7 @@ layout = html.Div([
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 html.Div([
-                                    html.Div('Signal Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Signal MA Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id = 'diff-1-signal-ma-type-dropdown',
                                         className = 'plots-dropdown-button',
@@ -5397,7 +5424,7 @@ layout = html.Div([
                                     hidden = False,
                                     children = [
                                         html.Div([
-                                            html.Div('Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            html.Div('MA Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                             dcc.Dropdown(
                                                 id = 'diff-1-line-1-ma-type-dropdown',
                                                 className = 'plots-dropdown-button',
@@ -5510,7 +5537,7 @@ layout = html.Div([
                                     hidden = False,
                                     children = [
                                         html.Div([
-                                            html.Div('Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            html.Div('MA Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                             dcc.Dropdown(
                                                 id = 'diff-1-line-2-ma-type-dropdown',
                                                 className = 'plots-dropdown-button',
@@ -5742,7 +5769,7 @@ layout = html.Div([
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 html.Div([
-                                    html.Div('Signal Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Signal MA Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id = 'diff-2-signal-ma-type-dropdown',
                                         className = 'plots-dropdown-button',
@@ -5847,7 +5874,7 @@ layout = html.Div([
                                     hidden = False,
                                     children = [
                                         html.Div([
-                                            html.Div('Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            html.Div('MA Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                             dcc.Dropdown(
                                                 id = 'diff-2-line-1-ma-type-dropdown',
                                                 className = 'plots-dropdown-button',
@@ -5960,7 +5987,7 @@ layout = html.Div([
                                     hidden = False,
                                     children = [
                                         html.Div([
-                                            html.Div('Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            html.Div('MA Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                             dcc.Dropdown(
                                                 id = 'diff-2-line-2-ma-type-dropdown',
                                                 className = 'plots-dropdown-button',
@@ -6192,7 +6219,7 @@ layout = html.Div([
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 html.Div([
-                                    html.Div('Signal Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Signal MA Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id = 'diff-3-signal-ma-type-dropdown',
                                         className = 'plots-dropdown-button',
@@ -6297,7 +6324,7 @@ layout = html.Div([
                                     hidden = False,
                                     children = [
                                         html.Div([
-                                            html.Div('Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            html.Div('MA Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                             dcc.Dropdown(
                                                 id = 'diff-3-line-1-ma-type-dropdown',
                                                 className = 'plots-dropdown-button',
@@ -6410,7 +6437,7 @@ layout = html.Div([
                                     hidden = False,
                                     children = [
                                         html.Div([
-                                            html.Div('Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            html.Div('MA Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                             dcc.Dropdown(
                                                 id = 'diff-3-line-2-ma-type-dropdown',
                                                 className = 'plots-dropdown-button',
@@ -6772,7 +6799,7 @@ layout = html.Div([
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 html.Div([
-                                    html.Div('Signal Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Signal MA Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id = 'diff-stochastic-signal-ma-type-dropdown',
                                         className = 'plots-dropdown-button',
@@ -7074,6 +7101,8 @@ def toggle_collapse_template(n, is_open):
     Output('lower-height-input', 'disabled'),
 
     Output('hist-price-deck-dropdown', 'options'),
+    Output('candlestick-deck-dropdown', 'options'),
+    Output('drawdowns-deck-dropdown', 'options'),
     Output('volume-deck-dropdown', 'options'),
     Output('dollar-volume-deck-dropdown', 'options'),
     Output('obv-deck-dropdown', 'options'),   
@@ -7095,6 +7124,8 @@ def toggle_collapse_template(n, is_open):
     Output('diff-stochastic-deck-dropdown', 'options'),
 
     Output('hist-price-deck-dropdown', 'value'),
+    Output('candlestick-deck-dropdown', 'value'),
+    Output('drawdowns-deck-dropdown', 'value'),
     Output('volume-deck-dropdown', 'value'),
     Output('dollar-volume-deck-dropdown', 'value'),
     Output('obv-deck-dropdown', 'value'),
@@ -7119,6 +7150,8 @@ def toggle_collapse_template(n, is_open):
     Input('deck-type-dropdown', 'value'),
 
     Input('hist-price-deck-dropdown', 'value'),
+    Input('candlestick-deck-dropdown', 'value'),
+    Input('drawdowns-deck-dropdown', 'value'),
     Input('volume-deck-dropdown', 'value'),
     Input('dollar-volume-deck-dropdown', 'value'),
     Input('obv-deck-dropdown', 'value'),
@@ -7143,6 +7176,8 @@ def target_deck_options(
     deck_changed,
     deck_type,
     hist_price_deck,
+    candlestick_deck,
+    drawdowns_deck,
     volume_deck,
     dollar_volume_deck,
     obv_deck,
@@ -7174,6 +7209,8 @@ def target_deck_options(
     elif deck_type == 'Double':
         
         hist_price_deck_value =         ['Lower'] if (hist_price_deck in ['Middle', 'Lower']) else ['Upper']
+        candlestick_deck_value =        ['Lower'] if (candlestick_deck in ['Middle', 'Lower']) else ['Upper']
+        drawdowns_deck_value =          ['Lower'] if (drawdowns_deck in ['Middle', 'Lower']) else ['Upper']
         volume_deck_value =             ['Lower'] if (volume_deck in ['Middle', 'Lower']) else ['Upper']
         dollar_volume_deck_value =      ['Lower'] if (dollar_volume_deck in ['Middle', 'Lower']) else ['Upper']
         obv_deck_value =                ['Lower'] if (obv_deck in ['Middle', 'Lower']) else ['Upper']
@@ -7195,6 +7232,8 @@ def target_deck_options(
         diff_stochastic_deck_value =    ['Lower'] if (diff_stochastic_deck in ['Middle', 'Lower']) else ['Upper']
         all_deck_values = \
             hist_price_deck_value + \
+            candlestick_deck_value + \
+            drawdowns_deck_value + \
             volume_deck_value + \
             dollar_volume_deck_value + \
             obv_deck_value + \
@@ -7219,6 +7258,8 @@ def target_deck_options(
     else:
 
         hist_price_deck_value =         ['Middle'] if (hist_price_deck == 'Lower') & deck_changed else [hist_price_deck]
+        candlestick_deck_value =        ['Middle'] if (candlestick_deck == 'Lower') & deck_changed else [candlestick_deck]
+        drawdowns_deck_value =          ['Middle'] if (drawdowns_deck == 'Lower') & deck_changed else [drawdowns_deck]
         volume_deck_value =             ['Middle'] if (volume_deck == 'Lower') & deck_changed else [volume_deck]
         dollar_volume_deck_value =      ['Middle'] if (dollar_volume_deck == 'Lower') & deck_changed else [dollar_volume_deck]
         obv_deck_value =                ['Middle'] if (obv_deck == 'Lower') & deck_changed else [obv_deck]
@@ -7240,6 +7281,8 @@ def target_deck_options(
         diff_stochastic_deck_value =    ['Middle'] if (diff_stochastic_deck == 'Lower') & deck_changed else [diff_stochastic_deck]
         all_deck_values = \
             hist_price_deck_value + \
+            candlestick_deck_value + \
+            drawdowns_deck_value + \
             volume_deck_value + \
             dollar_volume_deck_value + \
             obv_deck_value + \
@@ -7931,6 +7974,7 @@ def toggle_collapse_stochastic(n, is_open):
     Input('candlestick-type-dropdown', 'value'),
     Input('candlestick-color-theme-dropdown', 'value'),
     Input('candlestick-add-title-dropdown', 'value'),
+    Input('candlestick-add-yaxis-title-dropdown', 'value'),
     Input('add-candlestick-button', 'n_clicks'),
     Input('remove-candlestick-button', 'n_clicks'),    
 
@@ -7968,6 +8012,7 @@ def toggle_collapse_stochastic(n, is_open):
 
     # Drawdowns inputs
     Input('drawdowns-number-input', 'value'),
+    Input('drawdowns-deck-dropdown', 'value'),
     Input('drawdowns-topby-dropdown', 'value'),
     Input('drawdowns-display-dropdown', 'value'),
     Input('drawdowns-adjusted-dropdown', 'value'),
@@ -8269,6 +8314,7 @@ def update_plot(
         candlestick_type,
         candlestick_color_theme,
         candlestick_add_title,
+        candlestick_add_yaxis_title,
         add_candlestick,
         remove_candlestick,
 
@@ -8302,14 +8348,15 @@ def update_plot(
         remove_obv,
 
         n_top, 
-        drawdown_top_by, 
-        drawdown_display,
-        drawdown_adjusted,
-        drawdown_price_type,
-        drawdown_color, 
-        drawdown_price_color_theme,
-        drawdown_add_price,
-        drawdown_add_title,
+        drawdowns_deck,
+        drawdowns_top_by, 
+        drawdowns_display,
+        drawdowns_adjusted,
+        drawdowns_price_type,
+        drawdowns_color, 
+        drawdowns_price_color_theme,
+        drawdowns_add_price,
+        drawdowns_add_title,
         add_drawdowns,
         remove_drawdowns,
 
@@ -8574,9 +8621,11 @@ def update_plot(
     # -- should move these to after the plot is updated, so the '_disabled' parameters
     # could take into account the trace possibly present already on the secondary y-axis
     
-    dd_add_price_disabled = not boolean(drawdown_add_price)
-    n_drawdowns = 5 if n_top is None else n_top
-    dd_number_value = n_drawdowns
+    dd_add_price_disabled = not boolean(drawdowns_add_price)
+    # n_drawdowns = 5 if n_top is None else n_top
+    # dd_number_value = n_drawdowns
+    max_top_drawdowns = 5 if n_top is None else n_top
+    dd_number_value = max_top_drawdowns
 
     macd_signal_window_disabled = not boolean(macd_add_signal)
     macd_signal_color_disabled = not boolean(macd_add_signal)
@@ -8719,6 +8768,8 @@ def update_plot(
 
     fig_divs = []
 
+    top_drawdowns = {}
+
     for tk in tickers_to_plot:
 
         # date_index = downloaded_data[tk]['ohlc'].index
@@ -8806,6 +8857,7 @@ def update_plot(
                 candle_type = candlestick_type.lower(),
                 target_deck = deck_number(deck_type, candlestick_deck_name),
                 add_title = boolean(candlestick_add_title),
+                add_yaxis_title = boolean(candlestick_add_yaxis_title),
                 adjusted_prices = boolean(candlestick_adjusted),
                 theme = theme,
                 color_theme = candlestick_color_theme
@@ -8861,16 +8913,19 @@ def update_plot(
 
         if add_drawdowns:
 
-            dd_add_title = boolean(drawdown_add_title)
-            drawdown_color = drawdown_color.lower() if drawdown_color is not None else 'red'
-            drawdown_price_color_theme = drawdown_price_color_theme.lower() if drawdown_price_color_theme is not None else 'base'
-            df_drawdown_price = downloaded_data[tk]['ohlc_adj'] if boolean(drawdown_adjusted) else downloaded_data[tk]['ohlc']
-            drawdown_price = df_drawdown_price[drawdown_price_type][min_date: max_date]
+            dd_add_title = boolean(drawdowns_add_title)
+            drawdowns_color = drawdowns_color.lower() if drawdowns_color is not None else 'red'
+            drawdowns_price_color_theme = drawdowns_price_color_theme.lower() if drawdowns_price_color_theme is not None else 'base'
+            df_drawdowns_price = downloaded_data[tk]['ohlc_adj'] if boolean(drawdowns_adjusted) else downloaded_data[tk]['ohlc']
+            drawdowns_price = df_drawdowns_price[drawdowns_price_type][min_date: max_date]
 
-            drawdown_data_tk = analyze_prices.summarize_tk_drawdowns(drawdown_price, drawdown_top_by)
-            n_drawdowns = drawdown_data_tk['Total Drawdowns']
-            dd_number_value = min(n_top, n_drawdowns)
-            selected_drawdown_data = analyze_prices.select_tk_drawdowns(drawdown_data_tk, dd_number_value)
+            drawdowns_data_tk = analyze_prices.summarize_tk_drawdowns(drawdowns_price, drawdowns_top_by)
+            n_drawdowns = drawdowns_data_tk['Total Drawdowns']
+            top_drawdowns[tk] = n_drawdowns
+            max_top_drawdowns = max([n for n in top_drawdowns.values()])
+            # dd_number_value = min(n_top, n_drawdowns)
+            dd_number_value = min(n_top, max_top_drawdowns)
+            selected_drawdowns_data = analyze_prices.select_tk_drawdowns(drawdowns_data_tk, dd_number_value)
             # NOTE: If the date range is expanded so that n_drawdowns > n_top, it probably still makes sense to keep the number 
             # of drawdowns plotted equal to the latest chosen by the user, i.e. n_top, even if it was forced by the range narrowing
             # earlier. The so-called 'expansion' does not necessarily mean that the previous range will be contained in the new one.
@@ -8878,26 +8933,26 @@ def update_plot(
             # The app cannot guess how many drawdowns should be displayed after the user has changed the range of dates and n_drawdowns
             # increases as a result, it must rely on the input from the n_top dropdown.
 
-            show_trough_to_recovery = True if 'Recovery' in drawdown_display else False
-            dd_top_by = 'length' if drawdown_top_by == 'Total Length' else 'depth'
+            show_trough_to_recovery = True if 'Recovery' in drawdowns_display else False
+            dd_top_by = 'length' if drawdowns_top_by == 'Total Length' else 'depth'
             
-            drawdown_price_type_full = 'Adjusted ' + drawdown_price_type if boolean(drawdown_adjusted) else drawdown_price_type
+            drawdowns_price_type_full = 'Adjusted ' + drawdowns_price_type if boolean(drawdowns_adjusted) else drawdowns_price_type
 
             fig_data = analyze_prices.add_drawdowns(
                 fig_data,
-                drawdown_price,
+                drawdowns_price,
                 tk,
-                selected_drawdown_data,
+                selected_drawdowns_data,
                 n_top_drawdowns = n_top,
-                target_deck = 1,
+                target_deck = deck_number(deck_type, drawdowns_deck),
                 add_price = not dd_add_price_disabled,
-                price_type = drawdown_price_type_full,
+                price_type = drawdowns_price_type_full,
                 top_by = dd_top_by,
                 show_trough_to_recovery = show_trough_to_recovery,
                 add_title = dd_add_title,
                 theme = theme,
-                price_color_theme = drawdown_price_color_theme,
-                drawdown_color = drawdown_color
+                price_color_theme = drawdowns_price_color_theme,
+                drawdown_color = drawdowns_color
             )
 
             added_to_plot_indicator_drawdowns_style = added_to_plot_indicator_css
@@ -9822,7 +9877,7 @@ def update_plot(
         diff_stochastic_k_smoothing_period_disabled,
         diff_stochastic_type,
 
-        n_drawdowns,
+        max_top_drawdowns,
         dd_number_value,
         dd_add_price_disabled,
 

@@ -239,10 +239,14 @@ class AnalyzePrices():
         """
 
         ma_type = 'sma' if ma_type is None else ma_type
+        bias = True if ddof == 0 else False
+
+        # NOTE: ExponentialMovingWindow.std() uses bias, which by default is False (std is based on N-1)
+        #       Rolling.std() uses ddof, and std is based on N-ddof
 
         if ma_type == 'ema':
-            m_std = df_tk.ewm(span = ma_window).std(ddof = ddof)
-            m_vol = df_tk.ewm(span = ma_window).var(ddof = ddof)
+            m_std = df_tk.ewm(span = ma_window).std(bias = bias)
+            m_vol = df_tk.ewm(span = ma_window).var(bias = bias)
 
         elif ma_type == 'wma':
             m_std = df_tk.rolling(window = ma_window, min_periods = min_periods).apply(lambda x: self.weighted_standard_deviation(x))
@@ -3431,7 +3435,7 @@ class AnalyzePrices():
         else:
             # bollinger_type is 'width' or anything else
             b_line = bollinger_data['width']
-            yaxis_title = 'B-Width' if yaxis_title is None else yaxis_title
+            yaxis_title = 'Bollinger Width' if yaxis_title is None else yaxis_title
             legend_name = bollinger_data['width name']
 
         current_names = [trace['name'] for trace in fig_data['fig']['data'] if (trace['legendgroup'] == str(target_deck))]
@@ -4225,7 +4229,7 @@ class AnalyzePrices():
         plot_type:
             'scatter' or 'bar'
         price_type:
-            one of 'adjusted close', 'close', 'open', 'high', 'low', 'volume', 'dollar volume'
+            one of 'close', 'open', 'high', 'low', 'volume', 'dollar volume', 'obv' (On-Balance-Volume)
 
         """
 
@@ -4237,12 +4241,16 @@ class AnalyzePrices():
             print('Incorrect format of input data')
             exit
 
-        legend_name = price_type.title()
-        yaxis_title = price_type.title()
+        if price_type.lower() == 'obv':
+            legend_name = 'On-Balance Volume'
+            yaxis_title = 'On-Balance Volume'
+        else:
+            legend_name = price_type.title()
+            yaxis_title = price_type.title()
         if add_title & (title is None):
-            title = f'{tk} {price_type.title()}'
+            title = f'{tk} {legend_name}'
 
-        if 'volume' in price_type.lower():
+        if ('volume' in price_type.lower()) | (price_type.lower() == 'obv'):
             zorder = -1
         else:
             zorder = 5
@@ -4384,6 +4392,8 @@ class AnalyzePrices():
 
         if 'volume' in price_type.lower():
             uid = f'{uid_prefix}volume'
+        elif price_type.lower() == 'obv':
+            uid = 'obv'
         else:
             uid = 'hist-price'
 
@@ -4495,6 +4505,7 @@ class AnalyzePrices():
         candle_type = 'hollow',
         target_deck = 1,
         add_title = True,
+        add_yaxis_title = True,
         adjusted_prices = True,
         title_font_size = 32,
         theme = 'dark',
@@ -4736,6 +4747,13 @@ class AnalyzePrices():
             fig.update_layout(
                 legend_tracegroupgap = legend_tracegroupgap,
                 legend_traceorder = 'grouped'
+            )
+        
+        if add_yaxis_title:
+            fig_data['fig'].update_yaxes(
+                title = f'{title_prefix}Prices',
+                row = target_deck, col = 1,
+                secondary_y = False
             )
 
         fig_data.update({'fig': fig})
@@ -5874,3 +5892,31 @@ class AnalyzePrices():
         fig_data['y_max'].update({target_deck: max_diff})
 
         return fig_data
+    
+
+    ##### ON BALANCE VOLUME #####
+
+    def on_balance_volume(
+        self,
+        price,
+        volume
+    ):
+        """
+        price:
+            series of historical Close price for a given ticker
+        volume:
+            series of historical volume for a given ticker
+        return:     
+            on-balance volume
+        """
+
+        obv = pd.Series(index = price.index)
+        obv[obv.index[0]] = 0
+
+        for i, idx in enumerate(price.index[1:]):
+            idx_prev = price.index[i]
+            d_obv = np.where(price[idx] == price[idx_prev], 0, np.where(price[idx] > price[idx_prev], volume[idx], -volume[idx]))
+            obv[idx] = obv[idx_prev] + d_obv
+
+        return obv
+    
