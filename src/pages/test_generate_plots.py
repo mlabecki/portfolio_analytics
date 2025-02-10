@@ -1244,7 +1244,7 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Add Y-Axis Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px'}),
+                                    html.Div('Y-Axis Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px'}),
                                     dcc.Dropdown(
                                         id='price-overlays-add-yaxis-title-dropdown',
                                         className = 'plots-dropdown-button',
@@ -1601,7 +1601,7 @@ layout = html.Div([
         ),
         dbc.Popover([
             # NOTE: Must use <BR/>, not <BR>, to break the line inside the popover
-            dcc.Markdown("""<DIV>VOLUME<BR/>DOLLAR VOLUME</DIV>""", dangerously_allow_html = True)
+            dcc.Markdown("""<DIV>VOLUME<BR/>DOLLAR VOLUME<BR/>ON-BALANCE VOLUME</DIV>""", dangerously_allow_html = True)
             ], 
             id = 'popover-collapse-button-volume-tab',
             target = 'collapse-button-volume-tab',
@@ -1988,6 +1988,205 @@ layout = html.Div([
 
                 ##### END DOLLAR VOLUME CONTROLS
 
+                ##### BEGIN ON-BALANCE VOLUME CONTROLS
+
+                html.Div([
+                
+                    html.Div([
+                        dbc.Button(
+                            id = 'collapse-button-obv',
+                            class_name = 'ma-1',
+                            color = 'primary',
+                            size = 'sm',
+                            n_clicks = 0,
+                            style = collapse_button_css
+                        ),
+                        html.Div(
+                            id = 'added-to-plot-indicator-obv',
+                            style = not_added_to_plot_indicator_css
+                        )
+                    ],
+                    style = {'width': '310px', 'display': 'flex', 'flex-wrap': 'nowrap'}
+                    ),
+                    dbc.Popover(
+                        [
+                        html.Span(
+                                """NOTE: Volume can only be plotted on the Secondary Y-Axis or on the Middle/Lower deck
+                                if the Primary Y-Axis is populated. 
+                                """,
+                                style = popover_menu_collapse_button_header_css
+                            )
+                        ], 
+                        id = 'popover-collapse-button-obv',
+                        target = 'collapse-button-obv',
+                        body = False,
+                        trigger = 'hover',
+                        hide_arrow = True,
+                        style = popover_menu_collapse_button_css
+                    ),
+
+                    dbc.Collapse(
+                    
+                        html.Div(
+                        
+                            id = 'obv-controls',
+                            children = [
+                            
+                                html.Div([
+                                    html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                                    dcc.Dropdown(
+                                        id = 'obv-deck-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Upper'],
+                                        value = 'Upper',
+                                        clearable = False,
+                                        style = {'width': '95px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Plot Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='obv-plot-type-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Histogram', 'Line'],
+                                        value = 'Histogram',
+                                        clearable = False,
+                                        style = {'width': '120px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                html.Div([
+                                    html.Div('Fill Below', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='obv-fill-below-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
+                                        clearable = False,
+                                        style = {'width': '80px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-bottom': '0px'}),
+                                    dcc.Dropdown(
+                                        id='obv-adjusted-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
+                                        clearable = False,
+                                        style = {'width': '60px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Is the underlying price adjusted for stock splits and dividends?',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-obv-adjusted-dropdown',
+                                    target = 'obv-adjusted-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '0px'}),
+                                    dcc.Dropdown(
+                                        id='obv-add-title-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['No', 'Yes'],
+                                        value = 'No',
+                                        clearable = False,
+                                        style = {'width': '60px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='obv-color-theme-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = overlay_color_themes,
+                                        value = 'Base',
+                                        clearable = False,
+                                        style = {'width': '105px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('On Sec Y', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-bottom': '0px'}),
+                                    dcc.Dropdown(
+                                        id='obv-secondary-y-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['No', 'Yes'],
+                                        value = 'No',
+                                        clearable = False,
+                                        disabled = True,
+                                        style = {'width': '65px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'In order to plot on Secondary Y-Axis, it must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-obv-secondary-y-dropdown',
+                                    target = 'obv-secondary-y-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                ##### Add / Remove buttons
+                                html.Div([
+                                    dbc.Button(
+                                        'Add To Plot',
+                                        id = f'add-obv-button',
+                                        n_clicks = 0,
+                                        class_name = 'ma-1',
+                                        color = 'success',
+                                        size = 'sm',
+                                        style = plots_add_button_css
+                                    )],
+                                    style = {'display': 'inline-block'}
+                                ),
+                                html.Div([
+                                    dbc.Button(
+                                        # '✕',
+                                        'Remove',
+                                        id = f'remove-obv-button',
+                                        n_clicks = 0,
+                                        class_name = 'ma-1',
+                                        color = 'danger',
+                                        size = 'sm',
+                                        style = plots_remove_button_css
+                                    )],
+                                    style = {'display': 'inline-block'}
+                                )
+                            ],
+                        ), 
+
+                        id = 'collapse-obv',
+                        is_open = False,
+                        style = {'width': '310px'}
+                    )],
+                    style = {'margin-left': '5px'}
+                ), 
+
+                ##### END ON-BALANCE VOLUME CONTROLS
+
             ]),
             id = 'collapse-volume-tab',
             is_open = False,
@@ -2139,7 +2338,7 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dbc.Input(
                                         id = 'ma-env-window-input',
                                         className = 'plots-input-button',
@@ -2331,7 +2530,7 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dbc.Input(
                                         id = 'ma-ribbon-window-input',
                                         className = 'plots-input-button',
@@ -2347,7 +2546,7 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Add Y-Axis Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Y-Axis Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id='ma-ribbon-add-yaxis-title-dropdown',
                                         className = 'plots-dropdown-button',
@@ -3200,7 +3399,7 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dbc.Input(
                                         id = 'bollinger-window-input',
                                         className = 'plots-input-button',
@@ -3347,7 +3546,7 @@ layout = html.Div([
                                         options = ['Upper'],
                                         value = 'Upper',
                                         clearable = False,
-                                        style = {'width': '115px'}
+                                        style = {'width': '85px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3360,7 +3559,7 @@ layout = html.Div([
                                         options = ['Close', 'High', 'Low', 'Open'],
                                         value = 'Close',
                                         clearable = False,
-                                        style = {'width': '100px'}
+                                        style = {'width': '75px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3373,9 +3572,9 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '75px'}
+                                        style = {'width': '65px'}
                                     )],
-                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 dbc.Popover([
                                     html.Span(
@@ -3385,6 +3584,33 @@ layout = html.Div([
                                     ], 
                                     id = 'popover-boll-width-adjusted-dropdown',
                                     target = 'boll-width-adjusted-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('On Sec Y', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='boll-width-secondary-y-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'No',
+                                        clearable = False,
+                                        disabled = True,
+                                        style = {'width': '65px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'In order to plot on Secondary Y-Axis, it must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-boll-width-secondary-y-dropdown',
+                                    target = 'boll-width-secondary-y-dropdown',
                                     body = False,
                                     trigger = 'hover',
                                     hide_arrow = False,
@@ -3405,8 +3631,8 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     # NOTE: Must use <BR/>, not <BR>, to break the line inside the popover
-                                    dcc.Markdown("""<DIV>Bollinger Bandwith:<BR/> (Upper Band - Lower Band) / Middle Band<BR/>
-                                        %B:<BR/> (Price - Lower Band) / (Upper Band - Lower Band)</DIV>""", dangerously_allow_html = True),
+                                    dcc.Markdown("""<DIV>Bollinger Bandwith =<BR/> (Upper Band - Lower Band) / Middle Band<BR/>
+                                        %B =<BR/> (Price - Lower Band) / (Upper Band - Lower Band)</DIV>""", dangerously_allow_html = True),
                                     ], 
                                     id = 'popover-boll-width-type-dropdown',
                                     target = 'boll-width-type-dropdown',
@@ -3418,7 +3644,7 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '0px'}),
+                                    html.Div('Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '0px'}),
                                     dbc.Input(
                                         id = 'boll-width-window-input',
                                         className = 'plots-input-button',
@@ -3450,14 +3676,14 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Moving Ave / St Dev Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id='boll-width-ma-type-dropdown',
                                         className = 'plots-dropdown-button',
                                         options = ['Simple', 'Exponential', 'Weighted'],
                                         value = 'Simple',
                                         clearable = False,
-                                        style = {'width': '182px'}
+                                        style = {'width': '145px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3476,39 +3702,25 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Add Y-Axis Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Y-Axis Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id='boll-width-add-yaxis-title-dropdown',
                                         className = 'plots-dropdown-button',
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '135px'}
+                                        style = {'width': '75px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
-
-                                html.Div([
-                                    html.Div('On Sec Y', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
-                                    dcc.Dropdown(
-                                        id='boll-width-secondary-y-dropdown',
-                                        className = 'plots-dropdown-button',
-                                        options = ['Yes', 'No'],
-                                        value = 'No',
-                                        clearable = False,
-                                        disabled = True,
-                                        style = {'width': '65px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
                                 dbc.Popover([
                                     html.Span(
-                                        'In order to plot on Secondary Y-Axis, it must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
+                                        'Add y-axis title?',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
-                                    id = 'popover-boll-width-secondary-y-dropdown',
-                                    target = 'boll-width-secondary-y-dropdown',
+                                    id = 'popover-boll-width-add-yaxis-title-dropdown',
+                                    target = 'boll-width-add-yaxis-title-dropdown',
                                     body = False,
                                     trigger = 'hover',
                                     hide_arrow = False,
@@ -3605,21 +3817,7 @@ layout = html.Div([
                                         options = ['Upper'],
                                         value = 'Upper',
                                         clearable = False,
-                                        style = {'width': '100px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
-
-
-                                html.Div([
-                                    html.Div('ATR Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
-                                    dcc.Dropdown(
-                                        id='atr-type-dropdown',
-                                        className = 'plots-dropdown-button',
-                                        options = ['Regular', 'Percent'],
-                                        value = 'Regular',
-                                        clearable = False,
-                                        style = {'width': '100px'}
+                                        style = {'width': '90px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3632,9 +3830,9 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '90px'}
+                                        style = {'width': '70px'}
                                     )],
-                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 dbc.Popover([
                                     html.Span(
@@ -3651,7 +3849,7 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Number Of Periods', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    html.Div('Periods', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
                                     dbc.Input(
                                         id = 'atr-periods-input',
                                         className = 'plots-input-button',
@@ -3660,39 +3858,26 @@ layout = html.Div([
                                         min = 1,
                                         step = 1,
                                         debounce = True,
-                                        style = {'width': '150px'}
+                                        style = {'width': '65px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-bottom': '5px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
-
-                                html.Div([
-                                    html.Div('Add Y-Axis Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
-                                    dcc.Dropdown(
-                                        id='atr-add-yaxis-title-dropdown',
-                                        className = 'plots-dropdown-button',
-                                        options = ['Yes', 'No'],
-                                        value = 'Yes',
-                                        clearable = False,
-                                        style = {'width': '145px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                dbc.Popover([
+                                    html.Span(
+                                        'Number of periods (days) used in the Average True Rate calculation',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-atr-periods-input',
+                                    target = 'atr-periods-input',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
-                                    html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
-                                    dcc.Dropdown(
-                                        id='atr-color-theme-dropdown',
-                                        className = 'plots-dropdown-button',
-                                        options = overlay_color_themes,
-                                        value = 'Base',
-                                        clearable = False,
-                                        style = {'width': '135px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
-
-                                html.Div([
-                                    html.Div('On Sec Y', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('On Sec Y', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id='atr-secondary-y-dropdown',
                                         className = 'plots-dropdown-button',
@@ -3716,6 +3901,58 @@ layout = html.Div([
                                     trigger = 'hover',
                                     hide_arrow = False,
                                     style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('ATR Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='atr-type-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Regular', 'Percent'],
+                                        value = 'Regular',
+                                        clearable = False,
+                                        style = {'width': '93px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Y-Axis Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='atr-add-yaxis-title-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
+                                        clearable = False,
+                                        style = {'width': '82px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Add y-axis title?',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-atr-add-yaxis-title-dropdown',
+                                    target = 'atr-add-yaxis-title-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='atr-color-theme-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = overlay_color_themes,
+                                        value = 'Base',
+                                        clearable = False,
+                                        style = {'width': '120px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
 
                                 ##### Add / Remove buttons
@@ -3814,7 +4051,7 @@ layout = html.Div([
                                         options = ['Upper'],
                                         value = 'Upper',
                                         clearable = False,
-                                        style = {'width': '115px'}
+                                        style = {'width': '85px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3827,7 +4064,7 @@ layout = html.Div([
                                         options = ['Close', 'High', 'Low', 'Open'],
                                         value = 'Close',
                                         clearable = False,
-                                        style = {'width': '100px'}
+                                        style = {'width': '75px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3840,9 +4077,9 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '75px'}
+                                        style = {'width': '65px'}
                                     )],
-                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 dbc.Popover([
                                     html.Span(
@@ -3859,75 +4096,7 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Indicator Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
-                                    dcc.Dropdown(
-                                        id='mvol-type-dropdown',
-                                        className = 'plots-dropdown-button',
-                                        options = ['Volatility', 'Standard Deviation'],
-                                        value = 'Volatility',
-                                        clearable = False,
-                                        style = {'width': '165px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
-
-                                html.Div([
-                                    html.Div('Add Y-Axis Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
-                                    dcc.Dropdown(
-                                        id='mvol-add-yaxis-title-dropdown',
-                                        className = 'plots-dropdown-button',
-                                        options = ['Yes', 'No'],
-                                        value = 'Yes',
-                                        clearable = False,
-                                        style = {'width': '130px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
-
-                                html.Div([
-                                    html.Div('Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
-                                    dcc.Dropdown(
-                                        id='mvol-ma-type-dropdown',
-                                        className = 'plots-dropdown-button',
-                                        options = ['Simple', 'Exponential', 'Weighted'],
-                                        value = 'Simple',
-                                        clearable = False,
-                                        style = {'width': '175px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
-
-                                html.Div([
-                                    html.Div('Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
-                                    dbc.Input(
-                                        id = 'mvol-window-input',
-                                        className = 'plots-input-button',
-                                        type = 'number',
-                                        value = 10,
-                                        min = 1,
-                                        max = 100,
-                                        step = 1,
-                                        debounce = True,
-                                        style = {'width': '120px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
-
-                                html.Div([
-                                    html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
-                                    dcc.Dropdown(
-                                        id='mvol-color-theme-dropdown',
-                                        className = 'plots-dropdown-button',
-                                        options = overlay_color_themes,
-                                        value = 'Gold',
-                                        clearable = False,
-                                        style = {'width': '135px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
-
-                                html.Div([
-                                    html.Div('On Sec Y', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('On Sec Y', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id='mvol-secondary-y-dropdown',
                                         className = 'plots-dropdown-button',
@@ -3947,6 +4116,86 @@ layout = html.Div([
                                     ], 
                                     id = 'popover-mvol-secondary-y-dropdown',
                                     target = 'mvol-secondary-y-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('Indicator Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='mvol-type-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Volatility', 'Standard Deviation'],
+                                        value = 'Volatility',
+                                        clearable = False,
+                                        style = {'width': '155px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Moving Average Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '1px'}),
+                                    dcc.Dropdown(
+                                        id='mvol-ma-type-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Simple', 'Exponential', 'Weighted'],
+                                        value = 'Simple',
+                                        clearable = False,
+                                        style = {'width': '145px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dbc.Input(
+                                        id = 'mvol-window-input',
+                                        className = 'plots-input-button',
+                                        type = 'number',
+                                        value = 10,
+                                        min = 1,
+                                        max = 100,
+                                        step = 1,
+                                        debounce = True,
+                                        style = {'width': '92px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='mvol-color-theme-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = overlay_color_themes,
+                                        value = 'Gold',
+                                        clearable = False,
+                                        style = {'width': '120px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                html.Div([
+                                    html.Div('Y-Axis Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='mvol-add-yaxis-title-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
+                                        clearable = False,
+                                        style = {'width': '83px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Add y-axis title?',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-mvol-add-yaxis-title-dropdown',
+                                    target = 'mvol-add-yaxis-title-dropdown',
                                     body = False,
                                     trigger = 'hover',
                                     hide_arrow = False,
@@ -4044,7 +4293,7 @@ layout = html.Div([
                                         options = ['Upper'],
                                         value = 'Upper',
                                         clearable = False,
-                                        style = {'width': '115px'}
+                                        style = {'width': '85px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -4057,7 +4306,7 @@ layout = html.Div([
                                         options = ['Close', 'High', 'Low', 'Open'],
                                         value = 'Close',
                                         clearable = False,
-                                        style = {'width': '100px'}
+                                        style = {'width': '75px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -4070,9 +4319,9 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '75px'}
+                                        style = {'width': '65px'}
                                     )],
-                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 dbc.Popover([
                                     html.Span(
@@ -4089,49 +4338,7 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Add Y-Axis Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
-                                    dcc.Dropdown(
-                                        id='ulcer-add-yaxis-title-dropdown',
-                                        className = 'plots-dropdown-button',
-                                        options = ['Yes', 'No'],
-                                        value = 'Yes',
-                                        clearable = False,
-                                        style = {'width': '130px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
-
-                                html.Div([
-                                    html.Div('Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
-                                    dbc.Input(
-                                        id = 'ulcer-window-input',
-                                        className = 'plots-input-button',
-                                        type = 'number',
-                                        value = 14,
-                                        min = 1,
-                                        max = 100,
-                                        step = 1,
-                                        debounce = True,
-                                        style = {'width': '120px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
-
-                                html.Div([
-                                    html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
-                                    dcc.Dropdown(
-                                        id='ulcer-color-theme-dropdown',
-                                        className = 'plots-dropdown-button',
-                                        options = overlay_color_themes,
-                                        value = 'Gold',
-                                        clearable = False,
-                                        style = {'width': '135px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
-
-                                html.Div([
-                                    html.Div('On Sec Y', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('On Sec Y', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '1px'}),
                                     dcc.Dropdown(
                                         id='ulcer-secondary-y-dropdown',
                                         className = 'plots-dropdown-button',
@@ -4151,6 +4358,60 @@ layout = html.Div([
                                     ], 
                                     id = 'popover-ulcer-secondary-y-dropdown',
                                     target = 'ulcer-secondary-y-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dbc.Input(
+                                        id = 'ulcer-window-input',
+                                        className = 'plots-input-button',
+                                        type = 'number',
+                                        value = 14,
+                                        min = 1,
+                                        step = 1,
+                                        debounce = True,
+                                        style = {'width': '92px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='ulcer-color-theme-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = overlay_color_themes,
+                                        value = 'Gold',
+                                        clearable = False,
+                                        style = {'width': '120px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Y-Axis Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='ulcer-add-yaxis-title-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
+                                        clearable = False,
+                                        style = {'width': '83px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Add y-axis title?',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-ulcer-add-yaxis-title-dropdown',
+                                    target = 'ulcer-add-yaxis-title-dropdown',
                                     body = False,
                                     trigger = 'hover',
                                     hide_arrow = False,
@@ -5048,7 +5309,7 @@ layout = html.Div([
                                     hidden = False,
                                     children = [
                                         html.Div([
-                                            html.Div('Signal Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            html.Div('Signal Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                             dbc.Input(
                                                 id = 'diff-1-signal-window-input',
                                                 className = 'plots-input-button',
@@ -5148,7 +5409,7 @@ layout = html.Div([
                                             style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                         ),
                                         html.Div([
-                                            html.Div('Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            html.Div('Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                             dbc.Input(
                                                 id = 'diff-1-line-1-window-input',
                                                 className = 'plots-input-button',
@@ -5261,7 +5522,7 @@ layout = html.Div([
                                             style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                         ),
                                         html.Div([
-                                            html.Div('Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            html.Div('Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                             dbc.Input(
                                                 id = 'diff-1-line-2-window-input',
                                                 className = 'plots-input-button',
@@ -5498,7 +5759,7 @@ layout = html.Div([
                                     hidden = False,
                                     children = [
                                         html.Div([
-                                            html.Div('Signal Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            html.Div('Signal Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                             dbc.Input(
                                                 id = 'diff-2-signal-window-input',
                                                 className = 'plots-input-button',
@@ -5598,7 +5859,7 @@ layout = html.Div([
                                             style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                         ),
                                         html.Div([
-                                            html.Div('Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            html.Div('Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                             dbc.Input(
                                                 id = 'diff-2-line-1-window-input',
                                                 className = 'plots-input-button',
@@ -5711,7 +5972,7 @@ layout = html.Div([
                                             style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                         ),
                                         html.Div([
-                                            html.Div('Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            html.Div('Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                             dbc.Input(
                                                 id = 'diff-2-line-2-window-input',
                                                 className = 'plots-input-button',
@@ -5948,7 +6209,7 @@ layout = html.Div([
                                     hidden = False,
                                     children = [
                                         html.Div([
-                                            html.Div('Signal Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            html.Div('Signal Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                             dbc.Input(
                                                 id = 'diff-3-signal-window-input',
                                                 className = 'plots-input-button',
@@ -6048,7 +6309,7 @@ layout = html.Div([
                                             style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                         ),
                                         html.Div([
-                                            html.Div('Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            html.Div('Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                             dbc.Input(
                                                 id = 'diff-3-line-1-window-input',
                                                 className = 'plots-input-button',
@@ -6161,7 +6422,7 @@ layout = html.Div([
                                             style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                         ),
                                         html.Div([
-                                            html.Div('Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            html.Div('Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                             dbc.Input(
                                                 id = 'diff-3-line-2-window-input',
                                                 className = 'plots-input-button',
@@ -6528,7 +6789,7 @@ layout = html.Div([
                                     hidden = False,
                                     children = [
                                         html.Div([
-                                            html.Div('Signal Window Size', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            html.Div('Signal Window', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                             dbc.Input(
                                                 id = 'diff-stochastic-signal-window-input',
                                                 className = 'plots-input-button',
@@ -6814,7 +7075,8 @@ def toggle_collapse_template(n, is_open):
 
     Output('hist-price-deck-dropdown', 'options'),
     Output('volume-deck-dropdown', 'options'),
-    Output('dollar-volume-deck-dropdown', 'options'),    
+    Output('dollar-volume-deck-dropdown', 'options'),
+    Output('obv-deck-dropdown', 'options'),   
     Output('bollinger-deck-dropdown', 'options'),
     Output('boll-width-deck-dropdown', 'options'),
     Output('ma-env-deck-dropdown', 'options'),
@@ -6834,7 +7096,8 @@ def toggle_collapse_template(n, is_open):
 
     Output('hist-price-deck-dropdown', 'value'),
     Output('volume-deck-dropdown', 'value'),
-    Output('dollar-volume-deck-dropdown', 'value'),    
+    Output('dollar-volume-deck-dropdown', 'value'),
+    Output('obv-deck-dropdown', 'value'),
     Output('bollinger-deck-dropdown', 'value'),
     Output('boll-width-deck-dropdown', 'value'),
     Output('ma-env-deck-dropdown', 'value'),
@@ -6857,7 +7120,8 @@ def toggle_collapse_template(n, is_open):
 
     Input('hist-price-deck-dropdown', 'value'),
     Input('volume-deck-dropdown', 'value'),
-    Input('dollar-volume-deck-dropdown', 'value'), 
+    Input('dollar-volume-deck-dropdown', 'value'),
+    Input('obv-deck-dropdown', 'value'),
     Input('bollinger-deck-dropdown', 'value'),
     Input('boll-width-deck-dropdown', 'value'),
     Input('ma-env-deck-dropdown', 'value'),
@@ -6880,7 +7144,8 @@ def target_deck_options(
     deck_type,
     hist_price_deck,
     volume_deck,
-    dollar_volume_deck,    
+    dollar_volume_deck,
+    obv_deck,
     bollinger_deck,
     boll_width_deck,
     ma_env_deck,
@@ -6911,6 +7176,7 @@ def target_deck_options(
         hist_price_deck_value =         ['Lower'] if (hist_price_deck in ['Middle', 'Lower']) else ['Upper']
         volume_deck_value =             ['Lower'] if (volume_deck in ['Middle', 'Lower']) else ['Upper']
         dollar_volume_deck_value =      ['Lower'] if (dollar_volume_deck in ['Middle', 'Lower']) else ['Upper']
+        obv_deck_value =                ['Lower'] if (obv_deck in ['Middle', 'Lower']) else ['Upper']
         bollinger_deck_value =          ['Lower'] if (bollinger_deck in ['Middle', 'Lower']) else ['Upper']
         boll_width_deck_value =         ['Lower'] if (boll_width_deck in ['Middle', 'Lower']) else ['Upper']
         ma_env_deck_value =             ['Lower'] if (ma_env_deck in ['Middle', 'Lower']) else ['Upper']
@@ -6931,6 +7197,7 @@ def target_deck_options(
             hist_price_deck_value + \
             volume_deck_value + \
             dollar_volume_deck_value + \
+            obv_deck_value + \
             bollinger_deck_value + \
             boll_width_deck_value + \
             ma_env_deck_value + \
@@ -6953,7 +7220,8 @@ def target_deck_options(
 
         hist_price_deck_value =         ['Middle'] if (hist_price_deck == 'Lower') & deck_changed else [hist_price_deck]
         volume_deck_value =             ['Middle'] if (volume_deck == 'Lower') & deck_changed else [volume_deck]
-        dollar_volume_deck_value =      ['Middle'] if (dollar_volume_deck == 'Lower') & deck_changed else [volume_deck]        
+        dollar_volume_deck_value =      ['Middle'] if (dollar_volume_deck == 'Lower') & deck_changed else [dollar_volume_deck]
+        obv_deck_value =                ['Middle'] if (obv_deck == 'Lower') & deck_changed else [obv_deck]
         bollinger_deck_value =          ['Middle'] if (bollinger_deck == 'Lower') & deck_changed else [bollinger_deck]
         boll_width_deck_value =         ['Middle'] if (boll_width_deck in ['Middle', 'Lower']) else ['boll_width_deck']
         ma_env_deck_value =             ['Middle'] if (ma_env_deck == 'Lower') & deck_changed else [ma_env_deck]
@@ -6974,6 +7242,7 @@ def target_deck_options(
             hist_price_deck_value + \
             volume_deck_value + \
             dollar_volume_deck_value + \
+            obv_deck_value + \
             bollinger_deck_value + \
             boll_width_deck_value + \
             ma_env_deck_value + \
@@ -7153,6 +7422,21 @@ def toggle_collapse_volume(n, is_open):
 )
 def toggle_collapse_dollar_volume(n, is_open):
     title = 'DOLLAR VOLUME'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
+    Output('collapse-button-obv', 'children'),
+    Output('collapse-obv', 'is_open'),
+    Input('collapse-button-obv', 'n_clicks'),
+    State('collapse-obv', 'is_open')
+)
+def toggle_collapse_obv(n, is_open):
+    title = 'ON-BALANCE VOLUME'
     label = f'► {title}' if is_open else f'▼ {title}'
     if n:
         return label, not is_open
@@ -7454,7 +7738,8 @@ def toggle_collapse_stochastic(n, is_open):
     Output('add-hist-price-button', 'n_clicks'),
     Output('add-candlestick-button', 'n_clicks'),
     Output('add-volume-button', 'n_clicks'),
-    Output('add-dollar-volume-button', 'n_clicks'),    
+    Output('add-dollar-volume-button', 'n_clicks'),
+    Output('add-obv-button', 'n_clicks'),
     Output('add-drawdowns-button', 'n_clicks'),
     Output('add-price-overlays-button', 'n_clicks'),
     Output('add-bollinger-button', 'n_clicks'),
@@ -7477,7 +7762,8 @@ def toggle_collapse_stochastic(n, is_open):
     Output('remove-hist-price-button', 'n_clicks'),
     Output('remove-candlestick-button', 'n_clicks'),
     Output('remove-volume-button', 'n_clicks'),
-    Output('remove-dollar-volume-button', 'n_clicks'),    
+    Output('remove-dollar-volume-button', 'n_clicks'),
+    Output('remove-obv-button', 'n_clicks'),    
     Output('remove-drawdowns-button', 'n_clicks'),
     Output('remove-price-overlays-button', 'n_clicks'),
     Output('remove-bollinger-button', 'n_clicks'),
@@ -7508,6 +7794,7 @@ def toggle_collapse_stochastic(n, is_open):
     Output('added-to-plot-indicator-candlestick', 'style'),
     Output('added-to-plot-indicator-volume', 'style'),
     Output('added-to-plot-indicator-dollar-volume', 'style'),
+    Output('added-to-plot-indicator-obv', 'style'),    
     Output('added-to-plot-indicator-drawdowns', 'style'),
     Output('added-to-plot-indicator-price-overlays', 'style'),
     Output('added-to-plot-indicator-bollinger', 'style'),
@@ -7579,7 +7866,8 @@ def toggle_collapse_stochastic(n, is_open):
     # Secondary y disabled outputs
     Output('hist-price-secondary-y-dropdown', 'disabled'),
     Output('volume-secondary-y-dropdown', 'disabled'),
-    Output('dollar-volume-secondary-y-dropdown', 'disabled'),    
+    Output('dollar-volume-secondary-y-dropdown', 'disabled'),
+    Output('obv-secondary-y-dropdown', 'disabled'),
     Output('atr-secondary-y-dropdown', 'disabled'),
     Output('boll-width-secondary-y-dropdown', 'disabled'),
     Output('mvol-secondary-y-dropdown', 'disabled'),
@@ -7666,6 +7954,17 @@ def toggle_collapse_stochastic(n, is_open):
     Input('dollar-volume-add-title-dropdown', 'value'),
     Input('add-dollar-volume-button', 'n_clicks'),
     Input('remove-dollar-volume-button', 'n_clicks'),
+
+    # On-Balance Volume inputs
+    Input('obv-deck-dropdown', 'value'),
+    Input('obv-adjusted-dropdown', 'value'),
+    Input('obv-secondary-y-dropdown', 'value'),
+    Input('obv-plot-type-dropdown', 'value'),
+    Input('obv-fill-below-dropdown', 'value'),
+    Input('obv-color-theme-dropdown', 'value'),
+    Input('obv-add-title-dropdown', 'value'),
+    Input('add-obv-button', 'n_clicks'),
+    Input('remove-obv-button', 'n_clicks'),
 
     # Drawdowns inputs
     Input('drawdowns-number-input', 'value'),
@@ -7992,6 +8291,16 @@ def update_plot(
         add_dollar_volume,
         remove_dollar_volume,
 
+        obv_deck_name,
+        obv_adjusted,
+        obv_secondary_y,
+        obv_plot_type,
+        obv_fill_below,
+        obv_color_theme,
+        obv_add_title,
+        add_obv,
+        remove_obv,
+
         n_top, 
         drawdown_top_by, 
         drawdown_display,
@@ -8306,7 +8615,8 @@ def update_plot(
 
     hist_price_sec_y_disabled = not secondary_y
     volume_sec_y_disabled = not secondary_y
-    dollar_volume_sec_y_disabled = not secondary_y    
+    dollar_volume_sec_y_disabled = not secondary_y
+    obv_sec_y_disabled = not secondary_y
     atr_sec_y_disabled = not secondary_y
     boll_width_sec_y_disabled = not secondary_y
     mvol_sec_y_disabled = not secondary_y
@@ -8386,6 +8696,7 @@ def update_plot(
     added_to_plot_indicator_candlestick_style = not_added_to_plot_indicator_css
     added_to_plot_indicator_volume_style = not_added_to_plot_indicator_css
     added_to_plot_indicator_dollar_volume_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_obv_style = not_added_to_plot_indicator_css
     added_to_plot_indicator_drawdowns_style = not_added_to_plot_indicator_css
     added_to_plot_indicator_price_overlays_style = not_added_to_plot_indicator_css
     added_to_plot_indicator_bollinger_style = not_added_to_plot_indicator_css
@@ -8600,7 +8911,7 @@ def update_plot(
             add_volume = 0
             for i, tr in enumerate(fig_data['fig']['data']):
                 if tr['legendgroup'] != 'dummy':
-                    if 'volume' in tr['uid']:
+                    if tr['uid'] == 'volume':
                         fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
         if add_volume:
@@ -8630,12 +8941,12 @@ def update_plot(
             add_dollar_volume = 0
             for i, tr in enumerate(fig_data['fig']['data']):
                 if tr['legendgroup'] != 'dummy':
-                    if 'dollar-volume' in tr['uid']:
+                    if tr['uid'] == 'dollar-volume':
                         fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
         if add_dollar_volume:
 
-            dollar_volume_color_theme = volume_color_theme.lower() if dollar_volume_color_theme is not None else 'sapphire'
+            dollar_volume_color_theme = dollar_volume_color_theme.lower() if dollar_volume_color_theme is not None else 'sapphire'
             df_dollar_volume = downloaded_data[tk]['dollar_volume_adj'] if boolean(dollar_volume_adjusted) else downloaded_data[tk]['dollar_volume']
 
             fig_data = analyze_prices.add_hist_price(
@@ -8653,6 +8964,39 @@ def update_plot(
             )
 
             added_to_plot_indicator_dollar_volume_style = added_to_plot_indicator_css
+            added_to_plot_indicator_volume_tab_style = added_to_plot_indicator_css
+
+        ### Add On-Balance Volume
+        if remove_obv & (fig_data is not None):
+            add_obv = 0
+            for i, tr in enumerate(fig_data['fig']['data']):
+                if tr['legendgroup'] != 'dummy':
+                    if tr['uid'] == 'obv':
+                        fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
+
+        if add_obv:
+
+            obv_color_theme = obv_color_theme.lower() if obv_color_theme is not None else 'sapphire'
+            close_tk = downloaded_data[tk]['ohlc_adj']['Close'] if boolean(obv_adjusted) else downloaded_data[tk]['ohlc']['Close']
+            volume_tk = downloaded_data[tk]['volume']
+
+            obv_tk = analyze_prices.on_balance_volume(close_tk, volume_tk)
+
+            fig_data = analyze_prices.add_hist_price(
+                fig_data,
+                obv_tk[min_date: max_date],
+                tk,
+                target_deck = deck_number(deck_type, obv_deck_name),
+                secondary_y = boolean(obv_secondary_y),
+                plot_type = 'bar' if obv_plot_type == 'Histogram' else 'scatter',
+                price_type = 'obv',
+                add_title = boolean(obv_add_title),
+                theme = theme,
+                color_theme = obv_color_theme,
+                fill_below = boolean(obv_fill_below)
+            )
+
+            added_to_plot_indicator_obv_style = added_to_plot_indicator_css
             added_to_plot_indicator_volume_tab_style = added_to_plot_indicator_css
 
 
@@ -9276,26 +9620,28 @@ def update_plot(
         map_sec_y_id_to_idx = {
             'hist_price': [0],                  # hist_price_sec_y_disabled
             'volume': [1],                      # volume_sec_y_disabled
-            'dollar_volume': [2],               # volume_sec_y_disabled            
-            'atr': [3],                         # atr_sec_y_disabled
-            'boll_width': [4],                  # boll_width_sec_y_disabled
-            'mvol': [5],                        # mvol_sec_y_disabled
-            'ulcer': [6],                       # ulcer_sec_y_disabled
-            'macd': [7, 8],                     # [macd_add_price_disabled, macd_price_color_disabled]
-            'impulse_macd': [9, 10],            # [impulse_macd_add_price_disabled, impulse_macd_price_color_disabled]
-            'rsi': [11, 12],                    # [rsi_add_price_disabled, rsi_price_color_disabled]
-            'stochastic': [13, 14],             # [stochastic_add_price_disabled, stochastic_price_color_disabled]
-            'diff_1': [15, 16],                 # [diff_1_add_price_disabled, diff_1_price_color_disabled]
-            'diff_2': [17, 18],                 # [diff_1_add_price_disabled, diff_1_price_color_disabled]
-            'diff_3': [19, 20],                 # [diff_1_add_price_disabled, diff_1_price_color_disabled]
-            'diff_stochastic': [21, 22, 23]     # [diff_stochastic_add_line_disabled, diff_stochastic_added_line_color_disabled, diff_stochastic_added_line_type_disabled]
+            'dollar_volume': [2],               # volume_sec_y_disabled
+            'obv': [3],                         # obv_sec_y_disabled
+            'atr': [4],                         # atr_sec_y_disabled
+            'boll_width': [5],                  # boll_width_sec_y_disabled
+            'mvol': [6],                        # mvol_sec_y_disabled
+            'ulcer': [7],                       # ulcer_sec_y_disabled
+            'macd': [8, 9],                     # [macd_add_price_disabled, macd_price_color_disabled]
+            'impulse_macd': [10, 11],           # [impulse_macd_add_price_disabled, impulse_macd_price_color_disabled]
+            'rsi': [12, 13],                    # [rsi_add_price_disabled, rsi_price_color_disabled]
+            'stochastic': [14, 15],             # [stochastic_add_price_disabled, stochastic_price_color_disabled]
+            'diff_1': [16, 17],                 # [diff_1_add_price_disabled, diff_1_price_color_disabled]
+            'diff_2': [18, 19],                 # [diff_1_add_price_disabled, diff_1_price_color_disabled]
+            'diff_3': [20, 21],                 # [diff_1_add_price_disabled, diff_1_price_color_disabled]
+            'diff_stochastic': [22, 23, 24]     # [diff_stochastic_add_line_disabled, diff_stochastic_added_line_color_disabled, diff_stochastic_added_line_type_disabled]
         }
 
         # Must assign values to sec_y_disabled_outputs if there are no traces on secondary y
         sec_y_disabled_outputs = (
             hist_price_sec_y_disabled,
             volume_sec_y_disabled,
-            dollar_volume_sec_y_disabled,            
+            dollar_volume_sec_y_disabled,
+            obv_sec_y_disabled,
             atr_sec_y_disabled,
             boll_width_sec_y_disabled,
             mvol_sec_y_disabled,
@@ -9387,7 +9733,8 @@ def update_plot(
         add_hist_price,  # update
         add_candlestick,
         add_volume,
-        add_dollar_volume,        
+        add_dollar_volume,
+        add_obv,
         add_drawdowns,
         add_price_overlays,
         add_bollinger,
@@ -9405,7 +9752,7 @@ def update_plot(
         add_diff_2,
         add_diff_3,
         add_diff_stochastic,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
 
         added_to_plot_indicator_prices_tab_style,
         added_to_plot_indicator_volume_tab_style,
@@ -9418,6 +9765,7 @@ def update_plot(
         added_to_plot_indicator_candlestick_style,
         added_to_plot_indicator_volume_style,
         added_to_plot_indicator_dollar_volume_style,
+        added_to_plot_indicator_obv_style,
         added_to_plot_indicator_drawdowns_style,
         added_to_plot_indicator_price_overlays_style,
         added_to_plot_indicator_bollinger_style,

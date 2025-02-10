@@ -436,7 +436,7 @@ popover_menu_tab_collapse_button_css = {
     'padding': '5px 10px 6px 10px',
     'border': '2px solid rgb(0, 166, 166)',
     'border-radius': '10px',
-    'background-color': 'rgb(245, 255, 255)',
+    'background-color': 'rgb(225, 255, 255)',
     'color': 'black',
     'font-family': 'Helvetica',
     'font-size': '14px',
