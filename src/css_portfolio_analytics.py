@@ -439,7 +439,7 @@ popover_menu_tab_collapse_button_css = {
     'background-color': 'rgb(225, 255, 255)',
     'color': 'black',
     'font-family': 'Helvetica',
-    'font-size': '14px',
+    'font-size': '13px',
     'font-weight': 'bold'
 }
 popover_menu_button_css = {
@@ -628,43 +628,41 @@ link_container_css = {
 }
 
 # Plots
-plots_add_button_css = {
-    'display': 'inline-block',
-    'width': '220px',
-    'height': '32px',
-    # 'margin': '3px 5px 7px 0px',
-    'margin': '3px 5px 0px 0px',
-    'padding-left': '0px',
-    'padding-right': '0px',
-    'padding-bottom': '2px',
-    'vertical-align': 'middle',
-    'text-align': 'center',
-    'font-family': 'Helvetica',
-    'font-size': '14px',
-    'font-weight': 'bold',
-    'border-radius': '5px',
-    'border-color': 'rgb(152, 245, 178)',  # palegreen = rgb(152,251,152)
-    'background-color': 'rgb(212, 250, 220)',
-    'color': 'black'
-}
-plots_remove_button_css = {
-    'display': 'inline-block',
-    'width': '80px',
-    'height': '32px',
-    # 'margin': '3px 0px 7px 0px',
-    'margin-top': '3px',
-    'padding-left': '0px',
-    'padding-right': '0px',
-    'vertical-align': 'middle',
-    'text-align': 'center',
-    'font-family': 'Helvetica',
-    'font-size': '14px',
-    'font-weight': 'bold',
-    'border-radius': '5px',
-    'border-color': 'rgb(255, 178, 185)',
-    'background-color': 'rgb(255, 222, 220)',
-    'color': 'black'
-}
+# plots_add_button_css = {
+#     'display': 'inline-block',
+#     'width': '220px',
+#     'height': '32px',
+#     'margin': '3px 5px 5px 0px',
+#     'padding-left': '0px',
+#     'padding-right': '0px',
+#     'padding-bottom': '2px',
+#     'vertical-align': 'middle',
+#     'text-align': 'center',
+#     'font-family': 'Helvetica',
+#     'font-size': '14px',
+#     'font-weight': 'bold',
+#     'border-radius': '5px',
+#     'border-color': 'rgb(152, 245, 178)',  # palegreen = rgb(152,251,152)
+#     'background-color': 'rgb(212, 250, 220)',
+#     'color': 'black'
+# }
+# plots_remove_button_css = {
+#     'display': 'inline-block',
+#     'width': '80px',
+#     'height': '32px',
+#     'margin': '3px 0px 5px 0px',
+#     'padding-left': '0px',
+#     'padding-right': '0px',
+#     'vertical-align': 'middle',
+#     'text-align': 'center',
+#     'font-family': 'Helvetica',
+#     'font-size': '14px',
+#     'font-weight': 'bold',
+#     'border-radius': '5px',
+#     'border-color': 'rgb(255, 178, 185)',
+#     'background-color': 'rgb(255, 222, 220)',
+#     'color': 'black'
+# }
 reset_axes_button_css = {
     'display': 'inline-block',
     # 'display': 'flex',

@@ -65,6 +65,8 @@ button, input, select, textarea {
 #add-candlestick-button:hover,
 #add-price-overlays-button:hover,
 #add-volume-button:hover,
+#add-dollar-volume-button:hover,
+#add-obv-button:hover,
 #add-drawdowns-button:hover,
 #add-bollinger-button:hover,
 #add-boll-width-button:hover,
@@ -90,6 +92,8 @@ button, input, select, textarea {
 #remove-candlestick-button:hover,
 #remove-price-overlays-button:hover,
 #remove-volume-button:hover,
+#remove-dollar-volume-button:hover,
+#remove-obv-button:hover,
 #remove-drawdowns-button:hover,
 #remove-bollinger-button:hover,
 #remove-boll-width-button:hover,
@@ -109,6 +113,88 @@ button, input, select, textarea {
 {
     border-color: rgb(255, 178, 185) !important;
     background-color: rgb(255, 178, 185) !important;
+}
+
+#add-hist-price-button,
+#add-candlestick-button,
+#add-price-overlays-button,
+#add-volume-button,
+#add-dollar-volume-button,
+#add-obv-button,
+#add-drawdowns-button,
+#add-bollinger-button,
+#add-boll-width-button,
+#add-ma-env-button,
+#add-ma-ribbon-button,
+#add-macd-button,
+#add-impulse-macd-button,
+#add-atr-button,
+#add-mvol-button,
+#add-ulcer-button,
+#add-rsi-button,
+#add-stochastic-button,
+#add-diff-1-button,
+#add-diff-2-button,
+#add-diff-3-button,
+#add-diff-stochastic-button
+{
+    display: inline-block;
+    width: 220px;
+    height: 32px;
+    margin: 3px 5px 7px 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 2px;
+    vertical-align: middle;
+    text-align: center;
+    font-family: Helvetica;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    border-color: rgb(152, 245, 178);
+    background-color: rgb(212, 250, 220);
+    color: black;
+}
+
+#remove-hist-price-button,
+#remove-candlestick-button,
+#remove-price-overlays-button,
+#remove-volume-button,
+#remove-dollar-volume-button,
+#remove-obv-button,
+#remove-drawdowns-button,
+#remove-bollinger-button,
+#remove-boll-width-button,
+#remove-ma-env-button,
+#remove-ma-ribbon-button,
+#remove-macd-button,
+#remove-impulse-macd-button,
+#remove-atr-button,
+#remove-mvol-button,
+#remove-ulcer-button,
+#remove-rsi-button,
+#remove-stochastic-button,
+#remove-diff-1-button,
+#remove-diff-2-button,
+#remove-diff-3-button,
+#remove-diff-stochastic-button
+{
+    display: inline-block;
+    width: 80px;
+    height: 32px;
+    margin: 3px 0px 7px 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 2px;
+    vertical-align: middle;
+    text-align: center;
+    font-family: Helvetica;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    border-color: rgb(255, 178, 185);
+    background-color: rgb(255, 222, 220);
+    color: black;
 }
 
 #collapse-button-general-tab:hover,

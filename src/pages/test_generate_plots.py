@@ -409,7 +409,7 @@ layout = html.Div([
         ),
         dbc.Popover([
             # NOTE: Must use <BR/>, not <BR>, to break the line inside the popover
-            dcc.Markdown("""<DIV>TICKERS<BR/>DATE RANGE<BR/>THEME & TEMPLATE</DIV>""", dangerously_allow_html = True)
+            dcc.Markdown("""<DIV>► TICKERS<BR/>► DATE RANGE<BR/>► THEME & TEMPLATE</DIV>""", dangerously_allow_html = True)
             ], 
             id = 'popover-collapse-button-general-tab',
             target = 'collapse-button-general-tab',
@@ -721,7 +721,7 @@ layout = html.Div([
                                         debounce = True,
                                         style = {'width': '89px'}
                                     )],
-                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '0px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
 
                                 html.Div([
@@ -737,7 +737,7 @@ layout = html.Div([
                                         debounce = True,
                                         style = {'width': '103px'}
                                     )],
-                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'border-radius': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '0px', 'border-radius': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 dbc.Popover([
                                     html.Span(
@@ -766,7 +766,7 @@ layout = html.Div([
                                         debounce = True,
                                         style = {'width': '103px'}
                                     )],
-                                    style = {'display': 'inline-block', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                    style = {'display': 'inline-block', 'margin-bottom': '0px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 dbc.Popover([
                                     html.Span(
@@ -828,7 +828,7 @@ layout = html.Div([
         ),
         dbc.Popover([
             # NOTE: Must use <BR/>, not <BR>, to break the line inside the popover
-            dcc.Markdown("""<DIV>HISTORICAL PRICE<BR/>CANDLESTICK<BR/>PRICE OVERLAYS<BR/>DRAWDOWNS</DIV>""", dangerously_allow_html = True)
+            dcc.Markdown("""<DIV>► PRICE<BR/>► CANDLESTICK<BR/>► PRICE OVERLAYS<BR/>► DRAWDOWNS</DIV>""", dangerously_allow_html = True)
             ], 
             id = 'popover-collapse-button-prices-tab',
             target = 'collapse-button-prices-tab',
@@ -989,7 +989,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'In order to plot on Secondary Y-Axis, it must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
+                                        'Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS in order to plot on it.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -1014,8 +1014,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'success',
-                                        size = 'sm',
-                                        style = plots_add_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -1028,8 +1027,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'danger',
-                                        size = 'sm',
-                                        style = plots_remove_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -1172,8 +1170,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'success',
-                                        size = 'sm',
-                                        style = plots_add_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -1185,8 +1182,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'danger',
-                                        size = 'sm',
-                                        style = plots_remove_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -1351,8 +1347,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'success',
-                                        size = 'sm',
-                                        style = plots_add_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -1364,8 +1359,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'danger',
-                                        size = 'sm',
-                                        style = plots_remove_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -1565,7 +1559,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'success',
                                         size = 'sm',
-                                        style = plots_add_button_css
+                                        style = {'margin-bottom': '0px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -1578,7 +1572,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'danger',
                                         size = 'sm',
-                                        style = plots_remove_button_css
+                                        style = {'margin-bottom': '0px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -1628,7 +1622,7 @@ layout = html.Div([
         ),
         dbc.Popover([
             # NOTE: Must use <BR/>, not <BR>, to break the line inside the popover
-            dcc.Markdown("""<DIV>VOLUME<BR/>DOLLAR VOLUME<BR/>ON-BALANCE VOLUME</DIV>""", dangerously_allow_html = True)
+            dcc.Markdown("""<DIV>► VOLUME<BR/>► DOLLAR VOLUME<BR/>► ON-BALANCE VOLUME</DIV>""", dangerously_allow_html = True)
             ], 
             id = 'popover-collapse-button-volume-tab',
             target = 'collapse-button-volume-tab',
@@ -1766,7 +1760,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'In order to plot on Secondary Y-Axis, it must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
+                                        'Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS in order to plot on it.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -1786,8 +1780,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'success',
-                                        size = 'sm',
-                                        style = plots_add_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -1799,8 +1792,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'danger',
-                                        size = 'sm',
-                                        style = plots_remove_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -1965,7 +1957,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'In order to plot on Secondary Y-Axis, it must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
+                                        'Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS in order to plot on it.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -1986,7 +1978,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'success',
                                         size = 'sm',
-                                        style = plots_add_button_css
+                                        style = {'margin-bottom': '0px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -1999,7 +1991,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'danger',
                                         size = 'sm',
-                                        style = plots_remove_button_css
+                                        style = {'margin-bottom': '0px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -2164,7 +2156,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'In order to plot on Secondary Y-Axis, it must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
+                                        'Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS in order to plot on it.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -2185,7 +2177,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'success',
                                         size = 'sm',
-                                        style = plots_add_button_css
+                                        style = {'margin-bottom': '0px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -2198,7 +2190,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'danger',
                                         size = 'sm',
-                                        style = plots_remove_button_css
+                                        style = {'margin-bottom': '0px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -2248,11 +2240,11 @@ layout = html.Div([
         ),
         dbc.Popover([
             # NOTE: Must use <BR/>, not <BR>, to break the line inside the popover
-            dcc.Markdown("""<DIV>MOVING AVERAGE ENVELOPES<BR/>
-                DOLLAR VOLUME<BR/>
-                MOVING AVERAGE RIBBON<BR/>
-                MACD / MACD-V<BR/>
-                IMPULSE MACD</DIV>""",
+            dcc.Markdown("""<DIV>► MOVING AVERAGE ENVELOPES<BR/>
+                ► DOLLAR VOLUME<BR/>
+                ► MOVING AVERAGE RIBBON<BR/>
+                ► MACD / MACD-V<BR/>
+                ► IMPULSE MACD</DIV>""",
                 dangerously_allow_html = True)
             ], 
             id = 'popover-collapse-button-trend-tab',
@@ -2430,8 +2422,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'success',
-                                        size = 'sm',
-                                        style = plots_add_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -2443,8 +2434,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'danger',
-                                        size = 'sm',
-                                        style = plots_remove_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -2619,8 +2609,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'success',
-                                        size = 'sm',
-                                        style = plots_add_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -2632,8 +2621,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'danger',
-                                        size = 'sm',
-                                        style = plots_remove_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -2897,7 +2885,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'Price can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS for this option to be available.',
+                                        'Price can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must be first activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -2931,8 +2919,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'success',
-                                        size = 'sm',
-                                        style = plots_add_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -2944,8 +2931,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'danger',
-                                        size = 'sm',
-                                        style = plots_remove_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -3211,7 +3197,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'Price can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS for this option to be available.',
+                                        'Price can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must be first activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -3246,7 +3232,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'success',
                                         size = 'sm',
-                                        style = plots_add_button_css
+                                        style = {'margin-bottom': '0px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -3259,7 +3245,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'danger',
                                         size = 'sm',
-                                        style = plots_remove_button_css
+                                        style = {'margin-bottom': '0px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -3309,11 +3295,11 @@ layout = html.Div([
         ),
         dbc.Popover([
             # NOTE: Must use <BR/>, not <BR>, to break the line inside the popover
-            dcc.Markdown("""<DIV>BOLLINGER BANDS<BR/>
-                BOLLINGER BANDWIDTH / %B<BR/>
-                AVERAGE TRUE RATE<BR/>
-                MOVING VOLATILITY<BR/>
-                ULCER INDEX</DIV>""",
+            dcc.Markdown("""<DIV>► BOLLINGER BANDS<BR/>
+                ► BOLLINGER BANDWIDTH / %B<BR/>
+                ► AVERAGE TRUE RATE<BR/>
+                ► MOVING VOLATILITY<BR/>
+                ► ULCER INDEX</DIV>""",
                 dangerously_allow_html = True)
             ], 
             id = 'popover-collapse-button-volatility-tab',
@@ -3491,8 +3477,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'success',
-                                        size = 'sm',
-                                        style = plots_add_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -3504,8 +3489,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'danger',
-                                        size = 'sm',
-                                        style = plots_remove_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -3632,7 +3616,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'In order to plot on Secondary Y-Axis, it must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
+                                        'Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS in order to plot on it.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -3762,8 +3746,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'success',
-                                        size = 'sm',
-                                        style = plots_add_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -3775,8 +3758,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'danger',
-                                        size = 'sm',
-                                        style = plots_remove_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -3918,7 +3900,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'In order to plot on Secondary Y-Axis, it must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
+                                        'Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS in order to plot on it.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -3995,8 +3977,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'success',
-                                        size = 'sm',
-                                        style = plots_add_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -4009,8 +3990,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'danger',
-                                        size = 'sm',
-                                        style = plots_remove_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -4137,7 +4117,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'In order to plot on Secondary Y-Axis, it must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
+                                        'Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS in order to plot on it.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -4237,8 +4217,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'success',
-                                        size = 'sm',
-                                        style = plots_add_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -4250,8 +4229,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'danger',
-                                        size = 'sm',
-                                        style = plots_remove_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -4379,7 +4357,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'In order to plot on Secondary Y-Axis, it must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
+                                        'Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS in order to plot on it.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -4454,7 +4432,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'success',
                                         size = 'sm',
-                                        style = plots_add_button_css
+                                        style = {'margin-bottom': '0px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -4467,7 +4445,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'danger',
                                         size = 'sm',
-                                        style = plots_remove_button_css
+                                        style = {'margin-bottom': '0px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -4517,7 +4495,7 @@ layout = html.Div([
         ),
         dbc.Popover([
             # NOTE: Must use <BR/>, not <BR>, to break the line inside the popover
-            dcc.Markdown("""<DIV>RELATIVE STRENGTH INDEX<BR/>STOCHASTIC OSCILLATOR</DIV>""",
+            dcc.Markdown("""<DIV>► RELATIVE STRENGTH INDEX<BR/>► STOCHASTIC OSCILLATOR</DIV>""",
                 dangerously_allow_html = True)
             ], 
             id = 'popover-collapse-button-momentum-tab',
@@ -4753,8 +4731,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'success',
-                                        size = 'sm',
-                                        style = plots_add_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -4766,8 +4743,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'danger',
-                                        size = 'sm',
-                                        style = plots_remove_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -5074,7 +5050,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'success',
                                         size = 'sm',
-                                        style = plots_add_button_css
+                                        style = {'margin-bottom': '0px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -5087,7 +5063,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'danger',
                                         size = 'sm',
-                                        style = plots_remove_button_css
+                                        style = {'margin-bottom': '0px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -5137,10 +5113,10 @@ layout = html.Div([
         ),
         dbc.Popover([
             # NOTE: Must use <BR/>, not <BR>, to break the line inside the popover
-            dcc.Markdown("""<DIV>DIFFERENTIAL No. 1<BR/>
-                DIFFERENTIAL No. 2<BR/>
-                DIFFERENTIAL No. 3<BR/>
-                STOCHASTIC DIFFERENTIAL</DIV>""",
+            dcc.Markdown("""<DIV>► DIFFERENTIAL No. 1<BR/>
+                ► DIFFERENTIAL No. 2<BR/>
+                ► DIFFERENTIAL No. 3<BR/>
+                ► STOCHASTIC DIFFERENTIAL</DIV>""",
                 dangerously_allow_html = True)
             ], 
             id = 'popover-collapse-button-differential-tab',
@@ -5575,8 +5551,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'success',
-                                        size = 'sm',
-                                        style = plots_add_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -5588,8 +5563,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'danger',
-                                        size = 'sm',
-                                        style = plots_remove_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -6025,8 +5999,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'success',
-                                        size = 'sm',
-                                        style = plots_add_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -6038,8 +6011,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'danger',
-                                        size = 'sm',
-                                        style = plots_remove_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -6475,8 +6447,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'success',
-                                        size = 'sm',
-                                        style = plots_add_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -6488,8 +6459,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'danger',
-                                        size = 'sm',
-                                        style = plots_remove_button_css
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -6851,12 +6821,12 @@ layout = html.Div([
                                 html.Div([
                                     dbc.Button(
                                         'Add To Plot',
-                                        id = f'add-diff-stochastic-button',
+                                        id = 'add-diff-stochastic-button',
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'success',
                                         size = 'sm',
-                                        style = plots_add_button_css
+                                        style = {'margin-bottom': '0px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -6864,12 +6834,12 @@ layout = html.Div([
                                     dbc.Button(
                                         # '✕',
                                         'Remove',
-                                        id = f'remove-diff-stochastic-button',
+                                        id = 'remove-diff-stochastic-button',
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'danger',
                                         size = 'sm',
-                                        style = plots_remove_button_css
+                                        style = {'margin-bottom': '0px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -7419,7 +7389,7 @@ def toggle_collapse_momentum_tab(n, is_open):
     State('collapse-hist-price', 'is_open')
 )
 def toggle_collapse_hist_price(n, is_open):
-    title = 'HISTORICAL PRICE'
+    title = 'PRICE'
     label = f'► {title}' if is_open else f'▼ {title}'
     if n:
         return label, not is_open
@@ -8610,9 +8580,10 @@ def update_plot(
 
     downloaded_data = hist_data.download_yf_data(start_date, end_date, selected_tickers)
 
-    tickers_to_plot = [id_tk_map[i] for i in selected_rows_tickers_to_plot] if selected_rows_tickers_to_plot != [] else id_tk_map[0]
+    tickers_to_plot = [id_tk_map[i] for i in selected_rows_tickers_to_plot] if selected_rows_tickers_to_plot != [] else [id_tk_map[0]]
 
-    tk = tickers_to_plot[0]
+    # tk = tickers_to_plot[0]
+    # date_index = downloaded_data[tk_0]['ohlc'][min_start_date: max_end_date].index
 
     theme = theme.lower()
     secondary_y = boolean(sec_y)
@@ -8622,8 +8593,7 @@ def update_plot(
     # could take into account the trace possibly present already on the secondary y-axis
     
     dd_add_price_disabled = not boolean(drawdowns_add_price)
-    # n_drawdowns = 5 if n_top is None else n_top
-    # dd_number_value = n_drawdowns
+    # Genaralizing to the case where multiple tickers are selected to plot
     max_top_drawdowns = 5 if n_top is None else n_top
     dd_number_value = max_top_drawdowns
 
@@ -8778,6 +8748,10 @@ def update_plot(
         # min_date = datetime.strptime(new_start_date, '%Y-%m-%d').date()
         # max_date = datetime.strptime(new_end_date, '%Y-%m-%d').date()
 
+        ## if (new_start_date is None) | (new_end_date is None):
+        ##     min_date = min_start_date
+        ##     max_date = max_end_date
+        ## else:
         min_date = datetime.strptime(new_start_date, '%Y-%m-%d').date() if new_start_date is not None else datetime.strptime(start_date, '%Y-%m-%d').date()
         max_date = datetime.strptime(new_end_date, '%Y-%m-%d').date() if new_end_date is not None else datetime.strptime(end_date, '%Y-%m-%d').date()
 
