@@ -1537,7 +1537,7 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Price Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Price Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id = 'drawdowns-price-color-dropdown',
                                         className = 'plots-dropdown-button',
@@ -2322,7 +2322,7 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '75px'}
+                                        style = {'width': '80px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -2383,7 +2383,7 @@ layout = html.Div([
                                         max = 50,
                                         step = 2.5,
                                         debounce = True,
-                                        style = {'width': '70px'}
+                                        style = {'width': '75px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -2409,7 +2409,7 @@ layout = html.Div([
                                         options = overlay_color_themes,
                                         value = 'Grasslands',
                                         clearable = False,
-                                        style = {'width': '120px'}
+                                        style = {'width': '125px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -2512,7 +2512,7 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '75px'}
+                                        style = {'width': '80px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -2541,7 +2541,7 @@ layout = html.Div([
                                         max = 6,
                                         step = 1,
                                         debounce = True,
-                                        style = {'width': '82px'}
+                                        style = {'width': '100px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -2570,7 +2570,7 @@ layout = html.Div([
                                         options = ['No', 'Yes'],
                                         value = 'No',
                                         clearable = False,
-                                        style = {'width': '113px'}
+                                        style = {'width': '100px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -2596,7 +2596,7 @@ layout = html.Div([
                                         options = overlay_color_themes,
                                         value = 'Lavender',
                                         clearable = False,
-                                        style = {'width': '120px'}
+                                        style = {'width': '125px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -2689,20 +2689,20 @@ layout = html.Div([
                                         options = ['Upper'],
                                         value = 'Upper',
                                         clearable = False,
-                                        style = {'width': '98px'}
+                                        style = {'width': '100px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
 
                                 html.Div([
-                                    html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-bottom': '0px'}),
+                                    html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id = 'macd-adjusted-dropdown',
                                         className = 'plots-dropdown-button',
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '78px'}
+                                        style = {'width': '80px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -2721,14 +2721,14 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Vol Normalized', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px'}),
+                                    html.Div('Vol Normalized', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id = 'macd-vol-normalized-dropdown',
                                         className = 'plots-dropdown-button',
                                         options = ['No', 'Yes'],
                                         value = 'No',
                                         clearable = False,
-                                        style = {'width': '114px'}
+                                        style = {'width': '115px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -2756,7 +2756,7 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '75px'}
+                                        style = {'width': '76px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -2773,7 +2773,7 @@ layout = html.Div([
                                         step = 1,
                                         debounce = True,
                                         disabled = False,
-                                        style = {'width': '102px'}
+                                        style = {'width': '105px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -2787,7 +2787,7 @@ layout = html.Div([
                                         value = 'Gold',
                                         clearable = False,
                                         disabled = False,
-                                        style = {'width': '113px'}
+                                        style = {'width': '114px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -2800,7 +2800,7 @@ layout = html.Div([
                                         options = ['Histogram', 'Filled Line'],
                                         value = 'Histogram',
                                         clearable = False,
-                                        style = {'width': '103px'}
+                                        style = {'width': '105px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -2820,14 +2820,14 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Oscillator Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top'}),
+                                    html.Div('Oscillator Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id = 'macd-histogram-type-dropdown',
                                         className = 'plots-dropdown-button',
                                         options = ['MACD-Signal', 'MACD-Zero'],
                                         value = 'MACD-Signal',
                                         clearable = False,
-                                        style = {'width': '125px'}
+                                        style = {'width': '127px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -2853,7 +2853,7 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '62px'}
+                                        style = {'width': '63px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -2866,7 +2866,7 @@ layout = html.Div([
                                         options = candle_colors,
                                         value = 'Green-Red',
                                         clearable = False,
-                                        style = {'width': '116px'}
+                                        style = {'width': '120px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -2879,7 +2879,7 @@ layout = html.Div([
                                         options = ['No', 'Yes'],
                                         value = 'No',
                                         clearable = False,
-                                        style = {'width': '67px'}
+                                        style = {'width': '68px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -2999,7 +2999,7 @@ layout = html.Div([
                                         options = ['Upper'],
                                         value = 'Upper',
                                         clearable = False,
-                                        style = {'width': '98px'}
+                                        style = {'width': '100px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3012,7 +3012,7 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '78px'}
+                                        style = {'width': '80px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3042,13 +3042,13 @@ layout = html.Div([
                                         step = 1,
                                         debounce = True,
                                         disabled = False,
-                                        style = {'width': '114px'}
+                                        style = {'width': '115px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'The length of the Smoothed Moving Average (SMMA) period used in the Impulse MACD calculation..',
+                                        'The length of the Smoothed Moving Average (SMMA) period used in the Impulse MACD calculation.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -3068,7 +3068,7 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '75px'}
+                                        style = {'width': '76px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3085,7 +3085,7 @@ layout = html.Div([
                                         step = 1,
                                         debounce = True,
                                         disabled = False,
-                                        style = {'width': '102px'}
+                                        style = {'width': '105px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3099,7 +3099,7 @@ layout = html.Div([
                                         value = 'Gold',
                                         clearable = False,
                                         disabled = False,
-                                        style = {'width': '113px'}
+                                        style = {'width': '114px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3112,7 +3112,7 @@ layout = html.Div([
                                         options = ['Histogram', 'Filled Line'],
                                         value = 'Histogram',
                                         clearable = False,
-                                        style = {'width': '103px'}
+                                        style = {'width': '105px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3139,7 +3139,7 @@ layout = html.Div([
                                         options = ['MACD-Signal', 'MACD-Zero'],
                                         value = 'MACD-Signal',
                                         clearable = False,
-                                        style = {'width': '125px'}
+                                        style = {'width': '127px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3165,7 +3165,7 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '62px'}
+                                        style = {'width': '63px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3178,7 +3178,7 @@ layout = html.Div([
                                         options = candle_colors,
                                         value = 'Green-Red',
                                         clearable = False,
-                                        style = {'width': '116px'}
+                                        style = {'width': '120px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3191,7 +3191,7 @@ layout = html.Div([
                                         options = ['No', 'Yes'],
                                         value = 'No',
                                         clearable = False,
-                                        style = {'width': '67px'}
+                                        style = {'width': '68px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -4556,14 +4556,14 @@ layout = html.Div([
                             children = [
                             
                                 html.Div([
-                                    html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '0px'}),
                                     dcc.Dropdown(
                                         id = 'rsi-deck-dropdown',
                                         className = 'plots-dropdown-button',
                                         options = ['Upper'],
                                         value = 'Upper',
                                         clearable = False,
-                                        style = {'width': '90px'}
+                                        style = {'width': '80px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -4573,27 +4573,38 @@ layout = html.Div([
                                     dcc.Dropdown(
                                         id = 'rsi-price-type-dropdown',
                                         className = 'plots-dropdown-button',
-                                        options = ['Close', 'Adjusted Close'],
+                                        options = ['Close', 'Open', 'High', 'Low'],
                                         value = 'Close',
                                         clearable = False,
-                                        style = {'width': '130px'}
+                                        style = {'width': '75px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
+                                html.Div([
+                                    html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'rsi-adjusted-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
+                                        clearable = False,
+                                        style = {'width': '70px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),                                
                                 dbc.Popover([
                                     html.Span(
-                                        'Is RSI based on prices adjusted for stock splits and dividends?',
+                                        'Is RSI based on price adjusted for stock splits and dividends?',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
-                                    id = 'popover-rsi-price-type-dropdown',
-                                    target = 'rsi-price-type-dropdown',
+                                    id = 'popover-rsi-adjusted-dropdown',
+                                    target = 'rsi-adjusted-dropdown',
                                     body = False,
                                     trigger = 'hover',
                                     hide_arrow = False,
                                     style = popover_menu_button_css
                                 ),
-
                                 html.Div([
                                     html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
                                     dcc.Dropdown(
@@ -4602,13 +4613,13 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '70px'}
+                                        style = {'width': '65px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
 
                                 html.Div([
-                                    html.Div('# Of Periods', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    html.Div('Periods', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
                                     dbc.Input(
                                         id = 'rsi-periods-input',
                                         className = 'plots-input-button',
@@ -4617,26 +4628,52 @@ layout = html.Div([
                                         min = 1,
                                         step = 1,
                                         debounce = True,
-                                        style = {'width': '110px'}
+                                        style = {'width': '65px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-bottom': '5px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Number of periods (days) used in the RSI calculation',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ],  
+                                    id = 'popover-rsi-periods-input',
+                                    target = 'rsi-periods-input',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
 
                                 html.Div([
-                                    html.Div('Add Overbought/Oversold', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Add OB/OS', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id = 'rsi-add-overbought-oversold-dropdown',
                                         className = 'plots-dropdown-button',
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '185px'}
+                                        style = {'width': '95px'}
                                     )],
-                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Add Overbought and Oversold threshold lines?',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ],  
+                                    id = 'popover-rsi-add-overbought-oversold-dropdown',
+                                    target = 'rsi-add-overbought-oversold-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
-                                    html.Div('% Overbought Level', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('% OB', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dbc.Input(
                                         id = 'rsi-overbought-level-input',
                                         className = 'plots-input-button',
@@ -4647,13 +4684,26 @@ layout = html.Div([
                                         step = 1,
                                         debounce = True,
                                         disabled = False,
-                                        style = {'width': '155px'}
+                                        style = {'width': '65px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Set % Overbought threshold',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ],  
+                                    id = 'popover-rsi-overbought-level-input',
+                                    target = 'rsi-overbought-level-input',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
 
                                 html.Div([
-                                    html.Div('% Oversold Level', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('% OS', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dbc.Input(
                                         id = 'rsi-oversold-level-input',
                                         className = 'plots-input-button',
@@ -4664,9 +4714,22 @@ layout = html.Div([
                                         step = 1,
                                         debounce = True,
                                         disabled = False,
-                                        style = {'width': '140px'}
+                                        style = {'width': '65px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Set % Oversold threshold',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ],  
+                                    id = 'popover-rsi-oversold-level-input',
+                                    target = 'rsi-oversold-level-input',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
@@ -4678,7 +4741,7 @@ layout = html.Div([
                                         value = 'Gold',
                                         clearable = False,
                                         disabled = False,
-                                        style = {'width': '110px'}
+                                        style = {'width': '112px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -4691,7 +4754,7 @@ layout = html.Div([
                                         options = ['No', 'Yes'],
                                         value = 'No',
                                         clearable = False,
-                                        style = {'width': '70px'}
+                                        style = {'width': '71px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -4718,7 +4781,7 @@ layout = html.Div([
                                         value = 'Base',
                                         clearable = False,
                                         disabled = False,
-                                        style = {'width': '110px'}
+                                        style = {'width': '112px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -8195,6 +8258,7 @@ def toggle_collapse_stochastic(n, is_open):
    # MACD inputs
     Input('rsi-deck-dropdown', 'value'),
     Input('rsi-price-type-dropdown', 'value'),
+    Input('rsi-adjusted-dropdown', 'value'),
     Input('rsi-add-title-dropdown', 'value'),
     Input('rsi-periods-input', 'value'),
     Input('rsi-add-overbought-oversold-dropdown', 'value'),
@@ -8517,6 +8581,7 @@ def update_plot(
 
         rsi_deck,
         rsi_price_type,
+        rsi_adjusted,
         rsi_add_title,
         rsi_periods,
         rsi_add_overbought_oversold,
@@ -9574,11 +9639,12 @@ def update_plot(
                         fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
         if add_rsi:
-            rsi_prices = downloaded_data[tk]['ohlc_adj']['Close'] if rsi_price_type == 'Adjusted Close' else downloaded_data[tk]['ohlc']['Close']
-            rsi_prices = rsi_prices[min_date: max_date]
+            df_rsi = downloaded_data[tk]['ohlc_adj'] if boolean(rsi_adjusted) else downloaded_data[tk]['ohlc']
+            rsi_price = df_rsi[rsi_price_type]
+            rsi_price = rsi_price[min_date: max_date]
             #
             rsi_data = analyze_prices.relative_strength(
-                rsi_prices,
+                rsi_price,
                 period = rsi_periods
             )
             #
@@ -9587,6 +9653,7 @@ def update_plot(
                 rsi_data,
                 tk,
                 price_type = rsi_price_type,
+                adjusted = boolean(rsi_adjusted),
                 add_price = boolean(rsi_add_price),
                 target_deck = deck_number(deck_type, rsi_deck),
                 oversold_threshold = rsi_oversold_level,

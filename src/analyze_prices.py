@@ -2567,10 +2567,33 @@ class AnalyzePrices():
         period = 14
     ):
         """
-        prices:
-            this should be close_tk
         http://stockcharts.com/school/doku.php?id=chart_school:glossary_r#relativestrengthindex
         http://www.investopedia.com/terms/r/rsi.asp
+       
+        prices:
+            This would typically be close_tk - see AI response below.
+
+        Q: Can rsi be based on high, low or open prices, rather than the close price?
+        
+        Google AI:
+        No, the Relative Strength Index (RSI) is typically calculated solely based on the closing price of a security, 
+        meaning it does not directly use the high, low, or open prices in its calculation; this is because the closing price
+        is considered the most significant price point for determining the overall market sentiment for a given period. 
+        Key points about RSI and closing price:
+        1.  Standard Calculation:
+            The RSI formula compares the current closing price to the previous closing price to determine the net change
+            and calculate the relative strength. 
+        2.  Interpretation:
+            Traders primarily use the RSI to identify potential overbought or oversold conditions based on whether the RSI 
+            value is above 70 (overbought) or below 30 (oversold), which are typically based on the closing price. 
+        However, it's important to note:
+        3.  Customization:
+            While not common, some traders might experiment with custom RSI calculations using other price points like the 
+            high or low, depending on their trading strategy and market analysis approach. 
+        4.  Price Action Analysis:
+            Even when using the standard RSI based on closing prices, traders still need to consider the overall price action,
+            including highs and lows, to interpret the signals accurately. 
+
         """
 
         deltas = np.diff(prices)
@@ -2617,6 +2640,7 @@ class AnalyzePrices():
         rsi_data,
         tk,
         price_type = 'Close',
+        adjusted = True,
         add_price = False,
         target_deck = 2,
         oversold_threshold = 30,
@@ -2696,6 +2720,8 @@ class AnalyzePrices():
 
         title_rsi = f'{tk} Relative Strength Index {rsi_type} (%)'
         yaxis_title = f'RSI (%)'
+        price_name_prefix = 'Adjusted ' if adjusted else ''
+        price_name = f'{price_name_prefix}{price_type}'
 
         y_upper_limit = 99.99 if target_deck > 1 else 100
 
@@ -2803,7 +2829,7 @@ class AnalyzePrices():
                     y = df_price,
                     mode = 'lines',
                     line_color = price_color,
-                    name = price_type,
+                    name = price_name,
                     uid = 'rsi-price'
                 ),
                 secondary_y = True
@@ -2811,7 +2837,7 @@ class AnalyzePrices():
 
             fig_rsi.update_yaxes(
                 range = sec_y_range,
-                title = price_type,
+                title = price_name,
                 showticklabels = True,
                 tick0 = sec_y_lower_limit,
                 dtick = sec_y_delta,
