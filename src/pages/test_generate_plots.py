@@ -2885,7 +2885,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'Price can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must be first activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
+                                        'Price can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -3197,7 +3197,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'Price can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must be first activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
+                                        'Price can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -4634,7 +4634,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'Number of periods (days) used in the RSI calculation',
+                                        'Number of periods (days) used in the RSI calculation, 14 is the default',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ],  
@@ -4760,7 +4760,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'Price can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS for this option to be available.',
+                                        'Price can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -5078,7 +5078,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'Price can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS for this option to be available.',
+                                        'Price can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -5305,7 +5305,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'Line 1 can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS for this option to be available.',
+                                        'Line 1 can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -5753,7 +5753,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'Line 1 can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS for this option to be available.',
+                                        'Line 1 can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -6201,7 +6201,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'Line 1 can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS for this option to be available.',
+                                        'Line 1 can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -6768,7 +6768,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span("""%K Line, %D Line or Price can be added to Secondary Y-Axis on the Upper Deck. 
-                                        Secondary Y-Axis must be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS for this option to be available.""",
+                                        Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.""",
                                         style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
