@@ -2244,7 +2244,8 @@ layout = html.Div([
                 ► DOLLAR VOLUME<BR/>
                 ► MOVING AVERAGE RIBBON<BR/>
                 ► MACD / MACD-V<BR/>
-                ► IMPULSE MACD</DIV>""",
+                ► IMPULSE MACD<BR/>
+                ► SUPERTREND</DIV>""",
                 dangerously_allow_html = True)
             ], 
             id = 'popover-collapse-button-trend-tab',
@@ -2260,7 +2261,6 @@ layout = html.Div([
             html.Div([
 
                 ##### BEGIN MA ENVELOPE CONTROLS
-                # Category: TREND INDICATORS
 
                 html.Div([
                 
@@ -3260,6 +3260,182 @@ layout = html.Div([
                 ), 
 
                 ##### END IMPULSE MACD CONTROLS
+                
+                ##### BEGIN SUPERTREND CONTROLS
+
+                html.Div([
+                
+                    html.Div([
+                        dbc.Button(
+                            id = 'collapse-button-supertrend',
+                            class_name = 'ma-1',
+                            color = 'primary',
+                            size = 'sm',
+                            n_clicks = 0,
+                            style = collapse_button_css
+                        ),
+                        html.Div(
+                            id = 'added-to-plot-indicator-supertrend',
+                            style = not_added_to_plot_indicator_css
+                        )
+                    ],
+                    style = {'width': '310px', 'display': 'flex', 'flex-wrap': 'nowrap'}
+                    ),
+
+                    dbc.Collapse(
+                    
+                        html.Div(
+                        
+                            id = 'supertrend-controls',
+                            children = [
+                            
+                                html.Div([
+                                    html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'supertrend-deck-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Upper'],
+                                        value = 'Upper',
+                                        clearable = False,
+                                        style = {'width': '115px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='supertrend-adjusted-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
+                                        clearable = False,
+                                        style = {'width': '80px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Are the underlying prices adjusted for stock splits and dividends?',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-supertrend-adjusted-dropdown',
+                                    target = 'supertrend-adjusted-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('Middle Band', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='supertrend-add-middle-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
+                                        clearable = False,
+                                        style = {'width': '100px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Add the middle band, which is the average of High and Low prices?',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-supertrend-add-middle-dropdown',
+                                    target = 'supertrend-add-middle-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('Periods', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dbc.Input(
+                                        id = 'supertrend-periods-input',
+                                        className = 'plots-input-button',
+                                        type = 'number',
+                                        value = 13,
+                                        min = 1,
+                                        max = 200,
+                                        step = 1,
+                                        debounce = True,
+                                        style = {'width': '75px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Multiplier', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dbc.Input(
+                                        id = 'supertrend-multiplier-input',
+                                        className = 'plots-input-button',
+                                        type = 'number',
+                                        value = 3.0,
+                                        min = 0,
+                                        max = 10,
+                                        step = 0.1,
+                                        debounce = True,
+                                        style = {'width': '85px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='supertrend-color-theme-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = overlay_color_themes,
+                                        value = 'Gold',
+                                        clearable = False,
+                                        style = {'width': '135px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                ##### Add / Remove buttons
+                                html.Div([
+                                    dbc.Button(
+                                        'Add To Plot',
+                                        id = f'add-supertrend-button',
+                                        n_clicks = 0,
+                                        class_name = 'ma-1',
+                                        color = 'success',
+                                        size = 'sm',
+                                        style = {'margin-bottom': '0px'}
+                                    )],
+                                    style = {'display': 'inline-block'}
+                                ),
+                                html.Div([
+                                    dbc.Button(
+                                        # '✕',
+                                        'Remove',
+                                        id = f'remove-supertrend-button',
+                                        n_clicks = 0,
+                                        class_name = 'ma-1',
+                                        color = 'danger',
+                                        size = 'sm',
+                                        style = {'margin-bottom': '0px'}
+                                    )],
+                                    style = {'display': 'inline-block'}
+                                )
+                            ],
+                        ), 
+
+                        id = 'collapse-supertrend',
+                        is_open = False,
+                        style = {'width': '310px'}
+                    )],
+                    style = {'margin-left': '5px'}
+                ), 
+
+                ##### END SUPERTREND CONTROLS
 
             ]),
             id = 'collapse-trend-tab',
@@ -7146,6 +7322,7 @@ def toggle_collapse_template(n, is_open):
     Output('price-overlays-deck-dropdown', 'options'),
     Output('macd-deck-dropdown', 'options'),
     Output('impulse-macd-deck-dropdown', 'options'),
+    Output('supertrend-deck-dropdown', 'options'),
     Output('atr-deck-dropdown', 'options'),
     Output('mvol-deck-dropdown', 'options'),
     Output('ulcer-deck-dropdown', 'options'),
@@ -7169,6 +7346,7 @@ def toggle_collapse_template(n, is_open):
     Output('price-overlays-deck-dropdown', 'value'),
     Output('macd-deck-dropdown', 'value'),
     Output('impulse-macd-deck-dropdown', 'value'),
+    Output('supertrend-deck-dropdown', 'value'),
     Output('atr-deck-dropdown', 'value'),
     Output('mvol-deck-dropdown', 'value'),
     Output('ulcer-deck-dropdown', 'value'),    
@@ -7195,6 +7373,7 @@ def toggle_collapse_template(n, is_open):
     Input('price-overlays-deck-dropdown', 'value'),
     Input('macd-deck-dropdown', 'value'),
     Input('impulse-macd-deck-dropdown', 'value'),
+    Input('supertrend-deck-dropdown', 'value'),
     Input('atr-deck-dropdown', 'value'),
     Input('mvol-deck-dropdown', 'value'),
     Input('ulcer-deck-dropdown', 'value'),
@@ -7220,7 +7399,8 @@ def target_deck_options(
     ma_ribbon_deck,
     price_overlays_deck,
     macd_deck,
-    impulse_macd_deck,    
+    impulse_macd_deck,
+    supertrend_deck,
     atr_deck,
     mvol_deck,
     ulcer_deck,
@@ -7253,7 +7433,8 @@ def target_deck_options(
         ma_ribbon_deck_value =          ['Lower'] if (ma_ribbon_deck in ['Middle', 'Lower']) else ['Upper']
         price_overlays_deck_value =     ['Lower'] if (price_overlays_deck in ['Middle', 'Lower']) else ['Upper']
         macd_deck_value =               ['Lower'] if (macd_deck in ['Middle', 'Lower']) else ['Upper']
-        impulse_macd_deck_value =       ['Lower'] if (impulse_macd_deck in ['Middle', 'Lower']) else ['Upper']        
+        impulse_macd_deck_value =       ['Lower'] if (impulse_macd_deck in ['Middle', 'Lower']) else ['Upper']
+        supertrend_deck_value =         ['Lower'] if (supertrend_deck in ['Middle', 'Lower']) else ['Upper']
         atr_deck_value =                ['Lower'] if (atr_deck in ['Middle', 'Lower']) else ['Upper']
         mvol_deck_value =               ['Lower'] if (mvol_deck in ['Middle', 'Lower']) else ['Upper']
         ulcer_deck_value =              ['Lower'] if (ulcer_deck in ['Middle', 'Lower']) else ['Upper']
@@ -7277,6 +7458,7 @@ def target_deck_options(
             price_overlays_deck_value + \
             macd_deck_value + \
             impulse_macd_deck_value + \
+            supertrend_deck_value + \
             atr_deck_value + \
             mvol_deck_value + \
             ulcer_deck_value + \
@@ -7302,7 +7484,8 @@ def target_deck_options(
         ma_ribbon_deck_value =          ['Middle'] if (ma_ribbon_deck == 'Lower') & deck_changed else [ma_ribbon_deck]
         price_overlays_deck_value =     ['Middle'] if (price_overlays_deck == 'Lower') & deck_changed else [price_overlays_deck]
         macd_deck_value =               ['Middle'] if (macd_deck == 'Lower') & deck_changed else [macd_deck]
-        impulse_macd_deck_value =       ['Middle'] if (impulse_macd_deck == 'Lower') & deck_changed else [impulse_macd_deck]        
+        impulse_macd_deck_value =       ['Middle'] if (impulse_macd_deck == 'Lower') & deck_changed else [impulse_macd_deck]
+        supertrend_deck_value =         ['Middle'] if (supertrend_deck == 'Lower') & deck_changed else [supertrend_deck]
         atr_deck_value =                ['Middle'] if (atr_deck == 'Lower') & deck_changed else [atr_deck]
         mvol_deck_value =               ['Middle'] if (mvol_deck == 'Lower') & deck_changed else [mvol_deck]
         ulcer_deck_value =              ['Middle'] if (ulcer_deck == 'Lower') & deck_changed else [ulcer_deck]        
@@ -7326,6 +7509,7 @@ def target_deck_options(
             price_overlays_deck_value + \
             macd_deck_value + \
             impulse_macd_deck_value + \
+            supertrend_deck_value + \
             atr_deck_value + \
             mvol_deck_value + \
             ulcer_deck_value + \
@@ -7647,6 +7831,22 @@ def toggle_collapse_impulse_macd(n, is_open):
 
 
 @callback(
+    Output('collapse-button-supertrend', 'children'),
+    Output('collapse-supertrend', 'is_open'),
+    Input('collapse-button-supertrend', 'n_clicks'),
+    State('collapse-supertrend', 'is_open')
+)
+def toggle_collapse_supertrend(n, is_open):
+    # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
+    title = 'SUPERTREND'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
     Output('collapse-button-diff-1', 'children'),
     Output('collapse-diff-1', 'is_open'),
     Input('collapse-button-diff-1', 'n_clicks'),
@@ -7823,7 +8023,8 @@ def toggle_collapse_stochastic(n, is_open):
     Output('add-ma-env-button', 'n_clicks'),
     Output('add-ma-ribbon-button', 'n_clicks'),
     Output('add-macd-button', 'n_clicks'),
-    Output('add-impulse-macd-button', 'n_clicks'),    
+    Output('add-impulse-macd-button', 'n_clicks'),
+    Output('add-supertrend-button', 'n_clicks'),
     Output('add-atr-button', 'n_clicks'),
     Output('add-mvol-button', 'n_clicks'),
     Output('add-ulcer-button', 'n_clicks'),
@@ -7847,7 +8048,8 @@ def toggle_collapse_stochastic(n, is_open):
     Output('remove-ma-env-button', 'n_clicks'),
     Output('remove-ma-ribbon-button', 'n_clicks'),
     Output('remove-macd-button', 'n_clicks'),
-    Output('remove-impulse-macd-button', 'n_clicks'),    
+    Output('remove-impulse-macd-button', 'n_clicks'),
+    Output('remove-supertrend-button', 'n_clicks'),
     Output('remove-atr-button', 'n_clicks'),
     Output('remove-mvol-button', 'n_clicks'),
     Output('remove-ulcer-button', 'n_clicks'),
@@ -7879,6 +8081,7 @@ def toggle_collapse_stochastic(n, is_open):
     Output('added-to-plot-indicator-ma-ribbon', 'style'),
     Output('added-to-plot-indicator-macd', 'style'),
     Output('added-to-plot-indicator-impulse-macd', 'style'),
+    Output('added-to-plot-indicator-supertrend', 'style'),
     Output('added-to-plot-indicator-atr', 'style'),
     Output('added-to-plot-indicator-mvol', 'style'),
     Output('added-to-plot-indicator-ulcer', 'style'),
@@ -8147,6 +8350,16 @@ def toggle_collapse_stochastic(n, is_open):
     Input('impulse-macd-price-color-theme-dropdown', 'value'),
     Input('add-impulse-macd-button', 'n_clicks'),
     Input('remove-impulse-macd-button', 'n_clicks'),
+
+    # Supetrend inputs
+    Input('supertrend-deck-dropdown', 'value'),
+    Input('supertrend-adjusted-dropdown', 'value'),
+    Input('supertrend-periods-input', 'value'),
+    Input('supertrend-multiplier-input', 'value'),
+    Input('supertrend-add-middle-dropdown', 'value'),
+    Input('supertrend-color-theme-dropdown', 'value'),
+    Input('add-supertrend-button', 'n_clicks'),
+    Input('remove-supertrend-button', 'n_clicks'),
 
     # Differential 1 inputs
     Input('diff-1-deck-dropdown', 'value'),
@@ -8478,6 +8691,15 @@ def update_plot(
         add_impulse_macd,
         remove_impulse_macd,
 
+        supertrend_deck,
+        supertrend_adjusted,
+        supertrend_periods,
+        supertrend_multiplier,
+        supertrend_add_middle,
+        supertrend_color_theme,
+        add_supertrend,
+        remove_supertrend,
+
         diff_1_deck,
         diff_1_plot_type,
         diff_1_add_title,
@@ -8789,6 +9011,7 @@ def update_plot(
     added_to_plot_indicator_ma_ribbon_style = not_added_to_plot_indicator_css
     added_to_plot_indicator_macd_style = not_added_to_plot_indicator_css
     added_to_plot_indicator_impulse_macd_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_supertrend_style = not_added_to_plot_indicator_css
     added_to_plot_indicator_atr_style = not_added_to_plot_indicator_css
     added_to_plot_indicator_mvol_style = not_added_to_plot_indicator_css
     added_to_plot_indicator_ulcer_style = not_added_to_plot_indicator_css
@@ -9243,6 +9466,41 @@ def update_plot(
                 price_color_theme = impulse_macd_price_color
             )
             added_to_plot_indicator_impulse_macd_style = added_to_plot_indicator_css
+            added_to_plot_indicator_trend_tab_style = added_to_plot_indicator_css
+
+        ### Add Supertrend bands
+        if remove_supertrend & (fig_data is not None):
+            add_supertrend = 0
+            for i, tr in enumerate(fig_data['fig']['data']):
+                if tr['legendgroup'] != 'dummy':                
+                    if 'supertrend-band' in tr['uid']:
+                        fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
+
+        if add_supertrend:
+            supertrend_prices = downloaded_data[tk]['ohlc_adj'] if boolean(supertrend_adjusted) else downloaded_data[tk]['ohlc']
+            close_tk = supertrend_prices['Close'][min_date: max_date]
+            high_tk = supertrend_prices['High'][min_date: max_date]
+            low_tk = supertrend_prices['Low'][min_date: max_date]
+
+            supertrend_data = analyze_prices.get_supertrend(
+                close_tk,
+                high_tk,
+                low_tk,
+                adjusted = boolean(supertrend_adjusted),
+                n = supertrend_periods,
+                multiplier = supertrend_multiplier,
+                n_bands = 1,
+                add_middle_band = boolean(supertrend_add_middle)
+            )
+            supertrend_list = supertrend_data['list']
+            fig_data = analyze_prices.add_supertrend_overlays(
+                fig_data,
+                supertrend_list,
+                target_deck = deck_number(deck_type, supertrend_deck),
+                theme = theme,
+                color_theme = supertrend_color_theme
+            )
+            added_to_plot_indicator_supertrend_style = added_to_plot_indicator_css
             added_to_plot_indicator_trend_tab_style = added_to_plot_indicator_css
 
 
@@ -9839,6 +10097,7 @@ def update_plot(
         add_ma_ribbon,
         add_macd,
         add_impulse_macd,
+        add_supertrend,
         add_atr,
         add_mvol,
         add_ulcer,
@@ -9848,7 +10107,7 @@ def update_plot(
         add_diff_2,
         add_diff_3,
         add_diff_stochastic,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
 
         added_to_plot_indicator_prices_tab_style,
         added_to_plot_indicator_volume_tab_style,
@@ -9870,6 +10129,7 @@ def update_plot(
         added_to_plot_indicator_ma_ribbon_style,
         added_to_plot_indicator_macd_style,
         added_to_plot_indicator_impulse_macd_style,
+        added_to_plot_indicator_supertrend_style,
         added_to_plot_indicator_atr_style,
         added_to_plot_indicator_mvol_style,
         added_to_plot_indicator_ulcer_style,

@@ -267,6 +267,82 @@ class AnalyzePrices():
         return mvol_data
 
 
+    ##### SUPERTREND #####
+
+    def get_supertrend(
+        self,
+        close_tk,
+        high_tk,
+        low_tk,
+        adjusted = True,
+        n = 14,
+        multiplier = 3,
+        n_bands = 1,
+        add_middle_band = True
+    ):
+        """
+        https://www.investopedia.com/supertrend-indicator-7976167
+        n:
+            number of periods, typically 7-13
+        multiplier:
+            multiplier of ATR, typically 3
+        n_bands:
+            number of pairs of bands to be created, defaults to 1, max 5
+
+        Returns a list of bollinger band dictionaries
+        """
+
+        atr = self.average_true_rate(
+            close_tk,
+            high_tk,
+            low_tk,
+            adjusted,
+            n = n
+        )['atr']
+
+        period_high = high_tk.rolling(window = n, min_periods = 1).max()
+        period_low = high_tk.rolling(window = n, min_periods = 1).min()
+        mean_high_low = 0.5 * (period_high + period_low)
+
+        max_n_bands = 5
+        n_bands = 1 if (n_bands is None) else min(n_bands, max_n_bands)
+
+        adjusted_prefix = 'Adjusted ' if adjusted else ''
+        supetrend_list = []
+        if add_middle_band:
+            supetrend_list.append({
+                'data': mean_high_low,
+                'name': f'{adjusted_prefix}½ (High + Low)',
+                'idx_offset': 0
+            })
+
+        for i in range(n_bands + 1)[1:]:
+
+            band_width = i * multiplier
+
+            upper_band = mean_high_low + band_width * atr
+            upper_name = f'Upper Supertrend ({n}, {band_width})'
+            supetrend_list.append({
+                'data': upper_band,
+                'name': upper_name,
+                'idx_offset': i
+            })
+
+            lower_band = mean_high_low - band_width * atr
+            lower_name = f'Lower Supertrend ({n}, {band_width})'
+            supetrend_list.append({
+                'data': lower_band,
+                'name': lower_name,
+                'idx_offset': -i
+            })
+
+        supetrend_data = {
+            'list': supetrend_list
+        }
+
+        return supetrend_data
+
+
     ##### CREATE TEMPLATE #####
 
     def create_template(
@@ -1158,6 +1234,92 @@ class AnalyzePrices():
         fig_data.update({'fig': fig_stochastic})
         fig_data['y_min'].update({target_deck: min_stochastic})
         fig_data['y_max'].update({target_deck: max_stochastic})
+
+        return fig_data
+
+
+    ##### ADD SUPERTREND OVERLAYS #####
+
+    def add_supertrend_overlays(
+        self,
+        fig_data,
+        supertrend_list,
+        target_deck = 1,
+        theme = None,
+        color_theme = None
+    ):
+        """
+        """
+
+        theme = 'dark' if theme is None else theme.lower()
+        color_theme = 'gold' if color_theme is None else color_theme.lower()
+
+        deck_type = fig_data['deck_type']
+        fig_overlays = fig_data['overlays']
+
+        n_super = int((len(supertrend_list) + 1) / 2)
+        # n_super = 2 for 3 bands including the middle one, n_super = 1 for only upper and lower bands
+
+        style = theme_style[theme]
+        overlay_color_idx = style['overlay_color_selection'][color_theme.lower()][n_super]
+
+        current_names = [tr['name'] for tr in fig_data['fig']['data'] if (tr['legendgroup'] == str(target_deck))]
+
+        supertrend_overlays = []
+        supertrend_overlay_names = []
+
+        for i, super in enumerate(supertrend_list):
+
+            if super['name'] not in current_names:
+                supertrend_overlays.append({
+                    'data': super['data'],
+                    'name': super['name'],
+                    'color_idx': overlay_color_idx[abs(super['idx_offset'])],
+                    'uid': f'supertrend-band-{i}'
+                })
+                supertrend_overlay_names.append(super['name'])
+
+        if len(supertrend_overlays) > 0:
+
+            color_map = {}
+
+            for overlay in supertrend_overlays:
+                fig_data = self.add_overlay(
+                    fig_data,
+                    overlay['data'],
+                    overlay['name'],
+                    overlay['color_idx'],
+                    overlay['uid'],
+                    target_deck = target_deck,
+                    theme = theme,
+                    color_theme = color_theme
+                )
+                color_map.update({overlay['name']: overlay['color_idx']})
+
+            if deck_type in ['double', 'triple']:
+                legend_tracegroupgap = self.set_legend_tracegroupgap()
+                fig_data['fig'].update_layout(
+                    legend_tracegroupgap = legend_tracegroupgap,
+                    legend_traceorder = 'grouped'
+                )
+
+            overlay_idx = len(fig_overlays) + 1
+            overlay_name = f'OV{overlay_idx}'
+            overlay_components = supertrend_overlay_names[0]
+            for name in supertrend_overlay_names[1:]:
+                overlay_components += f', {name}'
+            fig_overlays.append({
+                'name': overlay_name,
+                'deck': target_deck,
+                'color_theme': color_theme,
+                'components': overlay_components,
+                'color_map': color_map
+            })
+
+            fig_data.update({'overlays': fig_overlays})
+
+        else:
+            print('No new overlays added - all of the selected overlays are already plotted')
 
         return fig_data
 
@@ -2436,6 +2598,7 @@ class AnalyzePrices():
                     hoverinfo = 'skip',
                     name = legend_name,
                     uid = 'drawdowns-price-scatter-1',
+                    zorder = 5,                    
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle                    
@@ -2504,30 +2667,6 @@ class AnalyzePrices():
                     row = target_deck, col = 1
                 )
 
-        if add_price:
-            # Add the price line here to make sure it's on top of other layers
-            # opacity = 0.6
-            # fillcolor = linecolor.replace(', 1)', f', {opacity})')
-            fig.add_trace(
-                go.Scatter(
-                    x = df_tk.index.astype(str),
-                    y = df_tk,
-                    mode = 'lines',
-                    line_color = linecolor,
-                    line_width = 2,
-                    # fill = 'tozeroy',
-                    # fillcolor = fillcolor,
-                    showlegend = False,
-                    name = legend_name,
-                    uid = 'drawdowns-price-scatter-2',
-                    zorder = 5,
-                    legendrank = target_deck * 1000,
-                    legendgroup = f'{target_deck}',
-                    legendgrouptitle = legendgrouptitle
-                ),
-                row = target_deck, col = 1
-            )
-
         # Update layout and axes
 
         if add_title:
@@ -2554,7 +2693,6 @@ class AnalyzePrices():
         if reset_y_limits:
             fig_data['y_min'].update({target_deck: new_y_min})
             fig_data['y_max'].update({target_deck: new_y_max})
-        # print(f"tk, fig_data_y_min, fig_data_y_max = {tk, fig_data['y_min'], fig_data['y_max']}")
 
         return fig_data
 
