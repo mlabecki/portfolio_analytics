@@ -3342,7 +3342,8 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'Add the middle band, which is the average of High and Low prices?',
+                                        """Add Middle Band? The Middle Supertrend Band is constructed by averaging the highest and the lowest price
+                                        over the lookback period used in the Average True Rate calculation.""",
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -3369,6 +3370,19 @@ layout = html.Div([
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Number of periods (days) used in the calculation of the Average True Rate',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-supertrend-add-middle-dropdown',
+                                    target = 'supertrend-add-middle-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
 
                                 html.Div([
                                     html.Div('Multiplier', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
@@ -3384,6 +3398,19 @@ layout = html.Div([
                                         style = {'width': '85px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Multiplier of the Average True Rate. The product of those two defines the Supertrend bandwidth.',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-supertrend-add-middle-dropdown',
+                                    target = 'supertrend-add-middle-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
@@ -5095,9 +5122,24 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     # NOTE: Must use <BR/>, not <BR>, to break the line inside the popover
-                                    dcc.Markdown("""<DIV>Fast Stochastic: [...].<BR/>
-                                        Slow Stochastic: [...].<BR/>
-                                        Full Stochastic: [...].<BR/></DIV>""", dangerously_allow_html = True),
+                                    dcc.Markdown("""<DIV>
+                                        <B>Fast Stochastic:</B><BR/>
+                                        &nbsp;&nbsp;&nbsp; Fast %K = (C - L) / (H - L)<BR/>
+                                        &nbsp;&nbsp;&nbsp; Fast %D = 3-day SMA of Fast %K<BR/>
+                                        <B>Slow Stochastic:</B><BR/>
+                                        &nbsp;&nbsp;&nbsp; Slow %K = 3-day SMA of Fast %K<BR/>
+                                        &nbsp;&nbsp;&nbsp; Slow %D = 3-day SMA of Slow %K<BR/>
+                                        <B>Full Stochastic:<BR/>
+                                        &nbsp;&nbsp;&nbsp; Full %K = N-day SMA of Fast %K<BR/>
+                                        &nbsp;&nbsp;&nbsp; Full %D = N-day SMA of Full %K<BR/>
+                                        C = Current Close<BR/>
+                                        L = Lookback period's lowest<BR/>
+                                        H = Lookback period's highest<BR/>
+                                        Lookback period = 14 days by default<BR/>
+                                        SMA = Simple Moving Average<BR/>
+                                        N = Full Stochastic smoothing period
+                                        </DIV>"""
+                                        , dangerously_allow_html = True),
                                     ], 
                                     id = 'popover-stochastic-type-dropdown',
                                     target = 'stochastic-type-dropdown',
@@ -6875,9 +6917,24 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     # NOTE: Must use <BR/>, not <BR>, to break the line inside the popover
-                                    dcc.Markdown("""<DIV>Fast Stochastic: [...].<BR/>
-                                        Slow Stochastic: [...].<BR/>
-                                        Full Stochastic: [...].<BR/></DIV>""", dangerously_allow_html = True),
+                                    dcc.Markdown("""<DIV>
+                                        <B>Fast Stochastic:</B><BR/>
+                                        &nbsp;&nbsp;&nbsp; Fast %K = (C - L) / (H - L)<BR/>
+                                        &nbsp;&nbsp;&nbsp; Fast %D = 3-day SMA of Fast %K<BR/>
+                                        <B>Slow Stochastic:</B><BR/>
+                                        &nbsp;&nbsp;&nbsp; Slow %K = 3-day SMA of Fast %K<BR/>
+                                        &nbsp;&nbsp;&nbsp; Slow %D = 3-day SMA of Slow %K<BR/>
+                                        <B>Full Stochastic:<BR/>
+                                        &nbsp;&nbsp;&nbsp; Full %K = N-day SMA of Fast %K<BR/>
+                                        &nbsp;&nbsp;&nbsp; Full %D = N-day SMA of Full %K<BR/>
+                                        C = Current Close<BR/>
+                                        L = Lookback period's lowest<BR/>
+                                        H = Lookback period's highest<BR/>
+                                        Lookback period = 14 days by default<BR/>
+                                        SMA = Simple Moving Average<BR/>
+                                        N = Full Stochastic smoothing period
+                                        </DIV>"""
+                                        , dangerously_allow_html = True),
                                     ], 
                                     id = 'popover-diff-stochastic-type-dropdown',
                                     target = 'diff-stochastic-type-dropdown',

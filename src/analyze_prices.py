@@ -312,7 +312,8 @@ class AnalyzePrices():
         if add_middle_band:
             supetrend_list.append({
                 'data': mean_high_low,
-                'name': f'{adjusted_prefix}½ (High + Low)',
+                # 'name': f'{adjusted_prefix}½ (High + Low)',
+                'name': f'Middle Supertrend {n}',
                 'idx_offset': 0
             })
 
