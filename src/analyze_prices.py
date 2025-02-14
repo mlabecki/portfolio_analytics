@@ -307,7 +307,6 @@ class AnalyzePrices():
         max_n_bands = 5
         n_bands = 1 if (n_bands is None) else min(n_bands, max_n_bands)
 
-        adjusted_prefix = 'Adjusted ' if adjusted else ''
         supetrend_list = []
         if add_middle_band:
             supetrend_list.append({

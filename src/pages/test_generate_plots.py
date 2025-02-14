@@ -50,6 +50,14 @@ hist_data = DownloadData()
 analyze_prices = AnalyzePrices()
 build_dash_html = BuildDashHtml()
 
+stochastic_type_markdown = """<DIV><B>Fast Stochastic:</B><BR/>&nbsp;&nbsp;&nbsp; Fast %K = (C - L) / (H - L)<BR/>
+&nbsp;&nbsp;&nbsp; Fast %D = N-day SMA of Fast %K<BR/>
+<B>Slow Stochastic:</B><BR/>&nbsp;&nbsp;&nbsp; Slow %K = 3-day SMA of Fast %K<BR/>
+&nbsp;&nbsp;&nbsp; Slow %D = N-day SMA of Slow %K<BR/>
+<B>Full Stochastic:</B><BR/>&nbsp;&nbsp;&nbsp; Full %K = F-day SMA of Fast %K<BR/>
+&nbsp;&nbsp;&nbsp; Full %D = N-day SMA of Full %K<BR/>
+C = Current Close<BR/>L = Lookback period's lowest<BR/>H = Lookback period's highest<BR/>
+Lookback period = 14 days by default<BR/>SMA = Simple Moving Average<BR/><BR/>N = %D Line smoothing period of %K<BR/>F = Full Stochastic smoothing period</DIV>"""
 
 @callback(
     Output('final-table-selected-tickers', 'children'),
@@ -2657,22 +2665,6 @@ layout = html.Div([
                     ],
                     style = {'width': '310px', 'display': 'flex', 'flex-wrap': 'nowrap'}
                     ),
-                    dbc.Popover(
-                        [
-                        html.Span(
-                               """NOTE: Moving Average Convergence Divergence cannot be plotted on the Upper Deck 
-                               if the Primary Y-Axis of the Upper Deck is populated.
-                               """,
-                                style = popover_menu_collapse_button_header_css
-                            )
-                        ], 
-                        id = 'popover-collapse-button-macd',
-                        target = 'collapse-button-macd',
-                        body = False,
-                        trigger = 'hover',
-                        hide_arrow = True,
-                        style = popover_menu_collapse_button_css
-                    ),
 
                     dbc.Collapse(
                     
@@ -2692,6 +2684,22 @@ layout = html.Div([
                                         style = {'width': '100px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover(
+                                    [
+                                    html.Span(
+                                           """NOTE: Moving Average Convergence Divergence cannot be plotted on Upper Deck 
+                                           if the Primary Y-Axis of Upper Deck is populated.
+                                           """,
+                                            style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-macd-deck-dropdown',
+                                    target = 'macd-deck-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
@@ -2833,8 +2841,8 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     # NOTE: Must use <BR/>, not <BR>, to break the line inside the popover
-                                    dcc.Markdown("""<DIV>MACD-Signal: MACD and Signal are plotted as lines and Histogram / Filled Line is based on their difference.<BR/>
-                                        MACD-Zero: MACD is plotted as Histogram / Filled Line and the Signal is added if selected.</DIV>""", dangerously_allow_html = True),
+                                    dcc.Markdown("""<DIV><B>MACD-Signal:</B> MACD and Signal are plotted as lines and Histogram / Filled Line is based on their difference.<BR/>
+                                        <B>MACD-Zero:</B> MACD is plotted as Histogram / Filled Line and the Signal is added if selected.</DIV>""", dangerously_allow_html = True),
                                     ], 
                                     id = 'popover-macd-histogram-type-dropdown',
                                     target = 'macd-histogram-type-dropdown',
@@ -2967,22 +2975,6 @@ layout = html.Div([
                     ],
                     style = {'width': '310px', 'display': 'flex', 'flex-wrap': 'nowrap'}
                     ),
-                    dbc.Popover(
-                        [
-                        html.Span(
-                               """NOTE: Impulse Moving Average Convergence Divergence cannot be plotted on the Upper Deck 
-                               if the Primary Y-Axis of the Upper Deck is populated.
-                               """,
-                                style = popover_menu_collapse_button_header_css
-                            )
-                        ], 
-                        id = 'popover-collapse-button-impulse-macd',
-                        target = 'collapse-button-impulse-macd',
-                        body = False,
-                        trigger = 'hover',
-                        hide_arrow = True,
-                        style = popover_menu_collapse_button_css
-                    ),
 
                     dbc.Collapse(
                     
@@ -3002,6 +2994,22 @@ layout = html.Div([
                                         style = {'width': '100px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover(
+                                    [
+                                    html.Span(
+                                           """NOTE: Impulse Moving Average Convergence Divergence cannot be plotted on the Upper Deck 
+                                           if the Primary Y-Axis of the Upper Deck is populated.
+                                           """,
+                                            style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-impulse-macd-deck-dropdown',
+                                    target = 'impulse-macd-deck-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
@@ -3145,8 +3153,8 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     # NOTE: Must use <BR/>, not <BR>, to break the line inside the popover
-                                    dcc.Markdown("""<DIV>MACD-Signal: Impulse MACD and Signal are plotted as lines and the Histogram / Filled Line is based on their difference.<BR/>
-                                        MACD-Zero: Impulse MACD is plotted as Histogram / Filled Line and the Signal is added if selected.</DIV>""", dangerously_allow_html = True),
+                                    dcc.Markdown("""<DIV><B>MACD-Signal:</B> Impulse MACD and Signal are plotted as lines and the Histogram / Filled Line is based on their difference.<BR/>
+                                        <B>MACD-Zero:</B> Impulse MACD is plotted as Histogram / Filled Line and the Signal is added if selected.</DIV>""", dangerously_allow_html = True),
                                     ], 
                                     id = 'popover-impulse-macd-histogram-type-dropdown',
                                     target = 'impulse-macd-histogram-type-dropdown',
@@ -3728,22 +3736,6 @@ layout = html.Div([
                     ],
                     style = {'width': '310px', 'display': 'flex', 'flex-wrap': 'nowrap'}
                     ),
-                    dbc.Popover(
-                        [
-                        html.Span(
-                                """NOTE: Bollinger Bandwidth / %B can only be plotted on Secondary Y-Axis or on the Middle/Lower deck
-                                if the Primary Y-Axis is populated. 
-                                """,
-                                style = popover_menu_collapse_button_header_css
-                            )
-                        ], 
-                        id = 'popover-collapse-button-boll-width',
-                        target = 'collapse-button-boll-width',
-                        body = False,
-                        trigger = 'hover',
-                        hide_arrow = True,
-                        style = popover_menu_collapse_button_css
-                    ),
 
                     dbc.Collapse(
                     
@@ -3763,6 +3755,22 @@ layout = html.Div([
                                         style = {'width': '85px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover(
+                                    [
+                                    html.Span(
+                                            """NOTE: Bollinger Bandwidth / %B can only be plotted on Secondary Y-Axis or on the Middle/Lower Deck
+                                            if the Primary Y-Axis of Upper Deck is populated. 
+                                            """,
+                                            style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-boll-width-deck-dropdown',
+                                    target = 'boll-width-deck-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
@@ -3997,22 +4005,6 @@ layout = html.Div([
                     ],
                     style = {'width': '310px', 'display': 'flex', 'flex-wrap': 'nowrap'}
                     ),
-                    dbc.Popover(
-                        [
-                        html.Span(
-                                """NOTE: Average True Rate can only be plotted on the Secondary Y-Axis or on the Middle/Lower deck
-                                if the Primary Y-Axis is populated. 
-                                """,
-                                style = popover_menu_collapse_button_header_css
-                            )
-                        ], 
-                        id = 'popover-collapse-button-atr',
-                        target = 'collapse-button-atr',
-                        body = False,
-                        trigger = 'hover',
-                        hide_arrow = True,
-                        style = popover_menu_collapse_button_css
-                    ),
 
                     dbc.Collapse(
                     
@@ -4032,6 +4024,22 @@ layout = html.Div([
                                         style = {'width': '90px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover(
+                                    [
+                                    html.Span(
+                                            """NOTE: Average True Rate can only be plotted on Secondary Y-Axis or on the Middle/Lower Deck
+                                            if the Primary Y-Axis of Upper Deck is populated. 
+                                            """,
+                                            style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-atr-deck-dropdown',
+                                    target = 'atr-deck-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
@@ -4229,22 +4237,6 @@ layout = html.Div([
                     ],
                     style = {'width': '310px', 'display': 'flex', 'flex-wrap': 'nowrap'}
                     ),
-                    dbc.Popover(
-                        [
-                        html.Span(
-                                """NOTE: Moving Volatility / Standard Deviation can only be plotted on Secondary Y-Axis or on the Middle/Lower Deck
-                                if the Primary Y-Axis is populated. 
-                                """,
-                                style = popover_menu_collapse_button_header_css
-                            )
-                        ], 
-                        id = 'popover-collapse-button-mvol',
-                        target = 'collapse-button-mvol',
-                        body = False,
-                        trigger = 'hover',
-                        hide_arrow = True,
-                        style = popover_menu_collapse_button_css
-                    ),
 
                     dbc.Collapse(
                     
@@ -4264,6 +4256,22 @@ layout = html.Div([
                                         style = {'width': '85px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover(
+                                    [
+                                    html.Span(
+                                            """NOTE: Moving Volatility / Standard Deviation can only be plotted on Secondary Y-Axis or on the Middle/Lower Deck
+                                            if the Primary Y-Axis of Upper Deck is populated. 
+                                            """,
+                                            style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-mvol-deck-dropdown',
+                                    target = 'mvol-deck-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
@@ -4471,8 +4479,7 @@ layout = html.Div([
                     dbc.Popover(
                         [
                         html.Span(
-                                """NOTE: Ulcer Index can only be plotted on Secondary Y-Axis or on the Middle/Lower Deck
-                                if the Primary Y-Axis is populated. Ulcer Index data is part of the drawdown analysis
+                                """Ulcer Index data is part of the drawdown analysis
                                 and can be plotted alongside DRAWDOWNS from the PRICES PLOTS tab.
                                 """,
                                 style = popover_menu_collapse_button_header_css
@@ -4504,6 +4511,22 @@ layout = html.Div([
                                         style = {'width': '85px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover(
+                                    [
+                                    html.Span(
+                                            """NOTE: Ulcer Index can only be plotted on Secondary Y-Axis or on the Middle/Lower Deck
+                                            if the Primary Y-Axis of Upper Deck is populated.
+                                            """,
+                                            style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-ulcer-deck-dropdown',
+                                    target = 'ulcer-deck-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
@@ -4734,22 +4757,6 @@ layout = html.Div([
                     ],
                     style = {'width': '310px', 'display': 'flex', 'flex-wrap': 'nowrap'}
                     ),
-                    dbc.Popover(
-                        [
-                        html.Span(
-                               """NOTE: Relative Strength Index cannot be plotted on the Upper Deck 
-                               if the Primary Y-Axis of the Upper Deck is populated.
-                               """,
-                                style = popover_menu_collapse_button_header_css
-                            )
-                        ], 
-                        id = 'popover-collapse-button-rsi',
-                        target = 'collapse-button-rsi',
-                        body = False,
-                        trigger = 'hover',
-                        hide_arrow = True,
-                        style = popover_menu_collapse_button_css
-                    ),
 
                     dbc.Collapse(
                     
@@ -4769,6 +4776,22 @@ layout = html.Div([
                                         style = {'width': '80px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover(
+                                    [
+                                    html.Span(
+                                           """NOTE: Relative Strength Index cannot be plotted on Upper Deck 
+                                           if the Primary Y-Axis of Upper Deck is populated.
+                                           """,
+                                            style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-rsi-deck-dropdown',
+                                    target = 'rsi-deck-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
@@ -4837,7 +4860,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'Number of periods (days) used in the RSI calculation, 14 is the default',
+                                        'Number of periods (days) used in the RSI calculation, 14 is the default.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ],  
@@ -5045,22 +5068,6 @@ layout = html.Div([
                     ],
                     style = {'width': '310px', 'display': 'flex', 'flex-wrap': 'nowrap'}
                     ),
-                    dbc.Popover(
-                        [
-                        html.Span(
-                               """NOTE: Stochastic Oscillator cannot be plotted on the Upper Deck 
-                               if the Primary Y-Axis of the Upper Deck is populated.
-                               """,
-                                style = popover_menu_collapse_button_header_css
-                            )
-                        ], 
-                        id = 'popover-collapse-button-stochastic',
-                        target = 'collapse-button-stochastic',
-                        body = False,
-                        trigger = 'hover',
-                        hide_arrow = True,
-                        style = popover_menu_collapse_button_css
-                    ),
 
                     dbc.Collapse(
                     
@@ -5068,7 +5075,7 @@ layout = html.Div([
                         
                             id = 'stochastic-controls',
                             children = [
-                            
+
                                 html.Div([
                                     html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
                                     dcc.Dropdown(
@@ -5077,9 +5084,25 @@ layout = html.Div([
                                         options = ['Upper'],
                                         value = 'Upper',
                                         clearable = False,
-                                        style = {'width': '95px'}
+                                        style = {'width': '97px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover(
+                                    [
+                                    html.Span(
+                                           """NOTE: Stochastic Oscillator cannot be plotted on Upper Deck 
+                                           if the Primary Y-Axis of Upper Deck is populated.
+                                           """,
+                                            style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-stochastic-deck-dropdown',
+                                    target = 'stochastic-deck-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
@@ -5116,30 +5139,13 @@ layout = html.Div([
                                         options = ['Fast', 'Slow', 'Full'],
                                         value = 'Slow',
                                         clearable = False,
-                                        style = {'width': '120px'}
+                                        style = {'width': '123px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 dbc.Popover([
-                                    # NOTE: Must use <BR/>, not <BR>, to break the line inside the popover
-                                    dcc.Markdown("""<DIV>
-                                        <B>Fast Stochastic:</B><BR/>
-                                        &nbsp;&nbsp;&nbsp; Fast %K = (C - L) / (H - L)<BR/>
-                                        &nbsp;&nbsp;&nbsp; Fast %D = 3-day SMA of Fast %K<BR/>
-                                        <B>Slow Stochastic:</B><BR/>
-                                        &nbsp;&nbsp;&nbsp; Slow %K = 3-day SMA of Fast %K<BR/>
-                                        &nbsp;&nbsp;&nbsp; Slow %D = 3-day SMA of Slow %K<BR/>
-                                        <B>Full Stochastic:<BR/>
-                                        &nbsp;&nbsp;&nbsp; Full %K = N-day SMA of Fast %K<BR/>
-                                        &nbsp;&nbsp;&nbsp; Full %D = N-day SMA of Full %K<BR/>
-                                        C = Current Close<BR/>
-                                        L = Lookback period's lowest<BR/>
-                                        H = Lookback period's highest<BR/>
-                                        Lookback period = 14 days by default<BR/>
-                                        SMA = Simple Moving Average<BR/>
-                                        N = Full Stochastic smoothing period
-                                        </DIV>"""
-                                        , dangerously_allow_html = True),
+                                    # Define outside of layout in order to avoid issues with markdown not displaying due to indentation or similar formatting factors
+                                    dcc.Markdown(stochastic_type_markdown, dangerously_allow_html = True)
                                     ], 
                                     id = 'popover-stochastic-type-dropdown',
                                     target = 'stochastic-type-dropdown',
@@ -5150,7 +5156,7 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('%K Line Period', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    html.Div('%K Period', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
                                     dbc.Input(
                                         id = 'stochastic-fast-k-period-input',
                                         className = 'plots-input-button',
@@ -5159,13 +5165,26 @@ layout = html.Div([
                                         min = 1,
                                         step = 1,
                                         debounce = True,
-                                        style = {'width': '127px'}
+                                        style = {'width': '82px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-bottom': '5px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'The %K Line Period is also referred to as the lookback period.',
+                                        style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-stochastic-fast-k-period-input',
+                                    target = 'stochastic-fast-k-period-input',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
 
                                 html.Div([
-                                    html.Div('%K Smoothing Period', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    html.Div('Smoothing', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
                                     dbc.Input(
                                         id = 'stochastic-k-smoothing-period-input',
                                         className = 'plots-input-button',
@@ -5174,13 +5193,27 @@ layout = html.Div([
                                         min = 1,
                                         step = 1,
                                         debounce = True,
-                                        style = {'width': '168px'}
+                                        style = {'width': '60px'}
                                     )],
-                                    style = {'display': 'inline-block', 'margin-bottom': '0px', 'margin-right': '0px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        """This is the SMA smoothing period of the %K Line in the Slow and Full Stochastic Oscillator versions in order to make it less choppy.
+                                        If the smoothing period is equal to the %D Line averaging period, then the Slow and Full oscillators become equivalent.""",
+                                        style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-stochastic-k-smoothing-period-input',
+                                    target = 'stochastic-k-smoothing-period-input',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
-                                    html.Div('%D Line Period', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    html.Div('%D Period', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
                                     dbc.Input(
                                         id = 'stochastic-d-period-input',
                                         className = 'plots-input-button',
@@ -5189,26 +5222,39 @@ layout = html.Div([
                                         min = 1,
                                         step = 1,
                                         debounce = True,
-                                        style = {'width': '115px'}
+                                        style = {'width': '83px'}
                                     )],
-                                    style = {'display': 'inline-block', 'margin-bottom': '5px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                    style = {'display': 'inline-block', 'margin-bottom': '0px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        """This is the period with which the %K Line is SMA-smoothed to define the %D Line in each type of Stochastic Oscillator.""",
+                                        style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-stochastic-d-period-input',
+                                    target = 'stochastic-d-period-input',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
-                                    html.Div('Add Overbought/Oversold', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Add OB / OS', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id = 'stochastic-add-overbought-oversold-dropdown',
                                         className = 'plots-dropdown-button',
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '180px'}
+                                        style = {'width': '80px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
 
                                 html.Div([
-                                    html.Div('% Overbought Level', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('% OB', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dbc.Input(
                                         id = 'stochastic-overbought-level-input',
                                         className = 'plots-input-button',
@@ -5219,13 +5265,13 @@ layout = html.Div([
                                         step = 1,
                                         debounce = True,
                                         disabled = False,
-                                        style = {'width': '155px'}
+                                        style = {'width': '55px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
 
                                 html.Div([
-                                    html.Div('% Oversold Level', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('% OS', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dbc.Input(
                                         id = 'stochastic-oversold-level-input',
                                         className = 'plots-input-button',
@@ -5236,37 +5282,9 @@ layout = html.Div([
                                         step = 1,
                                         debounce = True,
                                         disabled = False,
-                                        style = {'width': '140px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
-
-                                html.Div([
-                                    html.Div('%K Line Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
-                                    dcc.Dropdown(
-                                        id = 'stochastic-k-line-color-dropdown',
-                                        className = 'plots-dropdown-button',
-                                        options = drawdowns_colors,
-                                        value = 'Orange',
-                                        clearable = False,
-                                        disabled = False,
-                                        style = {'width': '148px'}
+                                        style = {'width': '55px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
-
-                                html.Div([
-                                    html.Div('%D Line Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
-                                    dcc.Dropdown(
-                                        id = 'stochastic-d-line-color-dropdown',
-                                        className = 'plots-dropdown-button',
-                                        options = drawdowns_colors,
-                                        value = 'Purple',
-                                        clearable = False,
-                                        disabled = False,
-                                        style = {'width': '147px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
 
                                 html.Div([
@@ -5279,6 +5297,34 @@ layout = html.Div([
                                         clearable = False,
                                         style = {'width': '80px'}
                                     )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('%K Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'stochastic-k-line-color-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = drawdowns_colors,
+                                        value = 'Orange',
+                                        clearable = False,
+                                        disabled = False,
+                                        style = {'width': '85px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('%D Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'stochastic-d-line-color-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = drawdowns_colors,
+                                        value = 'Purple',
+                                        clearable = False,
+                                        disabled = False,
+                                        style = {'width': '85px'}
+                                    )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
 
@@ -5290,7 +5336,7 @@ layout = html.Div([
                                         options = ['No', 'Yes'],
                                         value = 'No',
                                         clearable = False,
-                                        style = {'width': '85px'}
+                                        style = {'width': '65px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -5317,7 +5363,7 @@ layout = html.Div([
                                         value = 'Base',
                                         clearable = False,
                                         disabled = False,
-                                        style = {'width': '125px'}
+                                        style = {'width': '115px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -5432,22 +5478,6 @@ layout = html.Div([
                     ],
                     style = {'width': '310px', 'display': 'flex', 'flex-wrap': 'nowrap'}
                     ),
-                    dbc.Popover(
-                        [
-                        html.Span(
-                               """NOTE: Differential plot cannot be placed on the Upper Deck 
-                               if the Primary Y-Axis of the Upper Deck is populated.
-                               """,
-                                style = popover_menu_collapse_button_header_css
-                            )
-                        ], 
-                        id = 'popover-collapse-button-diff-1',
-                        target = 'collapse-button-diff-1',
-                        body = False,
-                        trigger = 'hover',
-                        hide_arrow = True,
-                        style = popover_menu_collapse_button_css
-                    ),
 
                     dbc.Collapse(
                     
@@ -5467,6 +5497,22 @@ layout = html.Div([
                                         style = {'width': '80px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover(
+                                    [
+                                    html.Span(
+                                           """NOTE: Differential plot cannot be placed on Upper Deck 
+                                           if the Primary Y-Axis of Upper Deck is populated.
+                                           """,
+                                            style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-diff-1-deck-dropdown',
+                                    target = 'diff-1-deck-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
@@ -5880,22 +5926,6 @@ layout = html.Div([
                     ],
                     style = {'width': '310px', 'display': 'flex', 'flex-wrap': 'nowrap'}
                     ),
-                    dbc.Popover(
-                        [
-                        html.Span(
-                               """NOTE: Differential plot cannot be placed on the Upper Deck 
-                               if the Primary Y-Axis of the Upper Deck is populated.
-                               """,
-                                style = popover_menu_collapse_button_header_css
-                            )
-                        ], 
-                        id = 'popover-collapse-button-diff-2',
-                        target = 'collapse-button-diff-2',
-                        body = False,
-                        trigger = 'hover',
-                        hide_arrow = True,
-                        style = popover_menu_collapse_button_css
-                    ),
 
                     dbc.Collapse(
                     
@@ -5915,6 +5945,22 @@ layout = html.Div([
                                         style = {'width': '80px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover(
+                                    [
+                                    html.Span(
+                                           """NOTE: Differential plot cannot be placed on Upper Deck 
+                                           if the Primary Y-Axis of Upper Deck is populated.
+                                           """,
+                                            style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-diff-2-deck-dropdown',
+                                    target = 'diff-2-deck-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
@@ -6328,22 +6374,6 @@ layout = html.Div([
                     ],
                     style = {'width': '310px', 'display': 'flex', 'flex-wrap': 'nowrap'}
                     ),
-                    dbc.Popover(
-                        [
-                        html.Span(
-                               """NOTE: Differential plot cannot be placed on the Upper Deck 
-                               if the Primary Y-Axis of the Upper Deck is populated.
-                               """,
-                                style = popover_menu_collapse_button_header_css
-                            )
-                        ], 
-                        id = 'popover-collapse-button-diff-3',
-                        target = 'collapse-button-diff-3',
-                        body = False,
-                        trigger = 'hover',
-                        hide_arrow = True,
-                        style = popover_menu_collapse_button_css
-                    ),
 
                     dbc.Collapse(
                     
@@ -6363,6 +6393,22 @@ layout = html.Div([
                                         style = {'width': '80px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover(
+                                    [
+                                    html.Span(
+                                           """NOTE: Differential plot cannot be placed on Upper Deck 
+                                           if the Primary Y-Axis of Upper Deck is populated.
+                                           """,
+                                            style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-diff-3-deck-dropdown',
+                                    target = 'diff-3-deck-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
@@ -6776,22 +6822,6 @@ layout = html.Div([
                     ],
                     style = {'width': '310px', 'display': 'flex', 'flex-wrap': 'nowrap'}
                     ),
-                    dbc.Popover(
-                        [
-                        html.Span(
-                               """NOTE: Stochastic Differential cannot be plotted on the Upper Deck 
-                               if the Primary Y-Axis of the Upper Deck is populated.
-                               """,
-                                style = popover_menu_collapse_button_header_css
-                            )
-                        ], 
-                        id = 'popover-collapse-button-diff-stochastic',
-                        target = 'collapse-button-diff-stochastic',
-                        body = False,
-                        trigger = 'hover',
-                        hide_arrow = True,
-                        style = popover_menu_collapse_button_css
-                    ),
 
                     dbc.Collapse(
                     
@@ -6811,6 +6841,22 @@ layout = html.Div([
                                         style = {'width': '90px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover(
+                                    [
+                                    html.Span(
+                                           """NOTE: Stochastic Differential cannot be plotted on Upper Deck 
+                                           if the Primary Y-Axis of Upper Deck is populated.
+                                           """,
+                                            style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-diff-stochastic-deck-dropdown',
+                                    target = 'diff-stochastic-deck-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
@@ -6916,25 +6962,7 @@ layout = html.Div([
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 dbc.Popover([
-                                    # NOTE: Must use <BR/>, not <BR>, to break the line inside the popover
-                                    dcc.Markdown("""<DIV>
-                                        <B>Fast Stochastic:</B><BR/>
-                                        &nbsp;&nbsp;&nbsp; Fast %K = (C - L) / (H - L)<BR/>
-                                        &nbsp;&nbsp;&nbsp; Fast %D = 3-day SMA of Fast %K<BR/>
-                                        <B>Slow Stochastic:</B><BR/>
-                                        &nbsp;&nbsp;&nbsp; Slow %K = 3-day SMA of Fast %K<BR/>
-                                        &nbsp;&nbsp;&nbsp; Slow %D = 3-day SMA of Slow %K<BR/>
-                                        <B>Full Stochastic:<BR/>
-                                        &nbsp;&nbsp;&nbsp; Full %K = N-day SMA of Fast %K<BR/>
-                                        &nbsp;&nbsp;&nbsp; Full %D = N-day SMA of Full %K<BR/>
-                                        C = Current Close<BR/>
-                                        L = Lookback period's lowest<BR/>
-                                        H = Lookback period's highest<BR/>
-                                        Lookback period = 14 days by default<BR/>
-                                        SMA = Simple Moving Average<BR/>
-                                        N = Full Stochastic smoothing period
-                                        </DIV>"""
-                                        , dangerously_allow_html = True),
+                                    dcc.Markdown(stochastic_type_markdown, dangerously_allow_html = True)
                                     ], 
                                     id = 'popover-diff-stochastic-type-dropdown',
                                     target = 'diff-stochastic-type-dropdown',
