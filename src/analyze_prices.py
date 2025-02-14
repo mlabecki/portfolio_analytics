@@ -92,6 +92,43 @@ class AnalyzePrices():
         return atr_data
 
 
+    ##### COMMODITY CHANNEL INDEX #####
+
+    def commodity_channel_index(
+        self,
+        close_tk,
+        high_tk,
+        low_tk,
+        adjusted,
+        period = 20,
+        constant = 0.015
+    ):
+        """
+        https://www.investopedia.com/terms/c/commoditychannelindex.asp
+        https://chartschool.stockcharts.com/table-of-contents/technical-indicators-and-overlays/technical-indicators/commodity-channel-index-cci
+        
+        constant:
+            a mean deviation multiplier in the denominator of the CCI formula
+
+        """
+
+        typical_price = (high_tk + low_tk + close_tk) / 3
+        tp = pd.Series(data = typical_price, index = close_tk.index)
+        ma = tp.rolling(window = period, min_periods = 1).mean()
+        tp_ma = abs(tp - ma)
+        mean_deviation = tp_ma.rolling(window = period, min_periods = 1).mean()
+        cci = tp_ma / (constant * mean_deviation)
+
+        name_prefix = 'Adjusted ' if adjusted else ''
+
+        cci_data = {
+            'cci': cci,
+            'cci_name': f'{name_prefix}CCI {period}'
+        }
+
+        return cci_data
+
+
     ##### WEIGHTED MEAN #####
 
     def weighted_mean(
@@ -112,7 +149,7 @@ class AnalyzePrices():
         return wm
 
 
-    ##### WEIGHTED MEAN #####
+    ##### WEIGHTED STANDARD DEVIATION #####
 
     def weighted_standard_deviation(
         self,
