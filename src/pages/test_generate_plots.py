@@ -1567,7 +1567,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'success',
                                         size = 'sm',
-                                        style = {'margin-bottom': '0px'}
+                                        style = {'margin-bottom': '2px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -1580,7 +1580,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'danger',
                                         size = 'sm',
-                                        style = {'margin-bottom': '0px'}
+                                        style = {'margin-bottom': '2px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -1985,8 +1985,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'success',
-                                        size = 'sm',
-                                        style = {'margin-bottom': '0px'}
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -1998,8 +1997,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'danger',
-                                        size = 'sm',
-                                        style = {'margin-bottom': '0px'}
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -2185,7 +2183,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'success',
                                         size = 'sm',
-                                        style = {'margin-bottom': '0px'}
+                                        style = {'margin-bottom': '2px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -2198,7 +2196,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'danger',
                                         size = 'sm',
-                                        style = {'margin-bottom': '0px'}
+                                        style = {'margin-bottom': '2px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -3239,8 +3237,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'success',
-                                        size = 'sm',
-                                        style = {'margin-bottom': '0px'}
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -3252,8 +3249,7 @@ layout = html.Div([
                                         n_clicks = 0,
                                         class_name = 'ma-1',
                                         color = 'danger',
-                                        size = 'sm',
-                                        style = {'margin-bottom': '0px'}
+                                        size = 'sm'
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -3443,7 +3439,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'success',
                                         size = 'sm',
-                                        style = {'margin-bottom': '0px'}
+                                        style = {'margin-bottom': '2px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -3456,7 +3452,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'danger',
                                         size = 'sm',
-                                        style = {'margin-bottom': '0px'}
+                                        style = {'margin-bottom': '2px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -4658,7 +4654,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'success',
                                         size = 'sm',
-                                        style = {'margin-bottom': '0px'}
+                                        style = {'margin-bottom': '2px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -4671,7 +4667,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'danger',
                                         size = 'sm',
-                                        style = {'margin-bottom': '0px'}
+                                        style = {'margin-bottom': '2px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -4721,7 +4717,7 @@ layout = html.Div([
         ),
         dbc.Popover([
             # NOTE: Must use <BR/>, not <BR>, to break the line inside the popover
-            dcc.Markdown("""<DIV>► RELATIVE STRENGTH INDEX<BR/>► STOCHASTIC OSCILLATOR</DIV>""",
+            dcc.Markdown("""<DIV>► RELATIVE STRENGTH INDEX<BR/>► COMMODITY CHANNEL INDEX<BR/>► STOCHASTIC OSCILLATOR</DIV>""",
                 dangerously_allow_html = True)
             ], 
             id = 'popover-collapse-button-momentum-tab',
@@ -4737,7 +4733,6 @@ layout = html.Div([
             html.Div([
 
                 ##### BEGIN RSI CONTROLS
-                # Category: MOMENTUM INDICATORS
 
                 html.Div([
                 
@@ -4873,7 +4868,7 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Add OB/OS', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Add OB / OS', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id = 'rsi-add-overbought-oversold-dropdown',
                                         className = 'plots-dropdown-button',
@@ -5047,6 +5042,332 @@ layout = html.Div([
                 ), 
 
                 ##### END RSI CONTROLS
+
+                ##### BEGIN CCI CONTROLS
+
+                html.Div([
+                
+                    html.Div([
+                        dbc.Button(
+                            id = 'collapse-button-cci',
+                            class_name = 'ma-1',
+                            color = 'primary',
+                            size = 'sm',
+                            n_clicks = 0,
+                            style = collapse_button_css
+                        ),
+                        html.Div(
+                            id = 'added-to-plot-indicator-cci',
+                            style = not_added_to_plot_indicator_css
+                        )
+                    ],
+                    style = {'width': '310px', 'display': 'flex', 'flex-wrap': 'nowrap'}
+                    ),
+
+                    dbc.Collapse(
+                    
+                        html.Div(
+                        
+                            id = 'cci-controls',
+                            children = [
+                            
+                                html.Div([
+                                    html.Div('Target Deck', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '0px'}),
+                                    dcc.Dropdown(
+                                        id = 'cci-deck-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Upper'],
+                                        value = 'Upper',
+                                        clearable = False,
+                                        style = {'width': '85px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover(
+                                    [
+                                    html.Span(
+                                           """NOTE: Relative Strength Index cannot be plotted on Upper Deck 
+                                           if the Primary Y-Axis of Upper Deck is populated.
+                                           """,
+                                            style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-cci-deck-dropdown',
+                                    target = 'cci-deck-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'cci-adjusted-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
+                                        clearable = False,
+                                        style = {'width': '70px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),                                
+                                dbc.Popover([
+                                    html.Span(
+                                        'Is CCI based on prices adjusted for stock splits and dividends?',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-cci-adjusted-dropdown',
+                                    target = 'cci-adjusted-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+                                html.Div([
+                                    html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'cci-add-title-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
+                                        clearable = False,
+                                        style = {'width': '70px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Period', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    dbc.Input(
+                                        id = 'cci-period-input',
+                                        className = 'plots-input-button',
+                                        type = 'number',
+                                        value = 20,
+                                        min = 1,
+                                        step = 1,
+                                        debounce = True,
+                                        style = {'width': '65px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-bottom': '5px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Number of periods (days) used in CCI calculation, 20 is the default.',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ],  
+                                    id = 'popover-cci-period-input',
+                                    target = 'cci-period-input',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('Constant', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dbc.Input(
+                                        id = 'cci-constant-input',
+                                        className = 'plots-input-button',
+                                        type = 'number',
+                                        value = 0.015,
+                                        min = 0.001,
+                                        step = 0.001,
+                                        debounce = True,
+                                        style = {'width': '69px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-bottom': '5px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'The multiplier of mean deviation in the denominator of the CCI formula, default is 0.015.',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ],  
+                                    id = 'popover-cci-constant-input',
+                                    target = 'cci-constant-input',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('Add OB / OS', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'cci-add-overbought-oversold-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
+                                        clearable = False,
+                                        style = {'width': '90px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Add Overbought and Oversold threshold lines?',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ],  
+                                    id = 'popover-cci-add-overbought-oversold-dropdown',
+                                    target = 'cci-add-overbought-oversold-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('% OB', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dbc.Input(
+                                        id = 'cci-overbought-level-input',
+                                        className = 'plots-input-button',
+                                        type = 'number',
+                                        value = 100,
+                                        min = 1,
+                                        step = 1,
+                                        debounce = True,
+                                        disabled = False,
+                                        style = {'width': '64px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Set % Overbought threshold',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ],  
+                                    id = 'popover-cci-overbought-level-input',
+                                    target = 'cci-overbought-level-input',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('% OS', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dbc.Input(
+                                        id = 'cci-oversold-level-input',
+                                        className = 'plots-input-button',
+                                        type = 'number',
+                                        value = -100,
+                                        min = 1,
+                                        step = 1,
+                                        debounce = True,
+                                        disabled = False,
+                                        style = {'width': '67px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Set % Oversold threshold',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ],  
+                                    id = 'popover-cci-oversold-level-input',
+                                    target = 'cci-oversold-level-input',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('CCI Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'cci-color-theme-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = overlay_color_themes,
+                                        value = 'Gold',
+                                        clearable = False,
+                                        disabled = False,
+                                        style = {'width': '112px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Add Price', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'cci-add-price-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['No', 'Yes'],
+                                        value = 'No',
+                                        clearable = False,
+                                        style = {'width': '71px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        """CCI Typical Price = ⅓ (High + Low + Close). Typical Price can only be added to Secondary Y-Axis on Upper Deck. 
+                                        Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.""",
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-cci-add-price-dropdown',
+                                    target = 'cci-add-price-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('Price Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='cci-price-color-theme-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = overlay_color_themes,
+                                        value = 'Base',
+                                        clearable = False,
+                                        disabled = False,
+                                        style = {'width': '112px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                ##### Add / Remove buttons
+                                html.Div([
+                                    dbc.Button(
+                                        'Add To Plot',
+                                        id = f'add-cci-button',
+                                        n_clicks = 0,
+                                        class_name = 'ma-1',
+                                        color = 'success',
+                                        size = 'sm'
+                                    )],
+                                    style = {'display': 'inline-block'}
+                                ),
+                                html.Div([
+                                    dbc.Button(
+                                        # '✕',
+                                        'Remove',
+                                        id = f'remove-cci-button',
+                                        n_clicks = 0,
+                                        class_name = 'ma-1',
+                                        color = 'danger',
+                                        size = 'sm'
+                                    )],
+                                    style = {'display': 'inline-block'}
+                                )
+                            ],
+                        ), 
+
+                        id = 'collapse-cci',
+                        is_open = False,
+                        style = {'width': '310px'}
+                    )],
+                    style = {'margin-left': '5px'}
+                ), 
+
+                ##### END CCI CONTROLS
 
                 ##### BEGIN STOCHASTIC CONTROLS
 
@@ -5377,7 +5698,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'success',
                                         size = 'sm',
-                                        style = {'margin-bottom': '0px'}
+                                        style = {'margin-bottom': '2px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -5390,7 +5711,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'danger',
                                         size = 'sm',
-                                        style = {'margin-bottom': '0px'}
+                                        style = {'margin-bottom': '2px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -7150,7 +7471,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'success',
                                         size = 'sm',
-                                        style = {'margin-bottom': '0px'}
+                                        style = {'margin-bottom': '2px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 ),
@@ -7163,7 +7484,7 @@ layout = html.Div([
                                         class_name = 'ma-1',
                                         color = 'danger',
                                         size = 'sm',
-                                        style = {'margin-bottom': '0px'}
+                                        style = {'margin-bottom': '2px'}
                                     )],
                                     style = {'display': 'inline-block'}
                                 )
@@ -7413,6 +7734,7 @@ def toggle_collapse_template(n, is_open):
     Output('ulcer-deck-dropdown', 'options'),
     Output('rsi-deck-dropdown', 'options'),
     Output('stochastic-deck-dropdown', 'options'),
+    Output('cci-deck-dropdown', 'options'),    
     Output('diff-1-deck-dropdown', 'options'),
     Output('diff-2-deck-dropdown', 'options'),
     Output('diff-3-deck-dropdown', 'options'),
@@ -7437,6 +7759,7 @@ def toggle_collapse_template(n, is_open):
     Output('ulcer-deck-dropdown', 'value'),    
     Output('rsi-deck-dropdown', 'value'),
     Output('stochastic-deck-dropdown', 'value'),
+    Output('cci-deck-dropdown', 'value'),
     Output('diff-1-deck-dropdown', 'value'),
     Output('diff-2-deck-dropdown', 'value'),
     Output('diff-3-deck-dropdown', 'value'),
@@ -7464,6 +7787,7 @@ def toggle_collapse_template(n, is_open):
     Input('ulcer-deck-dropdown', 'value'),
     Input('rsi-deck-dropdown', 'value'),
     Input('stochastic-deck-dropdown', 'value'),
+    Input('cci-deck-dropdown', 'value'),    
     Input('diff-1-deck-dropdown', 'value'),
     Input('diff-2-deck-dropdown', 'value'),
     Input('diff-3-deck-dropdown', 'value'),
@@ -7491,6 +7815,7 @@ def target_deck_options(
     ulcer_deck,
     rsi_deck,
     stochastic_deck,
+    cci_deck,
     diff_1_deck,
     diff_2_deck,
     diff_3_deck,
@@ -7525,6 +7850,7 @@ def target_deck_options(
         ulcer_deck_value =              ['Lower'] if (ulcer_deck in ['Middle', 'Lower']) else ['Upper']
         rsi_deck_value =                ['Lower'] if (rsi_deck in ['Middle', 'Lower']) else ['Upper']
         stochastic_deck_value =         ['Lower'] if (stochastic_deck in ['Middle', 'Lower']) else ['Upper']
+        cci_deck_value =                ['Lower'] if (cci_deck in ['Middle', 'Lower']) else ['Upper']        
         diff_1_deck_value =             ['Lower'] if (diff_1_deck in ['Middle', 'Lower']) else ['Upper']
         diff_2_deck_value =             ['Lower'] if (diff_2_deck in ['Middle', 'Lower']) else ['Upper']
         diff_3_deck_value =             ['Lower'] if (diff_3_deck in ['Middle', 'Lower']) else ['Upper']
@@ -7549,6 +7875,7 @@ def target_deck_options(
             ulcer_deck_value + \
             rsi_deck_value + \
             stochastic_deck_value + \
+            cci_deck_value + \
             diff_1_deck_value + \
             diff_2_deck_value + \
             diff_3_deck_value + \
@@ -7576,6 +7903,7 @@ def target_deck_options(
         ulcer_deck_value =              ['Middle'] if (ulcer_deck == 'Lower') & deck_changed else [ulcer_deck]        
         rsi_deck_value =                ['Middle'] if (rsi_deck == 'Lower') & deck_changed else [rsi_deck]
         stochastic_deck_value =         ['Middle'] if (stochastic_deck == 'Lower') & deck_changed else [stochastic_deck]
+        cci_deck_value =                ['Middle'] if (cci_deck == 'Lower') & deck_changed else [cci_deck]        
         diff_1_deck_value =             ['Middle'] if (diff_1_deck == 'Lower') & deck_changed else [diff_1_deck]
         diff_2_deck_value =             ['Middle'] if (diff_2_deck == 'Lower') & deck_changed else [diff_2_deck]
         diff_3_deck_value =             ['Middle'] if (diff_3_deck == 'Lower') & deck_changed else [diff_3_deck]
@@ -7600,6 +7928,7 @@ def target_deck_options(
             ulcer_deck_value + \
             rsi_deck_value + \
             stochastic_deck_value + \
+            cci_deck_value + \
             diff_1_deck_value + \
             diff_2_deck_value + \
             diff_3_deck_value + \
@@ -7995,22 +8324,6 @@ def toggle_collapse_diff_stochastic(n, is_open):
         return f'► {title}', is_open
 
 
-# @callback(
-#     Output('collapse-button-diff', 'children'),
-#     Output('collapse-diff', 'is_open'),
-#     Input('collapse-button-diff', 'n_clicks'),
-#     State('collapse-diff', 'is_open')
-# )
-# def toggle_collapse_diff(n, is_open):
-#     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
-#     title = 'DIFFERENTIAL PLOT'
-#     label = f'► {title}' if is_open else f'▼ {title}'
-#     if n:
-#         return label, not is_open
-#     else:
-#         return f'► {title}', is_open
-
-
 @callback(
     Output('collapse-button-atr', 'children'),
     Output('collapse-atr', 'is_open'),
@@ -8092,6 +8405,22 @@ def toggle_collapse_stochastic(n, is_open):
 
 
 @callback(
+    Output('collapse-button-cci', 'children'),
+    Output('collapse-cci', 'is_open'),
+    Input('collapse-button-cci', 'n_clicks'),
+    State('collapse-cci', 'is_open')
+)
+def toggle_collapse_cci(n, is_open):
+    # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
+    title = 'COMMODITY CHANNEL INDEX'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
 
     Output('fig-div-container', 'children'),
 
@@ -8115,6 +8444,7 @@ def toggle_collapse_stochastic(n, is_open):
     Output('add-ulcer-button', 'n_clicks'),
     Output('add-rsi-button', 'n_clicks'),
     Output('add-stochastic-button', 'n_clicks'),
+    Output('add-cci-button', 'n_clicks'),    
     Output('add-diff-1-button', 'n_clicks'),
     Output('add-diff-2-button', 'n_clicks'),
     Output('add-diff-3-button', 'n_clicks'),
@@ -8140,6 +8470,7 @@ def toggle_collapse_stochastic(n, is_open):
     Output('remove-ulcer-button', 'n_clicks'),
     Output('remove-rsi-button', 'n_clicks'),
     Output('remove-stochastic-button', 'n_clicks'),
+    Output('remove-cci-button', 'n_clicks'),    
     Output('remove-diff-1-button', 'n_clicks'),
     Output('remove-diff-2-button', 'n_clicks'),
     Output('remove-diff-3-button', 'n_clicks'),
@@ -8172,6 +8503,7 @@ def toggle_collapse_stochastic(n, is_open):
     Output('added-to-plot-indicator-ulcer', 'style'),
     Output('added-to-plot-indicator-rsi', 'style'),
     Output('added-to-plot-indicator-stochastic', 'style'),
+    Output('added-to-plot-indicator-cci', 'style'),
     Output('added-to-plot-indicator-diff-1', 'style'),
     Output('added-to-plot-indicator-diff-2', 'style'),
     Output('added-to-plot-indicator-diff-3', 'style'),
@@ -8186,6 +8518,8 @@ def toggle_collapse_stochastic(n, is_open):
     Output('rsi-oversold-level-input', 'disabled'),
     Output('stochastic-overbought-level-input', 'disabled'),
     Output('stochastic-oversold-level-input', 'disabled'),
+    Output('cci-overbought-level-input', 'disabled'),
+    Output('cci-oversold-level-input', 'disabled'),
 
     Output('diff-1-signal-ma-type-dropdown', 'disabled'),
     Output('diff-1-signal-window-input', 'disabled'),
@@ -8244,6 +8578,8 @@ def toggle_collapse_stochastic(n, is_open):
     Output('rsi-price-color-theme-dropdown', 'disabled'),
     Output('stochastic-add-price-dropdown', 'disabled'),
     Output('stochastic-price-color-theme-dropdown', 'disabled'),
+    Output('cci-add-price-dropdown', 'disabled'),
+    Output('cci-price-color-theme-dropdown', 'disabled'),
     Output('diff-1-add-price-dropdown', 'disabled'),
     Output('diff-1-price-color-theme-dropdown', 'disabled'),
     Output('diff-2-add-price-dropdown', 'disabled'),
@@ -8553,7 +8889,7 @@ def toggle_collapse_stochastic(n, is_open):
     Input('add-ulcer-button', 'n_clicks'),
     Input('remove-ulcer-button', 'n_clicks'),
 
-   # MACD inputs
+    # RSI inputs
     Input('rsi-deck-dropdown', 'value'),
     Input('rsi-price-type-dropdown', 'value'),
     Input('rsi-adjusted-dropdown', 'value'),
@@ -8568,6 +8904,7 @@ def toggle_collapse_stochastic(n, is_open):
     Input('add-rsi-button', 'n_clicks'),
     Input('remove-rsi-button', 'n_clicks'),
 
+    # Stochastic inputs
     Input('stochastic-deck-dropdown', 'value'),
     Input('stochastic-adjusted-dropdown', 'value'),
     Input('stochastic-add-title-dropdown', 'value'),
@@ -8585,6 +8922,22 @@ def toggle_collapse_stochastic(n, is_open):
     Input('add-stochastic-button', 'n_clicks'),
     Input('remove-stochastic-button', 'n_clicks'),
 
+    # CCI inputs
+    Input('cci-deck-dropdown', 'value'),
+    Input('cci-adjusted-dropdown', 'value'),
+    Input('cci-add-title-dropdown', 'value'),
+    Input('cci-period-input', 'value'),
+    Input('cci-constant-input', 'value'),
+    Input('cci-add-overbought-oversold-dropdown', 'value'),
+    Input('cci-overbought-level-input', 'value'),
+    Input('cci-oversold-level-input', 'value'),
+    Input('cci-color-theme-dropdown', 'value'),
+    Input('cci-add-price-dropdown', 'value'),
+    Input('cci-price-color-theme-dropdown', 'value'),
+    Input('add-cci-button', 'n_clicks'),
+    Input('remove-cci-button', 'n_clicks'),
+
+    # Stochastic Differential inputs
     Input('diff-stochastic-deck-dropdown', 'value'),
     Input('diff-stochastic-plot-type-dropdown', 'value'),    
     Input('diff-stochastic-sign-dropdown', 'value'),
@@ -8917,6 +9270,20 @@ def update_plot(
         add_stochastic,
         remove_stochastic,
 
+        cci_deck,
+        cci_adjusted,
+        cci_add_title,
+        cci_period,
+        cci_constant,
+        cci_add_overbought_oversold,
+        cci_overbought_level,
+        cci_oversold_level,
+        cci_color_theme,
+        cci_add_price,
+        cci_price_color_theme,
+        add_cci,
+        remove_cci,
+
         diff_stochastic_deck,
         diff_stochastic_plot_type,
         diff_stochastic_sign,
@@ -8977,6 +9344,8 @@ def update_plot(
     rsi_oversold_level_disabled = not boolean(rsi_add_overbought_oversold)
     stochastic_overbought_level_disabled = not boolean(stochastic_add_overbought_oversold)
     stochastic_oversold_level_disabled = not boolean(stochastic_add_overbought_oversold)
+    cci_overbought_level_disabled = not boolean(rsi_add_overbought_oversold)
+    cci_oversold_level_disabled = not boolean(rsi_add_overbought_oversold)
 
     diff_1_signal_ma_type_disabled = not boolean(diff_1_add_signal)
     diff_1_signal_window_disabled = not boolean(diff_1_add_signal)
@@ -9064,6 +9433,13 @@ def update_plot(
     else:
         stochastic_add_price_disabled = False
 
+    cci_price_color_disabled = False if boolean(cci_add_price) & secondary_y else True
+    if (cci_deck != 'Upper') | (not secondary_y):
+        cci_add_price_disabled = True
+        cci_price_color_disabled = True
+    else:
+        cci_add_price_disabled = False
+
     diff_stochastic_k_smoothing_period_disabled = True if diff_stochastic_type == 'Fast' else False
     diff_stochastic_type = 'Full' if diff_stochastic_k_smoothing_period != diff_stochastic_d_period else diff_stochastic_type
     diff_stochastic_added_line_type_disabled = False if boolean(diff_stochastic_add_line) & secondary_y else True
@@ -9102,6 +9478,7 @@ def update_plot(
     added_to_plot_indicator_ulcer_style = not_added_to_plot_indicator_css
     added_to_plot_indicator_rsi_style = not_added_to_plot_indicator_css
     added_to_plot_indicator_stochastic_style = not_added_to_plot_indicator_css
+    added_to_plot_indicator_cci_style = not_added_to_plot_indicator_css
     added_to_plot_indicator_diff_1_style = not_added_to_plot_indicator_css
     added_to_plot_indicator_diff_2_style = not_added_to_plot_indicator_css
     added_to_plot_indicator_diff_3_style = not_added_to_plot_indicator_css
@@ -10053,8 +10430,48 @@ def update_plot(
             added_to_plot_indicator_stochastic_style = added_to_plot_indicator_css
             added_to_plot_indicator_momentum_tab_style = added_to_plot_indicator_css
 
+        ### Add CCI
+        if remove_cci & (fig_data is not None):
+            add_cci = 0
+            for i, tr in enumerate(fig_data['fig']['data']):
+                if tr['legendgroup'] != 'dummy':                
+                    if 'cci' in tr['uid']:
+                        fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
-        ######
+        if add_cci:
+            df_cci = downloaded_data[tk]['ohlc_adj'] if boolean(cci_adjusted) else downloaded_data[tk]['ohlc']
+            cci_close_tk = df_cci['Close'][min_date: max_date]
+            cci_high_tk = df_cci['High'][min_date: max_date]
+            cci_low_tk = df_cci['Low'][min_date: max_date]
+            #
+            cci_data = analyze_prices.commodity_channel_index(
+                cci_close_tk,
+                cci_high_tk,
+                cci_low_tk,
+                boolean(cci_adjusted),
+                period = cci_period,
+                constant = cci_constant
+            )
+            #
+            fig_data = analyze_prices.add_cci(
+                fig_data,
+                cci_data,
+                tk,
+                add_price = boolean(cci_add_price),
+                target_deck = deck_number(deck_type, cci_deck),
+                oversold_threshold = cci_oversold_level,
+                overbought_threshold = cci_overbought_level,
+                add_threshold_overlays = boolean(cci_add_overbought_oversold),
+                add_title = boolean(cci_add_title),
+                theme = theme,
+                cci_color_theme = cci_color_theme,
+                price_color_theme = cci_price_color_theme
+            )
+            added_to_plot_indicator_cci_style = added_to_plot_indicator_css
+            added_to_plot_indicator_momentum_tab_style = added_to_plot_indicator_css
+
+
+        #########################################################################
 
         map_sec_y_id_to_idx = {
             'hist_price': [0],                  # hist_price_sec_y_disabled
@@ -10069,10 +10486,11 @@ def update_plot(
             'impulse_macd': [10, 11],           # [impulse_macd_add_price_disabled, impulse_macd_price_color_disabled]
             'rsi': [12, 13],                    # [rsi_add_price_disabled, rsi_price_color_disabled]
             'stochastic': [14, 15],             # [stochastic_add_price_disabled, stochastic_price_color_disabled]
-            'diff_1': [16, 17],                 # [diff_1_add_price_disabled, diff_1_price_color_disabled]
-            'diff_2': [18, 19],                 # [diff_1_add_price_disabled, diff_1_price_color_disabled]
-            'diff_3': [20, 21],                 # [diff_1_add_price_disabled, diff_1_price_color_disabled]
-            'diff_stochastic': [22, 23, 24]     # [diff_stochastic_add_line_disabled, diff_stochastic_added_line_color_disabled, diff_stochastic_added_line_type_disabled]
+            'cci': [16, 17],                    # [cci_add_price_disabled, cci_price_color_disabled]            
+            'diff_1': [18, 19],                 # [diff_1_add_price_disabled, diff_1_price_color_disabled]
+            'diff_2': [20, 21],                 # [diff_1_add_price_disabled, diff_1_price_color_disabled]
+            'diff_3': [22, 23],                 # [diff_1_add_price_disabled, diff_1_price_color_disabled]
+            'diff_stochastic': [24, 25, 26]     # [diff_stochastic_add_line_disabled, diff_stochastic_added_line_color_disabled, diff_stochastic_added_line_type_disabled]
         }
 
         # Must assign values to sec_y_disabled_outputs if there are no traces on secondary y
@@ -10093,6 +10511,8 @@ def update_plot(
             rsi_price_color_disabled,
             stochastic_add_price_disabled,
             stochastic_price_color_disabled,
+            cci_add_price_disabled,
+            cci_price_color_disabled,
             diff_1_add_price_disabled,
             diff_1_price_color_disabled,
             diff_2_add_price_disabled,
@@ -10188,11 +10608,12 @@ def update_plot(
         add_ulcer,
         add_rsi,
         add_stochastic,
+        add_cci,
         add_diff_1,
         add_diff_2,
         add_diff_3,
         add_diff_stochastic,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  # Clear all remove button values
 
         added_to_plot_indicator_prices_tab_style,
         added_to_plot_indicator_volume_tab_style,
@@ -10220,6 +10641,7 @@ def update_plot(
         added_to_plot_indicator_ulcer_style,
         added_to_plot_indicator_rsi_style,
         added_to_plot_indicator_stochastic_style,
+        added_to_plot_indicator_cci_style,
         added_to_plot_indicator_diff_1_style,
         added_to_plot_indicator_diff_2_style,
         added_to_plot_indicator_diff_3_style,
@@ -10233,6 +10655,8 @@ def update_plot(
         rsi_oversold_level_disabled,
         stochastic_overbought_level_disabled,
         stochastic_oversold_level_disabled,
+        cci_overbought_level_disabled,
+        cci_oversold_level_disabled,
 
         diff_1_signal_ma_type_disabled,
         diff_1_signal_window_disabled,

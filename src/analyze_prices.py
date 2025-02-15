@@ -115,18 +115,296 @@ class AnalyzePrices():
         typical_price = (high_tk + low_tk + close_tk) / 3
         tp = pd.Series(data = typical_price, index = close_tk.index)
         ma = tp.rolling(window = period, min_periods = 1).mean()
-        tp_ma = abs(tp - ma)
-        mean_deviation = tp_ma.rolling(window = period, min_periods = 1).mean()
+        tp_ma = tp - ma
+        tp_ma = tp_ma.fillna(0)
+        mean_deviation = abs(tp_ma).rolling(window = period, min_periods = 1).mean()
         cci = tp_ma / (constant * mean_deviation)
+        cci = cci.fillna(0)
 
         name_prefix = 'Adjusted ' if adjusted else ''
 
         cci_data = {
-            'cci': cci,
-            'cci_name': f'{name_prefix}CCI {period}'
+            'cci': pd.Series(data = cci, index = close_tk.index),
+            'cci_name': f'{name_prefix}CCI {period}',
+            'typical_price': pd.Series(data = typical_price, index = close_tk.index),
+            'typical_price_name': f'CCI {period} Typical Price',
+            'period': period
         }
 
         return cci_data
+
+
+    ##### ADD CCI #####
+
+    def add_cci(
+        self,
+        fig_data,
+        cci_data,
+        tk,
+        add_price = False,
+        target_deck = 2,
+        oversold_threshold = 100,
+        overbought_threshold = -100,
+        add_threshold_overlays = True,
+        add_title = False,
+        title_font_size = 32,
+        theme = 'dark',
+        cci_color_theme = None,
+        price_color_theme = None
+    ):
+        """
+        cci_data:
+            output from commodity_channel_index()
+        tk:
+            ticker for which to plot RSI
+        add_price:
+            Can only add price to secondary_y, which means target_deck must be 1.
+            Except for price on secondary_y, no other overlays will be available.
+            None of the traces added by add_rsi() will be appended to the overlay list.
+
+        """
+
+        cci = cci_data['cci']
+        cci_name = cci_data['cci_name']
+        typical_price = cci_data['typical_price']
+        typical_price_name = cci_data['typical_price_name']
+        period = cci_data['period']
+
+        fig_cci = fig_data['fig']    
+        deck_type = fig_data['deck_type']
+        plot_height = fig_data['plot_height'][target_deck]        
+        title_x_pos = fig_data['title_x_pos']
+        title_y_pos = fig_data['title_y_pos']
+        has_secondary_y = fig_data['has_secondary_y']
+
+        if target_deck == 1:
+            # n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True)])
+            n_traces_upper = len([x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y')])
+            # If the primary y axis is unavailable, then refuse to plot
+            if n_traces_upper > 0:
+                print(f'ERROR: Primary y axis is already populated')
+                return fig_data
+
+        ############
+
+        style = theme_style[theme]
+
+        cci_color_theme = 'gold' if cci_color_theme is None else cci_color_theme.lower()
+        cci_color_idx = style['overlay_color_selection'][cci_color_theme][1][0]
+        cci_color = style['overlay_color_theme'][cci_color_theme][cci_color_idx]
+
+        price_color_theme = 'base' if price_color_theme is None else price_color_theme.lower()
+        price_color_idx = style['overlay_color_selection'][price_color_theme][1][0]
+        price_color = style['overlay_color_theme'][price_color_theme][price_color_idx]
+
+        # Plot typical_price on secondary axis of upper deck only if it has been created in subplots
+        # Plot CCI on primary axis of upper deck only if it is available, i.e. if there are no traces plotted there
+
+        if target_deck == 1:
+            if add_price:
+                if not has_secondary_y:
+                    print('ERROR: Secondary y axis must be selected when creating the plotting template')
+                    return fig_data
+                else:
+                    sec_y_traces = [x for x in fig_data['fig']['data'] if (x['legendgroup'] == '1') & (x['showlegend'] if x['showlegend'] is not None else True) & (x['yaxis']  == 'y2')]
+                    if len(sec_y_traces) > 0:
+                        print('ERROR: Secondary y axis is already populated')
+                        return fig_data                
+        else:
+            # If it's the middle or lower deck, just set add_price to False and continue
+            add_price = False
+
+        title_cci = f'{tk} Commodity Channel Index {period}'
+        yaxis_title = 'Commodity Channel Index' if plot_height >= 250 else f'CCI'
+
+        min_cci = min(cci)
+        max_cci = max(cci)
+
+        min_n_intervals = n_yintervals_map['min'][plot_height]
+        max_n_intervals = n_yintervals_map['max'][plot_height]
+        y_lower_limit, y_upper_limit, y_delta = set_axis_limits(min_cci, max_cci, min_n_intervals, max_n_intervals)
+        if target_deck > 1:
+            y_upper_limit *= 0.999
+        
+        legendgrouptitle = {}
+        if deck_type in ['double', 'triple']:
+            legendtitle = doubledeck_legendtitle[target_deck] if deck_type == 'double' else tripledeck_legendtitle[target_deck]
+            legendgrouptitle = dict(
+                text = legendtitle,
+                font_size = 16,
+                font_weight = 'normal'
+            )
+
+        fig_cci.add_trace(
+            go.Scatter(
+                x = cci.index,
+                y = cci,
+                mode = 'lines',
+                line_color = cci_color,
+                line_width = 2,
+                legendrank = target_deck * 1000,
+                legendgroup = f'{target_deck}',
+                legendgrouptitle = legendgrouptitle,            
+                name = cci_name,
+                uid = 'cci'
+            ),
+            row = target_deck, col = 1,
+            secondary_y = False
+        )
+
+        if add_threshold_overlays:
+            cci_hlines = pd.DataFrame(
+                {
+                    'oversold': oversold_threshold,
+                    'overbought': overbought_threshold,
+                    'y_max': y_upper_limit,
+                    'y_min': y_lower_limit
+                },
+                index = cci.index
+            )
+            if max_cci > overbought_threshold:
+                fig_cci.add_trace(
+                    go.Scatter(
+                        x = cci_hlines.index,
+                        y = cci_hlines['y_max'],
+                        mode = 'lines',
+                        zorder = -1,
+                        line_color = 'black',
+                        line_width = 0,
+                        hoverinfo = 'skip',
+                        uid = 'cci-max',
+                        showlegend = False
+                    ),
+                    row = target_deck, col = 1,
+                    secondary_y = False
+                )
+                fig_cci.add_trace(
+                    go.Scatter(
+                        x = cci_hlines.index,
+                        y = cci_hlines['overbought'],
+                        mode = 'lines',
+                        line_color = style['overbought_linecolor'],
+                        line_width = 2,
+                        fill = 'tonexty',  # fill to previous scatter trace
+                        fillcolor = style['overbought_fillcolor'],
+                        zorder = -1,
+                        legendrank = target_deck * 1000,
+                        legendgroup = f'{target_deck}',
+                        legendgrouptitle = legendgrouptitle,
+                        name = f'Overbought ≥ {overbought_threshold}%',
+                        uid = 'cci-overbought'
+                    ),
+                    row = target_deck, col = 1,
+                    secondary_y = False
+                )
+            if min_cci < oversold_threshold:
+                fig_cci.add_trace(
+                    go.Scatter(
+                        x = cci_hlines.index,
+                        y = cci_hlines['y_min'],
+                        mode = 'lines',
+                        zorder = -1,
+                        line_color = 'black',
+                        line_width = 0,
+                        hoverinfo = 'skip',
+                        uid = 'cci-min',
+                        showlegend = False
+                    ),
+                    row = target_deck, col = 1,
+                    secondary_y = False
+                )
+                fig_cci.add_trace(
+                    go.Scatter(
+                        x = cci_hlines.index,
+                        y = cci_hlines['oversold'],
+                        mode = 'lines',
+                        line_color = style['oversold_linecolor'],
+                        line_width = 2,
+                        fill = 'tonexty',  # fill to previous scatter trace
+                        fillcolor = style['oversold_fillcolor'],
+                        zorder = -1,
+                        legendrank = target_deck * 1000,
+                        legendgroup = f'{target_deck}',
+                        legendgrouptitle = legendgrouptitle,
+                        name = f'Oversold ≤ {oversold_threshold}%',
+                        uid = 'cci-oversold'
+                    ),
+                    row = target_deck, col = 1,
+                    secondary_y = False
+                )
+
+        ############
+
+        if add_price:
+
+            min_n_intervals = n_yintervals_map['min'][plot_height]
+            max_n_intervals = n_yintervals_map['max'][plot_height]
+            sec_y_lower_limit, sec_y_upper_limit, sec_y_delta = set_axis_limits(min(typical_price), max(typical_price), min_n_intervals, max_n_intervals)
+            sec_y_range = (sec_y_lower_limit, sec_y_upper_limit)
+
+            fig_cci.add_trace(
+                go.Scatter(
+                    x = cci.index,
+                    y = typical_price,
+                    mode = 'lines',
+                    line_color = price_color,
+                    name = typical_price_name,
+                    uid = 'cci-typical-price'
+                ),
+                secondary_y = True
+            )
+
+            fig_cci.update_yaxes(
+                range = sec_y_range,
+                title = 'Typical Price',
+                showticklabels = True,
+                tick0 = sec_y_lower_limit,
+                dtick = sec_y_delta,
+                secondary_y = True,
+                showgrid = False,
+                zeroline = False,
+                row = target_deck, col = 1
+            )
+
+            fig_data['sec_y_source'] = ['cci']
+
+        ##########
+
+        # Update layout and axes
+        if add_title:
+            fig_cci.update_layout(
+                title = dict(
+                    text = title_cci,
+                    font_size = title_font_size,
+                    y = title_y_pos,
+                    x = title_x_pos,
+                    xanchor = 'center',
+                    yanchor = 'middle'
+                )
+            )
+
+        fig_cci.update_yaxes(
+            range = (y_lower_limit, y_upper_limit),
+            tick0 = y_lower_limit,
+            dtick = y_delta,
+            title = yaxis_title,
+            showticklabels = True,
+            secondary_y = False,
+            row = target_deck, col = 1
+        )
+
+        if deck_type in ['double', 'triple']:
+            legend_tracegroupgap = self.set_legend_tracegroupgap()
+            fig_cci.update_layout(
+                legend_tracegroupgap = legend_tracegroupgap,
+                legend_traceorder = 'grouped'
+            )
+
+        fig_data.update({'fig': fig_cci})
+        fig_data['y_min'].update({target_deck: min_cci})
+        fig_data['y_max'].update({target_deck: max_cci})
+
+        return fig_data
 
 
     ##### WEIGHTED MEAN #####
@@ -1176,7 +1454,7 @@ class AnalyzePrices():
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
-                    name = f'Overbought > {overbought_threshold}%',
+                    name = f'Overbought ≥ {overbought_threshold}%',
                     uid = 'stochastic-overbought'
                 ),
                 row = target_deck, col = 1,
@@ -1195,7 +1473,7 @@ class AnalyzePrices():
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
-                    name = f'Oversold < {oversold_threshold}%',
+                    name = f'Oversold ≤ {oversold_threshold}%',
                     uid = 'stochastic-oversold'
                 ),
                 row = target_deck, col = 1,
@@ -2963,7 +3241,7 @@ class AnalyzePrices():
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
-                    name = f'Overbought > {overbought_threshold}%',
+                    name = f'Overbought ≥ {overbought_threshold}%',
                     uid = 'rsi-overbought'
                 ),
                 row = target_deck, col = 1,
@@ -2982,7 +3260,7 @@ class AnalyzePrices():
                     legendrank = target_deck * 1000,
                     legendgroup = f'{target_deck}',
                     legendgrouptitle = legendgrouptitle,
-                    name = f'Oversold < {oversold_threshold}%',
+                    name = f'Oversold ≤ {oversold_threshold}%',
                     uid = 'rsi-oversold'
                 ),
                 row = target_deck, col = 1,
