@@ -50,14 +50,28 @@ hist_data = DownloadData()
 analyze_prices = AnalyzePrices()
 build_dash_html = BuildDashHtml()
 
-stochastic_type_markdown = """<DIV><B>Fast Stochastic:</B><BR/>&nbsp;&nbsp;&nbsp; Fast %K = (C - L) / (H - L)<BR/>
+
+popover_markdown = {
+
+    'stochastic-type-dropdown': """<DIV><B>Fast Stochastic:</B><BR/>&nbsp;&nbsp;&nbsp; Fast %K = (C - L) / (H - L)<BR/>
 &nbsp;&nbsp;&nbsp; Fast %D = N-day SMA of Fast %K<BR/>
 <B>Slow Stochastic:</B><BR/>&nbsp;&nbsp;&nbsp; Slow %K = 3-day SMA of Fast %K<BR/>
 &nbsp;&nbsp;&nbsp; Slow %D = N-day SMA of Slow %K<BR/>
 <B>Full Stochastic:</B><BR/>&nbsp;&nbsp;&nbsp; Full %K = F-day SMA of Fast %K<BR/>
 &nbsp;&nbsp;&nbsp; Full %D = N-day SMA of Full %K<BR/>
 C = Current Close<BR/>L = Lookback period's lowest<BR/>H = Lookback period's highest<BR/>
-Lookback period = 14 days by default<BR/>SMA = Simple Moving Average<BR/><BR/>N = %D Line smoothing period of %K<BR/>F = Full Stochastic smoothing period</DIV>"""
+Lookback period = 14 days by default<BR/>SMA = Simple Moving Average<BR/>N = %D Line smoothing period of %K<BR/>F = Full Stochastic smoothing period</DIV>""",
+
+    'stochastic-k-smoothing-period-input': """<DIV>This is the SMA smoothing period of the %K Line in the Slow and Full Stochastic Oscillator versions.
+If the smoothing period is equal to the %D Line averaging period, then the Slow and Full oscillators become equivalent.</DIV>""",
+
+    'stochastic-d-period-input': """<DIV>This is the period with which the %K Line is SMA-smoothed to define the %D Line in each type of Stochastic Oscillator.</DIV>""",
+
+    'supertrend-add-middle-dropdown': """<DIV>Add Middle Band? The Middle Supertrend Band is constructed by averaging the highest
+and the lowest price over the lookback period used in the Average True Rate calculation.</DIV>""",
+
+}
+
 
 @callback(
     Output('final-table-selected-tickers', 'children'),
@@ -2891,7 +2905,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'Price can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
+                                        'Price (Close or Adjusted Close) can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -3203,7 +3217,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'Price can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
+                                        'Price (Close or Adjusted Close) can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -3345,10 +3359,9 @@ layout = html.Div([
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 dbc.Popover([
-                                    html.Span(
-                                        """Add Middle Band? The Middle Supertrend Band is constructed by averaging the highest and the lowest price
-                                        over the lookback period used in the Average True Rate calculation.""",
-                                         style = popover_menu_collapse_button_header_css
+                                    html.Span( 
+                                        dcc.Markdown(popover_markdown['supertrend-add-middle-dropdown'], dangerously_allow_html = True),
+                                        style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
                                     id = 'popover-supertrend-add-middle-dropdown',
@@ -3380,8 +3393,8 @@ layout = html.Div([
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
-                                    id = 'popover-supertrend-add-middle-dropdown',
-                                    target = 'supertrend-add-middle-dropdown',
+                                    id = 'popover-supertrend-periods-input',
+                                    target = 'supertrend-periods-input',
                                     body = False,
                                     trigger = 'hover',
                                     hide_arrow = False,
@@ -3409,8 +3422,8 @@ layout = html.Div([
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
-                                    id = 'popover-supertrend-add-middle-dropdown',
-                                    target = 'supertrend-add-middle-dropdown',
+                                    id = 'popover-supertrend-multiplier-input',
+                                    target = 'supertrend-multiplier-input',
                                     body = False,
                                     trigger = 'hover',
                                     hide_arrow = False,
@@ -4881,7 +4894,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'Add Overbought and Oversold threshold lines?',
+                                        'Add Overbought and Oversold threshold lines and regions?',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ],  
@@ -5086,7 +5099,7 @@ layout = html.Div([
                                 dbc.Popover(
                                     [
                                     html.Span(
-                                           """NOTE: Relative Strength Index cannot be plotted on Upper Deck 
+                                           """NOTE: Commodity Channel Index cannot be plotted on Upper Deck 
                                            if the Primary Y-Axis of Upper Deck is populated.
                                            """,
                                             style = popover_menu_collapse_button_header_css
@@ -5139,9 +5152,9 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Period', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    html.Div('Periods', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
                                     dbc.Input(
-                                        id = 'cci-period-input',
+                                        id = 'cci-periods-input',
                                         className = 'plots-input-button',
                                         type = 'number',
                                         value = 20,
@@ -5154,12 +5167,12 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'Number of periods (days) used in CCI calculation, 20 is the default.',
+                                        'Number of periods (days) used in the CCI calculation, 20 is the default.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ],  
-                                    id = 'popover-cci-period-input',
-                                    target = 'cci-period-input',
+                                    id = 'popover-cci-periods-input',
+                                    target = 'cci-periods-input',
                                     body = False,
                                     trigger = 'hover',
                                     hide_arrow = False,
@@ -5176,7 +5189,7 @@ layout = html.Div([
                                         min = 0.001,
                                         step = 0.001,
                                         debounce = True,
-                                        style = {'width': '69px'}
+                                        style = {'width': '71px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-bottom': '5px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -5195,20 +5208,20 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Add OB / OS', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Add OB / OS', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '1px'}),
                                     dcc.Dropdown(
                                         id = 'cci-add-overbought-oversold-dropdown',
                                         className = 'plots-dropdown-button',
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '90px'}
+                                        style = {'width': '88px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'Add Overbought and Oversold threshold lines?',
+                                        'Add Overbought and Oversold threshold lines and regions?',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ],  
@@ -5412,10 +5425,8 @@ layout = html.Div([
                                 dbc.Popover(
                                     [
                                     html.Span(
-                                           """NOTE: Stochastic Oscillator cannot be plotted on Upper Deck 
-                                           if the Primary Y-Axis of Upper Deck is populated.
-                                           """,
-                                            style = popover_menu_collapse_button_header_css
+                                        'NOTE: Stochastic Oscillator cannot be plotted on Upper Deck if the Primary Y-Axis of Upper Deck is populated.',
+                                        style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
                                     id = 'popover-stochastic-deck-dropdown',
@@ -5466,7 +5477,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     # Define outside of layout in order to avoid issues with markdown not displaying due to indentation or similar formatting factors
-                                    dcc.Markdown(stochastic_type_markdown, dangerously_allow_html = True)
+                                    dcc.Markdown(popover_markdown['stochastic-type-dropdown'], dangerously_allow_html = True)
                                     ], 
                                     id = 'popover-stochastic-type-dropdown',
                                     target = 'stochastic-type-dropdown',
@@ -5505,7 +5516,7 @@ layout = html.Div([
                                 ),
 
                                 html.Div([
-                                    html.Div('Smoothing', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    html.Div('Smoothing Period', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
                                     dbc.Input(
                                         id = 'stochastic-k-smoothing-period-input',
                                         className = 'plots-input-button',
@@ -5514,14 +5525,13 @@ layout = html.Div([
                                         min = 1,
                                         step = 1,
                                         debounce = True,
-                                        style = {'width': '60px'}
+                                        style = {'width': '130px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        """This is the SMA smoothing period of the %K Line in the Slow and Full Stochastic Oscillator versions in order to make it less choppy.
-                                        If the smoothing period is equal to the %D Line averaging period, then the Slow and Full oscillators become equivalent.""",
+                                        dcc.Markdown(popover_markdown['stochastic-k-smoothing-period-input'], dangerously_allow_html = True),
                                         style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -5545,11 +5555,11 @@ layout = html.Div([
                                         debounce = True,
                                         style = {'width': '83px'}
                                     )],
-                                    style = {'display': 'inline-block', 'margin-bottom': '0px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        """This is the period with which the %K Line is SMA-smoothed to define the %D Line in each type of Stochastic Oscillator.""",
+                                        dcc.Markdown(popover_markdown['stochastic-d-period-input'], dangerously_allow_html = True),
                                         style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -5569,9 +5579,22 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '80px'}
+                                        style = {'width': '119px'}
                                     )],
-                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Add Overbought and Oversold threshold lines and regions?',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ],  
+                                    id = 'popover-stochastic-add-overbought-oversold-dropdown',
+                                    target = 'stochastic-add-overbought-oversold-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
@@ -5586,9 +5609,22 @@ layout = html.Div([
                                         step = 1,
                                         debounce = True,
                                         disabled = False,
-                                        style = {'width': '55px'}
+                                        style = {'width': '88px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Set % Overbought threshold',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ],  
+                                    id = 'popover-stochastic-overbought-level-input',
+                                    target = 'stochastic-overbought-level-input',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
@@ -5603,22 +5639,22 @@ layout = html.Div([
                                         step = 1,
                                         debounce = True,
                                         disabled = False,
-                                        style = {'width': '55px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
-
-                                html.Div([
-                                    html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
-                                    dcc.Dropdown(
-                                        id = 'stochastic-add-title-dropdown',
-                                        className = 'plots-dropdown-button',
-                                        options = ['Yes', 'No'],
-                                        value = 'Yes',
-                                        clearable = False,
-                                        style = {'width': '80px'}
+                                        style = {'width': '88px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Set % Oversold threshold',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ],  
+                                    id = 'popover-stochastic-oversold-level-input',
+                                    target = 'stochastic-oversold-level-input',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
@@ -5630,7 +5666,7 @@ layout = html.Div([
                                         value = 'Orange',
                                         clearable = False,
                                         disabled = False,
-                                        style = {'width': '85px'}
+                                        style = {'width': '150px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -5644,6 +5680,19 @@ layout = html.Div([
                                         value = 'Purple',
                                         clearable = False,
                                         disabled = False,
+                                        style = {'width': '150px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('Add Title', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'stochastic-add-title-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
+                                        clearable = False,
                                         style = {'width': '85px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
@@ -5657,13 +5706,14 @@ layout = html.Div([
                                         options = ['No', 'Yes'],
                                         value = 'No',
                                         clearable = False,
-                                        style = {'width': '65px'}
+                                        style = {'width': '85px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'Price can only be added to Secondary Y-Axis on the Upper Deck. Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
+                                        """Price (Close or Adjusted Close) can only be added to Secondary Y-Axis on Upper Deck. 
+                                        Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.""",
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -5684,7 +5734,7 @@ layout = html.Div([
                                         value = 'Base',
                                         clearable = False,
                                         disabled = False,
-                                        style = {'width': '115px'}
+                                        style = {'width': '125px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -5844,7 +5894,7 @@ layout = html.Div([
                                         options = ['Histogram', 'Filled Line'],
                                         value = 'Histogram',
                                         clearable = False,
-                                        style = {'width': '97px'}
+                                        style = {'width': '98px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -5871,7 +5921,7 @@ layout = html.Div([
                                         options = candle_colors,
                                         value = 'Green-Red',
                                         clearable = False,
-                                        style = {'width': '113px'}
+                                        style = {'width': '117px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -5902,7 +5952,7 @@ layout = html.Div([
                                     style = popover_menu_button_css
                                 ),
                                 html.Div([
-                                    html.Div('Line 1 Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Line 1 Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id='diff-1-price-color-theme-dropdown',
                                         className = 'plots-dropdown-button',
@@ -5923,7 +5973,7 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '70px'}
+                                        style = {'width': '75px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -5938,7 +5988,7 @@ layout = html.Div([
                                         options = ['No', 'Yes'],
                                         value = 'No',
                                         clearable = False,
-                                        style = {'width': '90px'}
+                                        style = {'width': '95px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -5976,7 +6026,7 @@ layout = html.Div([
                                             style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                         ),
                                         html.Div([
-                                            html.Div('Signal Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            html.Div('Signal Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                             dcc.Dropdown(
                                                 id = 'diff-1-signal-color-theme-dropdown',
                                                 className = 'plots-dropdown-button',
@@ -5984,7 +6034,7 @@ layout = html.Div([
                                                 value = 'Gold',
                                                 clearable = False,
                                                 disabled = False,
-                                                style = {'width': '160px'}
+                                                style = {'width': '165px'}
                                             )],
                                             style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                         ),
@@ -6013,7 +6063,7 @@ layout = html.Div([
                                         options = ['Close', 'High', 'Low', 'Open'],
                                         value = 'Close',
                                         clearable = False,
-                                        style = {'width': '85px'}
+                                        style = {'width': '88px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -6025,7 +6075,7 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '65px'}
+                                        style = {'width': '67px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -6055,7 +6105,7 @@ layout = html.Div([
                                                 options = ['Simple', 'Exponential', 'Double Exponential', 'Triple Exponential', 'Weighted', 'Welles Wilder'],
                                                 value = 'Simple',
                                                 clearable = False,
-                                                style = {'width': '180px'}
+                                                style = {'width': '185px'}
                                             )],
                                             style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                         ),
@@ -6126,7 +6176,7 @@ layout = html.Div([
                                         options = ['Close', 'High', 'Low', 'Open'],
                                         value = 'Close',
                                         clearable = False,
-                                        style = {'width': '85px'}
+                                        style = {'width': '88px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -6138,7 +6188,7 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '65px'}
+                                        style = {'width': '67px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -6168,7 +6218,7 @@ layout = html.Div([
                                                 options = ['Simple', 'Exponential', 'Double Exponential', 'Triple Exponential', 'Weighted', 'Welles Wilder'],
                                                 value = 'Simple',
                                                 clearable = False,
-                                                style = {'width': '180px'}
+                                                style = {'width': '185px'}
                                             )],
                                             style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                         ),
@@ -6292,7 +6342,7 @@ layout = html.Div([
                                         options = ['Histogram', 'Filled Line'],
                                         value = 'Histogram',
                                         clearable = False,
-                                        style = {'width': '97px'}
+                                        style = {'width': '98px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -6319,7 +6369,7 @@ layout = html.Div([
                                         options = candle_colors,
                                         value = 'Green-Red',
                                         clearable = False,
-                                        style = {'width': '113px'}
+                                        style = {'width': '117px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -6350,7 +6400,7 @@ layout = html.Div([
                                     style = popover_menu_button_css
                                 ),
                                 html.Div([
-                                    html.Div('Line 1 Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Line 1 Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id='diff-2-price-color-theme-dropdown',
                                         className = 'plots-dropdown-button',
@@ -6371,7 +6421,7 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '70px'}
+                                        style = {'width': '75px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -6386,7 +6436,7 @@ layout = html.Div([
                                         options = ['No', 'Yes'],
                                         value = 'No',
                                         clearable = False,
-                                        style = {'width': '90px'}
+                                        style = {'width': '95px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -6424,7 +6474,7 @@ layout = html.Div([
                                             style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                         ),
                                         html.Div([
-                                            html.Div('Signal Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            html.Div('Signal Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                             dcc.Dropdown(
                                                 id = 'diff-2-signal-color-theme-dropdown',
                                                 className = 'plots-dropdown-button',
@@ -6432,7 +6482,7 @@ layout = html.Div([
                                                 value = 'Gold',
                                                 clearable = False,
                                                 disabled = False,
-                                                style = {'width': '160px'}
+                                                style = {'width': '165px'}
                                             )],
                                             style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                         ),
@@ -6461,7 +6511,7 @@ layout = html.Div([
                                         options = ['Close', 'High', 'Low', 'Open'],
                                         value = 'Close',
                                         clearable = False,
-                                        style = {'width': '85px'}
+                                        style = {'width': '88px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -6473,7 +6523,7 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '65px'}
+                                        style = {'width': '67px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -6503,7 +6553,7 @@ layout = html.Div([
                                                 options = ['Simple', 'Exponential', 'Double Exponential', 'Triple Exponential', 'Weighted', 'Welles Wilder'],
                                                 value = 'Simple',
                                                 clearable = False,
-                                                style = {'width': '180px'}
+                                                style = {'width': '185px'}
                                             )],
                                             style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                         ),
@@ -6574,7 +6624,7 @@ layout = html.Div([
                                         options = ['Close', 'High', 'Low', 'Open'],
                                         value = 'Close',
                                         clearable = False,
-                                        style = {'width': '85px'}
+                                        style = {'width': '88px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -6586,7 +6636,7 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '65px'}
+                                        style = {'width': '67px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -6616,7 +6666,7 @@ layout = html.Div([
                                                 options = ['Simple', 'Exponential', 'Double Exponential', 'Triple Exponential', 'Weighted', 'Welles Wilder'],
                                                 value = 'Simple',
                                                 clearable = False,
-                                                style = {'width': '180px'}
+                                                style = {'width': '185px'}
                                             )],
                                             style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                         ),
@@ -6740,7 +6790,7 @@ layout = html.Div([
                                         options = ['Histogram', 'Filled Line'],
                                         value = 'Histogram',
                                         clearable = False,
-                                        style = {'width': '97px'}
+                                        style = {'width': '98px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -6767,7 +6817,7 @@ layout = html.Div([
                                         options = candle_colors,
                                         value = 'Green-Red',
                                         clearable = False,
-                                        style = {'width': '113px'}
+                                        style = {'width': '117px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -6798,7 +6848,7 @@ layout = html.Div([
                                     style = popover_menu_button_css
                                 ),
                                 html.Div([
-                                    html.Div('Line 1 Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Line 1 Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id='diff-3-price-color-theme-dropdown',
                                         className = 'plots-dropdown-button',
@@ -6806,7 +6856,6 @@ layout = html.Div([
                                         value = 'Sapphire',
                                         clearable = False,
                                         disabled = False,
-                                        #style = {'width': '107px'}
                                         style = {'width': '140px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
@@ -6819,7 +6868,7 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '70px'}
+                                        style = {'width': '75px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -6834,7 +6883,7 @@ layout = html.Div([
                                         options = ['No', 'Yes'],
                                         value = 'No',
                                         clearable = False,
-                                        style = {'width': '90px'}
+                                        style = {'width': '95px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -6872,7 +6921,7 @@ layout = html.Div([
                                             style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                         ),
                                         html.Div([
-                                            html.Div('Signal Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            html.Div('Signal Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                             dcc.Dropdown(
                                                 id = 'diff-3-signal-color-theme-dropdown',
                                                 className = 'plots-dropdown-button',
@@ -6880,7 +6929,7 @@ layout = html.Div([
                                                 value = 'Gold',
                                                 clearable = False,
                                                 disabled = False,
-                                                style = {'width': '160px'}
+                                                style = {'width': '165px'}
                                             )],
                                             style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                         ),
@@ -6909,7 +6958,7 @@ layout = html.Div([
                                         options = ['Close', 'High', 'Low', 'Open'],
                                         value = 'Close',
                                         clearable = False,
-                                        style = {'width': '85px'}
+                                        style = {'width': '88px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -6921,7 +6970,7 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '65px'}
+                                        style = {'width': '67px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -6951,7 +7000,7 @@ layout = html.Div([
                                                 options = ['Simple', 'Exponential', 'Double Exponential', 'Triple Exponential', 'Weighted', 'Welles Wilder'],
                                                 value = 'Simple',
                                                 clearable = False,
-                                                style = {'width': '180px'}
+                                                style = {'width': '185px'}
                                             )],
                                             style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                         ),
@@ -7022,7 +7071,7 @@ layout = html.Div([
                                         options = ['Close', 'High', 'Low', 'Open'],
                                         value = 'Close',
                                         clearable = False,
-                                        style = {'width': '85px'}
+                                        style = {'width': '88px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -7034,7 +7083,7 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '65px'}
+                                        style = {'width': '67px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -7064,7 +7113,7 @@ layout = html.Div([
                                                 options = ['Simple', 'Exponential', 'Double Exponential', 'Triple Exponential', 'Weighted', 'Welles Wilder'],
                                                 value = 'Simple',
                                                 clearable = False,
-                                                style = {'width': '180px'}
+                                                style = {'width': '185px'}
                                             )],
                                             style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                         ),
@@ -7159,7 +7208,7 @@ layout = html.Div([
                                         options = ['Upper'],
                                         value = 'Upper',
                                         clearable = False,
-                                        style = {'width': '90px'}
+                                        style = {'width': '97px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -7179,16 +7228,64 @@ layout = html.Div([
                                     hide_arrow = False,
                                     style = popover_menu_button_css
                                 ),
+                                html.Div([
+                                    html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id='diff-stochastic-adjusted-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Yes', 'No'],
+                                        value = 'Yes',
+                                        clearable = False,
+                                        style = {'width': '75px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'Are the underlying prices adjusted for stock splits and dividends?',
+                                         style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-diff-stochastic-adjusted-dropdown',
+                                    target = 'diff-stochastic-adjusted-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
 
                                 html.Div([
-                                    html.Div('Plot Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    html.Div('Stochastic Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    dcc.Dropdown(
+                                        id = 'diff-stochastic-type-dropdown',
+                                        className = 'plots-dropdown-button',
+                                        options = ['Fast', 'Slow', 'Full'],
+                                        value = 'Slow',
+                                        clearable = False,
+                                        style = {'width': '123px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    dcc.Markdown(popover_markdown['stochastic-type-dropdown'], dangerously_allow_html = True)
+                                    ], 
+                                    id = 'popover-diff-stochastic-type-dropdown',
+                                    target = 'diff-stochastic-type-dropdown',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('Plot Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id = 'diff-stochastic-plot-type-dropdown',
                                         className = 'plots-dropdown-button',
                                         options = ['Histogram', 'Filled Line'],
                                         value = 'Histogram',
                                         clearable = False,
-                                        style = {'width': '102px'}
+                                        style = {'width': '150px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -7206,18 +7303,100 @@ layout = html.Div([
                                     hide_arrow = False,
                                     style = popover_menu_button_css
                                 ),
-
                                 html.Div([
-                                    html.Div('Differential', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '3px', 'margin-left': '2px'}),
+                                    html.Div('Differential Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id = 'diff-stochastic-sign-dropdown',
                                         className = 'plots-dropdown-button',
                                         options = ['%K − %D', '%D − %K'],
                                         value = '%K − %D',
                                         clearable = False,
-                                        style = {'width': '98px'}
+                                        style = {'width': '150px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+
+                                html.Div([
+                                    html.Div('%K Period', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dbc.Input(
+                                        id = 'diff-stochastic-fast-k-period-input',
+                                        className = 'plots-input-button',
+                                        type = 'number',
+                                        value = 14,
+                                        min = 1,
+                                        step = 1,
+                                        debounce = True,
+                                        style = {'width': '82px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        'The %K Line Period is also referred to as the lookback period.',
+                                        style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-diff-stochastic-fast-k-period-input',
+                                    target = 'diff-stochastic-fast-k-period-input',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+                                html.Div([
+                                    html.Div('Smoothing Period', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dbc.Input(
+                                        id = 'diff-stochastic-k-smoothing-period-input',
+                                        className = 'plots-input-button',
+                                        type = 'number',
+                                        value = 3,
+                                        min = 1,
+                                        step = 1,
+                                        debounce = True,
+                                        style = {'width': '130px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        dcc.Markdown(popover_markdown['stochastic-k-smoothing-period-input'], dangerously_allow_html = True),
+                                        style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-diff-stochastic-k-smoothing-period-input',
+                                    target = 'diff-stochastic-k-smoothing-period-input',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
+                                ),
+
+                                html.Div([
+                                    html.Div('%D Period', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
+                                    dbc.Input(
+                                        id = 'diff-stochastic-d-period-input',
+                                        className = 'plots-input-button',
+                                        type = 'number',
+                                        value = 3,
+                                        min = 1,
+                                        step = 1,
+                                        debounce = True,
+                                        style = {'width': '83px'}
+                                    )],
+                                    style = {'display': 'inline-block', 'margin-bottom': '0px', 'margin-right': '0px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
+                                ),
+                                dbc.Popover([
+                                    html.Span(
+                                        dcc.Markdown(popover_markdown['stochastic-d-period-input'], dangerously_allow_html = True),
+                                        style = popover_menu_collapse_button_header_css
+                                        )
+                                    ], 
+                                    id = 'popover-diff-stochastic-d-period-input',
+                                    target = 'diff-stochastic-d-period-input',
+                                    body = False,
+                                    trigger = 'hover',
+                                    hide_arrow = False,
+                                    style = popover_menu_button_css
                                 ),
 
                                 html.Div([
@@ -7228,7 +7407,7 @@ layout = html.Div([
                                         options = candle_colors,
                                         value = 'Green-Red',
                                         clearable = False,
-                                        style = {'width': '130px'}
+                                        style = {'width': '180px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -7240,100 +7419,9 @@ layout = html.Div([
                                         options = ['Yes', 'No'],
                                         value = 'Yes',
                                         clearable = False,
-                                        style = {'width': '80px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
-                                html.Div([
-                                    html.Div('Adjusted', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
-                                    dcc.Dropdown(
-                                        id='diff-stochastic-adjusted-dropdown',
-                                        className = 'plots-dropdown-button',
-                                        options = ['Yes', 'No'],
-                                        value = 'Yes',
-                                        clearable = False,
-                                        style = {'width': '80px'}
+                                        style = {'width': '120px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
-                                dbc.Popover([
-                                    html.Span(
-                                        'Are the underlying prices adjusted for stock splits and dividends?',
-                                         style = popover_menu_collapse_button_header_css
-                                        )
-                                    ], 
-                                    id = 'popover-diff-stochastic-adjusted-dropdown',
-                                    target = 'diff-stochastic-adjusted-dropdown',
-                                    body = False,
-                                    trigger = 'hover',
-                                    hide_arrow = False,
-                                    style = popover_menu_button_css
-                                ),
-
-                                html.Div([
-                                    html.Div('Stochastic Type', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
-                                    dcc.Dropdown(
-                                        id = 'diff-stochastic-type-dropdown',
-                                        className = 'plots-dropdown-button',
-                                        options = ['Fast', 'Slow', 'Full'],
-                                        value = 'Slow',
-                                        clearable = False,
-                                        style = {'width': '150px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
-                                dbc.Popover([
-                                    dcc.Markdown(stochastic_type_markdown, dangerously_allow_html = True)
-                                    ], 
-                                    id = 'popover-diff-stochastic-type-dropdown',
-                                    target = 'diff-stochastic-type-dropdown',
-                                    body = False,
-                                    trigger = 'hover',
-                                    hide_arrow = False,
-                                    style = popover_menu_button_css
-                                ),
-
-                                html.Div([
-                                    html.Div('%K Line Period', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
-                                    dbc.Input(
-                                        id = 'diff-stochastic-fast-k-period-input',
-                                        className = 'plots-input-button',
-                                        type = 'number',
-                                        value = 14,
-                                        min = 1,
-                                        step = 1,
-                                        debounce = True,
-                                        style = {'width': '145px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-bottom': '5px', 'margin-right': '0px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
-                                html.Div([
-                                    html.Div('%K Smoothing Period', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
-                                    dbc.Input(
-                                        id = 'diff-stochastic-k-smoothing-period-input',
-                                        className = 'plots-input-button',
-                                        type = 'number',
-                                        value = 3,
-                                        min = 1,
-                                        step = 1,
-                                        debounce = True,
-                                        style = {'width': '170px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-bottom': '0px', 'margin-right': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
-                                ),
-                                html.Div([
-                                    html.Div('%D Line Period', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
-                                    dbc.Input(
-                                        id = 'diff-stochastic-d-period-input',
-                                        className = 'plots-input-button',
-                                        type = 'number',
-                                        value = 3,
-                                        min = 1,
-                                        step = 1,
-                                        debounce = True,
-                                        style = {'width': '125px'}
-                                    )],
-                                    style = {'display': 'inline-block', 'margin-bottom': '0px', 'margin-right': '0px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
 
                                 html.Div([
@@ -7344,12 +7432,12 @@ layout = html.Div([
                                         options = ['No', 'Yes'],
                                         value = 'No',
                                         clearable = False,
-                                        style = {'width': '69px'}
+                                        style = {'width': '70px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 dbc.Popover([
-                                    html.Span("""%K Line, %D Line or Price can be added to Secondary Y-Axis on the Upper Deck. 
+                                    html.Span("""%K Line, %D Line or Price can be added to Secondary Y-Axis on Upper Deck. 
                                         Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.""",
                                         style = popover_menu_collapse_button_header_css
                                         )
@@ -7369,12 +7457,12 @@ layout = html.Div([
                                         options = ['%K Line', '%D Line', 'Price'],
                                         value = '%K Line',
                                         clearable = False,
-                                        style = {'width': '93px'}
+                                        style = {'width': '95px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
                                 dbc.Popover([
-                                    html.Span('%K Line, %D Line or Price',
+                                    html.Span('%K Line, %D Line or Price (Close or Adjusted Close)',
                                         style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -7386,7 +7474,7 @@ layout = html.Div([
                                     style = popover_menu_button_css
                                 ),                    
                                 html.Div([
-                                    html.Div('Line Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                    html.Div('Line Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                     dcc.Dropdown(
                                         id='diff-stochastic-added-line-color-theme-dropdown',
                                         className = 'plots-dropdown-button',
@@ -7394,7 +7482,7 @@ layout = html.Div([
                                         value = 'Base',
                                         clearable = False,
                                         disabled = True,
-                                        style = {'width': '128px'}
+                                        style = {'width': '130px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -7409,7 +7497,7 @@ layout = html.Div([
                                         options = ['No', 'Yes'],
                                         value = 'No',
                                         clearable = False,
-                                        style = {'width': '90px'}
+                                        style = {'width': '95px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -7447,7 +7535,7 @@ layout = html.Div([
                                             style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                         ),
                                         html.Div([
-                                            html.Div('Signal Color Theme', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                            html.Div('Signal Color', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
                                             dcc.Dropdown(
                                                 id = 'diff-stochastic-signal-color-theme-dropdown',
                                                 className = 'plots-dropdown-button',
@@ -7455,7 +7543,7 @@ layout = html.Div([
                                                 value = 'Gold',
                                                 clearable = False,
                                                 disabled = False,
-                                                style = {'width': '160px'}
+                                                style = {'width': '165px'}
                                             )],
                                             style = {'display': 'inline-block', 'margin-right': '0px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                         ),
@@ -8926,7 +9014,7 @@ def toggle_collapse_cci(n, is_open):
     Input('cci-deck-dropdown', 'value'),
     Input('cci-adjusted-dropdown', 'value'),
     Input('cci-add-title-dropdown', 'value'),
-    Input('cci-period-input', 'value'),
+    Input('cci-periods-input', 'value'),
     Input('cci-constant-input', 'value'),
     Input('cci-add-overbought-oversold-dropdown', 'value'),
     Input('cci-overbought-level-input', 'value'),
