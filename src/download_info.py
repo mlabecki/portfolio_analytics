@@ -14,6 +14,9 @@ class DownloadInfo():
         tickers,
         tk_market
      ):
+        """
+        NOTE: This function is currently unused.
+        """
 
         dict_info = {}
         all_tickers = tickers if tk_market in tickers else tickers + [tk_market]
@@ -59,6 +62,15 @@ class DownloadInfo():
             return float(x)
         else:
             return 0.0
+
+
+    def get_usd_fx_rate(self, currency):
+        """
+        Get the latest exchange rate of currency to USD
+        """
+        tk = currency + '=X'
+        fx_rate = yf.download(tk, start = datetime.today(), progress = False)['Close'].iloc[0].values[0]
+        return fx_rate
 
 
     def download_from_url(
@@ -171,8 +183,8 @@ class DownloadInfo():
                 # df['Name'] = df['Symbol'].apply(lambda x: ' '.join(x.split('-USD ')[0].split()[: -1]))
                 df['Name'] = df['Name'].apply(lambda x: x[: -4])
 
-            for tk in url_to_yf_ticker_map.keys():
-                df['Symbol'] = np.where(df['Symbol'] == tk, url_to_yf_ticker_map[tk], df['Symbol'])
+            # for tk in url_to_yf_ticker_map.keys():
+            #     df['Symbol'] = np.where(df['Symbol'] == tk, url_to_yf_ticker_map[tk], df['Symbol'])
 
             return df
 

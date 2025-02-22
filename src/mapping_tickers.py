@@ -429,6 +429,117 @@ precious_metals = {
     'PA=F': 'Palladium (NYM)'
 }
 
+### RARE METALS COMPANIES and FUNDS ###
+rare_metals_companies = {
+    # Sorted by marketCap from YF
+    # Source: 
+    #   1. https://finance.yahoo.com/news/14-best-rare-earth-stocks-181008216.html
+    #   2. https://investingnews.com/top-rare-earth-stocks/
+    #
+    # NOTE: Must convert CAD and AUD to USD for market cap comparison
+    #   
+    # cadusd = yf.download('CAD=X', start = datetime.today(), progress = False)['Close'].iloc[0].values[0]
+    # audusd = yf.download('AUD=X', start = datetime.today(), progress = False)['Close'].iloc[0].values[0]
+    #
+    'SCCO': 'Southern Copper Corporation',
+    'SQM': 'Sociedad Química y Minera de Chile S.A.',
+    'LYC.AX': 'Lynas Rare Earths Limited',  #  currency is AUD
+    'MP': 'MP Materials Corp.',
+    'SBSW': 'Sibanye Stillwater Limited',
+    'ILU.AX': 'Iluka Resources Limited',  #  currency is AUD
+    'CSTM': 'Constellium SE',
+    'TROX': 'Tronox Holdings plc',
+    'EFR': 'Eaton Vance Senior Floating-Rate Trust',
+    'NEO.TO': 'Neo Performance Materials Inc.',  # currency is CAD
+    'ARU.AX': 'Arafura Rare Earths Limited',    # currency is AUD
+    'NB': 'NioCorp Developments Ltd.',
+    'ARA.TO': 'Aclara Resources Inc.',  #  currency is CAD
+    'MKA.V': 'Mkango Resources Ltd.',   #  currency is CAD
+    'UCU.V': 'Ucore Rare Metals Inc.',  #  currency is CAD
+    'LICY': 'Li-Cycle Holdings Corp.'
+}
+
+rare_metals_etfs_tickers = {
+    # Sorted by totalAssets from YF
+    # Source: 
+    #   https://finance.yahoo.com/news/14-best-rare-earth-stocks-181008216.html
+    #
+    'PICK': 'iShares MSCI Global Metals & Mining Producers ETF',
+    'REMX': 'VanEck Rare Earth and Strategic Metals ETF',
+    'HURA.TO': 'Global X Uranium Index ETF'
+}
+
+### CAR COMPANIES ###
+# Sorted by Market Cap as of 20/02/2025
+# Source:
+#   https://companiesmarketcap.com/cad/automakers/largest-automakers-by-market-cap/
+# 
+car_companies = {
+    'TSLA': 'Tesla',
+    'TM': 'Toyota',
+    'XIACF': 'Xiaomi',
+    '002594.SZ': 'BYD',
+    'RACE': 'Ferrari',
+    'MBG.DE': 'Mercedes-Benz',
+    'P911.DE': 'Porsche',
+    'BMW.DE': 'BMW',
+    'VOW3.DE': 'Volkswagen',
+    'GM': 'General Motors',
+    'MARUTI.NS': 'Maruti Suzuki India',
+    'STLA': 'Stellantis',
+    'HMC': 'Honda',
+    'M&M.NS': 'Mahindra & Mahindra',
+    'F': 'Ford',
+    'HYMTF': 'Hyundai',
+    'TATAMOTORS.NS': 'Tata Motors',
+    'LI': 'Li Auto',
+    '600104.SS': 'SAIC Motor',
+    '000270.KS': 'Kia',
+    '601127.SS': 'Seres Group',
+    '601633.SS': 'Great Wall Motors',
+    '7269.T': 'Suzuki Motor',
+    '0175.HK': 'Geely',
+    'XPEV': 'XPeng',
+    '000625.SZ': 'Chongqing Changan',
+    'RNO.PA': 'Renault',
+    'RIVN': 'Rivian',
+    '7270.T': 'Subaru',
+    '601238.SS': 'GAC (Guangzhou Automobile Group)',
+    '600418.SS': 'JAC Motors',
+    '2207.TW': 'Hotai Motor',
+    'LCID': 'Lucid Motors',
+    '7201.T': 'Nissan',
+    '7202.T': 'Isuzu',
+    'NIO': 'NIO',
+    'VFS': 'VinFast Auto',
+    'FROTO.IS': 'Ford Otosan',
+    'VOLCAR-B.ST': 'Volvo Car',
+    'ZK': 'Zeekr',
+    '000800.SZ': 'FAW Car',
+    '9863.HK': 'Leapmotor',
+    '0489.HK': 'Dongfeng Motor',
+    '7261.T': 'Mazda',
+    '7211.T': 'Mitsubishi Motors',
+    'TOASO.IS': 'Tofaş Türk Otomobil Fabrikası',
+    'PII': 'Polaris',
+    'PSNY': 'Polestar',
+    'LOT': 'Lotus Technology',
+    '2201.TW': 'Yulon Motor Company',
+    'AML.L': 'Aston Martin',
+    'FORCEMOT.NS': 'Force Motors',
+    '003620.KS': 'KG Mobility (SsangYong Motor)',
+    'NWTN': 'NWTN Inc.',
+    'REE': 'REE Automotive',
+    'KNDI': 'Kandi Technologies Group',
+    'NKLA': 'Nikola',
+    'FFIE': 'Faraday Future',
+    'CENN': 'Cenntro Electric Group',
+    'PEV': 'Phoenix Motor',
+    'MULN': 'Mullen Automotive',
+    'GOEV': 'Canoo',
+    'FUVV': 'Arcimoto'
+}
+
 ### COMMODITIES ###
 commodity_etf_tickers = {
     'GLD':      'SPDR Gold Shares',

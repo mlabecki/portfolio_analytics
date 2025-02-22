@@ -885,7 +885,8 @@ class AnalyzePrices():
             modebar_remove = [
                 'autoScale2d',
                 'resetScale2d'
-            ]
+            ],
+            hovermode = 'x'
         )
       
         y_min = {1: None, 2: None, 3: None}
@@ -3636,6 +3637,10 @@ class AnalyzePrices():
             secondary_y = False  # No overlays are added onto secondary y-axis
         )
 
+        # fig.update_layout(
+        #     hovermode = 'x'
+        # )
+
         fig_data.update({'fig': fig})
         fig_data['y_min'].update({target_deck: new_y_min})
         fig_data['y_max'].update({target_deck: new_y_max})
@@ -3643,9 +3648,9 @@ class AnalyzePrices():
         return fig_data
 
 
-    ##### ADD MOVING AVERAGE OVERLAYS #####
+    ##### ADD MOVING AVERAGE RIBBON #####
 
-    def add_ma_overlays(
+    def add_ma_ribbon(
         self,
         fig_data,
         df_price,

@@ -55,7 +55,7 @@ popover_markdown = {
 
     'stochastic-type-dropdown': """<DIV><B>Fast Stochastic:</B><BR/>&nbsp;&nbsp;&nbsp; Fast %K = (C - L) / (H - L)<BR/>
 &nbsp;&nbsp;&nbsp; Fast %D = N-day SMA of Fast %K<BR/>
-<B>Slow Stochastic:</B><BR/>&nbsp;&nbsp;&nbsp; Slow %K = 3-day SMA of Fast %K<BR/>
+<B>Slow Stochastic:</B><BR/>&nbsp;&nbsp;&nbsp; Slow %K = N-day SMA of Fast %K<BR/>
 &nbsp;&nbsp;&nbsp; Slow %D = N-day SMA of Slow %K<BR/>
 <B>Full Stochastic:</B><BR/>&nbsp;&nbsp;&nbsp; Full %K = F-day SMA of Fast %K<BR/>
 &nbsp;&nbsp;&nbsp; Full %D = N-day SMA of Full %K<BR/>
@@ -1150,10 +1150,10 @@ layout = html.Div([
                                     dcc.Dropdown(
                                         id='candlestick-type-dropdown',
                                         className = 'plots-dropdown-button',
-                                        options = ['Hollow', 'Traditional'],
-                                        value = 'Hollow',
+                                        options = ['Traditional', 'Hollow'],
+                                        value = 'Traditional',
                                         clearable = False,
-                                        style = {'width': '100px'}
+                                        style = {'width': '102px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -1166,7 +1166,7 @@ layout = html.Div([
                                         options = candle_colors,
                                         value = 'Green-Red',
                                         clearable = False,
-                                        style = {'width': '120px'}
+                                        style = {'width': '118px'}
                                     )],
                                     style = {'display': 'inline-block', 'margin-right': '5px', 'margin-bottom': '5px', 'vertical-align': 'top', 'font-family': 'Helvetica'}
                                 ),
@@ -3768,9 +3768,8 @@ layout = html.Div([
                                 dbc.Popover(
                                     [
                                     html.Span(
-                                            """NOTE: Bollinger Bandwidth / %B can only be plotted on Secondary Y-Axis or on the Middle/Lower Deck
-                                            if the Primary Y-Axis of Upper Deck is populated. 
-                                            """,
+                                            """NOTE: Bollinger Bandwidth / %B can only be plotted on Secondary Y-Axis or on the Middle/Lower Deck if the Primary Y-Axis
+                                            of Upper Deck is populated. Secondary Y-Axis can be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.""",
                                             style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -4037,9 +4036,8 @@ layout = html.Div([
                                 dbc.Popover(
                                     [
                                     html.Span(
-                                            """NOTE: Average True Rate can only be plotted on Secondary Y-Axis or on the Middle/Lower Deck
-                                            if the Primary Y-Axis of Upper Deck is populated. 
-                                            """,
+                                            """NOTE: Average True Rate can only be plotted on Secondary Y-Axis or on the Middle/Lower Deck if the Primary Y-Axis
+                                            of Upper Deck is populated. Secondary Y-Axis can be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.""",
                                             style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -4269,9 +4267,8 @@ layout = html.Div([
                                 dbc.Popover(
                                     [
                                     html.Span(
-                                            """NOTE: Moving Volatility / Standard Deviation can only be plotted on Secondary Y-Axis or on the Middle/Lower Deck
-                                            if the Primary Y-Axis of Upper Deck is populated. 
-                                            """,
+                                            """NOTE: Moving Volatility / Standard Deviation can only be plotted on Secondary Y-Axis or on the Middle/Lower Deck if the Primary Y-Axis
+                                            of Upper Deck is populated. Secondary Y-Axis can be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.""",
                                             style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -4524,9 +4521,8 @@ layout = html.Div([
                                 dbc.Popover(
                                     [
                                     html.Span(
-                                            """NOTE: Ulcer Index can only be plotted on Secondary Y-Axis or on the Middle/Lower Deck
-                                            if the Primary Y-Axis of Upper Deck is populated.
-                                            """,
+                                            """NOTE: Ulcer Index can only be plotted on Secondary Y-Axis or on the Middle/Lower Deck if the Primary Y-Axis of Upper Deck is populated.
+                                            Secondary Y-Axis can be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.""",
                                             style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -4592,7 +4588,7 @@ layout = html.Div([
                                 ),
                                 dbc.Popover([
                                     html.Span(
-                                        'Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS in order to plot on it.',
+                                        'Secondary Y-Axis must first be activated from the THEME & TEMPLATE menu under GENERAL SETTINGS.',
                                          style = popover_menu_collapse_button_header_css
                                         )
                                     ], 
@@ -5811,9 +5807,9 @@ layout = html.Div([
         ),
         dbc.Popover([
             # NOTE: Must use <BR/>, not <BR>, to break the line inside the popover
-            dcc.Markdown("""<DIV>► DIFFERENTIAL No. 1<BR/>
-                ► DIFFERENTIAL No. 2<BR/>
-                ► DIFFERENTIAL No. 3<BR/>
+            dcc.Markdown("""<DIV>► CUSTOM DIFFERENTIAL 1<BR/>
+                ► CUSTOM DIFFERENTIAL 2<BR/>
+                ► CUSTOM DIFFERENTIAL 3<BR/>
                 ► STOCHASTIC DIFFERENTIAL</DIV>""",
                 dangerously_allow_html = True)
             ], 
@@ -6275,7 +6271,7 @@ layout = html.Div([
                     style = {'margin-left': '5px'}
                 ), 
 
-                ##### END DIFFERENTIAL No. 1 CONTROLS
+                ##### END CUSTOM DIFFERENTIAL 1 CONTROLS
 
                 ##### BEGIN DIFFERENTIAL PLOT 2 CONTROLS
 
@@ -6723,7 +6719,7 @@ layout = html.Div([
                     style = {'margin-left': '5px'}
                 ), 
 
-                ##### END DIFFERENTIAL No. 2 CONTROLS
+                ##### END CUSTOM DIFFERENTIAL 2 CONTROLS
 
                 ##### BEGIN DIFFERENTIAL PLOT 3 CONTROLS
 
@@ -7170,7 +7166,7 @@ layout = html.Div([
                     style = {'margin-left': '5px'}
                 ), 
 
-                ##### END DIFFERENTIAL No. 3 CONTROLS
+                ##### END CUSTOM DIFFERENTIAL 3 CONTROLS
 
                 ##### BEGIN STOCHASTIC DIFFERENTIAL CONTROLS
 
@@ -7972,30 +7968,30 @@ def target_deck_options(
 
     else:
 
-        hist_price_deck_value =         ['Middle'] if (hist_price_deck == 'Lower') & deck_changed else [hist_price_deck]
-        candlestick_deck_value =        ['Middle'] if (candlestick_deck == 'Lower') & deck_changed else [candlestick_deck]
-        drawdowns_deck_value =          ['Middle'] if (drawdowns_deck == 'Lower') & deck_changed else [drawdowns_deck]
-        volume_deck_value =             ['Middle'] if (volume_deck == 'Lower') & deck_changed else [volume_deck]
-        dollar_volume_deck_value =      ['Middle'] if (dollar_volume_deck == 'Lower') & deck_changed else [dollar_volume_deck]
-        obv_deck_value =                ['Middle'] if (obv_deck == 'Lower') & deck_changed else [obv_deck]
-        bollinger_deck_value =          ['Middle'] if (bollinger_deck == 'Lower') & deck_changed else [bollinger_deck]
-        boll_width_deck_value =         ['Middle'] if (boll_width_deck in ['Middle', 'Lower']) else ['boll_width_deck']
-        ma_env_deck_value =             ['Middle'] if (ma_env_deck == 'Lower') & deck_changed else [ma_env_deck]
-        ma_ribbon_deck_value =          ['Middle'] if (ma_ribbon_deck == 'Lower') & deck_changed else [ma_ribbon_deck]
-        price_overlays_deck_value =     ['Middle'] if (price_overlays_deck == 'Lower') & deck_changed else [price_overlays_deck]
-        macd_deck_value =               ['Middle'] if (macd_deck == 'Lower') & deck_changed else [macd_deck]
-        impulse_macd_deck_value =       ['Middle'] if (impulse_macd_deck == 'Lower') & deck_changed else [impulse_macd_deck]
-        supertrend_deck_value =         ['Middle'] if (supertrend_deck == 'Lower') & deck_changed else [supertrend_deck]
-        atr_deck_value =                ['Middle'] if (atr_deck == 'Lower') & deck_changed else [atr_deck]
-        mvol_deck_value =               ['Middle'] if (mvol_deck == 'Lower') & deck_changed else [mvol_deck]
-        ulcer_deck_value =              ['Middle'] if (ulcer_deck == 'Lower') & deck_changed else [ulcer_deck]        
-        rsi_deck_value =                ['Middle'] if (rsi_deck == 'Lower') & deck_changed else [rsi_deck]
-        stochastic_deck_value =         ['Middle'] if (stochastic_deck == 'Lower') & deck_changed else [stochastic_deck]
-        cci_deck_value =                ['Middle'] if (cci_deck == 'Lower') & deck_changed else [cci_deck]        
-        diff_1_deck_value =             ['Middle'] if (diff_1_deck == 'Lower') & deck_changed else [diff_1_deck]
-        diff_2_deck_value =             ['Middle'] if (diff_2_deck == 'Lower') & deck_changed else [diff_2_deck]
-        diff_3_deck_value =             ['Middle'] if (diff_3_deck == 'Lower') & deck_changed else [diff_3_deck]
-        diff_stochastic_deck_value =    ['Middle'] if (diff_stochastic_deck == 'Lower') & deck_changed else [diff_stochastic_deck]
+        hist_price_deck_value =         ['Middle'] if hist_price_deck == 'Lower' & deck_changed else [hist_price_deck]
+        candlestick_deck_value =        ['Middle'] if candlestick_deck == 'Lower' & deck_changed else [candlestick_deck]
+        drawdowns_deck_value =          ['Middle'] if drawdowns_deck == 'Lower' & deck_changed else [drawdowns_deck]
+        volume_deck_value =             ['Middle'] if volume_deck == 'Lower' & deck_changed else [volume_deck]
+        dollar_volume_deck_value =      ['Middle'] if dollar_volume_deck == 'Lower' & deck_changed else [dollar_volume_deck]
+        obv_deck_value =                ['Middle'] if obv_deck == 'Lower' & deck_changed else [obv_deck]
+        bollinger_deck_value =          ['Middle'] if bollinger_deck == 'Lower' & deck_changed else [bollinger_deck]
+        boll_width_deck_value =         ['Middle'] if boll_width_deck == 'Lower' else [boll_width_deck]
+        ma_env_deck_value =             ['Middle'] if ma_env_deck == 'Lower' & deck_changed else [ma_env_deck]
+        ma_ribbon_deck_value =          ['Middle'] if ma_ribbon_deck == 'Lower' & deck_changed else [ma_ribbon_deck]
+        price_overlays_deck_value =     ['Middle'] if price_overlays_deck == 'Lower' & deck_changed else [price_overlays_deck]
+        macd_deck_value =               ['Middle'] if macd_deck == 'Lower' & deck_changed else [macd_deck]
+        impulse_macd_deck_value =       ['Middle'] if impulse_macd_deck == 'Lower' & deck_changed else [impulse_macd_deck]
+        supertrend_deck_value =         ['Middle'] if supertrend_deck == 'Lower' & deck_changed else [supertrend_deck]
+        atr_deck_value =                ['Middle'] if atr_deck == 'Lower' & deck_changed else [atr_deck]
+        mvol_deck_value =               ['Middle'] if mvol_deck == 'Lower' & deck_changed else [mvol_deck]
+        ulcer_deck_value =              ['Middle'] if ulcer_deck == 'Lower' & deck_changed else [ulcer_deck]        
+        rsi_deck_value =                ['Middle'] if rsi_deck == 'Lower' & deck_changed else [rsi_deck]
+        stochastic_deck_value =         ['Middle'] if stochastic_deck == 'Lower' & deck_changed else [stochastic_deck]
+        cci_deck_value =                ['Middle'] if cci_deck == 'Lower' & deck_changed else [cci_deck]        
+        diff_1_deck_value =             ['Middle'] if diff_1_deck == 'Lower' & deck_changed else [diff_1_deck]
+        diff_2_deck_value =             ['Middle'] if diff_2_deck == 'Lower' & deck_changed else [diff_2_deck]
+        diff_3_deck_value =             ['Middle'] if diff_3_deck == 'Lower' & deck_changed else [diff_3_deck]
+        diff_stochastic_deck_value =    ['Middle'] if diff_stochastic_deck == 'Lower' & deck_changed else [diff_stochastic_deck]
         all_deck_values = \
             hist_price_deck_value + \
             candlestick_deck_value + \
@@ -8356,7 +8352,7 @@ def toggle_collapse_supertrend(n, is_open):
 )
 def toggle_collapse_diff_1(n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
-    title = 'DIFFERENTIAL No. 1'
+    title = 'CUSTOM DIFFERENTIAL 1'
     label = f'► {title}' if is_open else f'▼ {title}'
     if n:
         return label, not is_open
@@ -8372,7 +8368,7 @@ def toggle_collapse_diff_1(n, is_open):
 )
 def toggle_collapse_diff_2(n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
-    title = 'DIFFERENTIAL No. 2'
+    title = 'CUSTOM DIFFERENTIAL 2'
     label = f'► {title}' if is_open else f'▼ {title}'
     if n:
         return label, not is_open
@@ -8388,7 +8384,7 @@ def toggle_collapse_diff_2(n, is_open):
 )
 def toggle_collapse_diff_3(n, is_open):
     # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
-    title = 'DIFFERENTIAL No. 3'
+    title = 'CUSTOM DIFFERENTIAL 3'
     label = f'► {title}' if is_open else f'▼ {title}'
     if n:
         return label, not is_open
@@ -9913,7 +9909,7 @@ def update_plot(
                 ma_ribbon_window,
                 ma_ribbon_nbands
             )
-            fig_data = analyze_prices.add_ma_overlays(
+            fig_data = analyze_prices.add_ma_ribbon(
                 fig_data,
                 ma_ribbon_price[min_date: max_date],
                 ma_ribbon_list,
