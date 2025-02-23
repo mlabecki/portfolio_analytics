@@ -159,3 +159,78 @@ info_fields = {
     'CRYPTOCURRENCY': base_info_fields + crypto_extra_fields,
     'FUTURE': ['quoteType', 'currency', 'exchange', 'shortName']
 }
+
+category_titles_ids = {
+    'biggest_companies': {
+        'id_string': 'biggest-companies',
+        'collapse_title': 'BIGGEST COMPANIES'
+    },
+    'sp500': {
+        'id_string': 'sp500',
+        'collapse_title': 'S&P 500 COMPANIES'
+    },
+    'nasdaq100': {
+        'id_string': 'nasdaq100',
+        'collapse_title': 'NASDAQ 100 COMPANIES'
+    },
+    'dow_jones': {
+        'id_string': 'dow-jones',
+        'collapse_title': 'DOW JONES INDUSTRIAL AVERAGE COMPANIES'
+    },
+    'car_companies': {
+        'id_string': 'car-companies',
+        'collapse_title': 'CAR COMPANIES'
+    },
+    'rare_metals_companies': {
+        'id_string': 'rare-metals-companies',
+        'collapse_title': 'RARE METALS COMPANIES'
+    },
+    'biggest_etfs': {
+        'id_string': 'biggest-etfs',
+        'collapse_title': 'BIGGEST ETFs'
+    },
+    'fixed_income_etfs': {
+        'id_string': 'fixed-income-etfs',
+        'collapse_title': 'FIXED INCOME ETFs'
+    },
+    'ai_etfs': {
+        'id_string': 'ai-etfs',
+        'collapse_title': 'ARTIFICIAL INTELLIGENCE ETFs'
+    },
+    'commodity_etfs': {
+        'id_string': 'commodity-etfs',
+        'collapse_title': 'COMMODITY ETFs'
+    },
+    'currency_etfs': {
+        'id_string': 'currency-etfs',
+        'collapse_title': 'CURRENCY ETFs'
+    },
+    'cryptos': {
+        'id_string': 'cryptos',
+        'collapse_title': 'CRYPTOCURRENCIES'
+    },
+    'crypto_etfs': {
+        'id_string': 'crypto-etfs',
+        'collapse_title': 'CRYPTOCURRENCY ETFs'
+    },
+    'futures': {
+        'id_string': 'futures',
+        'collapse_title': 'COMMODITY FUTURES'
+    },
+    'precious_metals': {
+        'id_string': 'precious-metals',
+        'collapse_title': 'PRECIOUS METALS'
+    },
+    'stock_indices': {
+        'id_string': 'stock-indices',
+        'collapse_title': 'STOCK INDICES'
+    },
+    'volatility_indices': {
+        'id_string': 'volatility-indices',
+        'collapse_title': 'VOLATILITY INDICES'
+    },
+    'benchmarks': {
+        'id_string': 'benchmarks',
+        'collapse_title': 'BENCHMARKS'
+    }
+}

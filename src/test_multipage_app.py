@@ -39,17 +39,18 @@ app.layout = dmc.MantineProvider(
     page_container,  # page layout is rendered here
     # setup_page_components(), 
     # dcc.Store(data = [], id = 'preselected-updated-tickers', storage_type = 'session'),
-    dcc.Store(data = [], id = 'n-preselected-stored', storage_type = 'session'),
-    dcc.Store(data = [], id = 'preselected-ticker-tables-stored', storage_type = 'session'),
+    dcc.Store(data = {}, id = 'n-preselected-stored', storage_type = 'session'),
+    dcc.Store(data = {}, id = 'preselected-ticker-tables-stored', storage_type = 'session'),
+    dcc.Store(data = {}, id = 'preselected-categories-stored', storage_type = 'session'),
 
     # dcc.Store(data = [], id = 'selected-tickers-stored', storage_type = 'session'),
     dcc.Store(data = [], id = 'table-selected-tickers-data-stored', storage_type = 'session'),
-    dcc.Store(data = [], id = 'selected-ticker-summaries-stored', storage_type = 'session'),
+    dcc.Store(data = {}, id = 'selected-ticker-summaries-stored', storage_type = 'session'),
     dcc.Store(data = {}, id = 'selected-tickers-downloaded-data-stored', storage_type = 'session'),
     # html.Div(children = [], id = 'dash-table-selected-tickers-stored', hidden = True)
 
     dcc.Store(data = [], id = 'final-table-selected-tickers-data-stored', storage_type = 'session'),
-    dcc.Store(data = [], id = 'final-selected-ticker-summaries-stored', storage_type = 'session'),
+    dcc.Store(data = {}, id = 'final-selected-ticker-summaries-stored', storage_type = 'session'),
     dcc.Store(data = [], id = 'final-start-date-stored', storage_type = 'session'),
     dcc.Store(data = [], id = 'final-end-date-stored', storage_type = 'session'),
     dcc.Store(data = {}, id = 'final-selected-tickers-stored', storage_type = 'session'),

@@ -154,6 +154,23 @@ row_ticker_map_volatility_indices = {}
 row_ticker_map_benchmarks = {}
 
 ticker_category_info_map = {
+    'car_companies': {
+        'df': df_pre_tickers_car_companies,
+        'row': row_ticker_map_car_companies,
+        'dict': car_companies,
+        'sort_by': 'marketCap',
+        'id_string': 'car-companies',
+        'collapse_title': 'CAR COMPANIES'
+    },
+    'rare_metals_companies': {
+        'df': df_pre_tickers_rare_metals_companies,
+        'row': row_ticker_map_rare_metals_companies,
+        'dict': rare_metals_companies,
+        'sort_by': 'marketCap',
+        'id_string': 'rare-metals-companies',
+        'collapse_title': 'RARE METALS COMPANIES'
+    },
+
     'biggest_companies': {
         'df': df_pre_url_biggest_companies,
         'row': row_ticker_map_biggest_companies,
@@ -186,30 +203,22 @@ ticker_category_info_map = {
         'id_string': 'dow-jones',
         'collapse_title': 'DOW JONES INDUSTRIAL AVERAGE COMPANIES'
     },
-    'car_companies': {
-        'df': df_pre_tickers_car_companies,
-        'row': row_ticker_map_car_companies,
-        'dict': car_companies,
-        'sort_by': 'marketCap',
-        'id_string': 'car-companies',
-        'collapse_title': 'CAR COMPANIES'
-    },
-    'car_companies': {
-        'df': df_pre_tickers_car_companies,
-        'row': row_ticker_map_car_companies,
-        'dict': car_companies,
-        'sort_by': 'marketCap',
-        'id_string': 'car-companies',
-        'collapse_title': 'CAR COMPANIES'
-    },
-    'rare_metals_companies': {
-        'df': df_pre_tickers_rare_metals_companies,
-        'row': row_ticker_map_rare_metals_companies,
-        'dict': rare_metals_companies,
-        'sort_by': 'marketCap',
-        'id_string': 'rare-metals-companies',
-        'collapse_title': 'RARE METALS COMPANIES'
-    },
+    # 'car_companies': {
+    #     'df': df_pre_tickers_car_companies,
+    #     'row': row_ticker_map_car_companies,
+    #     'dict': car_companies,
+    #     'sort_by': 'marketCap',
+    #     'id_string': 'car-companies',
+    #     'collapse_title': 'CAR COMPANIES'
+    # },
+    # 'rare_metals_companies': {
+    #     'df': df_pre_tickers_rare_metals_companies,
+    #     'row': row_ticker_map_rare_metals_companies,
+    #     'dict': rare_metals_companies,
+    #     'sort_by': 'marketCap',
+    #     'id_string': 'rare-metals-companies',
+    #     'collapse_title': 'RARE METALS COMPANIES'
+    # },
     'biggest_etfs': {
         'df': df_pre_url_biggest_etfs,
         'row': row_ticker_map_biggest_etfs,
@@ -308,7 +317,7 @@ ticker_category_info_map = {
     }
 }
 
-ticker_names = {}  # To help user decide on tickers based on the name
+ticker_names = {}  # To help user decide on tickers based on the name =
 
 def create_pre_table(category):
 
@@ -339,6 +348,8 @@ def create_pre_table(category):
                 fx_rate = hist_info.get_usd_fx_rate(currency)
                 fx_rate = 1 if fx_rate == 0 else fx_rate
                 dict_tickers_values.update({tk: tk_info[tk_sort_by] / fx_rate})
+            else:
+                dict_tickers_values.update({tk: tk_info[tk_sort_by]})
 
         category_tickers_sorted = [i[0] for i in sorted(dict_tickers_values.items(), key=itemgetter(1), reverse=True)]
         df_pre_tickers.index = category_tickers_sorted  
@@ -944,8 +955,8 @@ layout = html.Div([
     Output('n-preselected-sp500', 'children'),
     Output('n-preselected-nasdaq100', 'children'),
     Output('n-preselected-dow-jones', 'children'),
-    Output('n-preselected-car-companies', 'selected_rows'),
-    Output('n-preselected-rare-metals-companies', 'selected_rows'),
+    Output('n-preselected-car-companies', 'children'),
+    Output('n-preselected-rare-metals-companies', 'children'),
     Output('n-preselected-biggest-etfs', 'children'),
     Output('n-preselected-fixed-income-etfs', 'children'),
     Output('n-preselected-ai-etfs', 'children'),
@@ -1022,8 +1033,8 @@ layout = html.Div([
     Input('pre-menu-sp500-select-last-ticker-input', 'value'),
     Input('pre-menu-nasdaq100-select-last-ticker-input', 'value'),
     Input('pre-menu-dow-jones-select-last-ticker-input', 'value'),
-    State('pre-menu-car-companies-select-last-ticker-input', 'value'),
-    State('pre-menu-rare-metals-companies-select-last-ticker-input', 'value'),
+    Input('pre-menu-car-companies-select-last-ticker-input', 'value'),
+    Input('pre-menu-rare-metals-companies-select-last-ticker-input', 'value'),
     Input('pre-menu-biggest-etfs-select-last-ticker-input', 'value'),
     Input('pre-menu-fixed-income-etfs-select-last-ticker-input', 'value'),
     Input('pre-menu-ai-etfs-select-last-ticker-input', 'value'),
@@ -1041,8 +1052,8 @@ layout = html.Div([
     State('pre-menu-sp500-unselect-first-ticker-input', 'value'),
     State('pre-menu-nasdaq100-unselect-first-ticker-input', 'value'),
     State('pre-menu-dow-jones-unselect-first-ticker-input', 'value'),
-    State('pre-menu-car-companies-select-last-ticker-input', 'value'),
-    State('pre-menu-rare-metals-companies-select-last-ticker-input', 'value'),
+    State('pre-menu-car-companies-unselect-last-ticker-input', 'value'),
+    State('pre-menu-rare-metals-companies-unselect-last-ticker-input', 'value'),
     State('pre-menu-biggest-etfs-unselect-first-ticker-input', 'value'),
     State('pre-menu-fixed-income-etfs-unselect-first-ticker-input', 'value'),
     State('pre-menu-ai-etfs-unselect-first-ticker-input', 'value'),
@@ -1060,8 +1071,8 @@ layout = html.Div([
     Input('pre-menu-sp500-unselect-last-ticker-input', 'value'),
     Input('pre-menu-nasdaq100-unselect-last-ticker-input', 'value'),
     Input('pre-menu-dow-jones-unselect-last-ticker-input', 'value'),
-    State('pre-menu-car-companies-unselect-last-ticker-input', 'value'),
-    State('pre-menu-rare-metals-companies-unselect-last-ticker-input', 'value'),
+    Input('pre-menu-car-companies-unselect-last-ticker-input', 'value'),
+    Input('pre-menu-rare-metals-companies-unselect-last-ticker-input', 'value'),
     Input('pre-menu-biggest-etfs-unselect-last-ticker-input', 'value'),
     Input('pre-menu-fixed-income-etfs-unselect-last-ticker-input', 'value'),
     Input('pre-menu-ai-etfs-unselect-last-ticker-input', 'value'),
@@ -1706,11 +1717,14 @@ for category in ticker_category_info_map.keys():
 @callback(
 Output('n-preselected-stored', 'data'),
 Output('preselected-ticker-tables-stored', 'data'),
+Output('preselected-categories-stored', 'data'),
 
 Input('pre-dash-table-biggest-companies', 'selected_rows'),
 Input('pre-dash-table-sp500', 'selected_rows'),
 Input('pre-dash-table-nasdaq100', 'selected_rows'),
 Input('pre-dash-table-dow-jones', 'selected_rows'),
+Input('pre-dash-table-car-companies', 'selected_rows'),
+Input('pre-dash-table-rare-metals-companies', 'selected_rows'),
 Input('pre-dash-table-biggest-etfs', 'selected_rows'),
 Input('pre-dash-table-fixed-income-etfs', 'selected_rows'),
 Input('pre-dash-table-ai-etfs', 'selected_rows'),
@@ -1765,14 +1779,22 @@ def store_preselected_tickers(
         'benchmarks': table_benchmarks_selected_rows
     }
 
-    preselected_ticker_tables = {}
     n_preselected = {}
+    preselected_ticker_tables = {}
+    preselected_categories = {}
+
     for category in ticker_category_info_map.keys():
+        
+        n_preselected[category] = len(table_selected_rows[category])
         row_map = ticker_category_info_map[category]['row']
         # preselected_ticker_tables[category] = [tk for tk in row_map.keys() if row_map[tk] in table_selected_rows[category]]
         preselected_ticker_tables[category] = [{tk: ticker_names[tk] for tk in row_map.keys() if row_map[tk] in table_selected_rows[category]}]
-        n_preselected[category] = len(table_selected_rows[category])
+        if n_preselected[category] > 0:
+            preselected_categories[category] = {
+                'title': ticker_category_info_map[category]['collapse_title'],
+                'id_string': ticker_category_info_map[category]['id_string']
+            }
 
-    return n_preselected, preselected_ticker_tables
+    return n_preselected, preselected_ticker_tables, preselected_categories
     
 ##########################################################################

@@ -37,16 +37,23 @@ ticker_div_title = html.Div(
     style = select_ticker_title_css
 )
 
+
+@callback(
+Output('all-tables-container', 'children'),
+Input('preselected-categories-stored', 'data')
+)
 def initialize_input_table_divs(
-    ticker_category_info_map
+    preselected_categories
 ):
 
     input_table_collapse_div = {}
     input_table_divs = []
     
-    for category in ticker_category_info_map.keys():
+    for category in category_titles_ids.keys():
 
-        id_string = ticker_category_info_map[category]['id_string']
+        cat_hidden = False if category in preselected_categories else True
+
+        id_string = category_titles_ids[category]['id_string']
 
         dash_input_table = dash_table.DataTable(
             columns = [],
@@ -92,11 +99,11 @@ def initialize_input_table_divs(
 
         input_table_collapse_div[category] = html.Div(
             id = f'input-table-collapse-div-{id_string}',
-            hidden = False,
+            hidden = cat_hidden,
             children = 
             [
                 html.Div(
-                    ticker_category_info_map[category]['collapse_title'],
+                    category_titles_ids[category]['collapse_title'],
                     id = f'collapse-button-title-{id_string}',
                     hidden = True
                 ),
@@ -181,10 +188,10 @@ def initialize_input_table_divs(
         )  # html.Div with dbc.Button and dbc.Collapse
 
         input_table_divs.append(input_table_collapse_div[category])
-    
+
     return input_table_divs
 
-input_table_divs = initialize_input_table_divs(ticker_category_info_map)
+# input_table_divs = initialize_input_table_divs()
 
 ###########################################################################################
 
@@ -278,7 +285,7 @@ layout = html.Div([
 
     html.Div(
         id = 'all-tables-container',
-        children = input_table_divs
+        # children = input_table_div
     )
 
     ],
@@ -405,8 +412,8 @@ layout = html.Div([
     Output('input-table-collapse-div-sp500', 'hidden'),
     Output('input-table-collapse-div-nasdaq100', 'hidden'),
     Output('input-table-collapse-div-dow-jones', 'hidden'),
-    Output('imput-table-collapse-div-car-companies', 'hidden'),
-    Output('imput-table-collapse-div-rare-metals-companies', 'hidden'),
+    Output('input-table-collapse-div-car-companies', 'hidden'),
+    Output('input-table-collapse-div-rare-metals-companies', 'hidden'),
     Output('input-table-collapse-div-biggest-etfs', 'hidden'),
     Output('input-table-collapse-div-fixed-income-etfs', 'hidden'),
     Output('input-table-collapse-div-ai-etfs', 'hidden'),
@@ -1581,8 +1588,6 @@ def output_custom_tickers(
 
 
 def toggle_collapse_tickers(title, n, is_open):
-    # Cool arrows from https://www.alt-codes.net/arrow_alt_codes.php
-    # title = 'TOP BOND ETFs'
     label = f'► {title}' if is_open else f'▼ {title}'
     if n:
         return label, not is_open
@@ -1590,15 +1595,14 @@ def toggle_collapse_tickers(title, n, is_open):
         return f'► {title}', is_open
 
 
-for category in ticker_category_info_map.keys():
-    id_string = ticker_category_info_map[category]['id_string']
+for category in category_titles_ids.keys():
+    id_string = category_titles_ids[category]['id_string']
     callback(
         Output(f'collapse-button-table-{id_string}', 'children'),
         Output(f'collapse-table-{id_string}', 'is_open'),
         Input(f'collapse-button-title-{id_string}', 'children'),
         Input(f'collapse-button-table-{id_string}', 'n_clicks'),
         State(f'collapse-table-{id_string}', 'is_open'),
-
         suppress_callback_exceptions = True
     )(toggle_collapse_tickers)
 
