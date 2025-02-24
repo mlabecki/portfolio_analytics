@@ -41,6 +41,7 @@ app.layout = dmc.MantineProvider(
     # dcc.Store(data = [], id = 'preselected-updated-tickers', storage_type = 'session'),
     dcc.Store(data = {}, id = 'n-preselected-stored', storage_type = 'session'),
     dcc.Store(data = {}, id = 'preselected-ticker-tables-stored', storage_type = 'session'),
+    # dcc.Store(data = {}, id = 'preselected-ticker-tables-stored', storage_type = 'memory'),
     dcc.Store(data = {}, id = 'preselected-categories-stored', storage_type = 'session'),
 
     # dcc.Store(data = [], id = 'selected-tickers-stored', storage_type = 'session'),

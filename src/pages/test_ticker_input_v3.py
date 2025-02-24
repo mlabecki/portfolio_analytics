@@ -37,21 +37,23 @@ ticker_div_title = html.Div(
     style = select_ticker_title_css
 )
 
+pre_table_columns = ['No.', 'Ticker', 'Name']
 
-@callback(
-Output('all-tables-container', 'children'),
-Input('preselected-categories-stored', 'data')
-)
-def initialize_input_table_divs(
-    preselected_categories
-):
+# @callback(
+# Output('all-tables-container', 'children'),
+# State('preselected-categories-stored', 'data')
+# )
+def initialize_input_table_divs():
 
     input_table_collapse_div = {}
     input_table_divs = []
     
     for category in category_titles_ids.keys():
 
-        cat_hidden = False if category in preselected_categories else True
+        # The cat_hidden should probably be further down in read_preselected_tickers()
+        # Do we want a callback here? - then read_preselected_tickers() may complain about missing categories
+        # In such a case, preselectd_categories could be passed as input to read_preselected_tickers()
+        # cat_hidden = False if category in preselected_categories else True
 
         id_string = category_titles_ids[category]['id_string']
 
@@ -99,7 +101,7 @@ def initialize_input_table_divs(
 
         input_table_collapse_div[category] = html.Div(
             id = f'input-table-collapse-div-{id_string}',
-            hidden = cat_hidden,
+            hidden = True,
             children = 
             [
                 html.Div(
@@ -191,7 +193,7 @@ def initialize_input_table_divs(
 
     return input_table_divs
 
-# input_table_divs = initialize_input_table_divs()
+input_table_divs = initialize_input_table_divs()
 
 ###########################################################################################
 
@@ -285,7 +287,8 @@ layout = html.Div([
 
     html.Div(
         id = 'all-tables-container',
-        # children = input_table_div
+        children = input_table_divs
+        # This is not being updated by a callback!
     )
 
     ],
@@ -448,8 +451,10 @@ def read_preselected_tickers(
     dash_input_tables = {}
     excluded_tickers = []
 
-    for category in n_preselected.keys():
+    tk_cat_info_map = {cat: {'df': {}, 'row': {}, 'hidden': True} for cat in n_preselected.keys()}
     
+    for category in n_preselected.keys():
+
         if n_preselected[category] != 0:
     
             session = requests_cache.CachedSession('cache/yfinance.cache')
@@ -457,7 +462,7 @@ def read_preselected_tickers(
 
             category_tickers = list(preselected_ticker_tables[category][0].keys())  # {category: [{tk: tk_name}]}
 
-            df_info_tickers = pd.DataFrame(index = category_tickers, columns = ticker_category_info_map[category]['columns'])
+            df_info_tickers = pd.DataFrame(index = category_tickers, columns = pre_table_columns)  # ['No.', 'Ticker', 'Name']
             row_ticker_map = {}
 
             for i, tk in enumerate(category_tickers):
@@ -582,24 +587,27 @@ def read_preselected_tickers(
                 df_info_tickers.at[tk, 'No.'] = i + 1
                 row_ticker_map.update({tk: i})
             
-            # Update ticker_category_info_map
-            ticker_category_info_map[category]['df'] = df_info_tickers.to_dict()  # Dictionary!
+            # Update tk_cat_info_map
+            tk_cat_info_map[category]['df'] = df_info_tickers.to_dict()  # Dictionary!
             dash_table_data = df_info_tickers.to_dict('records')  # List of dictionaries!
-            ticker_category_info_map[category]['row'] = row_ticker_map
-            ticker_category_info_map[category]['hidden'] = False
+            tk_cat_info_map[category]['row'] = row_ticker_map
+            tk_cat_info_map[category]['hidden'] = False
+
+            dash_table_columns = [{'name': i, 'id': i} for i in df_info_tickers.columns]
 
             session.cache.clear()
 
         else:
-            ticker_category_info_map[category]['df'] = {}
+            tk_cat_info_map[category]['df'] = {}
+            tk_cat_info_map[category]['row'] = {}
+            tk_cat_info_map[category]['hidden'] = True
             dash_table_data = [{}]
-            ticker_category_info_map[category]['row'] = {}
-            ticker_category_info_map[category]['hidden'] = True
+            dash_table_columns = []
 
         ####################
 
         dash_input_tables[category] = {}
-        dash_input_tables[category]['columns'] = [{'name': i, 'id': i} for i in ticker_category_info_map[category]['columns']]
+        dash_input_tables[category]['columns'] = dash_table_columns
         dash_input_tables[category]['data'] = dash_table_data   # A list of dictionaries
         dash_input_tables[category]['tooltip_data'] = [
             { column: {'value': ticker_info[row['Ticker']]['summary'], 'type': 'markdown' }
@@ -718,26 +726,26 @@ def read_preselected_tickers(
         dash_input_tables['volatility_indices']['tooltip_data'],
         dash_input_tables['benchmarks']['tooltip_data'],
 
-        ticker_category_info_map['biggest_companies']['hidden'],
-        ticker_category_info_map['sp500']['hidden'],
-        ticker_category_info_map['nasdaq100']['hidden'],
-        ticker_category_info_map['dow_jones']['hidden'],
-        ticker_category_info_map['car_companies']['hidden'],
-        ticker_category_info_map['rare_metals_companies']['hidden'],
-        ticker_category_info_map['biggest_etfs']['hidden'],
-        ticker_category_info_map['fixed_income_etfs']['hidden'],
-        ticker_category_info_map['ai_etfs']['hidden'],
-        ticker_category_info_map['commodity_etfs']['hidden'],
-        ticker_category_info_map['currency_etfs']['hidden'],
-        ticker_category_info_map['cryptos']['hidden'],
-        ticker_category_info_map['crypto_etfs']['hidden'],
-        ticker_category_info_map['futures']['hidden'],
-        ticker_category_info_map['precious_metals']['hidden'],
-        ticker_category_info_map['stock_indices']['hidden'],
-        ticker_category_info_map['volatility_indices']['hidden'],
-        ticker_category_info_map['benchmarks']['hidden'],
+        tk_cat_info_map['biggest_companies']['hidden'],
+        tk_cat_info_map['sp500']['hidden'],
+        tk_cat_info_map['nasdaq100']['hidden'],
+        tk_cat_info_map['dow_jones']['hidden'],
+        tk_cat_info_map['car_companies']['hidden'],
+        tk_cat_info_map['rare_metals_companies']['hidden'],
+        tk_cat_info_map['biggest_etfs']['hidden'],
+        tk_cat_info_map['fixed_income_etfs']['hidden'],
+        tk_cat_info_map['ai_etfs']['hidden'],
+        tk_cat_info_map['commodity_etfs']['hidden'],
+        tk_cat_info_map['currency_etfs']['hidden'],
+        tk_cat_info_map['cryptos']['hidden'],
+        tk_cat_info_map['crypto_etfs']['hidden'],
+        tk_cat_info_map['futures']['hidden'],
+        tk_cat_info_map['precious_metals']['hidden'],
+        tk_cat_info_map['stock_indices']['hidden'],
+        tk_cat_info_map['volatility_indices']['hidden'],
+        tk_cat_info_map['benchmarks']['hidden'],
 
-        ticker_category_info_map,
+        tk_cat_info_map,
         ticker_info,
         hide_tk_input_message,
         hide_custom_ticker_info,
@@ -912,7 +920,7 @@ def read_preselected_tickers(
 )
 def output_custom_tickers(
 
-    ticker_category_info_map,
+    tk_cat_info_map,
     ticker_info,
     excluded_tickers,
 
@@ -1081,7 +1089,7 @@ def output_custom_tickers(
         'benchmarks': unselect_all_benchmarks
     }
 
-    selected_categories = [cat for cat in ticker_category_info_map.keys() if 'Ticker' in ticker_category_info_map[cat]['df'].keys()]
+    selected_categories = [cat for cat in tk_cat_info_map.keys() if 'Ticker' in tk_cat_info_map[cat]['df'].keys()]
 
     if prev_table_selected_rows == {}:
         for category in selected_categories:
@@ -1101,7 +1109,7 @@ def output_custom_tickers(
 
     table_selected_category_tickers = {}
     for category in selected_categories:
-        row_map = ticker_category_info_map[category]['row']
+        row_map = tk_cat_info_map[category]['row']
         table_selected_category_tickers[category] = [tk for tk in row_map.keys() if row_map[tk] in table_selected_rows[category]]
 
     ######################
@@ -1307,7 +1315,7 @@ def output_custom_tickers(
 
     # Add tk_input to selected_rows in all relevant tables if not there yet
     for category in selected_categories:
-        row_map = ticker_category_info_map[category]['row']
+        row_map = tk_cat_info_map[category]['row']
         if tk_input != '': 
             if (tk_input in row_map.keys()) & (tk_input not in table_selected_category_tickers[category]):
                 table_selected_rows[category].append(row_map[tk_input])
@@ -1317,8 +1325,8 @@ def output_custom_tickers(
     # Check whether a ticker was added to or removed from any table
 
     for category in selected_categories:
-        row_map = ticker_category_info_map[category]['row']
-        df_info = ticker_category_info_map[category]['df']  # This is a dictionary!
+        row_map = tk_cat_info_map[category]['row']
+        df_info = tk_cat_info_map[category]['df']  # This is a dictionary!
         selected_rows = [k for k in table_selected_rows[category] if k not in prev_table_selected_rows[category]]
         if len(selected_rows) > 0:
             for row in selected_rows:
@@ -1342,19 +1350,19 @@ def output_custom_tickers(
     # Make sure added_ticker is selected in all tables and removed_ticker is removed from all tables
     if added_tickers != []:
         for category in selected_categories:
-            df_info = ticker_category_info_map[category]['df']  # This is a dictionary!
+            df_info = tk_cat_info_map[category]['df']  # This is a dictionary!
             for added_ticker in added_tickers:
                 if added_ticker in df_info['Ticker']:
-                    row_map = ticker_category_info_map[category]['row']
+                    row_map = tk_cat_info_map[category]['row']
                     if row_map[added_ticker] not in table_selected_rows[category]:
                         table_selected_rows[category].append(row_map[added_ticker])
 
     if removed_tickers != []:
         for category in selected_categories:
-            df_info = ticker_category_info_map[category]['df']  # This is a dictionary!
+            df_info = tk_cat_info_map[category]['df']  # This is a dictionary!
             for removed_ticker in removed_tickers:
                 if removed_ticker in df_info['Ticker']:
-                    row_map = ticker_category_info_map[category]['row']
+                    row_map = tk_cat_info_map[category]['row']
                     if row_map[removed_ticker] in table_selected_rows[category]:
                         table_selected_rows[category].remove(row_map[removed_ticker])
 

@@ -153,24 +153,24 @@ row_ticker_map_stock_indices = {}
 row_ticker_map_volatility_indices = {}
 row_ticker_map_benchmarks = {}
 
+ticker_category_info_map = {}
 ticker_category_info_map = {
-    'car_companies': {
-        'df': df_pre_tickers_car_companies,
-        'row': row_ticker_map_car_companies,
-        'dict': car_companies,
-        'sort_by': 'marketCap',
-        'id_string': 'car-companies',
-        'collapse_title': 'CAR COMPANIES'
-    },
-    'rare_metals_companies': {
-        'df': df_pre_tickers_rare_metals_companies,
-        'row': row_ticker_map_rare_metals_companies,
-        'dict': rare_metals_companies,
-        'sort_by': 'marketCap',
-        'id_string': 'rare-metals-companies',
-        'collapse_title': 'RARE METALS COMPANIES'
-    },
-
+    # 'car_companies': {
+    #     'df': df_pre_tickers_car_companies,
+    #     'row': row_ticker_map_car_companies,
+    #     'dict': car_companies,
+    #     'sort_by': 'marketCap',
+    #     'id_string': 'car-companies',
+    #     'collapse_title': 'CAR COMPANIES'
+    # },
+    # 'rare_metals_companies': {
+    #     'df': df_pre_tickers_rare_metals_companies,
+    #     'row': row_ticker_map_rare_metals_companies,
+    #     'dict': rare_metals_companies,
+    #     'sort_by': 'marketCap',
+    #     'id_string': 'rare-metals-companies',
+    #     'collapse_title': 'RARE METALS COMPANIES'
+    # },
     'biggest_companies': {
         'df': df_pre_url_biggest_companies,
         'row': row_ticker_map_biggest_companies,
@@ -203,22 +203,22 @@ ticker_category_info_map = {
         'id_string': 'dow-jones',
         'collapse_title': 'DOW JONES INDUSTRIAL AVERAGE COMPANIES'
     },
-    # 'car_companies': {
-    #     'df': df_pre_tickers_car_companies,
-    #     'row': row_ticker_map_car_companies,
-    #     'dict': car_companies,
-    #     'sort_by': 'marketCap',
-    #     'id_string': 'car-companies',
-    #     'collapse_title': 'CAR COMPANIES'
-    # },
-    # 'rare_metals_companies': {
-    #     'df': df_pre_tickers_rare_metals_companies,
-    #     'row': row_ticker_map_rare_metals_companies,
-    #     'dict': rare_metals_companies,
-    #     'sort_by': 'marketCap',
-    #     'id_string': 'rare-metals-companies',
-    #     'collapse_title': 'RARE METALS COMPANIES'
-    # },
+    'car_companies': {
+        'df': df_pre_tickers_car_companies,
+        'row': row_ticker_map_car_companies,
+        'dict': car_companies,
+        'sort_by': 'marketCap',
+        'id_string': 'car-companies',
+        'collapse_title': 'CAR COMPANIES'
+    },
+    'rare_metals_companies': {
+        'df': df_pre_tickers_rare_metals_companies,
+        'row': row_ticker_map_rare_metals_companies,
+        'dict': rare_metals_companies,
+        'sort_by': 'marketCap',
+        'id_string': 'rare-metals-companies',
+        'collapse_title': 'RARE METALS COMPANIES'
+    },
     'biggest_etfs': {
         'df': df_pre_url_biggest_etfs,
         'row': row_ticker_map_biggest_etfs,
@@ -1795,6 +1795,10 @@ def store_preselected_tickers(
                 'id_string': ticker_category_info_map[category]['id_string']
             }
 
-    return n_preselected, preselected_ticker_tables, preselected_categories
+    return (
+        n_preselected,
+        preselected_ticker_tables,
+        preselected_categories
+    )
     
 ##########################################################################
