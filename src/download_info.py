@@ -1,7 +1,7 @@
 import yfinance as yf
 import pandas as pd
 import numpy as np
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
 from mapping_portfolio_downloads import *
 from mapping_tickers import *
@@ -69,7 +69,10 @@ class DownloadInfo():
         Get the latest exchange rate of currency to USD
         """
         tk = currency + '=X'
-        fx_rate = yf.download(tk, start = datetime.today(), progress = False)['Close'].iloc[0].values[0]
+        end = datetime.today()
+        start = end - timedelta(days = 5)
+        # This is to make sure that the latest available rate is returned, even if it's not today's
+        fx_rate = yf.download(tk, start = start, end = end, progress = False)['Close'].iloc[-1].values[0]
         return fx_rate
 
 

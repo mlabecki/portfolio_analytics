@@ -727,6 +727,7 @@ layout = html.Div([
 
     # html.Div(children = [], id = 'prev-table-selected-rows', hidden = True),
     dcc.Store(data = {}, id = 'pre-prev-table-selected-rows', storage_type = 'session'),
+    dcc.Store(data = [], id = 'preselected-categories', storage_type = 'session'),
 
     # YOUR PORTFOLIO
     html.Div(
@@ -971,6 +972,7 @@ layout = html.Div([
     Output('n-preselected-benchmarks', 'children'),
 
     Output('pre-selected-tickers-total', 'children'),
+    Output('preselected-categories', 'data'),
 
     Input('pre-menu-biggest-companies-select-all-button', 'n_clicks'),
     Input('pre-menu-sp500-select-all-button', 'n_clicks'),
@@ -1561,6 +1563,13 @@ def output_custom_tickers(
                         updated_tickers.remove(removed_ticker)
                 break
 
+    # Construct the final list of categories from which the user has selected tickers
+    # This is to prevent passing to next page other categories containing the same tickers
+    preselected_categories = []
+    for category in ticker_category_info_map.keys():
+        if len(table_selected_rows[category]) > 0:
+            preselected_categories.append(category)
+
     # Make sure added_ticker is selected in all tables and removed_ticker is removed from all tables
     if added_tickers != []:
         for category in ticker_category_info_map.keys():
@@ -1675,7 +1684,8 @@ def output_custom_tickers(
         n_preselected['volatility_indices'],
         n_preselected['benchmarks'],
 
-        n_preselected_total
+        n_preselected_total,
+        preselected_categories
     )
 
 
@@ -1717,7 +1727,6 @@ for category in ticker_category_info_map.keys():
 @callback(
 Output('n-preselected-stored', 'data'),
 Output('preselected-ticker-tables-stored', 'data'),
-Output('preselected-categories-stored', 'data'),
 
 Input('pre-dash-table-biggest-companies', 'selected_rows'),
 Input('pre-dash-table-sp500', 'selected_rows'),
@@ -1736,7 +1745,9 @@ Input('pre-dash-table-futures', 'selected_rows'),
 Input('pre-dash-table-precious-metals', 'selected_rows'),
 Input('pre-dash-table-stock-indices', 'selected_rows'),
 Input('pre-dash-table-volatility-indices', 'selected_rows'),
-Input('pre-dash-table-benchmarks', 'selected_rows')
+Input('pre-dash-table-benchmarks', 'selected_rows'),
+
+Input('preselected-categories', 'data')
 )
 def store_preselected_tickers(
     table_biggest_companies_selected_rows,
@@ -1756,7 +1767,9 @@ def store_preselected_tickers(
     table_precious_metals_selected_rows,
     table_stock_indices_selected_rows,
     table_volatility_indices_selected_rows,
-    table_benchmarks_selected_rows
+    table_benchmarks_selected_rows,
+
+    preselected_categories
 ):
     table_selected_rows = {
         'biggest_companies': table_biggest_companies_selected_rows,
@@ -1779,26 +1792,24 @@ def store_preselected_tickers(
         'benchmarks': table_benchmarks_selected_rows
     }
 
+    # n_preselected will only be non-zero if the user has selected from that particular category
     n_preselected = {}
     preselected_ticker_tables = {}
-    preselected_categories = {}
 
     for category in ticker_category_info_map.keys():
         
-        n_preselected[category] = len(table_selected_rows[category])
+        if category in preselected_categories:
+            n_preselected[category] = len(table_selected_rows[category])
+        else:
+            n_preselected[category] = 0
+
         row_map = ticker_category_info_map[category]['row']
         # preselected_ticker_tables[category] = [tk for tk in row_map.keys() if row_map[tk] in table_selected_rows[category]]
         preselected_ticker_tables[category] = [{tk: ticker_names[tk] for tk in row_map.keys() if row_map[tk] in table_selected_rows[category]}]
-        if n_preselected[category] > 0:
-            preselected_categories[category] = {
-                'title': ticker_category_info_map[category]['collapse_title'],
-                'id_string': ticker_category_info_map[category]['id_string']
-            }
 
     return (
         n_preselected,
-        preselected_ticker_tables,
-        preselected_categories
+        preselected_ticker_tables
     )
     
 ##########################################################################

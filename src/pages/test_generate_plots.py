@@ -9622,8 +9622,7 @@ def update_plot(
             hist_price_color_theme = hist_price_color_theme.lower() if hist_price_color_theme is not None else 'base'
             df_hist_price = downloaded_data[tk]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[tk]['ohlc']
             hist_price = df_hist_price[hist_price_type]
-            if boolean(hist_price_adjusted):
-                hist_price_type = 'Adjusted ' + hist_price_type
+            price_type = 'Adjusted ' + hist_price_type if boolean(hist_price_adjusted) else hist_price_type
 
             fig_data = analyze_prices.add_hist_price(
                 fig_data,
@@ -9632,7 +9631,7 @@ def update_plot(
                 target_deck = deck_number(deck_type, hist_price_deck_name),
                 secondary_y = boolean(hist_price_secondary_y),
                 plot_type = 'bar' if hist_price_plot_type == 'Histogram' else 'scatter',
-                price_type = hist_price_type,
+                price_type = price_type,
                 add_title = boolean(hist_price_add_title),
                 theme = theme,
                 color_theme = hist_price_color_theme,
