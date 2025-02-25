@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import requests
+import requests_cache
 from mapping_portfolio_downloads import *
 from mapping_tickers import *
 import sys
@@ -68,11 +69,19 @@ class DownloadInfo():
         """
         Get the latest exchange rate of currency to USD
         """
+        
         tk = currency + '=X'
         end = datetime.today()
         start = end - timedelta(days = 5)
+
+        session = requests_cache.CachedSession('cache/yfinance.cache')
+        session.headers['User-agent'] = url_settings['global']['headers']
+        
         # This is to make sure that the latest available rate is returned, even if it's not today's
         fx_rate = yf.download(tk, start = start, end = end, progress = False)['Close'].iloc[-1].values[0]
+        
+        session.cache.clear()
+
         return fx_rate
 
 

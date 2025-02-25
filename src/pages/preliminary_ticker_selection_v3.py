@@ -727,6 +727,7 @@ layout = html.Div([
 
     # html.Div(children = [], id = 'prev-table-selected-rows', hidden = True),
     dcc.Store(data = {}, id = 'pre-prev-table-selected-rows', storage_type = 'session'),
+    dcc.Store(data = {}, id = 'tk-selected-category-map', storage_type = 'session'),
     dcc.Store(data = [], id = 'preselected-categories', storage_type = 'session'),
 
     # YOUR PORTFOLIO
@@ -972,6 +973,7 @@ layout = html.Div([
     Output('n-preselected-benchmarks', 'children'),
 
     Output('pre-selected-tickers-total', 'children'),
+    Output('tk-selected-category-map', 'data'),
     Output('preselected-categories', 'data'),
 
     Input('pre-menu-biggest-companies-select-all-button', 'n_clicks'),
@@ -1130,6 +1132,8 @@ layout = html.Div([
     Input('pre-prev-table-selected-rows', 'data'),
     Input('pre-select-ticker-container', 'children'),
     Input({'index': ALL, 'type': 'ticker_icon'}, 'n_clicks'),
+
+    Input('tk-selected-category-map', 'data'),
 
     suppress_callback_exceptions = True
 )
@@ -1290,7 +1294,9 @@ def output_custom_tickers(
     selected_tickers,
     prev_table_selected_rows,
     ticker_divs,
-    n_clicks
+    n_clicks,
+
+    tk_selected_category_map
 ):
 
     table_selected_rows = {
@@ -1540,17 +1546,24 @@ def output_custom_tickers(
     ##### INPUT TABLES
     # Check whether a ticker was added to or removed from any table
 
+    # Construct the final list of categories from which the user has selected tickers
+    # This is to prevent passing to next page other categories containing the same tickers
+
+    # tk_selected_cat_map = {}
+
     for category in ticker_category_info_map.keys():
         row_map = ticker_category_info_map[category]['row']
         df_pre = ticker_category_info_map[category]['df']
         selected_rows = [k for k in table_selected_rows[category] if k not in prev_table_selected_rows[category]]
         if len(selected_rows) > 0:
+            # preselected_categories.append(category)
             for row in selected_rows:
                 added_ticker = df_pre.index[df_pre['No.'] == row + 1][0]
                 if added_ticker not in added_tickers:
                     added_tickers.append(added_ticker)
                 if added_ticker not in updated_tickers:
                     updated_tickers.append(added_ticker)
+                    tk_selected_category_map[added_ticker] = category
             break
         else:
             unselected_rows = [k for k in prev_table_selected_rows[category] if k not in table_selected_rows[category]]
@@ -1561,14 +1574,13 @@ def output_custom_tickers(
                         removed_tickers.append(removed_ticker)
                     if removed_ticker in updated_tickers:
                         updated_tickers.remove(removed_ticker)
+                        del tk_selected_category_map[removed_ticker]
                 break
+        # Check if category is empty and remove it from preselected_categories if it is
+        # if (len(table_selected_rows[category]) == 0) & (category in preselected_categories):
+        #     preselected_categories.remove(category)
 
-    # Construct the final list of categories from which the user has selected tickers
-    # This is to prevent passing to next page other categories containing the same tickers
-    preselected_categories = []
-    for category in ticker_category_info_map.keys():
-        if len(table_selected_rows[category]) > 0:
-            preselected_categories.append(category)
+    preselected_categories = list(set(tk_selected_category_map.values()))  # Set removes duplicates
 
     # Make sure added_ticker is selected in all tables and removed_ticker is removed from all tables
     if added_tickers != []:
@@ -1685,6 +1697,7 @@ def output_custom_tickers(
         n_preselected['benchmarks'],
 
         n_preselected_total,
+        tk_selected_category_map,
         preselected_categories
     )
 
