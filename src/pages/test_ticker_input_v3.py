@@ -43,157 +43,174 @@ pre_table_columns = ['No.', 'Ticker', 'Name']
 # Output('all-tables-container', 'children'),
 # State('preselected-categories-stored', 'data')
 # )
-def initialize_input_table_divs():
+# def initialize_input_table_divs():
 
-    input_table_collapse_div = {}
-    input_table_divs = []
-    
-    for category in category_titles_ids.keys():
+input_table_collapse_div = {}
+input_table_divs = []
+all_categories = list(category_titles_ids.keys()) 
 
-        # The cat_hidden should probably be further down in read_preselected_tickers()
-        # Do we want a callback here? - then read_preselected_tickers() may complain about missing categories
-        # In such a case, preselectd_categories could be passed as input to read_preselected_tickers()
-        # cat_hidden = False if category in preselected_categories else True
+for category in all_categories:
 
-        id_string = category_titles_ids[category]['id_string']
+    id_string = category_titles_ids[category]['id_string']
+    print(f'n-selected-{id_string}')
 
-        dash_input_table = dash_table.DataTable(
-            columns = [],
-            data = [],
-            editable = False,
-            row_selectable = 'multi',
-            tooltip_data = [],
-            css = [
-                {
-                'selector': '.dash-tooltip',
-                'rule': 'border: None;'
-                },
-                {
-                'selector': '.dash-table-tooltip',
-                'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(67, 172, 106) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica; background-color: rgb(227, 255, 237);'
-                },
-                {
-                'selector': '.dash-tooltip:before, .dash-tooltip:after',
-                'rule': 'border-top-color: #43ac6a !important; border-bottom-color: #43ac6a !important;'
-                }
-            ],
-            tooltip_delay = 0,
-            tooltip_duration = None,
-            selected_rows = [],
-            style_as_list_view = True,
-            style_data_conditional = [
-                {'if': 
-                    { 'state': 'active'},
-                    'backgroundColor': 'white',
-                    'border-top': '1px solid rgb(211, 211, 211)',
-                    'border-bottom': '1px solid rgb(211, 211, 211)'},
-                {'if': {'column_id': 'No.'}, 'width': 24},
-                {'if': {'column_id': 'Ticker'}, 'width': 45},
-                {'if': {'column_id': 'Currency'}, 'width': 70},
-                {'if': {'column_id': 'Exchange'}, 'width': 72},
-                {'if': {'column_id': 'Data Start'}, 'width': 85},
-                {'if': {'column_id': 'Data End'}, 'width': 85},
-            ],
-            id = f'dash-table-{id_string}',
-            style_header = input_table_header_css,
-            style_data = input_table_data_css,
-        )
-
-        input_table_collapse_div[category] = html.Div(
-            id = f'input-table-collapse-div-{id_string}',
-            hidden = True,
-            children = 
-            [
-                html.Div(
-                    category_titles_ids[category]['collapse_title'],
-                    id = f'collapse-button-title-{id_string}',
-                    hidden = True
+    dash_input_table = dash_table.DataTable(
+        columns = [],
+        data = [],
+        editable = False,
+        row_selectable = 'multi',
+        tooltip_data = [],
+        css = [
+            {
+            'selector': '.dash-tooltip',
+            'rule': 'border: None;'
+            },
+            {
+            'selector': '.dash-table-tooltip',
+            'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(67, 172, 106) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica; background-color: rgb(227, 255, 237);'
+            },
+            {
+            'selector': '.dash-tooltip:before, .dash-tooltip:after',
+            'rule': 'border-top-color: #43ac6a !important; border-bottom-color: #43ac6a !important;'
+            }
+        ],
+        tooltip_delay = 0,
+        tooltip_duration = None,
+        selected_rows = [],
+        style_as_list_view = True,
+        style_data_conditional = [
+            {'if': 
+                { 'state': 'active'},
+                'backgroundColor': 'white',
+                'border-top': '1px solid rgb(211, 211, 211)',
+                'border-bottom': '1px solid rgb(211, 211, 211)'},
+            {'if': {'column_id': 'No.'}, 'width': 24},
+            {'if': {'column_id': 'Ticker'}, 'width': 45},
+            {'if': {'column_id': 'Currency'}, 'width': 70},
+            {'if': {'column_id': 'Exchange'}, 'width': 72},
+            {'if': {'column_id': 'Data Start'}, 'width': 85},
+            {'if': {'column_id': 'Data End'}, 'width': 85},
+        ],
+        id = f'dash-table-{id_string}',
+        style_header = input_table_header_css,
+        style_data = input_table_data_css,
+    )
+    input_table_collapse_div[category] = html.Div(
+        id = f'input-table-collapse-div-{id_string}',
+        hidden = True,
+        children = 
+        [
+            html.Div(
+                category_titles_ids[category]['collapse_title'],
+                id = f'collapse-button-title-{id_string}',
+                hidden = True
+            ),
+            html.Div([
+                dbc.Button(
+                    id = f'collapse-button-table-{id_string}',
+                    class_name = 'ma-1',
+                    color = 'primary',
+                    size = 'sm',
+                    n_clicks = 0,
+                    style = collapse_button_table_css
                 ),
-                html.Div([
-                    dbc.Button(
-                        id = f'collapse-button-table-{id_string}',
-                        class_name = 'ma-1',
-                        color = 'primary',
-                        size = 'sm',
-                        n_clicks = 0,
-                        style = collapse_button_table_css
-                    ),
-                ]),
-
-                dbc.Collapse(
-                    html.Div(
+                html.Div(
+                    id = f'n-selected-{id_string}-container',
+                    children = [
                         html.Div(
-                            id = f'category-{id_string}-container',
-                            children = [
-                                
-                                html.Div(
-                                    id = f'menu-{id_string}-container',
-                                    children = [
-
-                                        ### Select button
-                                        html.Div(
-                                            id = f'menu-{id_string}-select-buttons-container',
-                                            style = {'margin-right': '5px', 'margin-bottom': '5px', 'margin-left': '5px'},
-                                            children = [
-                                                dbc.Button(
-                                                    'Select All',
-                                                    id = f'menu-{id_string}-select-all-button',
-                                                    n_clicks = 0,
-                                                    class_name = 'ma-1',
-                                                    color = 'success',
-                                                    size = 'sm',
-                                                    style = pre_menu_select_all_button_css
-                                                ),
-                                            ]
-                                        ),
-                                        ### Unselect button
-                                        html.Div(
-                                            id = f'menu-{id_string}-unselect-buttons-container',
-                                            style = {'margin-right': '5px', 'margin-bottom': '5px', 'margin-left': '5px'},
-                                            children = [
-                                                dbc.Button(
-                                                    'Unselect All',
-                                                    id = f'menu-{id_string}-unselect-all-button',
-                                                    n_clicks = 0,
-                                                    class_name = 'ma-1',
-                                                    color = 'danger',
-                                                    size = 'sm',
-                                                    style = pre_menu_select_all_button_css
-                                                )
-                                            ]
-                                        )
-                                    ],
-                                    style = input_menu_container_css
-                                ),
-
-                                html.Div(
-                                    id = f'pre-table-{id_string}-container',
-                                    children = [
-                                        html.Div(
-                                            id = f'table-{id_string}-title',
-                                            style = input_table_title_css
-                                        ),
-                                        html.Div(
-                                            dash_input_table,
-                                            id = f'table-{id_string}-div'
-                                        )
-                                    ],
-                                    style = input_table_container_css
-                                )
-                            ]
+                            id = f'n-selected-{id_string}',
+                            hidden = False,
+                            style = n_selected_category_css
                         ),
+                        html.Div(
+                            '/ ',
+                            style = n_tickers_category_css
+                        ),
+                        html.Div(
+                            id = f'n-category-tickers-{id_string}',
+                            hidden = False,
+                            style = n_tickers_category_css
+                        ),
+                        html.Div(
+                            'selected',
+                            hidden = False,
+                            style = selected_string_css
+                        )
+                    ],
+                    style = {'display': 'inline-block'}
+                )
+            ]),
+            dbc.Collapse(
+                html.Div(
+                    html.Div(
+                        id = f'category-{id_string}-container',
+                        children = [
+                            
+                            html.Div(
+                                id = f'menu-{id_string}-container',
+                                children = [
+                                    ### Select button
+                                    html.Div(
+                                        id = f'menu-{id_string}-select-buttons-container',
+                                        style = {'margin-right': '5px', 'margin-bottom': '5px', 'margin-left': '5px'},
+                                        children = [
+                                            dbc.Button(
+                                                'Select All',
+                                                id = f'menu-{id_string}-select-all-button',
+                                                n_clicks = 0,
+                                                class_name = 'ma-1',
+                                                color = 'success',
+                                                size = 'sm',
+                                                style = pre_menu_select_all_button_css
+                                            ),
+                                        ]
+                                    ),
+                                    ### Unselect button
+                                    html.Div(
+                                        id = f'menu-{id_string}-unselect-buttons-container',
+                                        style = {'margin-right': '5px', 'margin-bottom': '5px', 'margin-left': '5px'},
+                                        children = [
+                                            dbc.Button(
+                                                'Unselect All',
+                                                id = f'menu-{id_string}-unselect-all-button',
+                                                n_clicks = 0,
+                                                class_name = 'ma-1',
+                                                color = 'danger',
+                                                size = 'sm',
+                                                style = pre_menu_select_all_button_css
+                                            )
+                                        ]
+                                    )
+                                ],
+                                style = input_menu_container_css
+                            ),
+                            html.Div(
+                                id = f'pre-table-{id_string}-container',
+                                children = [
+                                    #html.Div(
+                                    #    id = f'table-{id_string}-title',
+                                    #    style = input_table_title_css
+                                    #),
+                                    html.Div(
+                                        dash_input_table,
+                                        id = f'table-{id_string}-div'
+                                    )
+                                ],
+                                style = input_table_container_css
+                            )
+                        ]
                     ),
-                    id = f'collapse-table-{id_string}',
-                    is_open = False
-                ),  # dbc.Collapse
-            ]
-        )  # html.Div with dbc.Button and dbc.Collapse
+                ),
+                id = f'collapse-table-{id_string}',
+                is_open = False
+            ),  # dbc.Collapse
+        ]
+    )  # html.Div with dbc.Button and dbc.Collapse
+    input_table_divs.append(input_table_collapse_div[category])
 
-        input_table_divs.append(input_table_collapse_div[category])
-
-    return input_table_divs
-
-input_table_divs = initialize_input_table_divs()
+#     return input_table_divs
+# 
+# input_table_divs = initialize_input_table_divs()
 
 ###########################################################################################
 
@@ -219,7 +236,8 @@ layout = html.Div([
 
     html.Div(id = 'select-ticker-list', hidden = True),
 
-    dcc.Store(data = {}, id = 'prev-table-selected-rows', storage_type = 'session'),
+    # dcc.Store(data = {}, id = 'prev-table-selected-rows', storage_type = 'session'),
+    dcc.Store(data = {}, id = 'prev-table-selected-rows', storage_type = 'memory'),
 
     # YOUR PORTFOLIO
     html.Div(
@@ -331,24 +349,24 @@ layout = html.Div([
 
 @callback(
     # preselected_table_titles
-    Output('table-biggest-companies-title', 'children'),
-    Output('table-sp500-title', 'children'),
-    Output('table-nasdaq100-title', 'children'),
-    Output('table-dow-jones-title', 'children'),
-    Output('table-car-companies-title', 'children'),
-    Output('table-rare-metals-companies-title', 'children'),
-    Output('table-biggest-etfs-title', 'children'),
-    Output('table-fixed-income-etfs-title', 'children'),
-    Output('table-ai-etfs-title', 'children'),
-    Output('table-commodity-etfs-title', 'children'),
-    Output('table-currency-etfs-title', 'children'),
-    Output('table-cryptos-title', 'children'),
-    Output('table-crypto-etfs-title', 'children'),
-    Output('table-futures-title', 'children'),
-    Output('table-precious-metals-title', 'children'),
-    Output('table-stock-indices-title', 'children'),
-    Output('table-volatility-indices-title', 'children'),
-    Output('table-benchmarks-title', 'children'),
+    # Output('table-biggest-companies-title', 'children'),
+    # Output('table-sp500-title', 'children'),
+    # Output('table-nasdaq100-title', 'children'),
+    # Output('table-dow-jones-title', 'children'),
+    # Output('table-car-companies-title', 'children'),
+    # Output('table-rare-metals-companies-title', 'children'),
+    # Output('table-biggest-etfs-title', 'children'),
+    # Output('table-fixed-income-etfs-title', 'children'),
+    # Output('table-ai-etfs-title', 'children'),
+    # Output('table-commodity-etfs-title', 'children'),
+    # Output('table-currency-etfs-title', 'children'),
+    # Output('table-cryptos-title', 'children'),
+    # Output('table-crypto-etfs-title', 'children'),
+    # Output('table-futures-title', 'children'),
+    # Output('table-precious-metals-title', 'children'),
+    # Output('table-stock-indices-title', 'children'),
+    # Output('table-volatility-indices-title', 'children'),
+    # Output('table-benchmarks-title', 'children'),
 
     # Dash table columns
     Output('dash-table-biggest-companies', 'columns'),
@@ -446,6 +464,9 @@ def read_preselected_tickers(
     n_preselected,
     preselected_ticker_tables
 ):
+    print('read_preselected_tickers():\n')
+    print(f'n_preselected:\n{n_preselected}\n')
+    print(f'preselected_ticker_tables\n{preselected_ticker_tables}')
 
     ticker_info = {}
     dash_input_tables = {}
@@ -601,7 +622,7 @@ def read_preselected_tickers(
             tk_cat_info_map[category]['df'] = {}
             tk_cat_info_map[category]['row'] = {}
             tk_cat_info_map[category]['hidden'] = True
-            dash_table_data = [{}]
+            dash_table_data = []
             dash_table_columns = []
 
         ####################
@@ -628,46 +649,7 @@ def read_preselected_tickers(
 
     #################################
 
-    preselected_table_titles = {
-        'biggest_companies': f'{n_preselected["biggest_companies"]} PRE-SELECTED BIGGEST COMPANIES by Market Capitalization',
-        'sp500': f'{n_preselected["sp500"]} PRE-SELECTED S&P 500 COMPANIES by Market Capitalization',
-        'nasdaq100': f'{n_preselected["nasdaq100"]} PRE-SELECTED NASDAQ 100 COMPANIES by Market Capitalization',
-        'dow_jones': f'{n_preselected["dow_jones"]} PRE-SELECTED DOW JONES INDUSTRIAL AVERAGE COMPANIES by Market Capitalization',
-        'car_companies': f'TOP {n_preselected["car_companies"]} CAR COMPANIES by Market Capitalization',
-        'rare_metals_companies': f'TOP {n_preselected["rare_metals_companies"]} RARE METALS COMPANIES by Market Capitalization',
-        'biggest_etfs': f'{n_preselected["biggest_etfs"]} PRE-SELECTED BIGGEST ETFs by Total Assets Under Management',
-        'fixed_income_etfs': f'{n_preselected["fixed_income_etfs"]} PRE-SELECTED FIXED INCOME ETFs by Total Assets Under Management',
-        'ai_etfs': f'{n_preselected["ai_etfs"]} PRE-SELECTED ARTIFICIAL INTELLIGENCE ETFs by Total Assets Under Management',
-        'commodity_etfs': f'{n_preselected["commodity_etfs"]} PRE-SELECTED COMMODITY ETFs sorted by Total Assets Under Management',
-        'currency_etfs': f'{n_preselected["currency_etfs"]} PRE-SELECTED CURRENCY ETFs sorted by Total Assets Under Management',
-        'cryptos': f'{n_preselected["cryptos"]} PRE-SELECTED CRYPTOCURRENCIES by Market Capitalization',
-        'crypto_etfs': f'{n_preselected["crypto_etfs"]} PRE-SELECTED CRYPTOCURRENCY ETFs by Total Assets Under Management',
-        'futures': f'{n_preselected["futures"]} PRE-SELECTED COMMODITY FUTURES by Open Interest',
-        'precious_metals': f'{n_preselected["precious_metals"]} PRE-SELECTED PRECIOUS METAL SPOT / FUTURES sorted by Open Interest',
-        'stock_indices': f'{n_preselected["stock_indices"]} PRE-SELECTED STOCK INDICES',
-        'volatility_indices': f'{n_preselected["volatility_indices"]} PRE-SELECTED VOLATILITY INDICES',
-        'benchmarks': f'{n_preselected["benchmarks"]} PRE-SELECTED BENCHMARKS'
-    }
-   
     return (
-        preselected_table_titles['biggest_companies'],
-        preselected_table_titles['sp500'],
-        preselected_table_titles['nasdaq100'],
-        preselected_table_titles['dow_jones'],
-        preselected_table_titles['car_companies'],
-        preselected_table_titles['rare_metals_companies'],        
-        preselected_table_titles['biggest_etfs'],
-        preselected_table_titles['fixed_income_etfs'],
-        preselected_table_titles['ai_etfs'],
-        preselected_table_titles['commodity_etfs'],
-        preselected_table_titles['currency_etfs'],
-        preselected_table_titles['cryptos'],
-        preselected_table_titles['crypto_etfs'],
-        preselected_table_titles['futures'],
-        preselected_table_titles['precious_metals'],
-        preselected_table_titles['stock_indices'],
-        preselected_table_titles['volatility_indices'],
-        preselected_table_titles['benchmarks'],
 
         dash_input_tables['biggest_companies']['columns'],
         dash_input_tables['sp500']['columns'],
@@ -824,6 +806,44 @@ def read_preselected_tickers(
     Output('dash-table-stock-indices', 'selected_rows'),
     Output('dash-table-volatility-indices', 'selected_rows'),
     Output('dash-table-benchmarks', 'selected_rows'),
+
+    Output('n-selected-biggest-companies', 'children'),
+    Output('n-selected-sp500', 'children'),
+    Output('n-selected-nasdaq100', 'children'),
+    Output('n-selected-dow-jones', 'children'),
+    Output('n-selected-car-companies', 'children'),
+    Output('n-selected-rare-metals-companies', 'children'),
+    Output('n-selected-biggest-etfs', 'children'),
+    Output('n-selected-fixed-income-etfs', 'children'),
+    Output('n-selected-ai-etfs', 'children'),
+    Output('n-selected-commodity-etfs', 'children'),
+    Output('n-selected-currency-etfs', 'children'),
+    Output('n-selected-cryptos', 'children'),
+    Output('n-selected-crypto-etfs', 'children'),
+    Output('n-selected-futures', 'children'),
+    Output('n-selected-precious-metals', 'children'),
+    Output('n-selected-stock-indices', 'children'),
+    Output('n-selected-volatility-indices', 'children'),
+    Output('n-selected-benchmarks', 'children'),
+
+    Output('n-category-tickers-biggest-companies', 'children'),
+    Output('n-category-tickers-sp500', 'children'),
+    Output('n-category-tickers-nasdaq100', 'children'),
+    Output('n-category-tickers-dow-jones', 'children'),
+    Output('n-category-tickers-car-companies', 'children'),
+    Output('n-category-tickers-rare-metals-companies', 'children'),
+    Output('n-category-tickers-biggest-etfs', 'children'),
+    Output('n-category-tickers-fixed-income-etfs', 'children'),
+    Output('n-category-tickers-ai-etfs', 'children'),
+    Output('n-category-tickers-commodity-etfs', 'children'),
+    Output('n-category-tickers-currency-etfs', 'children'),
+    Output('n-category-tickers-cryptos', 'children'),
+    Output('n-category-tickers-crypto-etfs', 'children'),
+    Output('n-category-tickers-futures', 'children'),
+    Output('n-category-tickers-precious-metals', 'children'),
+    Output('n-category-tickers-stock-indices', 'children'),
+    Output('n-category-tickers-volatility-indices', 'children'),
+    Output('n-category-tickers-benchmarks', 'children'),
 
     Output('table-selected-tickers-data-stored', 'data'),
     Output('selected-ticker-summaries-stored', 'data'),
@@ -1098,11 +1118,11 @@ def output_custom_tickers(
     #####################
 
     for category in selected_categories:
-
-        n_category_tickers = len(table_data[category])
+        
+        n_cat_tks = len(table_data[category])
 
         if select_all_button_nclicks[category]:
-            table_selected_rows[category] = list(range(n_category_tickers))
+            table_selected_rows[category] = list(range(n_cat_tks))
 
         elif unselect_all_button_nclicks[category]:
             table_selected_rows[category] = []
@@ -1553,6 +1573,14 @@ def output_custom_tickers(
         select_ticker_portfolio_summary = html.Div([])
         hide_ticker_container = True
 
+    n_selected = {}
+    n_category_tickers = {}    
+    for category in table_selected_rows.keys():
+        n_selected[category] = len(table_selected_rows[category])
+        # table_data is a list of dictionaries
+        n_category_tickers[category] = len(table_data[category])
+        print(f'{category}\t\t{n_selected[category]} / {n_category_tickers[category]}')
+
     return (
         ticker_divs,
         hide_ticker_container,
@@ -1589,6 +1617,44 @@ def output_custom_tickers(
         table_selected_rows['stock_indices'],
         table_selected_rows['volatility_indices'],
         table_selected_rows['benchmarks'],
+
+        n_selected['biggest_companies'],
+        n_selected['sp500'],
+        n_selected['nasdaq100'],
+        n_selected['dow_jones'],
+        n_selected['car_companies'],
+        n_selected['rare_metals_companies'],
+        n_selected['biggest_etfs'],
+        n_selected['fixed_income_etfs'],
+        n_selected['ai_etfs'],
+        n_selected['commodity_etfs'],
+        n_selected['currency_etfs'],
+        n_selected['cryptos'],
+        n_selected['crypto_etfs'],
+        n_selected['futures'],
+        n_selected['precious_metals'],
+        n_selected['stock_indices'],
+        n_selected['volatility_indices'],
+        n_selected['benchmarks'],
+
+        n_category_tickers['biggest_companies'],
+        n_category_tickers['sp500'],
+        n_category_tickers['nasdaq100'],
+        n_category_tickers['dow_jones'],
+        n_category_tickers['car_companies'],
+        n_category_tickers['rare_metals_companies'],
+        n_category_tickers['biggest_etfs'],
+        n_category_tickers['fixed_income_etfs'],
+        n_category_tickers['ai_etfs'],
+        n_category_tickers['commodity_etfs'],
+        n_category_tickers['currency_etfs'],
+        n_category_tickers['cryptos'],
+        n_category_tickers['crypto_etfs'],
+        n_category_tickers['futures'],
+        n_category_tickers['precious_metals'],
+        n_category_tickers['stock_indices'],
+        n_category_tickers['volatility_indices'],
+        n_category_tickers['benchmarks'],
 
         dash_table_selected_tickers_data,
         selected_ticker_summaries

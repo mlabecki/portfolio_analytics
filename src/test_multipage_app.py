@@ -39,8 +39,12 @@ app.layout = dmc.MantineProvider(
     page_container,  # page layout is rendered here
     # setup_page_components(), 
 
-    dcc.Store(data = {}, id = 'n-preselected-stored', storage_type = 'session'),
-    dcc.Store(data = {}, id = 'preselected-ticker-tables-stored', storage_type = 'session'),
+    # dcc.Store(data = {}, id = 'n-preselected-stored', storage_type = 'session'),
+    # dcc.Store(data = {}, id = 'preselected-ticker-tables-stored', storage_type = 'session'),
+
+    dcc.Store(data = {}, id = 'n-preselected-stored', storage_type = 'memory'),
+    dcc.Store(data = {}, id = 'preselected-ticker-tables-stored', storage_type = 'memory'),
+
 
     dcc.Store(data = [], id = 'table-selected-tickers-data-stored', storage_type = 'session'),
     dcc.Store(data = {}, id = 'selected-ticker-summaries-stored', storage_type = 'session'),

@@ -34,7 +34,8 @@ max_tickers = {
     'sp500': 100,
     'nasdaq100': 120,
     'dow_jones': 35,
-    'car_companies': 75,
+    # 'car_companies': 75,
+    'car_companies': 10,
     'rare_metals_companies': 20,
     'biggest_etfs': 100,
     'fixed_income_etfs': 100,
@@ -341,13 +342,18 @@ def create_pre_table(category):
     # The above means that the tickers are NOT from a URL
 
         dict_tickers_values = {}
+        dict_currency_fx_rates = {}
         for tk in category_tickers:
             tk_info = yf.Ticker(tk).info
             currency = tk_info['currency']
             if currency != 'USD':
-                fx_rate = hist_info.get_usd_fx_rate(currency)
-                fx_rate = 1 if fx_rate == 0 else fx_rate
-                dict_tickers_values.update({tk: tk_info[tk_sort_by] / fx_rate})
+                if currency in dict_currency_fx_rates.keys():
+                    dict_tickers_values.update({currency: dict_currency_fx_rates[currency]})
+                else:
+                    fx_rate = hist_info.get_usd_fx_rate(currency)
+                    fx_rate = 1 if fx_rate == 0 else fx_rate
+                    dict_tickers_values.update({tk: tk_info[tk_sort_by] / fx_rate})
+                    dict_currency_fx_rates.update({tk: fx_rate})
             else:
                 dict_tickers_values.update({tk: tk_info[tk_sort_by]})
 
@@ -417,37 +423,6 @@ pre_table_titles = {
 
 print(f'\nTotal tickers: {len(ticker_names)}')
 
-n_preselected_category_css = {
-    'display': 'inline-block',
-    'font-family': 'Helvetica',
-    'font-size': '16px',
-    'font-weight': 'bold',
-    'text-align': 'left',
-    'color': 'darkgreen',
-    'vertical-align': 'middle',
-    'margin-top': '5px',
-    'margin-left': '3px'
-}
-n_tickers_category_css = {
-    'display': 'inline-block',
-    'font-family': 'Helvetica',
-    'font-size': '16px',
-    'font-weight': 'bold',
-    'text-align': 'left',
-    'vertical-align': 'middle',
-    'margin-top': '5px',
-    'margin-left': '5px'
-}
-pre_selected_string_css = {
-    'display': 'inline-block',
-    'font-family': 'Helvetica',
-    'font-size': '15px',
-    'text-align': 'left',
-    'vertical-align': 'middle',
-    'margin-top': '5px',
-    'margin-left': '5px'
-}
-
 ##############
 
 ticker_div_title = html.Div(
@@ -515,7 +490,7 @@ for category in ticker_category_info_map.keys():
                         html.Div(
                             id = f'n-preselected-{id_string}',
                             hidden = False,
-                            style = n_preselected_category_css
+                            style = n_selected_category_css
                         ),
                         html.Div(
                             f'/ {max_tickers[category]}',
@@ -525,7 +500,7 @@ for category in ticker_category_info_map.keys():
                         html.Div(
                             'pre-selected',
                             hidden = False,
-                            style = pre_selected_string_css
+                            style = selected_string_css
                         )
                     ],
                     style = {'display': 'inline-block'}
@@ -726,9 +701,12 @@ layout = html.Div([
     html.Div(id = 'pre-select-ticker-list-check', hidden = False),
 
     # html.Div(children = [], id = 'prev-table-selected-rows', hidden = True),
-    dcc.Store(data = {}, id = 'pre-prev-table-selected-rows', storage_type = 'session'),
-    dcc.Store(data = {}, id = 'tk-selected-category-map', storage_type = 'session'),
-    dcc.Store(data = [], id = 'preselected-categories', storage_type = 'session'),
+    # dcc.Store(data = {}, id = 'pre-prev-table-selected-rows', storage_type = 'session'),
+    # dcc.Store(data = {}, id = 'tk-selected-category-map', storage_type = 'session'),
+    # dcc.Store(data = [], id = 'preselected-categories', storage_type = 'session'),
+    dcc.Store(data = {}, id = 'pre-prev-table-selected-rows', storage_type = 'memory'),
+    dcc.Store(data = {}, id = 'tk-selected-category-map', storage_type = 'memory'),
+    dcc.Store(data = [], id = 'preselected-categories', storage_type = 'memory'),
 
     # YOUR PORTFOLIO
     html.Div(
@@ -1133,7 +1111,8 @@ layout = html.Div([
     Input('pre-select-ticker-container', 'children'),
     Input({'index': ALL, 'type': 'ticker_icon'}, 'n_clicks'),
 
-    Input('tk-selected-category-map', 'data'),
+    State('tk-selected-category-map', 'data'),
+    # Input('tk-selected-category-map', 'data'),
 
     suppress_callback_exceptions = True
 )
@@ -1563,7 +1542,8 @@ def output_custom_tickers(
                     added_tickers.append(added_ticker)
                 if added_ticker not in updated_tickers:
                     updated_tickers.append(added_ticker)
-                    tk_selected_category_map[added_ticker] = category
+                    if added_ticker not in tk_selected_category_map.keys():
+                        tk_selected_category_map[added_ticker] = category
             break
         else:
             unselected_rows = [k for k in prev_table_selected_rows[category] if k not in table_selected_rows[category]]
@@ -1574,7 +1554,8 @@ def output_custom_tickers(
                         removed_tickers.append(removed_ticker)
                     if removed_ticker in updated_tickers:
                         updated_tickers.remove(removed_ticker)
-                        del tk_selected_category_map[removed_ticker]
+                        if removed_ticker in tk_selected_category_map.keys():
+                            del tk_selected_category_map[removed_ticker]
                 break
         # Check if category is empty and remove it from preselected_categories if it is
         # if (len(table_selected_rows[category]) == 0) & (category in preselected_categories):

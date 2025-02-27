@@ -60,7 +60,7 @@ pre_menu_select_all_button_css = {
     'vertical-align': 'top',
     'text-align': 'center',
     'font-family': 'Helvetica',
-    'font-size': '15px',
+    'font-size': '14px',
     'font-weight': 'bold',
     'width': '110px'
 }
@@ -77,7 +77,7 @@ pre_menu_unselect_all_button_css = {
     'vertical-align': 'top',
     'text-align': 'center',
     'font-family': 'Helvetica',
-    'font-size': '15px',
+    'font-size': '14px',
     'font-weight': 'bold',
     'width': '110px'
 }
@@ -286,6 +286,38 @@ collapse_button_menu_css = {
 }
 
 # Selected tickers elements
+# K / N (pre-)selected string
+n_selected_category_css = {
+    'display': 'inline-block',
+    'font-family': 'Helvetica',
+    'font-size': '16px',
+    'font-weight': 'bold',
+    'text-align': 'left',
+    'color': 'darkgreen',
+    'vertical-align': 'middle',
+    'margin-top': '5px',
+    'margin-left': '3px'
+}
+n_tickers_category_css = {
+    'display': 'inline-block',
+    'font-family': 'Helvetica',
+    'font-size': '16px',
+    'font-weight': 'bold',
+    'text-align': 'left',
+    'vertical-align': 'middle',
+    'margin-top': '5px',
+    'margin-left': '5px'
+}
+selected_string_css = {
+    'display': 'inline-block',
+    'font-family': 'Helvetica',
+    'font-size': '15px',
+    'text-align': 'left',
+    'vertical-align': 'middle',
+    'margin-top': '5px',
+    'margin-left': '5px'
+}
+
 select_ticker_container_css = {
     'display': 'inline-block',
     # 'border': '1px solid rgba(0, 126, 255, .24)',
