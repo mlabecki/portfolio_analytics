@@ -61,6 +61,16 @@ button, input, select, textarea {
     font-size: 14px
 }
 
+#category-option-biggest-companies:hover,
+#category-option-sp500:hover,
+#category-option-nasdaq100:hover
+{
+    color:white !important;
+    /* border-color: #005e87 !important; */
+    background-color: #007ea7 !important;
+    cursor: pointer
+}
+
 #add-hist-price-button:hover,
 #add-candlestick-button:hover,
 #add-price-overlays-button:hover,
