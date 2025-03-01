@@ -97,11 +97,11 @@ def display_table_selected_tickers(
         a dictionary of historical price and volume data with selected tickers as keys
     """
     
-    selected_tickers = [row['Ticker'] for row in table_data]
-    # first_ticker = selected_tickers[0]
+    # selected_tickers = [row['Ticker'] for row in table_data]
+    selected_tickers = selected_ticker_names.keys()
 
     dash_table_selected_tickers = dash_table.DataTable(
-        columns = [{'name': i, 'id': i} for i in plots_table_selected_tickers_columns],
+        columns = [{'name': i, 'id': i} for i in plots_table_selected_tickers_columns if i != 'No.'],
         data = table_data,
         editable = False,
         tooltip_data = table_tooltip_data,
@@ -132,24 +132,16 @@ def display_table_selected_tickers(
         tooltip_delay = 0,
         tooltip_duration = None,
         style_as_list_view = True,
-        style_header_conditional = [
-            # {'if': {'column_id': 'Length*'}, 'width': 45, 'text-align': 'right', 'padding-right': '10px'},
-            {'if': {'column_id': 'No.'}, 'padding-left': '8px'},
-        ],
-        style_data_conditional = [
-            {'if': 
-                {'state': 'active'},
-                'backgroundColor': 'white',
-                'border-top': '1px solid rgb(211, 211, 211)',
-                'border-bottom': '1px solid rgb(211, 211, 211)'},
-            {'if': {'column_id': 'No.'}, 'width': 24, 'padding-left': '8px'},
-            {'if': {'column_id': 'Ticker'}, 'width': 45},
-            {'if': {'column_id': 'Currency'}, 'width': 70},
-            {'if': {'column_id': 'Exchange'}, 'width': 72},
-            # {'if': {'column_id': 'Data Start'}, 'width': 85},
-            # {'if': {'column_id': 'Data End'}, 'width': 85},
-            # {'if': {'column_id': 'Length*'}, 'width': 45, 'text-align': 'right', 'padding-right': '15px'},
-        ],
+        # style_data_conditional = [
+        #     {'if': 
+        #         {'state': 'active'},
+        #         'backgroundColor': 'white',
+        #         'border-top': '1px solid rgb(211, 211, 211)',
+        #         'border-bottom': '1px solid rgb(211, 211, 211)'},
+        #     {'if': {'column_id': 'Ticker'}, 'width': 45},
+        #     {'if': {'column_id': 'Currency'}, 'width': 70},
+        #     {'if': {'column_id': 'Exchange'}, 'width': 72},
+        # ],
         id = 'final-dash-table-selected-tickers',
         style_header = plots_selected_tickers_table_header_css,
         style_data = selected_tickers_table_data_css,
@@ -173,7 +165,7 @@ def display_table_selected_tickers(
             #     style = table_selected_tickers_footnote
             # )
         ],
-        style = {'width': '1300px'}
+        # style = {'width': '1300px'}
     )
 
     dash_table_tickers_to_plot = dash_table.DataTable(
@@ -7716,8 +7708,25 @@ layout = html.Div([
     
     ),  # Loading
 
-])
+    html.Hr(),
 
+    html.Div(
+        id = 'dates-link-container',
+        children = [
+            dcc.Link('Home Page', href='/'),
+            html.Br(),
+            dcc.Link('Start Over Preliminary Ticker Selection', href='/preliminary_ticker_selection_v3'),
+            html.Br(),
+            dcc.Link('Back To Ticker Info & Portfolio Selection', href='/test_ticker_input_v3'),
+            html.Br(),
+            dcc.Link('Back To Dates Selection', href='/test_dates_selection'),
+        ],
+        style = link_container_css
+    )
+
+])  # layout
+
+######################################################################
 
 @callback(
     Output('collapse-button-sidebar-menu', 'children'),

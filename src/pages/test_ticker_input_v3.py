@@ -52,7 +52,6 @@ all_categories = list(category_titles_ids.keys())
 for category in all_categories:
 
     id_string = category_titles_ids[category]['id_string']
-    print(f'n-selected-{id_string}')
 
     dash_input_table = dash_table.DataTable(
         columns = [],

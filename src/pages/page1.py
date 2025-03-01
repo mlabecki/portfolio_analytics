@@ -57,47 +57,56 @@ popover_markdown_category = {
     'biggest_companies': 
     """<DIV><H6>BIGGEST COMPANIES</H6>
 <B>Content:</B> 100 equities sorted by Market Capitalization<BR/>
-<B>Examples:</B> Apple, NVidia, Microsoft, Amazon, Alphabet, Meta, Berkshire Hathaway, Broadcom, Tesla, Taiwan Semiconductor Manufacturing, Eli Lilly, Walmart ...</DIV>""",
+<B>Examples:</B> Apple, NVidia, Microsoft, Amazon, Alphabet, Meta, Berkshire Hathaway, Broadcom, Tesla, Taiwan Semiconductor Manufacturing, Eli Lilly, Walmart, JP Morgan, Visa, Mastercard ...<BR/>
+<B>Source:</B> <A HREF='https://stockanalysis.com/list/biggest-companies/'>Stock Analysis</A></DIV>""",
 
     'sp500': 
     """<DIV><H6>S&P 500 COMPANIES</H6>
 <B>Content:</B> 100 equities sorted by Market Capitalization<BR/>
-<B>Examples:</B> Apple, NVidia, Microsoft, Amazon, Alphabet, Meta, Berkshire Hathaway, Broadcom, Tesla, Eli Lilly, Walmart, JP Morgan, Visa, Mastercard, Exxon Mobil ...</DIV>""",
+<B>Examples:</B> Apple, NVidia, Microsoft, Amazon, Alphabet, Meta, Berkshire Hathaway, Broadcom, Tesla, Eli Lilly, Walmart, JP Morgan, Visa, Mastercard, Exxon Mobil, Costco, Oracle ...<BR/>
+<B>Source:</B> <A HREF='https://stockanalysis.com/list/sp-500-stocks/'>Stock Analysis</A></DIV>""",
 
     'nasdaq100': 
     """<DIV><H6>NASDAQ 100 COMPANIES</H6>
 <B>Content:</B> 101 equities sorted by Market Capitalization<BR/>
-<B>Examples:</B> Apple, NVidia, Microsoft, Amazon, Alphabet, Meta, Broadcom, Tesla, Costco, Netflix, T-Mobile, ASML Holding, Cisco Systems, Astra Zeneca, Linde, PepsiCo ...</DIV>""",
+<B>Examples:</B> Apple, NVidia, Microsoft, Amazon, Alphabet, Meta, Broadcom, Tesla, Costco, Netflix, T-Mobile, ASML Holding, Cisco Systems, Astra Zeneca, Linde, PepsiCo, Intuitive, Palantir ...<BR/>
+<B>Source:</B> <A HREF='https://stockanalysis.com/list/nasdaq-100-stocks/'>Stock Analysis</A></DIV>""",
 
     'dow_jones': 
     """<DIV><H6>DOW JONES INDUSTRIAL AVERAGE COMPANIES</H6>
 <B>Content:</B> 30 equities sorted by Market Capitalization<BR/>
-<B>Examples:</B> Apple, NVidia, Microsoft, Amazon, Walmart, JP Morgan, Visa, United Health, Procter & Gamble, Johnson & Johnson, Home Depot, Coca-Cola, Salesforce ...</DIV>""",
+<B>Examples:</B> Apple, NVidia, Microsoft, Amazon, Walmart, JP Morgan, Visa, United Health, Procter & Gamble, Johnson & Johnson, Home Depot, Coca-Cola, Salesforce, Chevron, Cisco ...<BR/>
+<B>Source:</B> <A HREF='https://stockanalysis.com/list/dow-jones-stocks/'>Stock Analysis</A></DIV>""",
 
     'car_companies': 
     """<DIV><H6>CAR COMPANIES</H6>
 <B>Content:</B> 63 equities sorted by Market Capitalization<BR/>
-<B>Examples:</B> Tesla, Toyota, Xiaomi, BYD, Ferrari, Mercedes-Benz, Porsche, Volkswagen, BMW, General Motors, Maruti Suzuki India, Stellantis, Honda, Ford, Hyundai ...</DIV>""",
+<B>Examples:</B> Tesla, Toyota, Xiaomi, BYD, Ferrari, Mercedes-Benz, Porsche, Volkswagen, BMW, General Motors, Maruti Suzuki India, Stellantis, Honda, Ford, Hyundai, Tata Motors, Li Auto ...<BR/>
+<B>Source:</B> <A HREF='https://companiesmarketcap.com/cad/automakers/largest-automakers-by-market-cap/'>CompaniesMarketCap</A></DIV>""",
 
     'rare_metals_companies':
     """<DIV><H6>RARE METALS COMPANIES</H6>
 <B>Content:</B> 16 equities sorted by Market Capitalization<BR/>
-<B>Examples:</B> Southern Copper, SQM Chile, Lynas, MP Materials, Sibanye Stillwater, Iluka, Constellium, Tronox, Energy Fuels, Neo Performance Materials, Arafura ...</DIV>""",
+<B>Examples:</B> Southern Copper, SQM Chile, Lynas, MP Materials, Sibanye Stillwater, Iluka, Constellium, Tronox, Energy Fuels, Neo Performance Materials, Arafura, NioCorp, Aclara Resources ...<BR/>
+<B>Source:</B> <A HREF='https://investingnews.com/top-rare-earth-stocks/'>Investing News</A>, <A HREF='https://finance.yahoo.com/news/14-best-rare-earth-stocks-181008216.html'>Yahoo Finance</A></DIV>""",
 
     'biggest_etfs': 
     """<DIV><H6>BIGGEST ETFs</H6>
 <B>Content:</B> 100 ETFs sorted by Total Assets Under Management<BR/>
-<B>Examples:</B> Vanguard Total Stock, Vanguard S&P 500, iShares Core S&P 500, SPDR S&P 500, Vanguard Growth, Vanguard FTSE Developed Markets, Invesco QQQ, Vanguard Value ...</DIV>""",
+<B>Examples:</B> Vanguard Total Stock, Vanguard S&P 500, iShares Core S&P 500, SPDR S&P 500, Vanguard Growth, Vanguard FTSE Developed Markets, Invesco QQQ, Vanguard Value ...<BR/>
+<B>Source:</B> <A HREF='https://8marketcap.com/etfs/'>Infinite Market Cap</A></DIV>""",
 
     'fixed_income_etfs': 
     """<DIV><H6>FIXED INCOME ETFs</H6>
 <B>Content:</B> 100 ETFs sorted by Total Assets Under Management<BR/>
-<B>Examples:</B> Vanguard Total Bond Market Index, iShares Core US Aggregate Bond, Vanguard Total International Bond, iShares 20+ Year Treasury Bond, BTC iShares MBS ...</DIV>""",
+<B>Examples:</B> Vanguard Total Bond Market Index, iShares Core US Aggregate Bond, Vanguard Total International Bond, iShares 20+ Year Treasury Bond, BTC iShares MBS ...<BR/>
+<B>Source:</B> <A HREF='https://stockanalysis.com/list/fixed-income-etfs/'>Stock Analysis</A></DIV>""",
 
     'ai_etfs': 
     """<DIV><H6>ARTIFICIAL INTELLIGENCE ETFs</H6>
 <B>Content:</B> 28 ETFs sorted by Total Assets Under Management<BR/>
-<B>Examples:</B> Global X AI &Technology, Global X Robotics & AI, ROBO Global Robotics & Automation Index, ARK Autonomous Technology & Robotics, iShares Future AI & Tech ...</DIV>""",
+<B>Examples:</B> Global X AI &Technology, Global X Robotics & AI, ROBO Global Robotics & Automation Index, ARK Autonomous Technology & Robotics, iShares Future AI & Tech ...<BR/>
+<B>Source:</B> <A HREF='https://stockanalysis.com/list/artificial-intelligence-etfs/'>Stock Analysis</A></DIV>""",
 
     'commodity_etfs': 
     """<DIV><H6>COMMODITY ETFs</H6>
@@ -112,17 +121,20 @@ popover_markdown_category = {
     'cryptos': 
     """<DIV><H6>CRYPTOCURRENCIES</H6>
 <B>Content:</B> 100 cryptocurrencies sorted by Market Capitalization<BR/>
-<B>Examples:</B> Bitcoin, Ethereum, Tether USDt, XRP, BNB, Solana, USD Coin, Dogecoin, Cardano, Lido Staked ETH, Wrapped TRON, TRON, Wrapped Bitcoin, Lido wstETH, Litecoin ...</DIV>""",
+<B>Examples:</B> Bitcoin, Ethereum, Tether USDt, XRP, BNB, Solana, USD Coin, Dogecoin, Cardano, Lido Staked ETH, Wrapped TRON, TRON, Wrapped Bitcoin, Lido wstETH, Litecoin ...<BR/>
+<B>Source:</B> <A HREF='https://finance.yahoo.com/markets/crypto/all/?start=0&count=100'>Yahoo Finance</A></DIV>""",
 
     'crypto_etfs': 
     """<DIV><H6>CRYPTOCURRENCY ETFs</H6>
 <B>Content:</B> 73 ETFs sorted by Total Assets Under Management<BR/>
-<B>Examples:</B> iShares Bitcoin, Fidelity Wise Origin Bitcoin, Grayscale Bitcoin, ARK 21Shares Bitcoin, Bitwise Bitcoin, iShares Ethereum, Grayscale Ethereum, 2x Bitcoin Strategy ...</DIV>""",
+<B>Examples:</B> iShares Bitcoin, Fidelity Wise Origin Bitcoin, Grayscale Bitcoin, ARK 21Shares Bitcoin, Bitwise Bitcoin, iShares Ethereum, Grayscale Ethereum, 2x Bitcoin Strategy ...<BR/>
+<B>Source:</B> <A HREF='https://stockanalysis.com/list/crypto-etfs/'>Stock Analysis</A></DIV>""",
 
     'futures': 
     """<DIV><H6>COMMODITY FUTURES</H6>
 <B>Content:</B> 37 futures sorted by Open Interest<BR/>
-<B>Examples:</B> 5-Year US Treasury, E-Mini S&P 500, US Treasury Bond, Corn, E-Mini Russell 2000, Soybean, Gold, Sugar, Crude Oil, Natural Gas, Live Cattle, Cotton, Copper ...</DIV>""",
+<B>Examples:</B> 5-Year US Treasury, E-Mini S&P 500, US Treasury Bond, Corn, E-Mini Russell 2000, Soybean, Gold, Sugar, Crude Oil, Natural Gas, Live Cattle, Cotton, Copper, RBOB Gasoline ...<BR/>
+<B>Source:</B> <A HREF='https://finance.yahoo.com/commodities/'>Yahoo Finance</A></DIV>""",
 
     'precious_metals': 
     """<DIV><H6>PRECIOUS METALS</H6>
@@ -141,7 +153,7 @@ popover_markdown_category = {
 
     'benchmarks': 
     """<DIV><H6>BENCHMARKS</H6>
-<B>Content:</B> 5 indices<BR/>
+<B>Content:</B> 20 indices<BR/>
 <B>Examples:</B> S&P 500, Dow Jones, Nasdaq Composite, Vanguard Total Stock, CBOE Volatility, ICE BofAML MOVE, S&P GSCI, BBG Commodity, 10-Year US Treasury, 3-Month US Treasury ...</DIV>""",
 
 }
@@ -458,7 +470,7 @@ layout = html.Div([
     html.Div(
         id = 'dates-link-container',
         children = [
-            dcc.Link('Go to Preliminary Ticker Selection', href='/preliminary_ticker_selection_v3'),
+            dcc.Link('Continue To Preliminary Ticker Selection', href='/preliminary_ticker_selection_v3'),
             html.Br(),
             # dcc.Link('Go to Ticker Info & Portfolio Selection', href='/test_ticker_input_v3'),
         ],
