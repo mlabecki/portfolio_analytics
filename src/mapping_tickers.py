@@ -449,7 +449,7 @@ rare_metals_companies = {
     'ILU.AX': 'Iluka Resources Limited',  #  currency is AUD
     'CSTM': 'Constellium SE',
     'TROX': 'Tronox Holdings plc',
-    'EFR': 'Eaton Vance Senior Floating-Rate Trust',
+    'UUUU': 'Energy Fuels Inc.',
     'NEO.TO': 'Neo Performance Materials Inc.',  # currency is CAD
     'ARU.AX': 'Arafura Rare Earths Limited',    # currency is AUD
     'NB': 'NioCorp Developments Ltd.',
