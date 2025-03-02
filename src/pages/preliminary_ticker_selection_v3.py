@@ -390,7 +390,7 @@ def create_pre_table(category):
 
     return pre_table_data
 
-
+# Set up a callback here based on selected categories from selected-categories-stored
 for category in ticker_category_info_map.keys():
     print(f'\nProcessing {category} ...')
     pre_table_data = create_pre_table(category)
@@ -415,7 +415,7 @@ pre_table_titles = {
     'cryptos': f'TOP {max_tickers["cryptos"]} CRYPTOCURRENCIES by Market Capitalization',
     'crypto_etfs': f'TOP {max_tickers["crypto_etfs"]} CRYPTOCURRENCY ETFs by Total Assets Under Management',
     'futures': f'TOP {max_tickers["futures"]} COMMODITY FUTURES by Open Interest',
-    'precious_metals': f'{max_tickers["precious_metals"]} PRECIOUS METAL SPOT / FUTURES sorted by Open Interest',
+    'precious_metals': f'{max_tickers["precious_metals"]} PRECIOUS METAL FUTURES sorted by Open Interest',
     'stock_indices': f'{max_tickers["stock_indices"]} STOCK INDICES',
     'volatility_indices': f'{max_tickers["volatility_indices"]} VOLATILITY INDICES',
     'benchmarks': f'{max_tickers["benchmarks"]} BENCHMARKS'

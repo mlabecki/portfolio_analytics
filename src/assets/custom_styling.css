@@ -61,27 +61,9 @@ button, input, select, textarea {
     font-size: 14px
 }
 
-#category-option-biggest-companies:hover,
-#category-option-sp500:hover,
-#category-option-nasdaq100:hover,
-#category-option-dow-jones:hover,
-#category-option-car-companies:hover,
-#category-option-rare-metals-companies:hover,
-#category-option-biggest-etfs:hover,
-#category-option-fixed-income-etfs:hover,
-#category-option-ai-etfs:hover,
-#category-option-commodity-etfs:hover,
-#category-option-currency-etfs:hover,
-#category-option-cryptos:hover,
-#category-option-crypto-etfs:hover,
-#category-option-futures:hover,
-#category-option-precious-metals:hover,
-#category-option-stock-indices:hover,
-#category-option-volatility-indices:hover,
-#category-option-benchmarks:hover
+.category-div-class:hover
 {
     color:white !important;
-    /* border-color: #005e87 !important; */
     background-color: #007ea7 !important;
     cursor: pointer
 }

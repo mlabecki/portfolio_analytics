@@ -1,5 +1,4 @@
-# from dash import dcc, html, Input, Output, callback, register_page
-
+import dash
 from dash import Dash, dcc, html, Input, Output, State, ALL, MATCH, callback, dash_table, register_page
 from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
@@ -20,13 +19,35 @@ register_page(
 )
 
 category_option_container_css = {
-    'width': '385px',
+    'width': '410px',
     'margin-top': '10px',
+    'margin-bottom': '10px',
     'margin-left': '10px',
     'padding-left': '10px',
 }
+checkmark_css = {
+    'display': 'inline-block',
+    'width': '20px',
+    'color': 'white',
+    'background-color': 'white',
+    'font-size': '18px',
+    'font-weight': 'bold',
+    'padding-left': '5px',
+    'padding-right': '5px'
+}
+checkmark_selected_css = {
+    'display': 'inline-block',
+    'width': '20px',
+    'color': 'rgb(0, 126, 167)',
+    'background-color': 'white',
+    'font-size': '18px',
+    'font-weight': 'bold',
+    'padding-left': '5px',
+    'padding-right': '5px'
+}
 category_option_css = {
-    'display': 'block',
+    'display': 'inline-block',
+    'width': '365px',
     'font-size': '14px',
     'font-weight': 'bold',
     'color': '#007ea7',  # rgb(0, 126, 167) - this is native for the YETI theme
@@ -39,6 +60,22 @@ category_option_css = {
     'padding-top': '3px',
     'border': '2px solid #007ea7'
 }
+category_option_selected_css = {
+    'display': 'inline-block',
+    'width': '365px',
+    'font-size': '14px',
+    'font-weight': 'bold',
+    'color': 'white',
+    'vertical-align': 'middle',
+    'height': '30px',
+    'margin-top': '0px',
+    'margin-bottom': '2px',
+    'margin-left': '10px',
+    'padding-left': '10px',
+    'padding-top': '3px',
+    'border': '2px solid #007ea7',
+    'background-color': '#007ea7'   # rgb(0, 126, 167) - this is native for the YETI theme
+}
 popover_info_category_option_css = {
     'max-width': '405px',
     'padding': '12px 12px 12px 12px',
@@ -47,8 +84,7 @@ popover_info_category_option_css = {
     'background-color': 'rgb(230, 250, 255)',
     'color': 'black',
     'font-family': 'Helvetica',
-    'font-size': '13px',
-    # 'font-weight': 'bold'
+    'font-size': '13px'
 }
 
 popover_markdown_category = {
@@ -88,7 +124,7 @@ popover_markdown_category = {
     """<DIV><H6>RARE METALS COMPANIES</H6>
 <B>Content:</B> 16 equities sorted by Market Capitalization<BR/>
 <B>Examples:</B> Southern Copper, SQM Chile, Lynas, MP Materials, Sibanye Stillwater, Iluka, Constellium, Tronox, Energy Fuels, Neo Performance Materials, Arafura, NioCorp, Aclara Resources ...<BR/>
-<B>Source:</B> <A HREF='https://investingnews.com/top-rare-earth-stocks/'>Investing News</A>, <A HREF='https://finance.yahoo.com/news/14-best-rare-earth-stocks-181008216.html'>Yahoo Finance</A></DIV>""",
+<B>Source:</B> 1. <A HREF='https://investingnews.com/top-rare-earth-stocks/'>Investing News</A>, 2. <A HREF='https://finance.yahoo.com/news/14-best-rare-earth-stocks-181008216.html'>Yahoo Finance</A></DIV>""",
 
     'biggest_etfs': 
     """<DIV><H6>BIGGEST ETFs</H6>
@@ -164,307 +200,458 @@ layout = html.Div([
         id = 'category-options-container',
         children = [
 
-            html.Div(
-                'BIGGEST COMPANIES',
-                id = 'category-option-biggest-companies',
-                style = category_option_css
-            ),
-            dbc.Popover([
-                dcc.Markdown(popover_markdown_category['biggest_companies'], dangerously_allow_html = True)
-                ], 
-                id = 'popover-category-option-biggest-companies',
-                target = 'category-option-biggest-companies',
-                body = False,
-                trigger = 'hover',
-                # trigger = 'click',
-                hide_arrow = True,
-                style = popover_info_category_option_css
-            ),
+            html.Div([
+                html.Div(
+                    id = 'checkmark-biggest-companies',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'BIGGEST COMPANIES',
+                    id = 'category-option-biggest-companies',
+                    className = 'category-div-class',                
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['biggest_companies'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-biggest-companies',
+                    target = 'category-option-biggest-companies',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ]),
+            
+            html.Div([
+                html.Div(
+                    id = 'checkmark-sp500',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'S&P 500 COMPANIES',
+                    id = 'category-option-sp500',
+                    className = 'category-div-class',                
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['sp500'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-sp500',
+                    target = 'category-option-sp500',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ]),
 
-            html.Div(
-                'S&P 500 COMPANIES',
-                id = 'category-option-sp500',
-                style = category_option_css
-            ),
-            dbc.Popover([
-                dcc.Markdown(popover_markdown_category['sp500'], dangerously_allow_html = True)
-                ], 
-                id = 'popover-category-option-sp500',
-                target = 'category-option-sp500',
-                body = False,
-                trigger = 'hover',
-                # trigger = 'click',
-                hide_arrow = True,
-                style = popover_info_category_option_css
-            ),
+            html.Div([
+                html.Div(
+                    id = 'checkmark-nasdaq100',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'NASDAQ 100 COMPANIES',
+                    id = 'category-option-nasdaq100',
+                    className = 'category-div-class',                
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['nasdaq100'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-nasdaq100',
+                    target = 'category-option-nasdaq100',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ]),
 
-            html.Div(
-                'NASDAQ 100 COMPANIES',
-                id = 'category-option-nasdaq100',
-                style = category_option_css
-            ),
-            dbc.Popover([
-                dcc.Markdown(popover_markdown_category['nasdaq100'], dangerously_allow_html = True)
-                ], 
-                id = 'popover-category-option-nasdaq100',
-                target = 'category-option-nasdaq100',
-                body = False,
-                trigger = 'hover',
-                # trigger = 'click',
-                hide_arrow = True,
-                style = popover_info_category_option_css
-            ),
+            html.Div([
+                html.Div(
+                    id = 'checkmark-dow-jones',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'DOW JONES INDUSTRIAL AVERAGE COMPANIES',
+                    id = 'category-option-dow-jones',
+                    className = 'category-div-class',                
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['dow_jones'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-dow-jones',
+                    target = 'category-option-dow-jones',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ]),
 
-            html.Div(
-                'DOW JONES INDUSTRIAL AVERAGE COMPANIES',
-                id = 'category-option-dow-jones',
-                style = category_option_css
-            ),
-            dbc.Popover([
-                dcc.Markdown(popover_markdown_category['dow_jones'], dangerously_allow_html = True)
-                ], 
-                id = 'popover-category-option-dow-jones',
-                target = 'category-option-dow-jones',
-                body = False,
-                trigger = 'hover',
-                # trigger = 'click',
-                hide_arrow = True,
-                style = popover_info_category_option_css
-            ),
+            html.Div([
+                html.Div(
+                    id = 'checkmark-car-companies',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'CAR COMPANIES',
+                    id = 'category-option-car-companies',
+                    className = 'category-div-class',                
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['car_companies'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-car-companies',
+                    target = 'category-option-car-companies',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ]),
 
-            html.Div(
-                'CAR COMPANIES',
-                id = 'category-option-car-companies',
-                style = category_option_css
-            ),
-            dbc.Popover([
-                dcc.Markdown(popover_markdown_category['car_companies'], dangerously_allow_html = True)
-                ], 
-                id = 'popover-category-option-car-companies',
-                target = 'category-option-car-companies',
-                body = False,
-                trigger = 'hover',
-                # trigger = 'click',
-                hide_arrow = True,
-                style = popover_info_category_option_css
-            ),
+            html.Div([
+                html.Div(
+                    id = 'checkmark-rare-metals-companies',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'RARE METALS COMPANIES',
+                    id = 'category-option-rare-metals-companies',
+                    className = 'category-div-class',     
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['rare_metals_companies'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-rare-metals-companies',
+                    target = 'category-option-rare-metals-companies',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ]),
 
-            html.Div(
-                'RARE METALS COMPANIES',
-                id = 'category-option-rare-metals-companies',
-                style = category_option_css
-            ),
-            dbc.Popover([
-                dcc.Markdown(popover_markdown_category['rare_metals_companies'], dangerously_allow_html = True)
-                ], 
-                id = 'popover-category-option-rare-metals-companies',
-                target = 'category-option-rare-metals-companies',
-                body = False,
-                trigger = 'hover',
-                hide_arrow = True,
-                style = popover_info_category_option_css
-            ),
+            html.Div([
+                html.Div(
+                    id = 'checkmark-biggest-etfs',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'BIGGEST ETFs',
+                    id = 'category-option-biggest-etfs',
+                    className = 'category-div-class',                
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['biggest_etfs'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-biggest-etfs',
+                    target = 'category-option-biggest-etfs',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ]),
 
-            html.Div(
-                'BIGGEST ETFs',
-                id = 'category-option-biggest-etfs',
-                style = category_option_css
-            ),
-            dbc.Popover([
-                dcc.Markdown(popover_markdown_category['biggest_etfs'], dangerously_allow_html = True)
-                ], 
-                id = 'popover-category-option-biggest-etfs',
-                target = 'category-option-biggest-etfs',
-                body = False,
-                trigger = 'hover',
-                hide_arrow = True,
-                style = popover_info_category_option_css
-            ),
+            html.Div([
+                html.Div(
+                    id = 'checkmark-fixed-income-etfs',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'FIXED INCOME ETFs',
+                    id = 'category-option-fixed-income-etfs',
+                    className = 'category-div-class',                
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['fixed_income_etfs'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-fixed-income-etfs',
+                    target = 'category-option-fixed-income-etfs',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ]),
 
-            html.Div(
-                'FIXED INCOME ETFs',
-                id = 'category-option-fixed-income-etfs',
-                style = category_option_css
-            ),
-            dbc.Popover([
-                dcc.Markdown(popover_markdown_category['fixed_income_etfs'], dangerously_allow_html = True)
-                ], 
-                id = 'popover-category-option-fixed-income-etfs',
-                target = 'category-option-fixed-income-etfs',
-                body = False,
-                trigger = 'hover',
-                hide_arrow = True,
-                style = popover_info_category_option_css
-            ),
+            html.Div([
+                html.Div(
+                    id = 'checkmark-ai-etfs',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'ARTIFICIAL INTELLIGENCE ETFs',
+                    id = 'category-option-ai-etfs',
+                    className = 'category-div-class',                
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['ai_etfs'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-ai-etfs',
+                    target = 'category-option-ai-etfs',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ]),
 
-            html.Div(
-                'ARTIFICIAL INTELLIGENCE ETFs',
-                id = 'category-option-ai-etfs',
-                style = category_option_css
-            ),
-            dbc.Popover([
-                dcc.Markdown(popover_markdown_category['ai_etfs'], dangerously_allow_html = True)
-                ], 
-                id = 'popover-category-option-ai-etfs',
-                target = 'category-option-ai-etfs',
-                body = False,
-                trigger = 'hover',
-                hide_arrow = True,
-                style = popover_info_category_option_css
-            ),
+            html.Div([
+                html.Div(
+                    id = 'checkmark-commodity-etfs',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'COMMODITY ETFs',
+                    id = 'category-option-commodity-etfs',
+                    className = 'category-div-class',                
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['commodity_etfs'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-commodity-etfs',
+                    target = 'category-option-commodity-etfs',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ]),
 
-            html.Div(
-                'COMMODITY ETFs',
-                id = 'category-option-commodity-etfs',
-                style = category_option_css
-            ),
-            dbc.Popover([
-                dcc.Markdown(popover_markdown_category['commodity_etfs'], dangerously_allow_html = True)
-                ], 
-                id = 'popover-category-option-commodity-etfs',
-                target = 'category-option-commodity-etfs',
-                body = False,
-                trigger = 'hover',
-                hide_arrow = True,
-                style = popover_info_category_option_css
-            ),
+            html.Div([
+                html.Div(
+                    id = 'checkmark-currency-etfs',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'CURRENCY ETFs',
+                    id = 'category-option-currency-etfs',
+                    className = 'category-div-class',                
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['currency_etfs'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-currency-etfs',
+                    target = 'category-option-currency-etfs',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ]),
 
-            html.Div(
-                'CURRENCY ETFs',
-                id = 'category-option-currency-etfs',
-                style = category_option_css
-            ),
-            dbc.Popover([
-                dcc.Markdown(popover_markdown_category['currency_etfs'], dangerously_allow_html = True)
-                ], 
-                id = 'popover-category-option-currency-etfs',
-                target = 'category-option-currency-etfs',
-                body = False,
-                trigger = 'hover',
-                hide_arrow = True,
-                style = popover_info_category_option_css
-            ),
+            html.Div([
+                html.Div(
+                    id = 'checkmark-cryptos',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'CRYPTOCURRENCIES',
+                    id = 'category-option-cryptos',
+                    className = 'category-div-class',                
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['cryptos'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-cryptos',
+                    target = 'category-option-cryptos',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ]),
 
-            html.Div(
-                'CRYPTOCURRENCIES',
-                id = 'category-option-cryptos',
-                style = category_option_css
-            ),
-            dbc.Popover([
-                dcc.Markdown(popover_markdown_category['cryptos'], dangerously_allow_html = True)
-                ], 
-                id = 'popover-category-option-cryptos',
-                target = 'category-option-cryptos',
-                body = False,
-                trigger = 'hover',
-                hide_arrow = True,
-                style = popover_info_category_option_css
-            ),
+            html.Div([
+                html.Div(
+                    id = 'checkmark-crypto-etfs',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'CRYPTOCURRENCY ETFs',
+                    id = 'category-option-crypto-etfs',
+                    className = 'category-div-class',                
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['crypto_etfs'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-crypto-etfs',
+                    target = 'category-option-crypto-etfs',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ]),
 
-            html.Div(
-                'CRYPTOCURRENCY ETFs',
-                id = 'category-option-crypto-etfs',
-                style = category_option_css
-            ),
-            dbc.Popover([
-                dcc.Markdown(popover_markdown_category['crypto_etfs'], dangerously_allow_html = True)
-                ], 
-                id = 'popover-category-option-crypto-etfs',
-                target = 'category-option-crypto-etfs',
-                body = False,
-                trigger = 'hover',
-                hide_arrow = True,
-                style = popover_info_category_option_css
-            ),
+            html.Div([
+                html.Div(
+                    id = 'checkmark-futures',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'COMMODITY FUTURES',
+                    id = 'category-option-futures',
+                    className = 'category-div-class',
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['futures'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-futures',
+                    target = 'category-option-futures',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ]),
 
-            html.Div(
-                'COMMODITY FUTURES',
-                id = 'category-option-futures',
-                style = category_option_css
-            ),
-            dbc.Popover([
-                dcc.Markdown(popover_markdown_category['futures'], dangerously_allow_html = True)
-                ], 
-                id = 'popover-category-option-futures',
-                target = 'category-option-futures',
-                body = False,
-                trigger = 'hover',
-                hide_arrow = True,
-                style = popover_info_category_option_css
-            ),
+            html.Div([
+                html.Div(
+                    id = 'checkmark-precious-metals',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'PRECIOUS METALS',
+                    id = 'category-option-precious-metals',
+                    className = 'category-div-class',
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['precious_metals'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-precious-metals',
+                    target = 'category-option-precious-metals',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ]),
 
-            html.Div(
-                'PRECIOUS METALS',
-                id = 'category-option-precious-metals',
-                style = category_option_css
-            ),
-            dbc.Popover([
-                dcc.Markdown(popover_markdown_category['precious_metals'], dangerously_allow_html = True)
-                ], 
-                id = 'popover-category-option-precious-metals',
-                target = 'category-option-precious-metals',
-                body = False,
-                trigger = 'hover',
-                hide_arrow = True,
-                style = popover_info_category_option_css
-            ),
+            html.Div([
+                html.Div(
+                    id = 'checkmark-stock-indices',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'STOCK INDICES',
+                    id = 'category-option-stock-indices',
+                    className = 'category-div-class',                
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['stock_indices'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-stock-indices',
+                    target = 'category-option-stock-indices',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ]),
 
-            html.Div(
-                'STOCK INDICES',
-                id = 'category-option-stock-indices',
-                style = category_option_css
-            ),
-            dbc.Popover([
-                dcc.Markdown(popover_markdown_category['stock_indices'], dangerously_allow_html = True)
-                ], 
-                id = 'popover-category-option-stock-indices',
-                target = 'category-option-stock-indices',
-                body = False,
-                trigger = 'hover',
-                hide_arrow = True,
-                style = popover_info_category_option_css
-            ),
+            html.Div([
+                html.Div(
+                    id = 'checkmark-volatility-indices',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'VOLATILITY INDICES',
+                    id = 'category-option-volatility-indices',
+                    className = 'category-div-class',
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['volatility_indices'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-volatility-indices',
+                    target = 'category-option-volatility-indices',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ]),
 
-            html.Div(
-                'VOLATILITY INDICES',
-                id = 'category-option-volatility-indices',
-                style = category_option_css
-            ),
-            dbc.Popover([
-                dcc.Markdown(popover_markdown_category['volatility_indices'], dangerously_allow_html = True)
-                ], 
-                id = 'popover-category-option-volatility-indices',
-                target = 'category-option-volatility-indices',
-                body = False,
-                trigger = 'hover',
-                hide_arrow = True,
-                style = popover_info_category_option_css
-            ),
-
-            html.Div(
-                'BENCHMARKS',
-                id = 'category-option-benchmarks',
-                style = category_option_css
-            ),
-            dbc.Popover([
-                dcc.Markdown(popover_markdown_category['benchmarks'], dangerously_allow_html = True)
-                ], 
-                id = 'popover-category-option-benchmarks',
-                target = 'category-option-benchmarks',
-                body = False,
-                trigger = 'hover',
-                hide_arrow = True,
-                style = popover_info_category_option_css
-            ),
-
+            html.Div([
+                html.Div(
+                    id = 'checkmark-benchmarks',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'BENCHMARKS',
+                    id = 'category-option-benchmarks',
+                    className = 'category-div-class',
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['benchmarks'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-benchmarks',
+                    target = 'category-option-benchmarks',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ])
 
         ],
-        style = {
-            'width': '380px',
-            'margin-top': '10px',
-            'margin-left': '10px',
-            'padding-left': '10px',
-        }
+        style = category_option_container_css
     ),
 
     html.Div(
@@ -472,11 +659,102 @@ layout = html.Div([
         children = [
             dcc.Link('Continue To Preliminary Ticker Selection', href='/preliminary_ticker_selection_v3'),
             html.Br(),
-            # dcc.Link('Go to Ticker Info & Portfolio Selection', href='/test_ticker_input_v3'),
         ],
         style = link_container_css
     )
 
-    # html.Div(id = 'test-output-div')
+])  # layout
 
-])
+#######################################
+
+def toggle_select_category(n, id, current_style, current_checkmark):
+    ctx = dash.callback_context
+    if n:
+        if ctx.triggered:
+            if ctx.triggered[0]['prop_id'].split('.')[0] == id:
+                new_style = category_option_css if current_style == category_option_selected_css else category_option_selected_css
+                new_checkmark = checkmark_selected_css if current_checkmark == checkmark_css else checkmark_css
+                return new_style, new_checkmark
+    else:
+        return current_style, current_checkmark
+
+
+for category in category_titles_ids.keys():
+    id_string = category_titles_ids[category]['id_string']
+    callback(
+        Output(f'category-option-{id_string}', 'style'),
+        Output(f'checkmark-{id_string}', 'style'),
+        # Output('selected-categories-stored', 'data'),
+        Input(f'category-option-{id_string}', 'n_clicks'),
+        Input(f'category-option-{id_string}', 'id'),
+        State(f'category-option-{id_string}', 'style'),
+        State(f'checkmark-{id_string}', 'style'),
+        # State('selected-categories-stored', 'data'),
+        suppress_callback_exceptions = True
+    )(toggle_select_category)
+
+
+@callback(
+    Output('selected-categories-stored', 'data'),
+
+    Input('checkmark-biggest-companies', 'style'),
+    Input('checkmark-sp500', 'style'),
+    Input('checkmark-nasdaq100', 'style'),
+    Input('checkmark-dow-jones', 'style'),
+    Input('checkmark-car-companies', 'style'),
+    Input('checkmark-rare-metals-companies', 'style'),
+    Input('checkmark-biggest-etfs', 'style'),
+    Input('checkmark-fixed-income-etfs', 'style'),
+    Input('checkmark-ai-etfs', 'style'),
+    Input('checkmark-commodity-etfs', 'style'),
+    Input('checkmark-currency-etfs', 'style'),
+    Input('checkmark-cryptos', 'style'),
+    Input('checkmark-crypto-etfs', 'style'),
+    Input('checkmark-futures', 'style'),
+    Input('checkmark-precious-metals', 'style'),
+    Input('checkmark-stock-indices', 'style'),
+    Input('checkmark-volatility-indices', 'style'),
+    Input('checkmark-benchmarks', 'style'),
+
+    suppress_callback_exceptions = True
+)
+def update_selected_categories(
+    checkmark_style_biggest_companies,
+    checkmark_style_sp500,
+    checkmark_style_nasdaq100,
+    checkmark_style_dow_jones,
+    checkmark_style_car_companies,
+    checkmark_style_rare_metals_companies,
+    checkmark_style_biggest_etfs,
+    checkmark_style_fixed_income_etfs,
+    checkmark_style_ai_etfs,
+    checkmark_style_commodity_etfs,
+    checkmark_style_currency_etfs,
+    checkmark_style_cryptos,
+    checkmark_style_crypto_etfs,
+    checkmark_style_futures,
+    checkmark_style_precious_metals,
+    checkmark_style_stock_indices,
+    checkmark_style_volatility_indices,
+    checkmark_style_benchmarks
+):
+    
+    selected_categories = []
+    for category in category_titles_ids.keys():
+        id_string = category_titles_ids[category]['id_string']
+        suffix = id_string.replace('-', '_')
+        current_checkmark = locals()[f'checkmark_style_{suffix}']
+        if current_checkmark == checkmark_selected_css:
+            selected_categories.append(category)
+
+    print(f'Category: {category}, Selected Categories: {selected_categories}')
+
+    return selected_categories
+
+
+# callback(
+#     Output('selected-categories-stored', 'data'),
+#     Input(f'checkmark-{id_string}', 'style'),
+#     State('selected-categories-stored', 'data'),
+#     suppress_callback_exceptions = True
+# )(update_selected_categories)
