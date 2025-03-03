@@ -74,6 +74,16 @@ url_settings = {
         'sort_by_factor': 1e6,
         'sort_by_type': float
     },
+    # NOTE: Stock Analysis ETF lists were temporarily unavailable on March 3rd, 2025    
+    # 'crypto_etfs': {
+    #     'category_name': 'Crypto ETFs',
+    #     'url': 'https://etfdb.com/etfs/currency/cryptocurrency/',
+    #     'cols': [' Symbol ', ' ETF Name ', ' Total Assets* '],
+    #     'cols_final': ['Symbol', 'Name', 'Assets ($MM)'],
+    #     'sort_by': 'Assets ($MM)',
+    #     'sort_by_factor': 1e6,
+    #     'sort_by_type': float
+    # },
     # NOTE: The Total Assets on the VettaFi page below do not agree with YF totalAssets.
     # This source is only included for comparison with fixed_income_etfs from Stock Analysis.
     # 'bond_etfs_vettafi': {
@@ -94,6 +104,16 @@ url_settings = {
         'sort_by_factor': 1e6,
         'sort_by_type': float
     },
+    # NOTE: Stock Analysis ETF lists were temporarily unavailable on March 3rd, 2025
+    # 'fixed_income_etfs': {
+    #     'category_name': 'Fixed Income ETFs',
+    #     'url': 'https://etfdb.com/etfs/asset-class/bond/',
+    #     'cols': [' Symbol ', ' ETF Name ', ' Total Assets ($MM) '],
+    #     'cols_final': ['Symbol', 'Name', 'Assets ($MM)'],
+    #     'sort_by': 'Assets ($MM)',
+    #     'sort_by_factor': 1e6,
+    #     'sort_by_type': float
+    # },
     'ai_etfs': {
         'category_name': 'Artificial Intelligence ETFs',
         'url': 'https://stockanalysis.com/list/artificial-intelligence-etfs/',
@@ -103,9 +123,18 @@ url_settings = {
         'sort_by_factor': 1e6,
         'sort_by_type': float
     },
+    # NOTE: Stock Analysis ETF lists were temporarily unavailable on March 3rd, 2025
+    # 'ai_etfs': {
+    #     'category_name': 'Artificial Intelligence ETFs',
+    #     'url': 'https://etfdb.com/themes/artificial-intelligence-etfs/',
+    #     'cols': [' Symbol ', ' ETF Name ', ' Total Assets* '],
+    #     'cols_final': ['Symbol', 'Name', 'Assets ($MM)'],
+    #     'sort_by': 'Assets ($MM)',
+    #     'sort_by_factor': 1e6,
+    #     'sort_by_type': float
+    # },
     'cryptos': {
         'category_name': 'Cryptos',
-        # 'url': 'https://finance.yahoo.com/markets/crypto/all/?start=0&count=200',
         'url': 'https://finance.yahoo.com/markets/crypto/all/?start=0&count=100',
         'cols': ['Symbol', 'Name', 'Market Cap'],
         'cols_final': ['Symbol', 'Name', 'Market Cap ($B)'],
@@ -183,8 +212,12 @@ category_titles_ids = {
     },
     'rare_metals_companies': {
         'id_string': 'rare-metals-companies',
-        'collapse_title': 'RARE METALS COMPANIES'
+        'collapse_title': 'RARE METAL COMPANIES'
     },
+    'quantum_companies': {
+        'id_string': 'quantum-companies',
+        'collapse_title': 'QUANTUM COMPUTING COMPANIES'
+    },    
     'biggest_etfs': {
         'id_string': 'biggest-etfs',
         'collapse_title': 'BIGGEST ETFs'
@@ -196,6 +229,10 @@ category_titles_ids = {
     'ai_etfs': {
         'id_string': 'ai-etfs',
         'collapse_title': 'ARTIFICIAL INTELLIGENCE ETFs'
+    },
+    'precious_metals': {
+        'id_string': 'precious-metals',
+        'collapse_title': 'PRECIOUS METAL ETFs'
     },
     'commodity_etfs': {
         'id_string': 'commodity-etfs',
@@ -216,10 +253,6 @@ category_titles_ids = {
     'futures': {
         'id_string': 'futures',
         'collapse_title': 'COMMODITY FUTURES'
-    },
-    'precious_metals': {
-        'id_string': 'precious-metals',
-        'collapse_title': 'PRECIOUS METALS'
     },
     'stock_indices': {
         'id_string': 'stock-indices',

@@ -126,6 +126,13 @@ popover_markdown_category = {
 <B>Examples:</B> Southern Copper, SQM Chile, Lynas, MP Materials, Sibanye Stillwater, Iluka, Constellium, Tronox, Energy Fuels, Neo Performance Materials, Arafura, NioCorp, Aclara Resources ...<BR/>
 <B>Source:</B> 1. <A HREF='https://investingnews.com/top-rare-earth-stocks/'>Investing News</A>, 2. <A HREF='https://finance.yahoo.com/news/14-best-rare-earth-stocks-181008216.html'>Yahoo Finance</A></DIV>""",
 
+    'quantum_companies': 
+    """<DIV><H6>QUANTUM COMPUTING COMPANIES</H6>
+<B>Content:</B> 42 equities sorted by Market Capitalization<BR/>
+<B>Examples:</B> Rigetti Computing, Quantum Computing, D-Wave Quantum, IonQ, Spectral Capital, Mphasis, BTQ Technologies, Booz Allen Hamilton, Arqit Quantum, Quantum eMotion  ...<BR/>
+<B>Source:</B> 1. <A HREF='https://quantumzeitgeist.com/contact-quantum-zeitgeist/'>Quantum Zeitgeist</A>, 2. <A HREF='https://quantumcomputingreport.com/public-companies/'>Quantum Computing Report</A>,<BR/>
+3. <A HREF='https://www.fool.com/investing/stock-market/market-sectors/information-technology/ai-stocks/quantum-computing-stocks/'>The Motley Fool</A>, 4. <A HREF='https://greenstocknews.com/stocks/quantum-computing-stocks/'>Green Stock News</A></DIV>""", 
+
     'biggest_etfs': 
     """<DIV><H6>BIGGEST ETFs</H6>
 <B>Content:</B> 100 ETFs sorted by Total Assets Under Management<BR/>
@@ -144,15 +151,23 @@ popover_markdown_category = {
 <B>Examples:</B> Global X AI &Technology, Global X Robotics & AI, ROBO Global Robotics & Automation Index, ARK Autonomous Technology & Robotics, iShares Future AI & Tech ...<BR/>
 <B>Source:</B> <A HREF='https://stockanalysis.com/list/artificial-intelligence-etfs/'>Stock Analysis</A></DIV>""",
 
+    'precious_metals': 
+    """<DIV><H6>PRECIOUS METAL ETFs</H6>
+<B>Content:</B> 20 ETFs sorted by Total Assets Under Management<BR/>
+<B>Examples:</B> SPDR Gold Shares, iShares Gold Trust, iShares Silver Trust, VanEck Gold Miners, abrdn Physical Gold Shares, Global X Copper Miners, Physical Silver Shares ...<BR/>
+<B>Source:</B> <A HREF='https://etfdb.com/etfdb-category/precious-metals/'>VettaFi</A></DIV>""",
+
     'commodity_etfs': 
     """<DIV><H6>COMMODITY ETFs</H6>
-<B>Content:</B> 16 ETFs sorted by Total Assets Under Management<BR/>
-<B>Examples:</B> SPDR Gold Shares, iShares Gold Trust, iShares Silver Trust, Physical Silver Shares, abrdn Physical Platinum Shares, VanEck Gold Miners, Global X Copper Miners ...</DIV>""",
+<B>Content:</B> 47 ETFs sorted by Total Assets Under Management<BR/>
+<B>Examples:</B> Invesco Optimum Yield Diversified Commodity Strategy No K-1, First Trust Global Tactical Commodity Strategy, Global X Copper Miners, United States Oil Fund ...<BR/>
+<B>Source:</B> <A HREF='https://etfdb.com/etfdb-category/commodities/'>VettaFi</A></DIV>""",
 
     'currency_etfs': 
     """<DIV><H6>CURRENCY ETFs</H6>
-<B>Content:</B> 9 ETFs sorted by Total Assets Under Management<BR/>
-<B>Examples:</B> Invesco Currencyshares JPY, Invesco DB USD Index Bullish, WisdomTree Bloomberg USD Bullish, Invesco CurrencyShares EUR, Invesco CurrencyShares CHF ...</DIV>""",
+<B>Content:</B> 10 ETFs sorted by Total Assets Under Management<BR/>
+<B>Examples:</B> Invesco Currencyshares JPY, Invesco DB USD Index Bullish, WisdomTree Bloomberg USD Bullish, Invesco CurrencyShares EUR, Invesco CurrencyShares CHF ...<BR/>
+<B>Source:</B> <A HREF='https://etfdb.com/etfdb-category/currency/'>VettaFi</A></DIV>""",
 
     'cryptos': 
     """<DIV><H6>CRYPTOCURRENCIES</H6>
@@ -171,11 +186,6 @@ popover_markdown_category = {
 <B>Content:</B> 37 futures sorted by Open Interest<BR/>
 <B>Examples:</B> 5-Year US Treasury, E-Mini S&P 500, US Treasury Bond, Corn, E-Mini Russell 2000, Soybean, Gold, Sugar, Crude Oil, Natural Gas, Live Cattle, Cotton, Copper, RBOB Gasoline ...<BR/>
 <B>Source:</B> <A HREF='https://finance.yahoo.com/commodities/'>Yahoo Finance</A></DIV>""",
-
-    'precious_metals': 
-    """<DIV><H6>PRECIOUS METALS</H6>
-<B>Content:</B> 5 futures sorted by Open Interest<BR/>
-<B>Examples:</B> Gold, Copper, Silver, Platinum, Palladium</DIV>""",
 
     'stock_indices': 
     """<DIV><H6>STOCK INDICES</H6>
@@ -352,6 +362,31 @@ layout = html.Div([
 
             html.Div([
                 html.Div(
+                    id = 'checkmark-quantum-companies',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'QUANTUM COMPUTING COMPANIES',
+                    id = 'category-option-quantum-companies',
+                    className = 'category-div-class',                
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['quantum_companies'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-quantum-companies',
+                    target = 'category-option-quantum-companies',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ]),
+
+            html.Div([
+                html.Div(
                     id = 'checkmark-biggest-etfs',
                     children = '✓',
                     hidden = False,
@@ -427,13 +462,38 @@ layout = html.Div([
 
             html.Div([
                 html.Div(
+                    id = 'checkmark-precious-metals',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'PRECIOUS METAL ETFs',
+                    id = 'category-option-precious-metals',
+                    className = 'category-div-class',
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['precious_metals'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-precious-metals',
+                    target = 'category-option-precious-metals',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ]),
+
+            html.Div([
+                html.Div(
                     id = 'checkmark-commodity-etfs',
                     children = '✓',
                     hidden = False,
                     style = checkmark_css
                 ),
                 html.Div(
-                    'COMMODITY ETFs',
+                    'MIXED COMMODITY ETFs',
                     id = 'category-option-commodity-etfs',
                     className = 'category-div-class',                
                     style = category_option_css
@@ -458,7 +518,7 @@ layout = html.Div([
                     style = checkmark_css
                 ),
                 html.Div(
-                    'CURRENCY ETFs',
+                    'NON-CRYPTO CURRENCY ETFs',
                     id = 'category-option-currency-etfs',
                     className = 'category-div-class',                
                     style = category_option_css
@@ -543,31 +603,6 @@ layout = html.Div([
                     ], 
                     id = 'popover-category-option-futures',
                     target = 'category-option-futures',
-                    body = False,
-                    trigger = 'hover',
-                    hide_arrow = True,
-                    style = popover_info_category_option_css
-                )
-            ]),
-
-            html.Div([
-                html.Div(
-                    id = 'checkmark-precious-metals',
-                    children = '✓',
-                    hidden = False,
-                    style = checkmark_css
-                ),
-                html.Div(
-                    'PRECIOUS METALS',
-                    id = 'category-option-precious-metals',
-                    className = 'category-div-class',
-                    style = category_option_css
-                ),
-                dbc.Popover([
-                    dcc.Markdown(popover_markdown_category['precious_metals'], dangerously_allow_html = True)
-                    ], 
-                    id = 'popover-category-option-precious-metals',
-                    target = 'category-option-precious-metals',
                     body = False,
                     trigger = 'hover',
                     hide_arrow = True,
@@ -703,6 +738,7 @@ for category in category_titles_ids.keys():
     Input('checkmark-dow-jones', 'style'),
     Input('checkmark-car-companies', 'style'),
     Input('checkmark-rare-metals-companies', 'style'),
+    Input('checkmark-quantum-companies', 'style'),
     Input('checkmark-biggest-etfs', 'style'),
     Input('checkmark-fixed-income-etfs', 'style'),
     Input('checkmark-ai-etfs', 'style'),
@@ -725,6 +761,7 @@ def update_selected_categories(
     checkmark_style_dow_jones,
     checkmark_style_car_companies,
     checkmark_style_rare_metals_companies,
+    checkmark_style_quantum_companies,
     checkmark_style_biggest_etfs,
     checkmark_style_fixed_income_etfs,
     checkmark_style_ai_etfs,
@@ -747,7 +784,7 @@ def update_selected_categories(
         if current_checkmark == checkmark_selected_css:
             selected_categories.append(category)
 
-    print(f'Category: {category}, Selected Categories: {selected_categories}')
+    # print(f'Category: {category}, Selected Categories: {selected_categories}')
 
     return selected_categories
 

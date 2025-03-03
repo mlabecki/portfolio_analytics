@@ -367,60 +367,81 @@ treasury_10y_ticker = '^TNX'
 ### BOND ETFS ###
 # Bond tickers based on Asset Under Management
 # Source: https://etfdb.com/etfdb-category/total-bond-market/
-bond_etf_tickers = {
+bond_etfs = {
     'BND': 'Vanguard Total Bond Market Index Fund',
     'AGG': 'iShares Core U.S. Aggregate Bond ETF',
     'BNDX': 'Vanguard Total International Bond ETF',
-    'BSV': 'Vanguard Short Term Bond ETF',
-    'IUSB': 'iShares Core Total USD Bond Market ETF',
-    'BIV': 'Vanguard Intermediate-Term Bond ETF',
-    'FBND': 'Fidelity Total Bond ETF',
-    'MINT': 'PIMCO Enhanced Short Maturity Active Exchange-Traded Fund',
-    'PULS': 'PGIM Ultra Short Bond ETF',
-    'SCHZ': 'Schwab U.S. Aggregate Bond ETF',
-    'SPAB': 'SPDR Portfolio Aggregate Bond ETF',
-    'IAGG': 'iShares Core International Aggregate Bond ETF',
-    'FTSM': 'First Trust Enhanced Short Maturity ETF',
-    'DFCF': 'Dimensional Core Fixed Income ETF',
-    'BLV': 'Vanguard Long-Term Bond ETF',
-    'FIXD': 'First Trust TCW Opportunistic Fixed Income ETF',
-    'BOND': 'PIMCO Active Bond Exchange-Traded Fund',
-    'JCPB': 'JPMorgan Core Plus Bond ETF',
-    'ISTB': 'iShares Core 1-5 Year USD Bond ETF',
-    'CGCP': 'Capital Group Core Plus Income ETF',
-    'EAGG': 'iShares ESG Aware US Aggregate Bond ETF',
-    'GVI': 'iShares Intermediate Government/Credit Bond ETF',
-    'TOTL': 'SPDR DoubleLine Total Return Tactical ETF',
-    'UCON': 'First Trust TCW Unconstrained Plus Bond ETF',
-    'NEAR': 'iShares Short Duration Bond Active ETF',
-    'JMST': 'JPMorgan Ultra-Short Municipal Income ETF',
-    'UITB': 'VictoryShares Core Intermediate Bond ETF',
-    'FLCB': 'Franklin U.S. Core Bond ETF',
-    'JPIE': 'JPMorgan Income ETF',
-    'PYLD': 'PIMCO Multisector Bond Active Exchange-Traded Fund',
-    'BKAG': 'BNY Mellon Core Bond ETF',
-    'JMUB': 'JPMorgan Municipal ETF',
-    'HTRB': 'Hartford Total Return Bond ETF',
-    'GTO': 'Invesco Total Return Bond ETF',
-    'BBAG': 'JPMorgan BetaBuilders U.S. Aggregate Bond ETF',
-    'RAVI': 'FlexShares Ultra-Short Income Fund',
-    'VRIG': 'Invesco Variable Rate Investment Grade ETF',
-    'AVIG': 'Avantis Core Fixed Income ETF',
-    'AGGY': 'WisdomTree Yield Enhanced U.S. Aggregate Bond Fund',
-    'BNDW': 'Vanguard Total World Bond ETF',
-    'LDUR': 'PIMCO Enhanced Low Duration Active ETF',
-    'PCEF': 'Invesco CEF Income Composite ETF',
-    'USTB': 'VictoryShares Short-Term Bond ETF',
-    'AGZ': 'iShares Agency Bond ETF',
-    'EUSB': 'iShares ESG Advanced Total USD Bond Market ETF',
-    'ILTB': 'iShares Core 10+ Year USD Bond ETF',
-    'JSCP': 'JPMorgan Short Duration Core Plus ETF',
-    'AVSF': 'Avantis Short-Term Fixed Income ETF',
-    'ULST': 'SPDR SSgA Ultra Short Term Bond ETF',
-    'JPIB': 'JPMorgan International Bond Opportunities ETF'
+    'BSV': 'Vanguard Short-Term Bond Index Fund ETF Shares',  # 58.2
+    'TLT': 'iShares 20+ Year Treasury Bond ETF', # 53.4
+    'VCIT': 'Vanguard Intermediate-Term Corporate Bond Index Fund ETF Shares', # 50.4
+    'BIV': 'Vanguard Intermediate-Term Bond ETF', # 43.1
+    'VCSH': 'Vanguard Short-Term Corporate Bond Index Fund ETF Shares', # 41.6
+    'MUB': 'iShares National Muni Bond ETF', # 40.5
+    'VTEB': 'Vanguard Tax-Exempt Bond Index Fund ETF Shares', # 38.8
+    'VGIT': 'Vanguard Intermediate-Term Treasury Index Fund ETF Shares', # 38.35
+    'BIL': 'SPDR Bloomberg 1-3 Month T-Bill ETF', # 36.8
+    'MBB': 'iShares MBS ETF', # 36.6
+    'IUSB': 'iShares Core Total USD Bond Market ETF', # 32.32
+    'SGOV': 'iShares 0-3 Month Treasury Bond ETF', # 32.29
+    'IEF': 'iShares 7-10 Year Treasury Bond ETF', # 32.0
+    'LQD': 'iShares iBoxx $ Investment Grade Corporate Bond ETF', # 30.0
+    'GOVT': 'iShares U.S. Treasury Bond ETF', # 29.8
+    'JPST': 'JPMorgan Ultra-Short Income ETF', # 28.8
+    'VGSH': 'Vanguard Short-Term Treasury Index Fund ETF Shares', # 25.7
+    'SHY': 'iShares 1-3 Year Treasury Bond ETF', # 23.2
+    'VMBS': 'Vanguard Mortgage-Backed Securities Index Fund ETF Shares', # 21.25
+    'IGSB': 'iShares 1-5 Year Investment Grade Corporate Bond ETF', # 21.2
+    'JAAA': 'Janus Henderson AAA CLO ETF', # 19.9
+    'SHV': 'iShares Short Treasury Bond ETF', # 19.07
+    'FBND': 'Fidelity Total Bond ETF', # 17.3
+    'MINT': 'PIMCO Enhanced Short Maturity Active Exchange-Traded Fund', # 12.3
+    'PULS': 'PGIM Ultra Short Bond ETF', # 9.83
+    'SCHZ': 'Schwab U.S. Aggregate Bond ETF', # 8.51
+    'BLV': 'Vanguard Long-Term Bond ETF', # 8.22
+    'SPAB': 'SPDR Portfolio Aggregate Bond ETF', # 8.17
+    'IAGG': 'iShares Core International Aggregate Bond ETF', # 7.05
+    'FTSM': 'First Trust Enhanced Short Maturity ETF', # 6.24
+    'DFCF': 'Dimensional Core Fixed Income ETF', # 6.06
+    'JCPB': 'JPMorgan Core Plus Bond ETF', # 5.26
+    'BOND': 'PIMCO Active Bond Exchange-Traded Fund', # 5.20
+    'FIXD': 'First Trust TCW Opportunistic Fixed Income ETF', # 4.39
+    'ISTB': 'iShares Core 1-5 Year USD Bond ETF', # 4.28
+    'CGCP': 'Capital Group Core Plus Income ETF', # 4.25
+    'EAGG': 'iShares ESG Aware US Aggregate Bond ETF', # 3.68
+    'UCON': 'First Trust TCW Unconstrained Plus Bond ETF', # 3.43
+    'TOTL': 'SPDR DoubleLine Total Return Tactical ETF', # 3.41
+    'PYLD': 'PIMCO Multisector Bond Active Exchange-Traded Fund', # 3.30
+    'GVI': 'iShares Intermediate Government/Credit Bond ETF', # 3.28
+    'JMST': 'JPMorgan Ultra-Short Municipal Income ETF', # 3.25
+    'NEAR': 'iShares Short Duration Bond Active ETF', # 3.05
+    'JPIE': 'JPMorgan Income ETF', # 2.69
+    'FLCB': 'Franklin U.S. Core Bond ETF', # 2.35
+    'UITB': 'VictoryShares Core Intermediate Bond ETF', # 2.34
+    'JMUB': 'JPMorgan Municipal ETF', # 2.31
+    # 'HTRB': 'Hartford Total Return Bond ETF', # 1.98
+    # 'BKAG': 'BNY Mellon Core Bond ETF', # 1.97
+    # 'GTO': 'Invesco Total Return Bond ETF', # 1.84
+    # 'BBAG': 'JPMorgan BetaBuilders U.S. Aggregate Bond ETF', # 1.45
+    # 'SMTH': 'ALPS Smith Core Plus Bond ETF', # 1.41
+    # 'VRIG': 'Invesco Variable Rate Investment Grade ETF', # 1.23
+    # 'RAVI': 'FlexShares Ultra-Short Income Fund', # 1.20
+    # 'BNDW': 'Vanguard Total World Bond ETF', # 1.08
+    # 'USTB': 'VictoryShares Short-Term Bond ETF', # 0.97
+    # 'AVIG': 'Avantis Core Fixed Income ETF', # 0.96
+    # 'AGGY': 'WisdomTree Yield Enhanced U.S. Aggregate Bond Fund', # 0.90
+    # 'LDUR': 'PIMCO Enhanced Low Duration Active ETF', # 0.86
+    # 'PCEF': 'Invesco CEF Income Composite ETF', # 0.84
+    # 'AGZ': 'iShares Agency Bond ETF', # 0.70
+    # 'EUSB': 'iShares ESG Advanced Total USD Bond Market ETF', # 0.68
+    # 'ILTB': 'iShares Core 10+ Year USD Bond ETF', # 0.60
+    # 'AVSF': 'Avantis Short-Term Fixed Income ETF', # 0.59
+    # 'UBND': 'VictoryShares Core Plus Intermediate Bond ETF', # 0.58
+    # 'JSCP': 'JPMorgan Short Duration Core Plus ETF', # 0.57
+    # 'ULST': 'SPDR SSgA Ultra Short Term Bond ETF', # 0.56
+    # 'JPIB': 'JPMorgan International Bond Opportunities ETF' # 0.55
 }
 
-### PRECIOUS METALS SPOT/FUTURES ###
+### PRECIOUS METAL FUTURES ###
 precious_metals = {
     'GC=F': 'Gold (CMX)',
     'SI=F': 'Silver (CMX)',
@@ -541,47 +562,200 @@ car_companies = {
     'FUVV': 'Arcimoto, Inc.'
 }
 
-test_car_companies = {
-    'TSLA': 'Tesla',
-    'TM': 'Toyota',
-    'XIACF': 'Xiaomi',
-    '002594.SZ': 'BYD',
-    'RACE': 'Ferrari'
+quantum_companies_unsorted = {
+    # Source: https://quantumzeitgeist.com/public-quantum-computing-companies/
+    'RGTI': 'Rigetti Computing, Inc.',
+    'QUBT': 'Quantum Computing Inc.',
+    'QBTS': 'D-Wave Quantum Inc.',
+    'IONQ': 'IonQ, Inc.',
+    'ZPTA': 'Zapata Computing Holdings Inc.',
+    'HON': 'Honeywell International Inc.',
+    'IBM': 'International Business Machines Corporation',
+    'GOOG': 'Alphabet Inc.',
+    'MSFT': 'Microsoft Corporation',
+    'AMZN': 'Amazon.com, Inc.',
+    'NVDA': 'NVIDIA Corporation',
+    'INTC': 'Intel Corporation',
+    'BABA': 'Alibaba Group Holding Limited',
+    'RTX': 'Raytheon Technologies Corporation',
+    '6701.T': 'NEC Corporation',
+    '6702.T': 'Fujitsu Limited',
+    '6588.T': 'Toshiba Tec Corporation',
+    # Source: https://quantumcomputingreport.com/public-companies/
+    'QNCCF': 'Quantum eMotion Corp.',
+    'FCCN': 'Spectral Capital Corporation',
+    'REYM.XC': 'Reply S.p.A.',
+    'MPHASIS.NS': 'Mphasis Limited',
+    'MIELY': 'Mitsubishi Electric Corporation',
+    'LMT': 'Lockheed Martin Corporation',
+    'IFX.DE': 'Infineon Technologies AG',
+    'CSCO': 'Cisco Systems, Inc.',
+    'BTQQF': 'BTQ Technologies Corp.',
+    'BAH': 'Booz Allen Hamilton Holding Corporation',
+    'BIDU': 'Baidu, Inc.',
+    'T': 'AT&T Inc.',
+    'ARQQ': 'Arqit Quantum Inc.',
+    'AXE.AX': 'Archer Materials Limited',
+    'AIR.PA': 'Airbus SE',
+    'ACN': 'Accenture plc',
+    'OONEF': '01 Communique Laboratory Inc.',
+    # Source: https://greenstocknews.com/stocks/quantum-computing-stocks/
+    'QMCO': 'Quantum Corporation',
+    # Source: https://www.fool.com/investing/stock-market/market-sectors/information-technology/ai-stocks/quantum-computing-stocks/
+    'FORM': 'FormFactor, Inc.',
+    # Source: https://www.fool.com/investing/stock-market/market-sectors/information-technology/ai-stocks/quantum-computing-etf/
+    'MSTR': 'MicroStrategy Incorporated',
+    'MRVL': 'Marvell Technology, Inc.',
+    'COHR': 'Coherent Corp.',
+    'NTDTY': 'NTT DATA Group Corporation',
+    'WIT': 'Wipro Limited',
+    'TSEM': 'Tower Semiconductor Ltd.'
 }
 
-### COMMODITIES ###
+quantum_companies = {
+    'NVDA': 'NVIDIA Corporation',
+    'MSFT': 'Microsoft Corporation',
+    'AMZN': 'Amazon.com, Inc.',
+    'GOOG': 'Alphabet Inc.',
+    'BABA': 'Alibaba Group Holding Limited',
+    'CSCO': 'Cisco Systems, Inc.',
+    'IBM': 'International Business Machines Corporation',
+    'ACN': 'Accenture plc',
+    'T': 'AT&T Inc.',
+    'RTX': 'Raytheon Technologies Corporation',
+    'AIR.PA': 'Airbus SE',
+    'HON': 'Honeywell International Inc.',
+    'LMT': 'Lockheed Martin Corporation',
+    'INTC': 'Intel Corporation',
+    'MRVL': 'Marvell Technology, Inc.',
+    'MSTR': 'MicroStrategy Incorporated',
+    'IFX.DE': 'Infineon Technologies AG',
+    '6702.T': 'Fujitsu Limited',
+    'WIT': 'Wipro Limited',
+    'MIELY': 'Mitsubishi Electric Corporation',
+    'BIDU': 'Baidu, Inc.',
+    '6701.T': 'NEC Corporation',
+    'NTDTY': 'NTT DATA Group Corporation',
+    'BAH': 'Booz Allen Hamilton Holding Corporation',
+    'COHR': 'Coherent Corp.',
+    'REYM.XC': 'Reply S.p.A.',
+    'IONQ': 'IonQ, Inc.',
+    'MPHASIS.NS': 'Mphasis Limited',
+    'TSEM': 'Tower Semiconductor Ltd.',
+    'FORM': 'FormFactor, Inc.',
+    'RGTI': 'Rigetti Computing, Inc.',
+    'QBTS': 'D-Wave Quantum Inc.',
+    '6588.T': 'Toshiba Tec Corporation',
+    'QUBT': 'Quantum Computing Inc.',  # include in category popover Examples
+    'BTQQF': 'BTQ Technologies Corp.',
+    'FCCN': 'Spectral Capital Corporation',
+    'ARQQ': 'Arqit Quantum Inc.',
+    'QNCCF': 'Quantum eMotion Corp.',
+    'QMCO': 'Quantum Corporation',
+    'AXE.AX': 'Archer Materials Limited',
+    'OONEF': '01 Communique Laboratory Inc.',
+    'ZPTA': 'Zapata Computing Holdings Inc.'
+}
+
+### MIXED COMMODITIES (other than precious metals) ###
+# Source:
+#   1. https://etfdb.com/etfdb-category/commodities/
+#   2. https://etfdb.com/etfdb-category/oil-gas/
+#   3. https://etfdb.com/etfdb-category/agricultural-commodities/
+#   4. https://etfdb.com/etfdb-category/metals/
+#
 commodity_etf_tickers = {
-    'GLD':      'SPDR Gold Shares',
-    'IAU':      'iShares Gold Trust',
-    'SLV':      'iShares Silver Trust',
-    'SIVR':     'Physical Silver Shares ETF',
-    'PPLT':     'abrdn Physical Platinum Shares ETF',
-    'GDX':      'VanEck Gold Miners ETF',
-    'COPX':     'Global X Copper Miners ETF',
-    'FTGC':     'First Trust Global Tactical Commodity Strategy Fund',
-    'DBC':      'Invesco DB Commodity Index Tracking Fund',
-    'USO':      'United States Oil Fund',
-    'GSG':      'iShares S&P GSCI Commodity-Indexed Trust',    
-    'UNG':      'United States Natural Gas Fund',
-    'DBA':      'Invesco DB Agriculture Fund',
-    'BOIL':     'ProShares Ultra Bloomberg Natural Gas',
-    'UCO':      'ProShares Ultra Bloomberg Crude Oil',
-    'DJP':      'iPath Bloomberg Commodity Index'
+    'PDBC':     'Invesco Optimum Yield Diversified Commodity Strategy No K-1 ETF', # 4367 MM
+    'FTGC':     'First Trust Global Tactical Commodity Strategy Fund', # 2378 MM
+    'COPX':     'Global X Copper Miners ETF', # 2557 MM
+    'DBC':      'Invesco DB Commodity Index Tracking Fund', # 1352 MM
+    'BCI':      'abrdn Bloomberg All Commodity Strategy K-1 Free ETF', # 1294 MM
+    'GSG':      'iShares S&P GSCI Commodity-Indexed Trust', # 1045 MM
+    'USO':      'United States Oil Fund, LP', # 1016 MM
+    'DBA':      'Invesco DB Agriculture Fund', # 863 MM
+    'COMT':     'iShares GSCI Commodity Dynamic Roll Strategy ETF', # 698 MM
+    'UNG':      'United States Natural Gas Fund, LP', # 610 MM
+    'DJP':      'iPath Bloomberg Commodity Index', # 569 MM
+    'UCO':      'ProShares Ultra Bloomberg Crude Oil', # 367 MM
+    'CMDT':     'PIMCO Commodity Strategy Active Exchange-Traded Fund', # 359 MM
+    'USOI':     'UBS ETRACS Crude Oil Shares Covered Call ETN', # 345 MM
+    'CMDY':     'iShares Bloomberg Roll Select Broad Commodity ETF', # 284 MM
+    'HGER':     'Harbor Commodity All-Weather Strategy ETF', # 278 MM
+    'BOIL':     'ProShares Ultra Bloomberg Natural Gas', # 270 MM
+    'BCD':      'abrdn Bloomberg All Commodity Longer Dated Strategy K-1 Free ETF', # 246 MM
+    'COM':      'Direxion Auspice Broad Commodity Strategy ETF', # 244 MM
+    'KRBN':     'KraneShares Global Carbon ETF', # 204 MM
+    'USCI':     'United States Commodity Index Fund, LP', # 203 MM
+    'NBCM':     'Neuberger Berman Commodity Strategy ETF', # 198 MM
+    'DBO':      'Invesco DB Oil Fund', # 193 MM
+    'CPER':     'United States Copper Index Fund', # 169 MM
+    'GCC':      'WisdomTree Enhanced Commodity Strategy Fund', # 139 MM
+    'DBB':      'Invesco DB Base Metals Fund', # 116 MM
+    'KCCA':     'KraneShares California Carbon Allowance ETF', # 103 MM
+    'UGA':      'United States Gasoline Fund, LP', # 102 MM
+    'BNO':      'United States Brent Oil Fund, LP', # 101 MM
+    'FAAR':     'First Trust Alternative Absolute Return Strategy ETF', # 98 MM
+    'COMB':     'GraniteShares Bloomberg Commodity Broad Strategy No K-1 ETF', # 86 MM
+    'SDCI':     'USCF SummerHaven Dynamic Commodity Strategy No K-1 Fund', # 81.1 MM
+    'OILK':     'ProShares K-1 Free Crude Oil ETF', # 80.6 MM  
+    'DBE':      'Invesco DB Energy Fund', # 54 MM
+    'USL':      'United States 12 Month Oil Fund, LP', # 48 MM
+    'BDRY':     'Breakwave Dry Bulk Shipping ETF', # 47 MM  
+    'CCRV':     'iShares Commodity Curve Carry Strategy ETF', # 39 MM
+    'PIT':      'VanEck Commodity Strategy ETF', # 29 MM
+    'GRN':      'iPath Series B Carbon ETN', # 25.5 MM
+    'UCIB':     'UBS ETRACS UBS Bloomberg Constant Maturity Commodity Index (CMCI) Total Return ETN Series B', # 25 MM
+    'DCMT':     'DoubleLine Commodity Strategy ETF', # 24 MM
+    'BCIM':     'abrdn Bloomberg Industrial Metals Strategy K-1 Free ETF', # 20 MM
+    'UNL':      'United States 12 Month Natural Gas Fund, LP', # 16 MM
+    'HCOM':     'Hartford Schroders Commodity Strategy ETF', # 10 MM
+    'KEUA':     'KraneShares European Carbon Allowance Strategy ETF', # 10 MM
+    'EVMT':     'Invesco Electric Vehicle Metals Commodity Strategy No K-1 ETF', # 7.4 MM
+    'ZSB':      'USCF Sustainable Battery Metals Strategy Fund' # 1.3 MM
+}
+
+### PRECIOUS METAL ETFs ###
+# Source: https://etfdb.com/etfdb-category/precious-metals/
+# NOTE: Copper is not a precious metal, should be listed among commodities instead
+precious_metal_etfs = {
+    'GLD':      'SPDR Gold Shares', # 78.2
+    'IAU':      'iShares Gold Trust', # 35.4
+    'SLV':      'iShares Silver Trust', # 14.1
+    'GDX':      'VanEck Gold Miners ETF', # 13.9
+    'GLDM':     'SPDR Gold MiniShares', # 10.1
+    'SGOL':     'abrdn Physical Gold Shares ETF', # 4.0
+    'SIVR':     'Physical Silver Shares ETF', # 1.51
+    'OUNZ':     'VanEck Merk Gold Trust', # 1.31
+    'GLTR':     'abrdn Physical Precious Metals Basket Shares ETF', # 1.14
+    'PPLT':     'abrdn Physical Platinum Shares ETF', # 1.06
+    'AAAU':     'Goldman Sachs Physical Gold ETF', # 0.98
+    'BAR':      'GraniteShares Gold Trust', # 0.91
+    'PALL':     'abrdn Physical Palladium Shares ETF', # 0.35
+    'SLVO':     'UBS ETRACS Silver Shares Covered Call ETN', # 0.18
+    'DBP':      'Invesco DB Precious Metals Fund', # 0.16
+    'IGLD':     'FT Vest Gold Strategy Target Income ETF', # 0.14
+    'FGDL':     'Franklin Responsibly Sourced Gold ETF', # 0.12
+    'GLDI':     'UBS ETRACS Gold Shares Covered Call ETN', # 0.11
+    'BGLD':     'FT Vest Gold Strategy Quarterly Buffer ETF', # 0.056
+    'PLTM':     'GraniteShares Platinum Trust' # 0.051
 }
 
 ### NON-CRYPTO CURRENCY ETFS ###
 # Source: https://etfdb.com/etfdb-category/currency/
 currency_etf_tickers = {
-    'FXY': 'Invesco Currencyshares Japanese Yen Trust',
-    'UUP': 'Invesco DB US Dollar Index Bullish Fund',
-    'USDU': 'WisdomTree Bloomberg U.S. Dollar Bullish Fund',
-    'FXE': 'Invesco CurrencyShares Euro Trust',
-    'FXF': 'Invesco CurrencyShares Swiss Franc Trust',
-    'FXC': 'Invesco CurrencyShares Canadian Dollar Trust',
-    'FXA': 'Invesco CurrencyShares Australian Dollar Trust',
-    'FXB': 'Invesco CurrencyShares British Pound Sterling Trust',
-    'UDN': 'Invesco DB US Dollar Index Bearish Fund'
+    'FXY': 'Invesco Currencyshares Japanese Yen Trust', # 401 MM
+    'UUP': 'Invesco DB US Dollar Index Bullish Fund', # 400 MM
+    'USDU': 'WisdomTree Bloomberg U.S. Dollar Bullish Fund', # 304 MM
+    'FXE': 'Invesco CurrencyShares Euro Trust', # 154 MM
+    'FXF': 'Invesco CurrencyShares Swiss Franc Trust', # 132 MM
+    'FXA': 'Invesco CurrencyShares Australian Dollar Trust', # 62 MM
+    'FXC': 'Invesco CurrencyShares Canadian Dollar Trust', # 61 MM
+    'FXB': 'Invesco CurrencyShares British Pound Sterling Trust', # 48 MM
+    'UDN': 'Invesco DB US Dollar Index Bearish Fund',  # 47 MM
+    'CEW': 'WisdomTree Emerging Currency Strategy Fund' # 6.9 MM
 }
+
+['FXY','UUP','USDU','FXE','FXF','FXC','FXA','FXB','UDN']
 
 ### CRYPTOS ###
 # Crypto market benchmarks

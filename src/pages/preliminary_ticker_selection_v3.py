@@ -37,15 +37,16 @@ max_tickers = {
     # 'car_companies': 75,
     'car_companies': 10,
     'rare_metals_companies': 20,
+    'quantum_companies': 50,
     'biggest_etfs': 100,
     'fixed_income_etfs': 100,
     'ai_etfs': 50,
-    'commodity_etfs': 20,
+    'precious_metals': 20, # ETFs
+    'commodity_etfs': 50,
     'currency_etfs': 10,
     'cryptos': 100, 
     'crypto_etfs': 100,
     'futures': 100,
-    'precious_metals': 5,
     'stock_indices': 20,
     'volatility_indices': 10,
     'benchmarks': 30
@@ -54,6 +55,7 @@ etf_categories = [
     'biggest_etfs',
     'fixed_income_etfs',
     'ai_etfs',
+    'precious_metals',
     'commodity_etfs',
     'currency_etfs',
     'crypto_etfs'
@@ -101,10 +103,10 @@ tickers_crypto_etfs = list(dict_crypto_etfs.keys())
 
 tickers_car_companies = list(car_companies.keys())
 tickers_rare_metals_companies = list(rare_metals_companies.keys())
+tickers_quantum_companies = list(quantum_companies.keys())
 tickers_stock_indices = list(stock_index_tickers.keys())
-tickers_precious_metals = list(precious_metals.keys())
+tickers_precious_metals = list(precious_metal_etfs.keys())
 tickers_commodity_etfs = list(commodity_etf_tickers.keys())
-tickers_risk_free_treasury = list(risk_free_treasury_tickers.keys())
 tickers_volatility_indices = list(volatility_tickers.keys())
 tickers_currency_etfs = list(currency_etf_tickers.keys())
 tickers_benchmarks = list(benchmark_tickers.keys())
@@ -127,10 +129,10 @@ df_pre_url_crypto_etfs = pd.DataFrame(index = tickers_crypto_etfs, columns = pre
 
 df_pre_tickers_car_companies = pd.DataFrame(index = tickers_car_companies, columns = pre_table_columns)
 df_pre_tickers_rare_metals_companies = pd.DataFrame(index = tickers_rare_metals_companies, columns = pre_table_columns)
+df_pre_tickers_quantum_companies = pd.DataFrame(index = tickers_quantum_companies, columns = pre_table_columns)
 df_pre_tickers_stock_indices = pd.DataFrame(index = tickers_stock_indices, columns = pre_table_columns)
 df_pre_tickers_commodity_etfs = pd.DataFrame(index = tickers_commodity_etfs, columns = pre_table_columns)
 df_pre_tickers_precious_metals = pd.DataFrame(index = tickers_precious_metals, columns = pre_table_columns)
-df_pre_tickers_risk_free_treasury = pd.DataFrame(index = tickers_risk_free_treasury, columns = pre_table_columns)
 df_pre_tickers_volatility_indices = pd.DataFrame(index = tickers_volatility_indices, columns = pre_table_columns)
 df_pre_tickers_currency_etfs = pd.DataFrame(index = tickers_currency_etfs, columns = pre_table_columns)
 df_pre_tickers_benchmarks = pd.DataFrame(index = tickers_benchmarks, columns = pre_table_columns)
@@ -141,37 +143,22 @@ row_ticker_map_nasdaq100 = {}
 row_ticker_map_dow_jones = {}
 row_ticker_map_car_companies = {}
 row_ticker_map_rare_metals_companies = {}
+row_ticker_map_quantum_companies = {}
 row_ticker_map_biggest_etfs = {}
 row_ticker_map_fixed_income_etfs = {}
 row_ticker_map_ai_etfs = {}
+row_ticker_map_precious_metals = {}
 row_ticker_map_commodity_etfs = {}
 row_ticker_map_currency_etfs = {}
 row_ticker_map_cryptos = {}
 row_ticker_map_crypto_etfs = {}
 row_ticker_map_futures = {}
-row_ticker_map_precious_metals = {}
 row_ticker_map_stock_indices = {}
 row_ticker_map_volatility_indices = {}
 row_ticker_map_benchmarks = {}
 
 ticker_category_info_map = {}
 ticker_category_info_map = {
-    # 'car_companies': {
-    #     'df': df_pre_tickers_car_companies,
-    #     'row': row_ticker_map_car_companies,
-    #     'dict': car_companies,
-    #     'sort_by': 'marketCap',
-    #     'id_string': 'car-companies',
-    #     'collapse_title': 'CAR COMPANIES'
-    # },
-    # 'rare_metals_companies': {
-    #     'df': df_pre_tickers_rare_metals_companies,
-    #     'row': row_ticker_map_rare_metals_companies,
-    #     'dict': rare_metals_companies,
-    #     'sort_by': 'marketCap',
-    #     'id_string': 'rare-metals-companies',
-    #     'collapse_title': 'RARE METALS COMPANIES'
-    # },
     'biggest_companies': {
         'df': df_pre_url_biggest_companies,
         'row': row_ticker_map_biggest_companies,
@@ -218,7 +205,15 @@ ticker_category_info_map = {
         'dict': rare_metals_companies,
         'sort_by': 'marketCap',
         'id_string': 'rare-metals-companies',
-        'collapse_title': 'RARE METALS COMPANIES'
+        'collapse_title': 'RARE METAL COMPANIES'
+    },
+    'quantum_companies': {
+        'df': df_pre_tickers_quantum_companies,
+        'row': row_ticker_map_quantum_companies,
+        'dict': quantum_companies,
+        'sort_by': 'marketCap',
+        'id_string': 'quantum-companies',
+        'collapse_title': 'QUANTUM COMPUTING COMPANIES'
     },
     'biggest_etfs': {
         'df': df_pre_url_biggest_etfs,
@@ -243,6 +238,14 @@ ticker_category_info_map = {
         'sort_by': '',
         'id_string': 'ai-etfs',
         'collapse_title': 'ARTIFICIAL INTELLIGENCE ETFs'
+    },
+    'precious_metals': {  # ETFs
+        'df': df_pre_tickers_precious_metals,
+        'row': row_ticker_map_precious_metals,
+        'dict': precious_metal_etfs,
+        'sort_by': 'totalAssets',
+        'id_string': 'precious-metals',
+        'collapse_title': 'PRECIOUS METAL ETFs'
     },
     'commodity_etfs': {
         'df': df_pre_tickers_commodity_etfs,
@@ -284,14 +287,6 @@ ticker_category_info_map = {
         'id_string': 'futures',
         'collapse_title': 'COMMODITY FUTURES'
     },
-    'precious_metals': {
-        'df': df_pre_tickers_precious_metals,
-        'row': row_ticker_map_precious_metals,
-        'dict': precious_metals,
-        'sort_by': 'openInterest',
-        'id_string': 'precious-metals',
-        'collapse_title': 'PRECIOUS METALS'
-    },
     'stock_indices': {
         'df': df_pre_tickers_stock_indices,
         'row': row_ticker_map_stock_indices,
@@ -318,7 +313,7 @@ ticker_category_info_map = {
     }
 }
 
-ticker_names = {}  # To help user decide on tickers based on the name =
+ticker_names = {}  # To help user decide on tickers based on the name
 
 def create_pre_table(category):
 
@@ -374,9 +369,9 @@ def create_pre_table(category):
 
             df_pre_tickers.at[tk, 'No.'] = i + 1
             df_pre_tickers.at[tk, 'Ticker'] = tk
-            if tk in bond_etf_tickers.keys():
+            if tk in bond_etfs.keys():
                 # To avoid corrupt names at https://8marketcap.com/etfs/
-                df_pre_tickers.at[tk, 'Name'] = bond_etf_tickers[tk]
+                df_pre_tickers.at[tk, 'Name'] = bond_etfs[tk]
             else:
                 df_pre_tickers.at[tk, 'Name'] = ticker_names[tk]
 
@@ -402,20 +397,21 @@ for category in ticker_category_info_map.keys():
 
 pre_table_titles = {
     'biggest_companies': f'{max_tickers["biggest_companies"]} BIGGEST COMPANIES by Market Capitalization',
-    'sp500': f'TOP {max_tickers["sp500"]} S&P 500 COMPANIES by Market Capitalization',
-    'nasdaq100': f'TOP {max_tickers["nasdaq100"]} NASDAQ 100 COMPANIES by Market Capitalization',
-    'dow_jones': f'TOP {max_tickers["dow_jones"]} DOW JONES INDUSTRIAL AVERAGE COMPANIES by Market Capitalization',
-    'car_companies': f'TOP {max_tickers["car_companies"]} CAR COMPANIES by Market Capitalization',
-    'rare_metals_companies': f'TOP {max_tickers["rare_metals_companies"]} RARE METALS COMPANIES by Market Capitalization',
+    'sp500': f'{max_tickers["sp500"]} S&P 500 COMPANIES by Market Capitalization',
+    'nasdaq100': f'{max_tickers["nasdaq100"]} NASDAQ 100 COMPANIES by Market Capitalization',
+    'dow_jones': f'{max_tickers["dow_jones"]} DOW JONES INDUSTRIAL AVERAGE COMPANIES by Market Capitalization',
+    'car_companies': f'{max_tickers["car_companies"]} CAR COMPANIES by Market Capitalization',
+    'rare_metals_companies': f'{max_tickers["rare_metals_companies"]} RARE METAL COMPANIES by Market Capitalization',
+    'quantum_companies': f'{max_tickers["quantum_companies"]} QUANTUM COMPUTING COMPANIES by Market Capitalization',
     'biggest_etfs': f'{max_tickers["biggest_etfs"]} BIGGEST ETFs by Total Assets Under Management',
-    'fixed_income_etfs': f'TOP {max_tickers["fixed_income_etfs"]} FIXED INCOME ETFs by Total Assets Under Management',
-    'ai_etfs': f'TOP {max_tickers["ai_etfs"]} ARTIFICIAL INTELLIGENCE ETFs by Total Assets Under Management',
-    'commodity_etfs': f'{max_tickers["commodity_etfs"]} COMMODITY ETFs sorted by Total Assets Under Management',
-    'currency_etfs': f'{max_tickers["currency_etfs"]} CURRENCY ETFs sorted by Total Assets Under Management',
-    'cryptos': f'TOP {max_tickers["cryptos"]} CRYPTOCURRENCIES by Market Capitalization',
-    'crypto_etfs': f'TOP {max_tickers["crypto_etfs"]} CRYPTOCURRENCY ETFs by Total Assets Under Management',
-    'futures': f'TOP {max_tickers["futures"]} COMMODITY FUTURES by Open Interest',
-    'precious_metals': f'{max_tickers["precious_metals"]} PRECIOUS METAL FUTURES sorted by Open Interest',
+    'fixed_income_etfs': f'{max_tickers["fixed_income_etfs"]} FIXED INCOME ETFs by Total Assets Under Management',
+    'ai_etfs': f'{max_tickers["ai_etfs"]} ARTIFICIAL INTELLIGENCE ETFs by Total Assets Under Management',
+    'precious_metals': f'{max_tickers["precious_metals"]} PRECIOUS METAL ETFs sorted by Total Assets Under Management',
+    'commodity_etfs': f'{max_tickers["commodity_etfs"]} MIXED COMMODITY ETFs sorted by Total Assets Under Management',
+    'currency_etfs': f'{max_tickers["currency_etfs"]} NON-CRYPTO CURRENCY ETFs sorted by Total Assets Under Management',
+    'cryptos': f'{max_tickers["cryptos"]} CRYPTOCURRENCIES by Market Capitalization',
+    'crypto_etfs': f'{max_tickers["crypto_etfs"]} CRYPTOCURRENCY ETFs by Total Assets Under Management',
+    'futures': f'{max_tickers["futures"]} COMMODITY FUTURES by Open Interest',
     'stock_indices': f'{max_tickers["stock_indices"]} STOCK INDICES',
     'volatility_indices': f'{max_tickers["volatility_indices"]} VOLATILITY INDICES',
     'benchmarks': f'{max_tickers["benchmarks"]} BENCHMARKS'
@@ -704,6 +700,9 @@ layout = html.Div([
     # dcc.Store(data = {}, id = 'pre-prev-table-selected-rows', storage_type = 'session'),
     # dcc.Store(data = {}, id = 'tk-selected-category-map', storage_type = 'session'),
     # dcc.Store(data = [], id = 'preselected-categories', storage_type = 'session'),
+
+    dcc.Store(data = {}, id = 'ticker-category-info-map', storage_type = 'session'),  # or memory?
+
     dcc.Store(data = {}, id = 'pre-prev-table-selected-rows', storage_type = 'memory'),
     dcc.Store(data = {}, id = 'tk-selected-category-map', storage_type = 'memory'),
     dcc.Store(data = [], id = 'preselected-categories', storage_type = 'memory'),
@@ -804,6 +803,7 @@ layout = html.Div([
     Output('pre-menu-dow-jones-select-all-button', 'n_clicks'),
     Output('pre-menu-car-companies-select-all-button', 'n_clicks'),
     Output('pre-menu-rare-metals-companies-select-all-button', 'n_clicks'),
+    Output('pre-menu-quantum-companies-select-all-button', 'n_clicks'),
     Output('pre-menu-biggest-etfs-select-all-button', 'n_clicks'),
     Output('pre-menu-fixed-income-etfs-select-all-button', 'n_clicks'),
     Output('pre-menu-ai-etfs-select-all-button', 'n_clicks'),
@@ -822,6 +822,7 @@ layout = html.Div([
     Output('pre-menu-nasdaq100-unselect-all-button', 'n_clicks'),
     Output('pre-menu-dow-jones-unselect-all-button', 'n_clicks'),
     Output('pre-menu-car-companies-unselect-all-button', 'n_clicks'),
+    Output('pre-menu-quantum-companies-unselect-all-button', 'n_clicks'),
     Output('pre-menu-rare-metals-companies-unselect-all-button', 'n_clicks'),
     Output('pre-menu-biggest-etfs-unselect-all-button', 'n_clicks'),
     Output('pre-menu-fixed-income-etfs-unselect-all-button', 'n_clicks'),
@@ -842,6 +843,7 @@ layout = html.Div([
     Output('pre-menu-dow-jones-select-first-ticker-input', 'value'),
     Output('pre-menu-car-companies-select-first-ticker-input', 'value'),
     Output('pre-menu-rare-metals-companies-select-first-ticker-input', 'value'),
+    Output('pre-menu-quantum-companies-select-first-ticker-input', 'value'),
     Output('pre-menu-biggest-etfs-select-first-ticker-input', 'value'),
     Output('pre-menu-fixed-income-etfs-select-first-ticker-input', 'value'),
     Output('pre-menu-ai-etfs-select-first-ticker-input', 'value'),
@@ -861,6 +863,7 @@ layout = html.Div([
     Output('pre-menu-dow-jones-select-last-ticker-input', 'value'),
     Output('pre-menu-car-companies-select-last-ticker-input', 'value'),
     Output('pre-menu-rare-metals-companies-select-last-ticker-input', 'value'),
+    Output('pre-menu-quantum-companies-select-last-ticker-input', 'value'),
     Output('pre-menu-biggest-etfs-select-last-ticker-input', 'value'),
     Output('pre-menu-fixed-income-etfs-select-last-ticker-input', 'value'),
     Output('pre-menu-ai-etfs-select-last-ticker-input', 'value'),
@@ -880,6 +883,7 @@ layout = html.Div([
     Output('pre-menu-dow-jones-unselect-first-ticker-input', 'value'),
     Output('pre-menu-car-companies-unselect-first-ticker-input', 'value'),
     Output('pre-menu-rare-metals-companies-unselect-first-ticker-input', 'value'),
+    Output('pre-menu-quantum-companies-unselect-first-ticker-input', 'value'),
     Output('pre-menu-biggest-etfs-unselect-first-ticker-input', 'value'),
     Output('pre-menu-fixed-income-etfs-unselect-first-ticker-input', 'value'),
     Output('pre-menu-ai-etfs-unselect-first-ticker-input', 'value'),
@@ -899,6 +903,7 @@ layout = html.Div([
     Output('pre-menu-dow-jones-unselect-last-ticker-input', 'value'),
     Output('pre-menu-car-companies-unselect-last-ticker-input', 'value'),
     Output('pre-menu-rare-metals-companies-unselect-last-ticker-input', 'value'),
+    Output('pre-menu-quantum-companies-unselect-last-ticker-input', 'value'),
     Output('pre-menu-biggest-etfs-unselect-last-ticker-input', 'value'),
     Output('pre-menu-fixed-income-etfs-unselect-last-ticker-input', 'value'),
     Output('pre-menu-ai-etfs-unselect-last-ticker-input', 'value'),
@@ -918,6 +923,7 @@ layout = html.Div([
     Output('pre-dash-table-dow-jones', 'selected_rows'),
     Output('pre-dash-table-car-companies', 'selected_rows'),
     Output('pre-dash-table-rare-metals-companies', 'selected_rows'),
+    Output('pre-dash-table-quantum-companies', 'selected_rows'),
     Output('pre-dash-table-biggest-etfs', 'selected_rows'),
     Output('pre-dash-table-fixed-income-etfs', 'selected_rows'),
     Output('pre-dash-table-ai-etfs', 'selected_rows'),
@@ -937,6 +943,7 @@ layout = html.Div([
     Output('n-preselected-dow-jones', 'children'),
     Output('n-preselected-car-companies', 'children'),
     Output('n-preselected-rare-metals-companies', 'children'),
+    Output('n-preselected-quantum-companies', 'children'),
     Output('n-preselected-biggest-etfs', 'children'),
     Output('n-preselected-fixed-income-etfs', 'children'),
     Output('n-preselected-ai-etfs', 'children'),
@@ -960,6 +967,7 @@ layout = html.Div([
     Input('pre-menu-dow-jones-select-all-button', 'n_clicks'),
     Input('pre-menu-car-companies-select-all-button', 'n_clicks'),
     Input('pre-menu-rare-metals-companies-select-all-button', 'n_clicks'),
+    Input('pre-menu-quantum-companies-select-all-button', 'n_clicks'),
     Input('pre-menu-biggest-etfs-select-all-button', 'n_clicks'),
     Input('pre-menu-fixed-income-etfs-select-all-button', 'n_clicks'),
     Input('pre-menu-ai-etfs-select-all-button', 'n_clicks'),
@@ -979,6 +987,7 @@ layout = html.Div([
     Input('pre-menu-dow-jones-unselect-all-button', 'n_clicks'),
     Input('pre-menu-car-companies-unselect-all-button', 'n_clicks'),
     Input('pre-menu-rare-metals-companies-unselect-all-button', 'n_clicks'),
+    Input('pre-menu-quantum-companies-unselect-all-button', 'n_clicks'),
     Input('pre-menu-biggest-etfs-unselect-all-button', 'n_clicks'),
     Input('pre-menu-fixed-income-etfs-unselect-all-button', 'n_clicks'),
     Input('pre-menu-ai-etfs-unselect-all-button', 'n_clicks'),
@@ -998,6 +1007,7 @@ layout = html.Div([
     State('pre-menu-dow-jones-select-first-ticker-input', 'value'),
     State('pre-menu-car-companies-select-first-ticker-input', 'value'),
     State('pre-menu-rare-metals-companies-select-first-ticker-input', 'value'),
+    State('pre-menu-quantum-companies-select-first-ticker-input', 'value'),
     State('pre-menu-biggest-etfs-select-first-ticker-input', 'value'),
     State('pre-menu-fixed-income-etfs-select-first-ticker-input', 'value'),
     State('pre-menu-ai-etfs-select-first-ticker-input', 'value'),
@@ -1017,6 +1027,7 @@ layout = html.Div([
     Input('pre-menu-dow-jones-select-last-ticker-input', 'value'),
     Input('pre-menu-car-companies-select-last-ticker-input', 'value'),
     Input('pre-menu-rare-metals-companies-select-last-ticker-input', 'value'),
+    Input('pre-menu-quantum-companies-select-last-ticker-input', 'value'),
     Input('pre-menu-biggest-etfs-select-last-ticker-input', 'value'),
     Input('pre-menu-fixed-income-etfs-select-last-ticker-input', 'value'),
     Input('pre-menu-ai-etfs-select-last-ticker-input', 'value'),
@@ -1034,8 +1045,9 @@ layout = html.Div([
     State('pre-menu-sp500-unselect-first-ticker-input', 'value'),
     State('pre-menu-nasdaq100-unselect-first-ticker-input', 'value'),
     State('pre-menu-dow-jones-unselect-first-ticker-input', 'value'),
-    State('pre-menu-car-companies-unselect-last-ticker-input', 'value'),
-    State('pre-menu-rare-metals-companies-unselect-last-ticker-input', 'value'),
+    State('pre-menu-car-companies-unselect-first-ticker-input', 'value'),
+    State('pre-menu-rare-metals-companies-unselect-first-ticker-input', 'value'),
+    State('pre-menu-quantum-companies-unselect-first-ticker-input', 'value'),
     State('pre-menu-biggest-etfs-unselect-first-ticker-input', 'value'),
     State('pre-menu-fixed-income-etfs-unselect-first-ticker-input', 'value'),
     State('pre-menu-ai-etfs-unselect-first-ticker-input', 'value'),
@@ -1055,6 +1067,7 @@ layout = html.Div([
     Input('pre-menu-dow-jones-unselect-last-ticker-input', 'value'),
     Input('pre-menu-car-companies-unselect-last-ticker-input', 'value'),
     Input('pre-menu-rare-metals-companies-unselect-last-ticker-input', 'value'),
+    Input('pre-menu-quantum-companies-unselect-last-ticker-input', 'value'),
     Input('pre-menu-biggest-etfs-unselect-last-ticker-input', 'value'),
     Input('pre-menu-fixed-income-etfs-unselect-last-ticker-input', 'value'),
     Input('pre-menu-ai-etfs-unselect-last-ticker-input', 'value'),
@@ -1074,6 +1087,7 @@ layout = html.Div([
     Input('pre-dash-table-dow-jones', 'data'),
     Input('pre-dash-table-car-companies', 'data'),
     Input('pre-dash-table-rare-metals-companies', 'data'),
+    Input('pre-dash-table-quantum-companies', 'data'),
     Input('pre-dash-table-biggest-etfs', 'data'),
     Input('pre-dash-table-fixed-income-etfs', 'data'),
     Input('pre-dash-table-ai-etfs', 'data'),    
@@ -1093,6 +1107,7 @@ layout = html.Div([
     Input('pre-dash-table-dow-jones', 'selected_rows'),
     Input('pre-dash-table-car-companies', 'selected_rows'),
     Input('pre-dash-table-rare-metals-companies', 'selected_rows'),
+    Input('pre-dash-table-quantum-companies', 'selected_rows'),
     Input('pre-dash-table-biggest-etfs', 'selected_rows'),
     Input('pre-dash-table-fixed-income-etfs', 'selected_rows'),
     Input('pre-dash-table-ai-etfs', 'selected_rows'),
@@ -1124,6 +1139,7 @@ def output_custom_tickers(
     select_all_dow_jones,
     select_all_car_companies,
     select_all_rare_metals_companies,
+    select_all_quantum_companies,
     select_all_biggest_etfs,
     select_all_fixed_income_etfs,
     select_all_ai_etfs,
@@ -1143,6 +1159,7 @@ def output_custom_tickers(
     unselect_all_dow_jones,
     unselect_all_car_companies,
     unselect_all_rare_metals_companies,
+    unselect_all_quantum_companies,
     unselect_all_biggest_etfs,
     unselect_all_fixed_income_etfs,
     unselect_all_ai_etfs,
@@ -1162,6 +1179,7 @@ def output_custom_tickers(
     select_first_ticker_dow_jones,
     select_first_ticker_car_companies,
     select_first_ticker_rare_metals_companies,
+    select_first_ticker_quantum_companies,
     select_first_ticker_biggest_etfs,
     select_first_ticker_fixed_income_etfs,
     select_first_ticker_ai_etfs,
@@ -1181,6 +1199,7 @@ def output_custom_tickers(
     select_last_ticker_dow_jones,
     select_last_ticker_car_companies,
     select_last_ticker_rare_metals_companies,
+    select_last_ticker_quantum_companies,
     select_last_ticker_biggest_etfs,
     select_last_ticker_fixed_income_etfs,
     select_last_ticker_ai_etfs,
@@ -1200,6 +1219,7 @@ def output_custom_tickers(
     unselect_first_ticker_dow_jones,
     unselect_first_ticker_car_companies,
     unselect_first_ticker_rare_metals_companies,
+    unselect_first_ticker_quantum_companies,
     unselect_first_ticker_biggest_etfs,
     unselect_first_ticker_fixed_income_etfs,
     unselect_first_ticker_ai_etfs,
@@ -1219,6 +1239,7 @@ def output_custom_tickers(
     unselect_last_ticker_dow_jones,
     unselect_last_ticker_car_companies,
     unselect_last_ticker_rare_metals_companies,
+    unselect_last_ticker_quantum_companies,
     unselect_last_ticker_biggest_etfs,
     unselect_last_ticker_fixed_income_etfs,
     unselect_last_ticker_ai_etfs,
@@ -1238,6 +1259,7 @@ def output_custom_tickers(
     table_dow_jones_data,
     table_car_companies_data,
     table_rare_metals_companies_data,
+    table_quantum_companies_data,
     table_biggest_etfs_data,
     table_fixed_income_etfs_data,
     table_ai_etfs_data,
@@ -1257,6 +1279,7 @@ def output_custom_tickers(
     table_dow_jones_selected_rows,
     table_car_companies_selected_rows,
     table_rare_metals_companies_selected_rows,
+    table_quantum_companies_selected_rows,
     table_biggest_etfs_selected_rows,
     table_fixed_income_etfs_selected_rows,
     table_ai_etfs_selected_rows,
@@ -1285,15 +1308,16 @@ def output_custom_tickers(
         'dow_jones': table_dow_jones_selected_rows,
         'car_companies': table_car_companies_selected_rows,
         'rare_metals_companies': table_rare_metals_companies_selected_rows,
+        'quantum_companies': table_quantum_companies_selected_rows,
         'biggest_etfs': table_biggest_etfs_selected_rows,
         'fixed_income_etfs': table_fixed_income_etfs_selected_rows,
         'ai_etfs': table_ai_etfs_selected_rows,
+        'precious_metals': table_precious_metals_selected_rows,
         'commodity_etfs': table_commodity_etfs_selected_rows,
         'currency_etfs': table_currency_etfs_selected_rows,
         'cryptos': table_cryptos_selected_rows,
         'crypto_etfs': table_crypto_etfs_selected_rows,
         'futures': table_futures_selected_rows,
-        'precious_metals': table_precious_metals_selected_rows,
         'stock_indices': table_stock_indices_selected_rows,
         'volatility_indices': table_volatility_indices_selected_rows,
         'benchmarks': table_benchmarks_selected_rows
@@ -1305,15 +1329,16 @@ def output_custom_tickers(
         'dow_jones': table_dow_jones_data,
         'car_companies': table_car_companies_data,
         'rare_metals_companies': table_rare_metals_companies_data,
+        'quantum_companies': table_quantum_companies_data,
         'biggest_etfs': table_biggest_etfs_data,
         'fixed_income_etfs': table_fixed_income_etfs_data,
         'ai_etfs': table_ai_etfs_data,
+        'precious_metals': table_precious_metals_data,
         'commodity_etfs': table_commodity_etfs_data,
         'currency_etfs': table_currency_etfs_data,
         'cryptos': table_cryptos_data,
         'crypto_etfs': table_crypto_etfs_data,
         'futures': table_futures_data,
-        'precious_metals': table_precious_metals_data,
         'stock_indices': table_stock_indices_data,
         'volatility_indices': table_volatility_indices_data,
         'benchmarks': table_benchmarks_data
@@ -1325,15 +1350,16 @@ def output_custom_tickers(
         'dow_jones': select_all_dow_jones,
         'car_companies': select_all_car_companies,
         'rare_metals_companies': select_all_rare_metals_companies,
+        'quantum_companies': select_all_quantum_companies,
         'biggest_etfs': select_all_biggest_etfs,
         'fixed_income_etfs': select_all_fixed_income_etfs,
         'ai_etfs': select_all_ai_etfs,
+        'precious_metals': select_all_precious_metals,
         'commodity_etfs': select_all_commodity_etfs,
         'currency_etfs': select_all_currency_etfs,
         'cryptos': select_all_cryptos,
         'crypto_etfs': select_all_crypto_etfs,
         'futures': select_all_futures,
-        'precious_metals': select_all_precious_metals,
         'stock_indices': select_all_stock_indices,
         'volatility_indices': select_all_volatility_indices,
         'benchmarks': select_all_benchmarks
@@ -1345,15 +1371,16 @@ def output_custom_tickers(
         'dow_jones': unselect_all_dow_jones,
         'car_companies': unselect_all_car_companies,
         'rare_metals_companies': unselect_all_rare_metals_companies,
+        'quantum_companies': unselect_all_quantum_companies,
         'biggest_etfs': unselect_all_biggest_etfs,
         'fixed_income_etfs': unselect_all_fixed_income_etfs,
         'ai_etfs': unselect_all_ai_etfs,
+        'precious_metals': unselect_all_precious_metals,
         'commodity_etfs': unselect_all_commodity_etfs,
         'currency_etfs': unselect_all_currency_etfs,
         'cryptos': unselect_all_cryptos,
         'crypto_etfs': unselect_all_crypto_etfs,
         'futures': unselect_all_futures,
-        'precious_metals': unselect_all_precious_metals,
         'stock_indices': unselect_all_stock_indices,
         'volatility_indices': unselect_all_volatility_indices,
         'benchmarks': unselect_all_benchmarks
@@ -1365,15 +1392,16 @@ def output_custom_tickers(
         'dow_jones': select_first_ticker_dow_jones,
         'car_companies': select_first_ticker_car_companies,
         'rare_metals_companies': select_first_ticker_rare_metals_companies,
+        'quantum_companies': select_first_ticker_quantum_companies,
         'biggest_etfs': select_first_ticker_biggest_etfs,
         'fixed_income_etfs': select_first_ticker_fixed_income_etfs,
         'ai_etfs': select_first_ticker_ai_etfs,
+        'precious_metals': select_first_ticker_precious_metals,
         'commodity_etfs': select_first_ticker_commodity_etfs,
         'currency_etfs': select_first_ticker_currency_etfs,
         'cryptos': select_first_ticker_cryptos,
         'crypto_etfs': select_first_ticker_crypto_etfs,
         'futures': select_first_ticker_futures,
-        'precious_metals': select_first_ticker_precious_metals,
         'stock_indices': select_first_ticker_stock_indices,
         'volatility_indices': select_first_ticker_volatility_indices,
         'benchmarks': select_first_ticker_benchmarks
@@ -1385,15 +1413,16 @@ def output_custom_tickers(
         'dow_jones': select_last_ticker_dow_jones,
         'car_companies': select_last_ticker_car_companies,
         'rare_metals_companies': select_last_ticker_rare_metals_companies,
+        'quantum_companies': select_last_ticker_quantum_companies,
         'biggest_etfs': select_last_ticker_biggest_etfs,
         'fixed_income_etfs': select_last_ticker_fixed_income_etfs,
         'ai_etfs': select_last_ticker_ai_etfs,
+        'precious_metals': select_last_ticker_precious_metals,
         'commodity_etfs': select_last_ticker_commodity_etfs,
         'currency_etfs': select_last_ticker_currency_etfs,
         'cryptos': select_last_ticker_cryptos,
         'crypto_etfs': select_last_ticker_crypto_etfs,
         'futures': select_last_ticker_futures,
-        'precious_metals': select_last_ticker_precious_metals,
         'stock_indices': select_last_ticker_stock_indices,
         'volatility_indices': select_last_ticker_volatility_indices,
         'benchmarks': select_last_ticker_benchmarks
@@ -1405,15 +1434,16 @@ def output_custom_tickers(
         'dow_jones': unselect_first_ticker_dow_jones,
         'car_companies': unselect_first_ticker_car_companies,
         'rare_metals_companies': unselect_first_ticker_rare_metals_companies,
+        'quantum_companies': unselect_first_ticker_quantum_companies,
         'biggest_etfs': unselect_first_ticker_biggest_etfs,
         'fixed_income_etfs': unselect_first_ticker_fixed_income_etfs,
         'ai_etfs': unselect_first_ticker_ai_etfs,
+        'precious_metals': unselect_first_ticker_precious_metals,
         'commodity_etfs': unselect_first_ticker_commodity_etfs,
         'currency_etfs': unselect_first_ticker_currency_etfs,
         'cryptos': unselect_first_ticker_cryptos,
         'crypto_etfs': unselect_first_ticker_crypto_etfs,
         'futures': unselect_first_ticker_futures,
-        'precious_metals': unselect_first_ticker_precious_metals,
         'stock_indices': unselect_first_ticker_stock_indices,
         'volatility_indices': unselect_first_ticker_volatility_indices,
         'benchmarks': unselect_first_ticker_benchmarks
@@ -1425,15 +1455,16 @@ def output_custom_tickers(
         'dow_jones': unselect_last_ticker_dow_jones,
         'car_companies': unselect_last_ticker_car_companies,
         'rare_metals_companies': unselect_last_ticker_rare_metals_companies,
+        'quantum_companies': unselect_last_ticker_quantum_companies,
         'biggest_etfs': unselect_last_ticker_biggest_etfs,
         'fixed_income_etfs': unselect_last_ticker_fixed_income_etfs,
         'ai_etfs': unselect_last_ticker_ai_etfs,
+        'precious_metals': unselect_last_ticker_precious_metals,
         'commodity_etfs': unselect_last_ticker_commodity_etfs,
         'currency_etfs': unselect_last_ticker_currency_etfs,
         'cryptos': unselect_last_ticker_cryptos,
         'crypto_etfs': unselect_last_ticker_crypto_etfs,
         'futures': unselect_last_ticker_futures,
-        'precious_metals': unselect_last_ticker_precious_metals,
         'stock_indices': unselect_last_ticker_stock_indices,
         'volatility_indices': unselect_last_ticker_volatility_indices,
         'benchmarks': unselect_last_ticker_benchmarks
@@ -1627,17 +1658,17 @@ def output_custom_tickers(
         table_selected_rows,
 
         # select_all_button_nclicks
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         # unselect_all_button_nclicks
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         # select_first_ticker
-        None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+        None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
         # select_last_ticker
-        None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+        None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
         # unselect_first_ticker
-        None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+        None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
         # unselect_last_ticker
-        None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+        None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
 
         table_selected_rows['biggest_companies'],
         table_selected_rows['sp500'],
@@ -1645,6 +1676,7 @@ def output_custom_tickers(
         table_selected_rows['dow_jones'],
         table_selected_rows['car_companies'],
         table_selected_rows['rare_metals_companies'],
+        table_selected_rows['quantum_companies'],
         table_selected_rows['biggest_etfs'],
         table_selected_rows['fixed_income_etfs'],
         table_selected_rows['ai_etfs'],
@@ -1664,6 +1696,7 @@ def output_custom_tickers(
         n_preselected['dow_jones'],
         n_preselected['car_companies'],
         n_preselected['rare_metals_companies'],
+        n_preselected['quantum_companies'],
         n_preselected['biggest_etfs'],
         n_preselected['fixed_income_etfs'],
         n_preselected['ai_etfs'],
@@ -1728,6 +1761,7 @@ Input('pre-dash-table-nasdaq100', 'selected_rows'),
 Input('pre-dash-table-dow-jones', 'selected_rows'),
 Input('pre-dash-table-car-companies', 'selected_rows'),
 Input('pre-dash-table-rare-metals-companies', 'selected_rows'),
+Input('pre-dash-table-quantum-companies', 'selected_rows'),
 Input('pre-dash-table-biggest-etfs', 'selected_rows'),
 Input('pre-dash-table-fixed-income-etfs', 'selected_rows'),
 Input('pre-dash-table-ai-etfs', 'selected_rows'),
@@ -1750,6 +1784,7 @@ def store_preselected_tickers(
     table_dow_jones_selected_rows,
     table_car_companies_selected_rows,
     table_rare_metals_companies_selected_rows,
+    table_quantum_companies_selected_rows,
     table_biggest_etfs_selected_rows,
     table_fixed_income_etfs_selected_rows,
     table_ai_etfs_selected_rows,
@@ -1772,15 +1807,16 @@ def store_preselected_tickers(
         'dow_jones': table_dow_jones_selected_rows,
         'car_companies': table_car_companies_selected_rows,
         'rare_metals_companies': table_rare_metals_companies_selected_rows,
+        'quantum_companies': table_quantum_companies_selected_rows,
         'biggest_etfs': table_biggest_etfs_selected_rows,
         'fixed_income_etfs': table_fixed_income_etfs_selected_rows,
         'ai_etfs': table_ai_etfs_selected_rows,
+        'precious_metals': table_precious_metals_selected_rows,
         'commodity_etfs': table_commodity_etfs_selected_rows,
         'currency_etfs': table_currency_etfs_selected_rows,
         'cryptos': table_cryptos_selected_rows,
         'crypto_etfs': table_crypto_etfs_selected_rows,
         'futures': table_futures_selected_rows,
-        'precious_metals': table_precious_metals_selected_rows,
         'stock_indices': table_stock_indices_selected_rows,
         'volatility_indices': table_volatility_indices_selected_rows,
         'benchmarks': table_benchmarks_selected_rows
