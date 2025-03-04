@@ -121,7 +121,7 @@ popover_markdown_category = {
 <B>Source:</B> <A HREF='https://companiesmarketcap.com/cad/automakers/largest-automakers-by-market-cap/'>CompaniesMarketCap</A></DIV>""",
 
     'rare_metals_companies':
-    """<DIV><H6>RARE METALS COMPANIES</H6>
+    """<DIV><H6>RARE METAL COMPANIES</H6>
 <B>Content:</B> 16 equities sorted by Market Capitalization<BR/>
 <B>Examples:</B> Southern Copper, SQM Chile, Lynas, MP Materials, Sibanye Stillwater, Iluka, Constellium, Tronox, Energy Fuels, Neo Performance Materials, Arafura, NioCorp, Aclara Resources ...<BR/>
 <B>Source:</B> 1. <A HREF='https://investingnews.com/top-rare-earth-stocks/'>Investing News</A>, 2. <A HREF='https://finance.yahoo.com/news/14-best-rare-earth-stocks-181008216.html'>Yahoo Finance</A></DIV>""",
@@ -160,12 +160,14 @@ popover_markdown_category = {
     'commodity_etfs': 
     """<DIV><H6>COMMODITY ETFs</H6>
 <B>Content:</B> 47 ETFs sorted by Total Assets Under Management<BR/>
+<B>Exclusions:</B> Precious metal ETFs<BR/>
 <B>Examples:</B> Invesco Optimum Yield Diversified Commodity Strategy No K-1, First Trust Global Tactical Commodity Strategy, Global X Copper Miners, United States Oil Fund ...<BR/>
 <B>Source:</B> <A HREF='https://etfdb.com/etfdb-category/commodities/'>VettaFi</A></DIV>""",
 
     'currency_etfs': 
     """<DIV><H6>CURRENCY ETFs</H6>
 <B>Content:</B> 10 ETFs sorted by Total Assets Under Management<BR/>
+<B>Exclusions:</B> Cryptocurrency ETFs<BR/>
 <B>Examples:</B> Invesco Currencyshares JPY, Invesco DB USD Index Bullish, WisdomTree Bloomberg USD Bullish, Invesco CurrencyShares EUR, Invesco CurrencyShares CHF ...<BR/>
 <B>Source:</B> <A HREF='https://etfdb.com/etfdb-category/currency/'>VettaFi</A></DIV>""",
 
@@ -194,12 +196,12 @@ popover_markdown_category = {
 
     'volatility_indices': 
     """<DIV><H6>VOLATILITY INDICES</H6>
-<B>Content:</B> 5 indices<BR/>
+<B>Content:</B> 5 indices: 3 stock, 1 bond and 1 commodity<BR/>
 <B>Examples:</B> CBOE Volatility, DJIA Volatility, CBOE NASDAQ 100 Volatility, ICE BofAML MOVE, CBOE Gold Volatility</DIV>""",
 
     'benchmarks': 
     """<DIV><H6>BENCHMARKS</H6>
-<B>Content:</B> 20 indices<BR/>
+<B>Content:</B> 20 indices and ETFs: 4 stock indices, 2 volatility indices, 2 commodity indices, 2 bond indices, 3 stock ETFs, 3 commodity ETFs, 2 bond ETFs, 2 cryptocurrency ETFs<BR/>
 <B>Examples:</B> S&P 500, Dow Jones, Nasdaq Composite, Vanguard Total Stock, CBOE Volatility, ICE BofAML MOVE, S&P GSCI, BBG Commodity, 10-Year US Treasury, 3-Month US Treasury ...</DIV>""",
 
 }
@@ -343,7 +345,7 @@ layout = html.Div([
                     style = checkmark_css
                 ),
                 html.Div(
-                    'RARE METALS COMPANIES',
+                    'RARE METAL COMPANIES',
                     id = 'category-option-rare-metals-companies',
                     className = 'category-div-class',     
                     style = category_option_css
@@ -493,7 +495,7 @@ layout = html.Div([
                     style = checkmark_css
                 ),
                 html.Div(
-                    'MIXED COMMODITY ETFs',
+                    'COMMODITY ETFs',
                     id = 'category-option-commodity-etfs',
                     className = 'category-div-class',                
                     style = category_option_css
@@ -518,7 +520,7 @@ layout = html.Div([
                     style = checkmark_css
                 ),
                 html.Div(
-                    'NON-CRYPTO CURRENCY ETFs',
+                    'CURRENCY ETFs',
                     id = 'category-option-currency-etfs',
                     className = 'category-div-class',                
                     style = category_option_css
