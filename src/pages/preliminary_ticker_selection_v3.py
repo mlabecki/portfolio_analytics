@@ -60,340 +60,7 @@ etf_categories = [
     'currency_etfs',
     'crypto_etfs'
 ]
-
-df_url_biggest_companies = hist_info.download_from_url('biggest_companies', max_tickers['biggest_companies'])
-dict_biggest_companies = df_url_biggest_companies[['Symbol', 'Name']].set_index('Symbol')['Name'].to_dict()
-tickers_biggest_companies = list(dict_biggest_companies.keys())
-
-df_url_sp500 = hist_info.download_from_url('sp500', max_tickers['sp500'])
-dict_sp500 = df_url_sp500[['Symbol', 'Name']].set_index('Symbol')['Name'].to_dict()
-tickers_sp500 = list(dict_sp500.keys())
-
-df_url_nasdaq100 = hist_info.download_from_url('nasdaq100', max_tickers['nasdaq100'])  # Currently there are 101 companies
-dict_nasdaq100 = df_url_nasdaq100[['Symbol', 'Name']].set_index('Symbol')['Name'].to_dict()
-tickers_nasdaq100 = list(dict_nasdaq100.keys())
-
-df_url_dow_jones = hist_info.download_from_url('dow_jones', max_tickers['dow_jones'])
-dict_dow_jones = df_url_dow_jones[['Symbol', 'Name']].set_index('Symbol')['Name'].to_dict()
-tickers_dow_jones = list(dict_dow_jones.keys())
-
-df_url_biggest_etfs = hist_info.download_from_url('biggest_etfs', max_tickers['biggest_etfs'])
-dict_biggest_etfs = df_url_biggest_etfs[['Symbol', 'Name']].set_index('Symbol')['Name'].to_dict()
-tickers_biggest_etfs = list(dict_biggest_etfs.keys())
-
-df_url_fixed_income_etfs = hist_info.download_from_url('fixed_income_etfs', max_tickers['fixed_income_etfs'])
-dict_fixed_income_etfs = df_url_fixed_income_etfs[['Symbol', 'Name']].set_index('Symbol')['Name'].to_dict()
-tickers_fixed_income_etfs = list(dict_fixed_income_etfs.keys())
-
-df_url_ai_etfs = hist_info.download_from_url('ai_etfs', max_tickers['ai_etfs'])
-dict_ai_etfs = df_url_ai_etfs[['Symbol', 'Name']].set_index('Symbol')['Name'].to_dict()
-tickers_ai_etfs = list(dict_ai_etfs.keys())
-
-df_url_futures = hist_info.download_from_url('futures', max_tickers['futures'])
-dict_futures = df_url_futures[['Symbol', 'Name']].set_index('Symbol')['Name'].to_dict()
-tickers_futures = list(dict_futures.keys())
-
-df_url_cryptos = hist_info.download_from_url('cryptos', max_tickers['cryptos'])
-dict_cryptos = df_url_cryptos[['Symbol', 'Name']].set_index('Symbol')['Name'].to_dict()
-tickers_cryptos = list(dict_cryptos.keys())
-
-df_url_crypto_etfs = hist_info.download_from_url('crypto_etfs', max_tickers['crypto_etfs'])
-dict_crypto_etfs = df_url_crypto_etfs[['Symbol', 'Name']].set_index('Symbol')['Name'].to_dict()
-tickers_crypto_etfs = list(dict_crypto_etfs.keys())
-
-tickers_car_companies = list(car_companies.keys())
-tickers_rare_metals_companies = list(rare_metals_companies.keys())
-tickers_quantum_companies = list(quantum_companies.keys())
-tickers_stock_indices = list(stock_index_tickers.keys())
-tickers_precious_metals = list(precious_metal_etfs.keys())
-tickers_commodity_etfs = list(commodity_etf_tickers.keys())
-tickers_volatility_indices = list(volatility_tickers.keys())
-tickers_currency_etfs = list(currency_etf_tickers.keys())
-tickers_benchmarks = list(benchmark_tickers.keys())
-
 pre_table_columns = ['No.', 'Ticker', 'Name']
-
-# NOTE: The ticker categories and the number of tickers to download the info of in each of them will be specified by the user
-#       on the page preceding the ticker selection page.
-
-df_pre_url_biggest_companies = pd.DataFrame(index = tickers_biggest_companies, columns = pre_table_columns)
-df_pre_url_sp500 = pd.DataFrame(index = tickers_sp500, columns = pre_table_columns)
-df_pre_url_nasdaq100 = pd.DataFrame(index = tickers_nasdaq100, columns = pre_table_columns)
-df_pre_url_dow_jones = pd.DataFrame(index = tickers_dow_jones, columns = pre_table_columns)
-df_pre_url_biggest_etfs = pd.DataFrame(index = tickers_biggest_etfs, columns = pre_table_columns)
-df_pre_url_fixed_income_etfs = pd.DataFrame(index = tickers_fixed_income_etfs, columns = pre_table_columns)
-df_pre_url_ai_etfs = pd.DataFrame(index = tickers_ai_etfs, columns = pre_table_columns)
-df_pre_url_futures = pd.DataFrame(index = tickers_futures, columns = pre_table_columns)
-df_pre_url_cryptos = pd.DataFrame(index = tickers_cryptos, columns = pre_table_columns)
-df_pre_url_crypto_etfs = pd.DataFrame(index = tickers_crypto_etfs, columns = pre_table_columns)
-
-df_pre_tickers_car_companies = pd.DataFrame(index = tickers_car_companies, columns = pre_table_columns)
-df_pre_tickers_rare_metals_companies = pd.DataFrame(index = tickers_rare_metals_companies, columns = pre_table_columns)
-df_pre_tickers_quantum_companies = pd.DataFrame(index = tickers_quantum_companies, columns = pre_table_columns)
-df_pre_tickers_stock_indices = pd.DataFrame(index = tickers_stock_indices, columns = pre_table_columns)
-df_pre_tickers_commodity_etfs = pd.DataFrame(index = tickers_commodity_etfs, columns = pre_table_columns)
-df_pre_tickers_precious_metals = pd.DataFrame(index = tickers_precious_metals, columns = pre_table_columns)
-df_pre_tickers_volatility_indices = pd.DataFrame(index = tickers_volatility_indices, columns = pre_table_columns)
-df_pre_tickers_currency_etfs = pd.DataFrame(index = tickers_currency_etfs, columns = pre_table_columns)
-df_pre_tickers_benchmarks = pd.DataFrame(index = tickers_benchmarks, columns = pre_table_columns)
-
-row_ticker_map_biggest_companies = {}
-row_ticker_map_sp500 = {}
-row_ticker_map_nasdaq100 = {}
-row_ticker_map_dow_jones = {}
-row_ticker_map_car_companies = {}
-row_ticker_map_rare_metals_companies = {}
-row_ticker_map_quantum_companies = {}
-row_ticker_map_biggest_etfs = {}
-row_ticker_map_fixed_income_etfs = {}
-row_ticker_map_ai_etfs = {}
-row_ticker_map_precious_metals = {}
-row_ticker_map_commodity_etfs = {}
-row_ticker_map_currency_etfs = {}
-row_ticker_map_cryptos = {}
-row_ticker_map_crypto_etfs = {}
-row_ticker_map_futures = {}
-row_ticker_map_stock_indices = {}
-row_ticker_map_volatility_indices = {}
-row_ticker_map_benchmarks = {}
-
-ticker_category_info_map = {}
-ticker_category_info_map = {
-    'biggest_companies': {
-        'df': df_pre_url_biggest_companies,
-        'row': row_ticker_map_biggest_companies,
-        'dict': dict_biggest_companies,
-        'sort_by': '',
-        'id_string': 'biggest-companies',
-        'collapse_title': 'BIGGEST COMPANIES'
-    },
-    'sp500': {
-        'df': df_pre_url_sp500,
-        'row': row_ticker_map_sp500,
-        'dict': dict_sp500,
-        'sort_by': '',
-        'id_string': 'sp500',
-        'collapse_title': 'S&P 500 COMPANIES'
-    },
-    'nasdaq100': {
-        'df': df_pre_url_nasdaq100,
-        'row': row_ticker_map_nasdaq100,
-        'dict': dict_nasdaq100,
-        'sort_by': '',
-        'id_string': 'nasdaq100',
-        'collapse_title': 'NASDAQ 100 COMPANIES'
-    },
-    'dow_jones': {
-        'df': df_pre_url_dow_jones,
-        'row': row_ticker_map_dow_jones,
-        'dict': dict_dow_jones,
-        'sort_by': '',
-        'id_string': 'dow-jones',
-        'collapse_title': 'DOW JONES INDUSTRIAL AVERAGE COMPANIES'
-    },
-    'car_companies': {
-        'df': df_pre_tickers_car_companies,
-        'row': row_ticker_map_car_companies,
-        'dict': car_companies,
-        'sort_by': 'marketCap',
-        'id_string': 'car-companies',
-        'collapse_title': 'CAR COMPANIES'
-    },
-    'rare_metals_companies': {
-        'df': df_pre_tickers_rare_metals_companies,
-        'row': row_ticker_map_rare_metals_companies,
-        'dict': rare_metals_companies,
-        'sort_by': 'marketCap',
-        'id_string': 'rare-metals-companies',
-        'collapse_title': 'RARE METAL COMPANIES'
-    },
-    'quantum_companies': {
-        'df': df_pre_tickers_quantum_companies,
-        'row': row_ticker_map_quantum_companies,
-        'dict': quantum_companies,
-        'sort_by': 'marketCap',
-        'id_string': 'quantum-companies',
-        'collapse_title': 'QUANTUM COMPUTING COMPANIES'
-    },
-    'biggest_etfs': {
-        'df': df_pre_url_biggest_etfs,
-        'row': row_ticker_map_biggest_etfs,
-        'dict': dict_biggest_etfs,
-        'sort_by': '',
-        'id_string': 'biggest-etfs',
-        'collapse_title': 'BIGGEST ETFs'
-    },
-    'fixed_income_etfs': {
-        'df': df_pre_url_fixed_income_etfs,
-        'row': row_ticker_map_fixed_income_etfs,
-        'dict': dict_fixed_income_etfs,
-        'sort_by': '',
-        'id_string': 'fixed-income-etfs',
-        'collapse_title': 'FIXED INCOME ETFs'
-    },
-    'ai_etfs': {
-        'df': df_pre_url_ai_etfs,
-        'row': row_ticker_map_ai_etfs,
-        'dict': dict_ai_etfs,
-        'sort_by': '',
-        'id_string': 'ai-etfs',
-        'collapse_title': 'ARTIFICIAL INTELLIGENCE ETFs'
-    },
-    'precious_metals': {  # ETFs
-        'df': df_pre_tickers_precious_metals,
-        'row': row_ticker_map_precious_metals,
-        'dict': precious_metal_etfs,
-        'sort_by': 'totalAssets',
-        'id_string': 'precious-metals',
-        'collapse_title': 'PRECIOUS METAL ETFs'
-    },
-    'commodity_etfs': {
-        'df': df_pre_tickers_commodity_etfs,
-        'row': row_ticker_map_commodity_etfs,
-        'dict': commodity_etf_tickers,
-        'sort_by': 'totalAssets',
-        'id_string': 'commodity-etfs',
-        'collapse_title': 'COMMODITY ETFs'
-    },
-    'currency_etfs': {
-        'df': df_pre_tickers_currency_etfs,
-        'row': row_ticker_map_currency_etfs,
-        'dict': currency_etf_tickers,
-        'sort_by': 'totalAssets',
-        'id_string': 'currency-etfs',
-        'collapse_title': 'CURRENCY ETFs'
-    },
-    'cryptos': {
-        'df': df_pre_url_cryptos,
-        'row': row_ticker_map_cryptos,
-        'dict': dict_cryptos,
-        'sort_by': '',
-        'id_string': 'cryptos',
-        'collapse_title': 'CRYPTOCURRENCIES'
-    },
-    'crypto_etfs': {
-        'df': df_pre_url_crypto_etfs,
-        'row': row_ticker_map_crypto_etfs,
-        'dict': dict_crypto_etfs,
-        'sort_by': '',
-        'id_string': 'crypto-etfs',
-        'collapse_title': 'CRYPTOCURRENCY ETFs'
-    },
-    'futures': {
-        'df': df_pre_url_futures,
-        'row': row_ticker_map_futures,
-        'dict': dict_futures,
-        'sort_by': '',
-        'id_string': 'futures',
-        'collapse_title': 'COMMODITY FUTURES'
-    },
-    'stock_indices': {
-        'df': df_pre_tickers_stock_indices,
-        'row': row_ticker_map_stock_indices,
-        'dict': stock_index_tickers,
-        'sort_by': '',  # Only some indices have 'volume' in info
-        'id_string': 'stock-indices',
-        'collapse_title': 'STOCK INDICES'
-    },
-    'volatility_indices': {
-        'df': df_pre_tickers_volatility_indices,
-        'row': row_ticker_map_volatility_indices,
-        'dict': volatility_tickers,
-        'sort_by': '',  # No 'volume' in info
-        'id_string': 'volatility-indices',
-        'collapse_title': 'VOLATILITY INDICES'
-    },
-    'benchmarks': {
-        'df': df_pre_tickers_benchmarks,
-        'row': row_ticker_map_benchmarks,
-        'dict': benchmark_tickers,
-        'sort_by': '',
-        'id_string': 'benchmarks',
-        'collapse_title': 'BENCHMARKS'
-    }
-}
-
-ticker_names = {}  # To help user decide on tickers based on the name
-
-def create_pre_table(category):
-
-    df_pre_tickers = ticker_category_info_map[category]['df']
-    row_ticker_map = ticker_category_info_map[category]['row']
-    dict_info_tickers = ticker_category_info_map[category]['dict']
-    tk_sort_by = ticker_category_info_map[category]['sort_by']
-    
-    category_tickers = list(dict_info_tickers.keys())
-    n_tickers = min(len(category_tickers), max_tickers[category])
-    category_tickers = category_tickers[: n_tickers]
-    df_pre_tickers = df_pre_tickers[: n_tickers]
-    max_tickers[category] = n_tickers
-    ### Create a function that takes max_tickers as an argument and returns category table title
-
-    category_tickers_sorted = category_tickers
-
-    # Sort ticker list by marketCap (equities), totalAssets (ETFs) or openInterest (futures)
-
-    if tk_sort_by != '':
-    # The above means that the tickers are NOT from a URL
-
-        dict_tickers_values = {}
-        dict_currency_fx_rates = {}
-        for tk in category_tickers:
-            tk_info = yf.Ticker(tk).info
-            currency = tk_info['currency']
-            if currency != 'USD':
-                if currency in dict_currency_fx_rates.keys():
-                    dict_tickers_values.update({currency: dict_currency_fx_rates[currency]})
-                else:
-                    fx_rate = hist_info.get_usd_fx_rate(currency)
-                    fx_rate = 1 if fx_rate == 0 else fx_rate
-                    dict_tickers_values.update({tk: tk_info[tk_sort_by] / fx_rate})
-                    dict_currency_fx_rates.update({tk: fx_rate})
-            else:
-                dict_tickers_values.update({tk: tk_info[tk_sort_by]})
-
-        category_tickers_sorted = [i[0] for i in sorted(dict_tickers_values.items(), key=itemgetter(1), reverse=True)]
-        df_pre_tickers.index = category_tickers_sorted  
-
-    for i, tk in enumerate(category_tickers_sorted):
-
-        if tk not in ticker_names.keys():
-            
-            df_pre_tickers.at[tk, 'No.'] = i + 1
-            df_pre_tickers.at[tk, 'Ticker'] = tk
-            tk_name = dict_info_tickers[tk]
-            df_pre_tickers.at[tk, 'Name'] = tk_name
-            ticker_names.update({tk: tk_name})
-    
-        else:
-
-            df_pre_tickers.at[tk, 'No.'] = i + 1
-            df_pre_tickers.at[tk, 'Ticker'] = tk
-            if tk in bond_etfs.keys():
-                # To avoid corrupt names at https://8marketcap.com/etfs/
-                df_pre_tickers.at[tk, 'Name'] = bond_etfs[tk]
-            else:
-                df_pre_tickers.at[tk, 'Name'] = ticker_names[tk]
-
-        row_ticker_map.update({tk: i})
-
-    pre_table_data = {
-        'df': df_pre_tickers,
-        'row': row_ticker_map,
-        'maxn': n_tickers
-    }
-
-    return pre_table_data
-
-# Set up a callback here based on selected categories from selected-categories-stored
-for category in ticker_category_info_map.keys():
-    print(f'\nProcessing {category} ...')
-    pre_table_data = create_pre_table(category)
-    ticker_category_info_map[category]['df'] = pre_table_data['df']
-    ticker_category_info_map[category]['row'] = pre_table_data['row']
-    max_tickers.update({category: pre_table_data['maxn']})
-    print(ticker_category_info_map[category]['df'])
-    print(ticker_category_info_map[category]['row'])
 
 pre_table_titles = {
     'biggest_companies': f'{max_tickers["biggest_companies"]} BIGGEST COMPANIES by Market Capitalization',
@@ -417,268 +84,11 @@ pre_table_titles = {
     'benchmarks': f'{max_tickers["benchmarks"]} BENCHMARKS'
 }
 
-print(f'\nTotal tickers: {len(ticker_names)}')
-
-##############
-
-ticker_div_title = html.Div(
-    'YOUR PORTFOLIO:',
-    style = select_ticker_title_css
-)
-
-pre_selection_table = {}  # A dictionary mapping ticker category to the corresponding pre-selection table
-pre_selection_table_collapse_div = {}
-pre_tables = []
-
-for category in ticker_category_info_map.keys():
-    
-    id_string = ticker_category_info_map[category]['id_string']
-
-    pre_selection_table[category] = html.Div([
-        dash_table.DataTable(
-            columns = [{'name': i, 'id': i} for i in ticker_category_info_map[category]['df'].columns],
-            data = ticker_category_info_map[category]['df'].to_dict('records'),
-            editable = False,
-            row_selectable = 'multi',
-            # column_selectable = 'multi',
-            selected_rows = [],
-            style_as_list_view = True,
-            style_data_conditional = [
-                # {'if': {'state': 'active'},'backgroundColor': 'white', 'border': '1px solid white'},
-                {'if': {
-                    'state': 'active'},
-                    'backgroundColor': 'white',
-                    'border-top': '1px solid rgb(211, 211, 211)',
-                    'border-bottom': '1px solid rgb(211, 211, 211)'},
-                # {'if': {'column_id': ' '}, 'cursor': 'pointer'},
-                {'if': {'column_id': 'No.'}, 'width': 24},
-                {'if': {'column_id': 'Ticker'}, 'width': 45},
-                # {'if': {'column_id': 'Type'}, 'width': 38},
-            ],
-            id = f'pre-dash-table-{id_string}',
-            style_header = input_table_header_css,
-            style_data = input_table_data_css,
-        )
-    ])
-
-    pre_selection_table_collapse_div[category] = html.Div(
-        hidden = False,
-        children =
-        [
-            html.Div(
-                ticker_category_info_map[category]['collapse_title'],
-                id = f'pre-collapse-button-title-{id_string}',
-                hidden = True
-            ),
-
-            html.Div([
-                dbc.Button(
-                    id = f'pre-collapse-button-table-{id_string}',
-                    class_name = 'ma-1',
-                    color = 'primary',
-                    size = 'sm',
-                    n_clicks = 0,
-                    style = collapse_button_pre_table_css
-                ),
-                html.Div(
-                    id = f'n-preselected-{id_string}-container',
-                    children = [
-                        html.Div(
-                            id = f'n-preselected-{id_string}',
-                            hidden = False,
-                            style = n_selected_category_css
-                        ),
-                        html.Div(
-                            f'/ {max_tickers[category]}',
-                            hidden = False,
-                            style = n_tickers_category_css
-                        ),
-                        html.Div(
-                            'pre-selected',
-                            hidden = False,
-                            style = selected_string_css
-                        )
-                    ],
-                    style = {'display': 'inline-block'}
-                )
-            ]),
-
-            dbc.Collapse(
-                html.Div(
-                    html.Div(
-                        id = f'pre-category-{id_string}-container',
-                        children = [
-                            
-                            html.Div(
-                                id = f'pre-menu-{id_string}-container',
-                                children = [
-
-                                    ### Select buttons
-                                    html.Div(
-                                        id = f'pre-menu-{id_string}-select-buttons-container',
-                                        style = {'margin-bottom': '10px', 'margin-left': '10px'},
-                                        children = [
-                                            dbc.Button(
-                                                'Select All',
-                                                id = f'pre-menu-{id_string}-select-all-button',
-                                                n_clicks = 0,
-                                                class_name = 'ma-1',
-                                                color = 'success',
-                                                size = 'sm',
-                                                style = pre_menu_select_all_button_css
-                                            ),
-                                            html.Div(
-                                                id = 'pre-menu-{id_string}-select-first-last-tickers-container',
-                                                children = [
-                                                    html.Div('Select Ticker Range', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
-                                                    html.Div([
-                                                        html.Div(
-                                                            'First No.',
-                                                            style = {
-                                                                'font-size': '14px',
-                                                                'vertical-align': 'top',
-                                                                'margin-bottom': '0px',
-                                                                'margin-left': '2px',
-                                                                'margin-right': '0px'
-                                                            }
-                                                        ),
-                                                        dbc.Input(
-                                                            id = f'pre-menu-{id_string}-select-first-ticker-input',
-                                                            type = 'number',
-                                                            min = 1,
-                                                            max = max_tickers[category],
-                                                            step = 1,
-                                                            debounce = True,
-                                                            style = pre_menu_input_css
-                                                        )],
-                                                        style = pre_menu_item_css
-                                                    ),
-                                                    html.Div([
-                                                        html.Div(
-                                                            'Last No.',
-                                                            style = {
-                                                                'font-size': '14px',
-                                                                'vertical-align': 'top',
-                                                                'margin-bottom': '0px',
-                                                                'margin-left': '2px',
-                                                                'margin-right': '4px'
-                                                            }
-                                                        ),
-                                                        dbc.Input(
-                                                            id = f'pre-menu-{id_string}-select-last-ticker-input',
-                                                            type = 'number',
-                                                            min = 1,
-                                                            max = max_tickers[category],
-                                                            step = 1,
-                                                            debounce = True,
-                                                            style = pre_menu_input_css
-                                                        )],
-                                                        style = pre_menu_item_css
-                                                    )
-                                                ]
-                                            )
-                                        ]
-                                    ),
-
-                                    ### Unselect buttons
-                                    html.Div(
-                                        id = f'pre-menu-{id_string}-unselect-buttons-container',
-                                        style = {'margin-bottom': '10px', 'margin-left': '10px'},
-                                        children = [
-                                            dbc.Button(
-                                                'Unselect All',
-                                                id = f'pre-menu-{id_string}-unselect-all-button',
-                                                n_clicks = 0,
-                                                class_name = 'ma-1',
-                                                color = 'danger',
-                                                size = 'sm',
-                                                style = pre_menu_select_all_button_css
-                                            ),
-                                            html.Div(
-                                                id = 'pre-menu-{id_string}-unselect-first-last-tickers-container',
-                                                children = [
-                                                    html.Div('Unselect Ticker Range', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
-                                                    html.Div([
-                                                        html.Div(
-                                                            'First No.',
-                                                            style = {
-                                                                'font-size': '14px',
-                                                                'vertical-align': 'top',
-                                                                'margin-bottom': '0px',
-                                                                'margin-left': '2px',
-                                                                'margin-right': '0px'
-                                                            }
-                                                        ),
-                                                        dbc.Input(
-                                                            id = f'pre-menu-{id_string}-unselect-first-ticker-input',
-                                                            type = 'number',
-                                                            min = 1,
-                                                            max = max_tickers[category],
-                                                            step = 1,
-                                                            debounce = True,
-                                                            style = pre_menu_input_css
-                                                        )],
-                                                        style = pre_menu_item_css
-                                                    ),
-                                                    html.Div([
-                                                        html.Div(
-                                                            'Last No.',
-                                                            style = {
-                                                                'font-size': '14px',
-                                                                'vertical-align': 'top',
-                                                                'margin-bottom': '0px',
-                                                                'margin-left': '2px',
-                                                                'margin-right': '4px'
-                                                            }
-                                                        ),
-                                                        dbc.Input(
-                                                            id = f'pre-menu-{id_string}-unselect-last-ticker-input',
-                                                            type = 'number',
-                                                            min = 1,
-                                                            max = max_tickers[category],
-                                                            step = 1,
-                                                            debounce = True,
-                                                            style = pre_menu_input_css
-                                                        )],
-                                                        style = pre_menu_item_css
-                                                    )
-                                                ]
-                                            )
-                                        ]
-                                    ),
-                                ],
-                                style = pre_menu_container_css
-                            ),
-
-                            html.Div(
-                                id = f'pre-table-{id_string}-container',
-                                children = [
-                                html.Div(
-                                    children = pre_table_titles[category],
-                                    id = f'pre-table-{id_string}-title',
-                                    style = input_table_title_css
-                                ),
-                                pre_selection_table[category]
-                                ],
-                                style = pre_table_container_css
-                            )
-                        ],
-                        # style = {'display': 'inline-block'}
-                    ),
-                ),
-                id = f'pre-collapse-table-{id_string}',
-                is_open = False
-            ),  # dbc.Collapse
-        ]
-    )  # html.Div with dbc.Button and dbc.Collapse
-
-    pre_tables.append(pre_selection_table_collapse_div[category])
 
 ###########################################################################################
+### LAYOUT
+###
 
-# app = dash.Dash(__name__, external_stylesheets = [dbc.themes.YETI])
-
-# app.layout = html.Div([
 layout = html.Div([
 
     # LOADING WRAPPER
@@ -702,6 +112,7 @@ layout = html.Div([
     # dcc.Store(data = [], id = 'preselected-categories', storage_type = 'session'),
 
     dcc.Store(data = {}, id = 'ticker-category-info-map', storage_type = 'session'),  # or memory?
+    dcc.Store(data = {}, id = 'ticker-names', storage_type = 'session'),  # or memory?
 
     dcc.Store(data = {}, id = 'pre-prev-table-selected-rows', storage_type = 'memory'),
     dcc.Store(data = {}, id = 'tk-selected-category-map', storage_type = 'memory'),
@@ -752,9 +163,8 @@ layout = html.Div([
 
     html.Div(
         id = 'pre-all-tables-container',
-        children = pre_tables
+        # children = pre_tables
     ),
-
 ],
     
     id = 'ticker-input-loading-wrapper',
@@ -787,6 +197,391 @@ layout = html.Div([
     )
 
 ])  # app.layout
+
+#######################################
+
+for category in category_titles_ids.keys():
+    init_ticker_category_info_map[category]['df'] = pd.DataFrame()
+    init_ticker_category_info_map[category]['row'] = {}
+    init_ticker_category_info_map[category]['dict'] = {}
+
+#######################################
+
+@callback(
+    Output('pre-all-tables-container', 'children'),
+    Output('ticker-category-info-map', 'data'),
+    Output('ticker-names', 'data'),
+    Input('selected-categories-stored', 'data')
+)
+def generate_preselected_tables(
+    selected_categories_stored
+):
+
+    for category in init_ticker_category_info_map.keys():
+        
+        if category in selected_categories_stored:
+            
+            if category in url_settings.keys():
+                # Get tickers (index) and sort them
+                df_cat = hist_info.download_from_url(category, max_tickers[category])
+                dict_cat = df_cat[['Symbol', 'Name']].set_index('Symbol')['Name'].to_dict()
+            else:
+                dict_cat = tickers_non_url[category]  # in mapping_tickers
+
+            tickers_cat = list(dict_cat.keys())
+            init_ticker_category_info_map[category]['df'].index = tickers_cat
+            init_ticker_category_info_map[category]['dict'] = dict_cat
+            init_ticker_category_info_map[category]['df'].columns = pre_table_columns
+
+    ############
+
+    ticker_names = {}  # To help user decide on tickers based on the name
+
+    def create_pre_table(
+        category,
+        tk_cat_info_map
+    ):
+
+        df_pre_tickers = tk_cat_info_map[category]['df']
+        row_ticker_map = tk_cat_info_map[category]['row']
+        dict_info_tickers = tk_cat_info_map[category]['dict']
+        tk_sort_by = tk_cat_info_map[category]['sort_by']
+
+        category_tickers = list(dict_info_tickers.keys())
+        n_tickers = min(len(category_tickers), max_tickers[category])
+        category_tickers = category_tickers[: n_tickers]
+        df_pre_tickers = df_pre_tickers[: n_tickers]
+        max_tickers[category] = n_tickers
+
+        category_tickers_sorted = category_tickers
+
+        # Sort ticker list by marketCap (equities), totalAssets (ETFs) or openInterest (futures)
+
+        # if tk_sort_by != '':
+            # This means that the tickers are NOT from a URL
+        
+        if category in tickers_non_url.keys():
+
+            dict_tickers_values = {}
+            dict_currency_fx_rates = {}
+            for tk in category_tickers:
+                tk_info = yf.Ticker(tk).info
+                currency = tk_info['currency']
+                if currency != 'USD':
+                    if currency in dict_currency_fx_rates.keys():
+                        dict_tickers_values.update({currency: dict_currency_fx_rates[currency]})
+                    else:
+                        fx_rate = hist_info.get_usd_fx_rate(currency)
+                        fx_rate = 1 if fx_rate == 0 else fx_rate
+                        dict_tickers_values.update({tk: tk_info[tk_sort_by] / fx_rate})
+                        dict_currency_fx_rates.update({tk: fx_rate})
+                else:
+                    dict_tickers_values.update({tk: tk_info[tk_sort_by]})
+
+            category_tickers_sorted = [i[0] for i in sorted(dict_tickers_values.items(), key=itemgetter(1), reverse=True)]
+            df_pre_tickers.index = category_tickers_sorted  
+
+        for i, tk in enumerate(category_tickers_sorted):
+
+            if tk not in ticker_names.keys():
+
+                df_pre_tickers.at[tk, 'No.'] = i + 1
+                df_pre_tickers.at[tk, 'Ticker'] = tk
+                tk_name = dict_info_tickers[tk]
+                df_pre_tickers.at[tk, 'Name'] = tk_name
+                ticker_names.update({tk: tk_name})
+
+            else:
+
+                df_pre_tickers.at[tk, 'No.'] = i + 1
+                df_pre_tickers.at[tk, 'Ticker'] = tk
+                if tk in bond_etfs.keys():
+                    # To avoid corrupt names at https://8marketcap.com/etfs/
+                    df_pre_tickers.at[tk, 'Name'] = bond_etfs[tk]
+                else:
+                    df_pre_tickers.at[tk, 'Name'] = ticker_names[tk]
+
+            row_ticker_map.update({tk: i})
+
+        pre_table_data = {
+            'df': df_pre_tickers,
+            'row': row_ticker_map,
+            'maxn': n_tickers
+        }
+
+        return pre_table_data
+
+    ##############
+
+    for category in selected_categories_stored:
+        print(f'\nProcessing {category} ...')
+        pre_table_data = create_pre_table(category)
+        init_ticker_category_info_map[category]['df'] = pre_table_data['df']
+        init_ticker_category_info_map[category]['row'] = pre_table_data['row']
+        max_tickers.update({category: pre_table_data['maxn']})
+        print(init_ticker_category_info_map[category]['df'])
+        print(init_ticker_category_info_map[category]['row'])
+
+
+    print(f'\nTotal tickers: {len(ticker_names)}')
+
+    ##############
+
+    pre_selection_table = {}  # A dictionary mapping ticker category to the corresponding pre-selection table
+    pre_selection_table_collapse_div = {}
+    pre_tables = []
+
+    for category in init_ticker_category_info_map.keys():
+        # There could be issues with non-existent callback IDs later if the loop is over selected_categories_stored only
+        # ??...
+
+        id_string = init_ticker_category_info_map[category]['id_string']
+
+        pre_selection_table[category] = html.Div([
+            dash_table.DataTable(
+                columns = [{'name': i, 'id': i} for i in init_ticker_category_info_map[category]['df'].columns],
+                data = init_ticker_category_info_map[category]['df'].to_dict('records'),
+                editable = False,
+                row_selectable = 'multi',
+                selected_rows = [],
+                style_as_list_view = True,
+                style_data_conditional = [
+                    # {'if': {'state': 'active'},'backgroundColor': 'white', 'border': '1px solid white'},
+                    {'if': {
+                        'state': 'active'},
+                        'backgroundColor': 'white',
+                        'border-top': '1px solid rgb(211, 211, 211)',
+                        'border-bottom': '1px solid rgb(211, 211, 211)'},
+                    # {'if': {'column_id': ' '}, 'cursor': 'pointer'},
+                    {'if': {'column_id': 'No.'}, 'width': 24},
+                    {'if': {'column_id': 'Ticker'}, 'width': 45},
+                    # {'if': {'column_id': 'Type'}, 'width': 38},
+                ],
+                id = f'pre-dash-table-{id_string}',
+                style_header = input_table_header_css,
+                style_data = input_table_data_css,
+            )
+        ])
+
+        hidden_cat = False if category in selected_categories_stored else True 
+        pre_selection_table_collapse_div[category] = html.Div(
+            hidden = hidden_cat,
+            children =
+            [
+                html.Div(
+                    init_ticker_category_info_map[category]['collapse_title'],
+                    id = f'pre-collapse-button-title-{id_string}',
+                    hidden = True
+                ),
+
+                html.Div([
+                    dbc.Button(
+                        id = f'pre-collapse-button-table-{id_string}',
+                        class_name = 'ma-1',
+                        color = 'primary',
+                        size = 'sm',
+                        n_clicks = 0,
+                        style = collapse_button_pre_table_css
+                    ),
+                    html.Div(
+                        id = f'n-preselected-{id_string}-container',
+                        children = [
+                            html.Div(
+                                id = f'n-preselected-{id_string}',
+                                hidden = False,
+                                style = n_selected_category_css
+                            ),
+                            html.Div(
+                                f'/ {max_tickers[category]}',
+                                hidden = False,
+                                style = n_tickers_category_css
+                            ),
+                            html.Div(
+                                'pre-selected',
+                                hidden = False,
+                                style = selected_string_css
+                            )
+                        ],
+                        style = {'display': 'inline-block'}
+                    )
+                ]),
+
+                dbc.Collapse(
+                    html.Div(
+                        html.Div(
+                            id = f'pre-category-{id_string}-container',
+                            children = [
+
+                                html.Div(
+                                    id = f'pre-menu-{id_string}-container',
+                                    children = [
+
+                                        ### Select buttons
+                                        html.Div(
+                                            id = f'pre-menu-{id_string}-select-buttons-container',
+                                            style = {'margin-bottom': '10px', 'margin-left': '10px'},
+                                            children = [
+                                                dbc.Button(
+                                                    'Select All',
+                                                    id = f'pre-menu-{id_string}-select-all-button',
+                                                    n_clicks = 0,
+                                                    class_name = 'ma-1',
+                                                    color = 'success',
+                                                    size = 'sm',
+                                                    style = pre_menu_select_all_button_css
+                                                ),
+                                                html.Div(
+                                                    id = 'pre-menu-{id_string}-select-first-last-tickers-container',
+                                                    children = [
+                                                        html.Div('Select Ticker Range', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                                        html.Div([
+                                                            html.Div(
+                                                                'First No.',
+                                                                style = {
+                                                                    'font-size': '14px',
+                                                                    'vertical-align': 'top',
+                                                                    'margin-bottom': '0px',
+                                                                    'margin-left': '2px',
+                                                                    'margin-right': '0px'
+                                                                }
+                                                            ),
+                                                            dbc.Input(
+                                                                id = f'pre-menu-{id_string}-select-first-ticker-input',
+                                                                type = 'number',
+                                                                min = 1,
+                                                                max = max_tickers[category],
+                                                                step = 1,
+                                                                debounce = True,
+                                                                style = pre_menu_input_css
+                                                            )],
+                                                            style = pre_menu_item_css
+                                                        ),
+                                                        html.Div([
+                                                            html.Div(
+                                                                'Last No.',
+                                                                style = {
+                                                                    'font-size': '14px',
+                                                                    'vertical-align': 'top',
+                                                                    'margin-bottom': '0px',
+                                                                    'margin-left': '2px',
+                                                                    'margin-right': '4px'
+                                                                }
+                                                            ),
+                                                            dbc.Input(
+                                                                id = f'pre-menu-{id_string}-select-last-ticker-input',
+                                                                type = 'number',
+                                                                min = 1,
+                                                                max = max_tickers[category],
+                                                                step = 1,
+                                                                debounce = True,
+                                                                style = pre_menu_input_css
+                                                            )],
+                                                            style = pre_menu_item_css
+                                                        )
+                                                    ]
+                                                )
+                                            ]
+                                        ),
+
+                                        ### Unselect buttons
+                                        html.Div(
+                                            id = f'pre-menu-{id_string}-unselect-buttons-container',
+                                            style = {'margin-bottom': '10px', 'margin-left': '10px'},
+                                            children = [
+                                                dbc.Button(
+                                                    'Unselect All',
+                                                    id = f'pre-menu-{id_string}-unselect-all-button',
+                                                    n_clicks = 0,
+                                                    class_name = 'ma-1',
+                                                    color = 'danger',
+                                                    size = 'sm',
+                                                    style = pre_menu_select_all_button_css
+                                                ),
+                                                html.Div(
+                                                    id = 'pre-menu-{id_string}-unselect-first-last-tickers-container',
+                                                    children = [
+                                                        html.Div('Unselect Ticker Range', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                                        html.Div([
+                                                            html.Div(
+                                                                'First No.',
+                                                                style = {
+                                                                    'font-size': '14px',
+                                                                    'vertical-align': 'top',
+                                                                    'margin-bottom': '0px',
+                                                                    'margin-left': '2px',
+                                                                    'margin-right': '0px'
+                                                                }
+                                                            ),
+                                                            dbc.Input(
+                                                                id = f'pre-menu-{id_string}-unselect-first-ticker-input',
+                                                                type = 'number',
+                                                                min = 1,
+                                                                max = max_tickers[category],
+                                                                step = 1,
+                                                                debounce = True,
+                                                                style = pre_menu_input_css
+                                                            )],
+                                                            style = pre_menu_item_css
+                                                        ),
+                                                        html.Div([
+                                                            html.Div(
+                                                                'Last No.',
+                                                                style = {
+                                                                    'font-size': '14px',
+                                                                    'vertical-align': 'top',
+                                                                    'margin-bottom': '0px',
+                                                                    'margin-left': '2px',
+                                                                    'margin-right': '4px'
+                                                                }
+                                                            ),
+                                                            dbc.Input(
+                                                                id = f'pre-menu-{id_string}-unselect-last-ticker-input',
+                                                                type = 'number',
+                                                                min = 1,
+                                                                max = max_tickers[category],
+                                                                step = 1,
+                                                                debounce = True,
+                                                                style = pre_menu_input_css
+                                                            )],
+                                                            style = pre_menu_item_css
+                                                        )
+                                                    ]
+                                                )
+                                            ]
+                                        ),
+                                    ],
+                                    style = pre_menu_container_css
+                                ),
+
+                                html.Div(
+                                    id = f'pre-table-{id_string}-container',
+                                    children = [
+                                    html.Div(
+                                        children = pre_table_titles[category],
+                                        id = f'pre-table-{id_string}-title',
+                                        style = input_table_title_css
+                                    ),
+                                    pre_selection_table[category]
+                                    ],
+                                    style = pre_table_container_css
+                                )
+                            ],
+                            # style = {'display': 'inline-block'}
+                        ),
+                    ),
+                    id = f'pre-collapse-table-{id_string}',
+                    is_open = False
+                ),  # dbc.Collapse
+            ]
+        )  # html.Div with dbc.Button and dbc.Collapse
+
+        pre_tables.append(pre_selection_table_collapse_div[category])
+
+    return (
+        pre_tables,
+        init_ticker_category_info_map,
+        ticker_names
+    )
 
 ####################################################################
 
@@ -1126,6 +921,9 @@ layout = html.Div([
     Input('pre-select-ticker-container', 'children'),
     Input({'index': ALL, 'type': 'ticker_icon'}, 'n_clicks'),
 
+    Input('ticker-category-info-map', 'data'),
+    Input('ticker-names', 'data'),
+
     State('tk-selected-category-map', 'data'),
     # Input('tk-selected-category-map', 'data'),
 
@@ -1297,6 +1095,9 @@ def output_custom_tickers(
     prev_table_selected_rows,
     ticker_divs,
     n_clicks,
+
+    ticker_category_info_map,
+    ticker_names,
 
     tk_selected_category_map
 ):
@@ -1549,7 +1350,11 @@ def output_custom_tickers(
         if removed_ticker in updated_tickers:
             updated_tickers.remove(removed_ticker)
 
-    ticker_divs = [ticker_div_title]
+    ticker_div_title = html.Div(
+        'YOUR PORTFOLIO:',
+        style = select_ticker_title_css
+    )
+    ticker_divs = [ticker_div_title]  # 'YOUR PORTFOLIO'
 
     hide_ticker_container = False if len(updated_tickers) > 0 else True
 
@@ -1725,8 +1530,8 @@ def toggle_collapse_tickers(title, n, is_open):
         return f'► {title}', is_open
 
 
-for category in ticker_category_info_map.keys():
-    id_string = ticker_category_info_map[category]['id_string']
+for category in category_titles_ids.keys():
+    id_string = category_titles_ids[category]['id_string']
     callback(
     # app.callback(        
         Output(f'pre-collapse-button-table-{id_string}', 'children'),
@@ -1775,7 +1580,9 @@ Input('pre-dash-table-stock-indices', 'selected_rows'),
 Input('pre-dash-table-volatility-indices', 'selected_rows'),
 Input('pre-dash-table-benchmarks', 'selected_rows'),
 
-Input('preselected-categories', 'data')
+Input('preselected-categories', 'data'),
+Input('ticker-category-info-map', 'data'),
+Input('ticker-names', 'data')
 )
 def store_preselected_tickers(
     table_biggest_companies_selected_rows,
@@ -1798,7 +1605,9 @@ def store_preselected_tickers(
     table_volatility_indices_selected_rows,
     table_benchmarks_selected_rows,
 
-    preselected_categories
+    preselected_categories,
+    ticker_category_info_map,
+    ticker_names
 ):
     table_selected_rows = {
         'biggest_companies': table_biggest_companies_selected_rows,

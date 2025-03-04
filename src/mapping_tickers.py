@@ -936,6 +936,22 @@ crypto_tickers = {
     'BONK-USD': 'Bonk USD'
 }
 
+######################################################################################
+
+tickers_non_url = {
+    'car_companies': car_companies,
+    'rare_metals_companies': rare_metals_companies,
+    'quantum_companies': quantum_companies,
+    'stock_indices': stock_index_tickers,
+    'precious_metals': precious_metal_etfs,
+    'commodity_etfs': commodity_etf_tickers,
+    'volatility_indices': volatility_tickers,
+    'currency_etfs': currency_etf_tickers,
+    'benchmarks': benchmark_tickers
+}
+
+######################################################################################
+
 ### YouTube Portfolio Optimization example by Ryan O'Connell ###
 # https://www.youtube.com/watch?v=9GA2WlYFeBU
 

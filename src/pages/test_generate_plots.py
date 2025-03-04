@@ -7693,7 +7693,7 @@ layout = html.Div([
     custom_spinner = html.Div([
         html.Br(),
         html.Br(),
-        'Updating Plot',
+        'Rendering Plot',
         html.Br(),
         html.Br(),
         dls.Fade(color = 'midnightblue'),

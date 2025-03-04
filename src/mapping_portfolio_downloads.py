@@ -267,3 +267,101 @@ category_titles_ids = {
         'collapse_title': 'BENCHMARKS'
     }
 }
+
+init_ticker_category_info_map = {
+    'biggest_companies': {
+        'sort_by': '',
+        'id_string': 'biggest-companies',
+        'collapse_title': 'BIGGEST COMPANIES'
+    },
+    'sp500': {
+        'sort_by': '',
+        'id_string': 'sp500',
+        'collapse_title': 'S&P 500 COMPANIES'
+    },
+    'nasdaq100': {
+        'sort_by': '',
+        'id_string': 'nasdaq100',
+        'collapse_title': 'NASDAQ 100 COMPANIES'
+    },
+    'dow_jones': {
+        'sort_by': '',
+        'id_string': 'dow-jones',
+        'collapse_title': 'DOW JONES INDUSTRIAL AVERAGE COMPANIES'
+    },
+    'car_companies': {
+        'sort_by': 'marketCap',
+        'id_string': 'car-companies',
+        'collapse_title': 'CAR COMPANIES'
+    },
+    'rare_metals_companies': {
+        'sort_by': 'marketCap',
+        'id_string': 'rare-metals-companies',
+        'collapse_title': 'RARE METAL COMPANIES'
+    },
+    'quantum_companies': {
+        'sort_by': 'marketCap',
+        'id_string': 'quantum-companies',
+        'collapse_title': 'QUANTUM COMPUTING COMPANIES'
+    },
+    'biggest_etfs': {
+        'sort_by': '',
+        'id_string': 'biggest-etfs',
+        'collapse_title': 'BIGGEST ETFs'
+    },
+    'fixed_income_etfs': {
+        'sort_by': '',
+        'id_string': 'fixed-income-etfs',
+        'collapse_title': 'FIXED INCOME ETFs'
+    },
+    'ai_etfs': {
+        'sort_by': '',
+        'id_string': 'ai-etfs',
+        'collapse_title': 'ARTIFICIAL INTELLIGENCE ETFs'
+    },
+    'precious_metals': {  # ETFs
+        'sort_by': 'totalAssets',
+        'id_string': 'precious-metals',
+        'collapse_title': 'PRECIOUS METAL ETFs'
+    },
+    'commodity_etfs': {
+        'sort_by': 'totalAssets',
+        'id_string': 'commodity-etfs',
+        'collapse_title': 'COMMODITY ETFs'
+    },
+    'currency_etfs': {
+        'sort_by': 'totalAssets',
+        'id_string': 'currency-etfs',
+        'collapse_title': 'CURRENCY ETFs'
+    },
+    'cryptos': {
+        'sort_by': '',
+        'id_string': 'cryptos',
+        'collapse_title': 'CRYPTOCURRENCIES'
+    },
+    'crypto_etfs': {
+        'sort_by': '',
+        'id_string': 'crypto-etfs',
+        'collapse_title': 'CRYPTOCURRENCY ETFs'
+    },
+    'futures': {
+        'sort_by': '',
+        'id_string': 'futures',
+        'collapse_title': 'COMMODITY FUTURES'
+    },
+    'stock_indices': {
+        'sort_by': '',  # Only some indices have 'volume' in info
+        'id_string': 'stock-indices',
+        'collapse_title': 'STOCK INDICES'
+    },
+    'volatility_indices': {
+        'sort_by': '',  # No 'volume' in info
+        'id_string': 'volatility-indices',
+        'collapse_title': 'VOLATILITY INDICES'
+    },
+    'benchmarks': {
+        'sort_by': '',
+        'id_string': 'benchmarks',
+        'collapse_title': 'BENCHMARKS'
+    }
+}
