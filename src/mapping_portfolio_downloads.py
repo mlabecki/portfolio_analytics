@@ -43,17 +43,17 @@ url_settings = {
         'sort_by_factor': 1e9,
         'sort_by_type': float
     },
-    'car_companies': {
-        'category_name': 'Car Companies',
-        'url': 'https://companiesmarketcap.com/cad/automakers/largest-automakers-by-market-cap/',
-        'cols': ['Name', 'Market Cap'],
-        'cols_final': ['Name', 'Market Cap'],
-        # 'cols_final': ['Symbol', 'Name', 'Market Cap ($B)'],
-        # 'cols_final': ['Symbol', 'Company Name', 'Market Cap ($B)'],
-        'sort_by': 'Market Cap',
-        'sort_by_factor': 1e6,
-        'sort_by_type': float
-    },
+    # 'car_companies': {
+    #     'category_name': 'Car Companies',
+    #     'url': 'https://companiesmarketcap.com/cad/automakers/largest-automakers-by-market-cap/',
+    #     'cols': ['Name', 'Market Cap'],
+    #     'cols_final': ['Name', 'Market Cap'],
+    #     # 'cols_final': ['Symbol', 'Name', 'Market Cap ($B)'],
+    #     # 'cols_final': ['Symbol', 'Company Name', 'Market Cap ($B)'],
+    #     'sort_by': 'Market Cap',
+    #     'sort_by_factor': 1e6,
+    #     'sort_by_type': float
+    # },
     'biggest_etfs': {
         'category_name': 'Biggest ETFs',
         'url': 'https://8marketcap.com/etfs/',

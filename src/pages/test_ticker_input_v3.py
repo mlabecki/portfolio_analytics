@@ -1377,7 +1377,7 @@ def output_custom_tickers(
         for category in selected_categories:
             df_info = tk_cat_info_map[category]['df']  # This is a dictionary!
             for added_ticker in added_tickers:
-                if added_ticker in df_info['Ticker']:
+                if added_ticker in list(df_info['Ticker'].values()):
                     row_map = tk_cat_info_map[category]['row']
                     if row_map[added_ticker] not in table_selected_rows[category]:
                         table_selected_rows[category].append(row_map[added_ticker])
@@ -1386,10 +1386,20 @@ def output_custom_tickers(
         for category in selected_categories:
             df_info = tk_cat_info_map[category]['df']  # This is a dictionary!
             for removed_ticker in removed_tickers:
-                if removed_ticker in df_info['Ticker']:
+                if removed_ticker in list(df_info['Ticker'].values()):
                     row_map = tk_cat_info_map[category]['row']
                     if row_map[removed_ticker] in table_selected_rows[category]:
                         table_selected_rows[category].remove(row_map[removed_ticker])
+
+    # df.to_dict() = {
+    #   'Ticker':   {0: 'AAPL', 1: 'AMZN', 2: 'TM'},
+    #   'Name':     {0: 'Apple', 1: 'Amazon', 2: 'Toyota'}
+    # }
+    # df.to_dict('records') = [
+    #   {'Ticker': 'AAPL', 'Name': 'Apple'},
+    #   {'Ticker': 'AMZN', 'Name': 'Amazon'},
+    #   {'Ticker': 'TM', 'Name': 'Toyota'} 
+    # ]
 
     ##### SELECTED TICKERS
     # Set up selected tickers divs, popovers and table

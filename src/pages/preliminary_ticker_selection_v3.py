@@ -62,29 +62,6 @@ etf_categories = [
 ]
 pre_table_columns = ['No.', 'Ticker', 'Name']
 
-pre_table_titles = {
-    'biggest_companies': f'{max_tickers["biggest_companies"]} BIGGEST COMPANIES by Market Capitalization',
-    'sp500': f'{max_tickers["sp500"]} S&P 500 COMPANIES by Market Capitalization',
-    'nasdaq100': f'{max_tickers["nasdaq100"]} NASDAQ 100 COMPANIES by Market Capitalization',
-    'dow_jones': f'{max_tickers["dow_jones"]} DOW JONES INDUSTRIAL AVERAGE COMPANIES by Market Capitalization',
-    'car_companies': f'{max_tickers["car_companies"]} CAR COMPANIES by Market Capitalization',
-    'rare_metals_companies': f'{max_tickers["rare_metals_companies"]} RARE METAL COMPANIES by Market Capitalization',
-    'quantum_companies': f'{max_tickers["quantum_companies"]} QUANTUM COMPUTING COMPANIES by Market Capitalization',
-    'biggest_etfs': f'{max_tickers["biggest_etfs"]} BIGGEST ETFs by Total Assets Under Management',
-    'fixed_income_etfs': f'{max_tickers["fixed_income_etfs"]} FIXED INCOME ETFs by Total Assets Under Management',
-    'ai_etfs': f'{max_tickers["ai_etfs"]} ARTIFICIAL INTELLIGENCE ETFs by Total Assets Under Management',
-    'precious_metals': f'{max_tickers["precious_metals"]} PRECIOUS METAL ETFs sorted by Total Assets Under Management',
-    'commodity_etfs': f'{max_tickers["commodity_etfs"]} COMMODITY ETFs sorted by Total Assets Under Management',
-    'currency_etfs': f'{max_tickers["currency_etfs"]} CURRENCY ETFs sorted by Total Assets Under Management',
-    'cryptos': f'{max_tickers["cryptos"]} CRYPTOCURRENCIES by Market Capitalization',
-    'crypto_etfs': f'{max_tickers["crypto_etfs"]} CRYPTOCURRENCY ETFs by Total Assets Under Management',
-    'futures': f'{max_tickers["futures"]} COMMODITY FUTURES by Open Interest',
-    'stock_indices': f'{max_tickers["stock_indices"]} STOCK INDICES',
-    'volatility_indices': f'{max_tickers["volatility_indices"]} VOLATILITY INDICES',
-    'benchmarks': f'{max_tickers["benchmarks"]} BENCHMARKS'
-}
-
-
 ###########################################################################################
 ### LAYOUT
 ###
@@ -111,8 +88,8 @@ layout = html.Div([
     # dcc.Store(data = {}, id = 'tk-selected-category-map', storage_type = 'session'),
     # dcc.Store(data = [], id = 'preselected-categories', storage_type = 'session'),
 
-    dcc.Store(data = {}, id = 'ticker-category-info-map', storage_type = 'session'),  # or memory?
-    dcc.Store(data = {}, id = 'ticker-names', storage_type = 'session'),  # or memory?
+    dcc.Store(data = {}, id = 'ticker-category-info-map', storage_type = 'session'),
+    dcc.Store(data = {}, id = 'ticker-names', storage_type = 'session'),
 
     dcc.Store(data = {}, id = 'pre-prev-table-selected-rows', storage_type = 'memory'),
     dcc.Store(data = {}, id = 'tk-selected-category-map', storage_type = 'memory'),
@@ -201,7 +178,7 @@ layout = html.Div([
 #######################################
 
 for category in category_titles_ids.keys():
-    init_ticker_category_info_map[category]['df'] = pd.DataFrame()
+    init_ticker_category_info_map[category]['df'] = {}
     init_ticker_category_info_map[category]['row'] = {}
     init_ticker_category_info_map[category]['dict'] = {}
 
@@ -228,10 +205,10 @@ def generate_preselected_tables(
             else:
                 dict_cat = tickers_non_url[category]  # in mapping_tickers
 
-            tickers_cat = list(dict_cat.keys())
-            init_ticker_category_info_map[category]['df'].index = tickers_cat
+            # tickers_cat = list(dict_cat.keys())
+            # init_ticker_category_info_map[category]['df'].index = tickers_cat
             init_ticker_category_info_map[category]['dict'] = dict_cat
-            init_ticker_category_info_map[category]['df'].columns = pre_table_columns
+            # init_ticker_category_info_map[category]['df'].columns = pre_table_columns
 
     ############
 
@@ -242,7 +219,7 @@ def generate_preselected_tables(
         tk_cat_info_map
     ):
 
-        df_pre_tickers = tk_cat_info_map[category]['df']
+        # df_pre_tickers = tk_cat_info_map[category]['df']  # A dataframe
         row_ticker_map = tk_cat_info_map[category]['row']
         dict_info_tickers = tk_cat_info_map[category]['dict']
         tk_sort_by = tk_cat_info_map[category]['sort_by']
@@ -250,17 +227,18 @@ def generate_preselected_tables(
         category_tickers = list(dict_info_tickers.keys())
         n_tickers = min(len(category_tickers), max_tickers[category])
         category_tickers = category_tickers[: n_tickers]
-        df_pre_tickers = df_pre_tickers[: n_tickers]
         max_tickers[category] = n_tickers
 
         category_tickers_sorted = category_tickers
 
+        df_pre_tickers = pd.DataFrame(index = category_tickers)
+
         # Sort ticker list by marketCap (equities), totalAssets (ETFs) or openInterest (futures)
 
-        # if tk_sort_by != '':
+        if tk_sort_by != '':
             # This means that the tickers are NOT from a URL
         
-        if category in tickers_non_url.keys():
+        # if category in tickers_non_url.keys():  # Need to have non-empty tk_sort_by
 
             dict_tickers_values = {}
             dict_currency_fx_rates = {}
@@ -313,15 +291,40 @@ def generate_preselected_tables(
 
     ##############
 
+    df_ticker_category_info_map = {}  # Dictionary of dataframes
+    for category in init_ticker_category_info_map.keys():
+        df_ticker_category_info_map[category] = pd.DataFrame()
+    
     for category in selected_categories_stored:
         print(f'\nProcessing {category} ...')
-        pre_table_data = create_pre_table(category)
-        init_ticker_category_info_map[category]['df'] = pre_table_data['df']
+        pre_table_data = create_pre_table(category, init_ticker_category_info_map)
+        df_ticker_category_info_map[category] = pre_table_data['df']
         init_ticker_category_info_map[category]['row'] = pre_table_data['row']
         max_tickers.update({category: pre_table_data['maxn']})
-        print(init_ticker_category_info_map[category]['df'])
-        print(init_ticker_category_info_map[category]['row'])
+        # print(init_ticker_category_info_map[category]['df'])
+        # print(init_ticker_category_info_map[category]['row'])
 
+    pre_table_titles = {
+        'biggest_companies': f'{max_tickers["biggest_companies"]} BIGGEST COMPANIES by Market Capitalization',
+        'sp500': f'{max_tickers["sp500"]} S&P 500 COMPANIES by Market Capitalization',
+        'nasdaq100': f'{max_tickers["nasdaq100"]} NASDAQ 100 COMPANIES by Market Capitalization',
+        'dow_jones': f'{max_tickers["dow_jones"]} DOW JONES INDUSTRIAL AVERAGE COMPANIES by Market Capitalization',
+        'car_companies': f'{max_tickers["car_companies"]} CAR COMPANIES by Market Capitalization',
+        'rare_metals_companies': f'{max_tickers["rare_metals_companies"]} RARE METAL COMPANIES by Market Capitalization',
+        'quantum_companies': f'{max_tickers["quantum_companies"]} QUANTUM COMPUTING COMPANIES by Market Capitalization',
+        'biggest_etfs': f'{max_tickers["biggest_etfs"]} BIGGEST ETFs by Total Assets Under Management',
+        'fixed_income_etfs': f'{max_tickers["fixed_income_etfs"]} FIXED INCOME ETFs by Total Assets Under Management',
+        'ai_etfs': f'{max_tickers["ai_etfs"]} ARTIFICIAL INTELLIGENCE ETFs by Total Assets Under Management',
+        'precious_metals': f'{max_tickers["precious_metals"]} PRECIOUS METAL ETFs sorted by Total Assets Under Management',
+        'commodity_etfs': f'{max_tickers["commodity_etfs"]} COMMODITY ETFs sorted by Total Assets Under Management',
+        'currency_etfs': f'{max_tickers["currency_etfs"]} CURRENCY ETFs sorted by Total Assets Under Management',
+        'cryptos': f'{max_tickers["cryptos"]} CRYPTOCURRENCIES by Market Capitalization',
+        'crypto_etfs': f'{max_tickers["crypto_etfs"]} CRYPTOCURRENCY ETFs by Total Assets Under Management',
+        'futures': f'{max_tickers["futures"]} COMMODITY FUTURES by Open Interest',
+        'stock_indices': f'{max_tickers["stock_indices"]} STOCK INDICES',
+        'volatility_indices': f'{max_tickers["volatility_indices"]} VOLATILITY INDICES',
+        'benchmarks': f'{max_tickers["benchmarks"]} BENCHMARKS'
+    }
 
     print(f'\nTotal tickers: {len(ticker_names)}')
 
@@ -337,10 +340,17 @@ def generate_preselected_tables(
 
         id_string = init_ticker_category_info_map[category]['id_string']
 
+        if category in selected_categories_stored:
+            table_columns = [{'name': i, 'id': i} for i in df_ticker_category_info_map[category].columns]
+            table_data = df_ticker_category_info_map[category].to_dict('records')
+        else:
+            table_columns = []
+            table_data = []
+
         pre_selection_table[category] = html.Div([
             dash_table.DataTable(
-                columns = [{'name': i, 'id': i} for i in init_ticker_category_info_map[category]['df'].columns],
-                data = init_ticker_category_info_map[category]['df'].to_dict('records'),
+                columns = table_columns,
+                data = table_data,
                 editable = False,
                 row_selectable = 'multi',
                 selected_rows = [],
@@ -576,6 +586,8 @@ def generate_preselected_tables(
         )  # html.Div with dbc.Button and dbc.Collapse
 
         pre_tables.append(pre_selection_table_collapse_div[category])
+
+        init_ticker_category_info_map[category]['df'] = df_ticker_category_info_map[category].to_dict()
 
     return (
         pre_tables,
@@ -921,6 +933,7 @@ def generate_preselected_tables(
     Input('pre-select-ticker-container', 'children'),
     Input({'index': ALL, 'type': 'ticker_icon'}, 'n_clicks'),
 
+    Input('selected-categories-stored', 'data'),
     Input('ticker-category-info-map', 'data'),
     Input('ticker-names', 'data'),
 
@@ -1096,6 +1109,7 @@ def output_custom_tickers(
     ticker_divs,
     n_clicks,
 
+    selected_categories_stored,
     ticker_category_info_map,
     ticker_names,
 
@@ -1282,7 +1296,11 @@ def output_custom_tickers(
         for category in ticker_category_info_map.keys():
             prev_table_selected_rows[category] = []
 
+    dict_cat_tickers = {}
+
     for category in ticker_category_info_map.keys():
+
+
 
         n_category_tickers = len(table_data[category])
 
@@ -1368,12 +1386,13 @@ def output_custom_tickers(
 
     for category in ticker_category_info_map.keys():
         row_map = ticker_category_info_map[category]['row']
-        df_pre = ticker_category_info_map[category]['df']
+        df_pre = ticker_category_info_map[category]['df']  # Dictionary
         selected_rows = [k for k in table_selected_rows[category] if k not in prev_table_selected_rows[category]]
         if len(selected_rows) > 0:
             # preselected_categories.append(category)
             for row in selected_rows:
-                added_ticker = df_pre.index[df_pre['No.'] == row + 1][0]
+                # added_ticker = df_pre.index[df_pre['No.'] == row + 1][0]
+                added_ticker = [tk for tk in row_map.keys() if row_map[tk] == row][0]
                 if added_ticker not in added_tickers:
                     added_tickers.append(added_ticker)
                 if added_ticker not in updated_tickers:
@@ -1385,7 +1404,8 @@ def output_custom_tickers(
             unselected_rows = [k for k in prev_table_selected_rows[category] if k not in table_selected_rows[category]]
             if len(unselected_rows) > 0:
                 for row in unselected_rows:
-                    removed_ticker = df_pre.index[df_pre['No.'] == row + 1][0]
+                    # removed_ticker = df_pre.index[df_pre['No.'] == row + 1][0]
+                    removed_ticker = [tk for tk in row_map.keys() if row_map[tk] == row][0]
                     if removed_ticker not in removed_tickers:
                         removed_tickers.append(removed_ticker)
                     if removed_ticker in updated_tickers:
@@ -1401,22 +1421,36 @@ def output_custom_tickers(
 
     # Make sure added_ticker is selected in all tables and removed_ticker is removed from all tables
     if added_tickers != []:
-        for category in ticker_category_info_map.keys():
-            df_pre = ticker_category_info_map[category]['df']
+        # for category in ticker_category_info_map.keys():
+        for category in selected_categories_stored:
+            df_pre = ticker_category_info_map[category]['df']  # This is a dictionary!
+            print(f'Tickers added\n{df_pre}\n')
             for added_ticker in added_tickers:
-                if added_ticker in df_pre['Ticker']:
+                if added_ticker in list(df_pre['Ticker'].values()):
                     row_map = ticker_category_info_map[category]['row']
                     if row_map[added_ticker] not in table_selected_rows[category]:
                         table_selected_rows[category].append(row_map[added_ticker])
 
     if removed_tickers != []:
-        for category in ticker_category_info_map.keys():
-            df_pre = ticker_category_info_map[category]['df']
+        # for category in ticker_category_info_map.keys():
+        for category in selected_categories_stored:
+            df_pre = ticker_category_info_map[category]['df']  # This is a dictionary!
+            print(f'Tickers removed\n{df_pre}\n')            
             for removed_ticker in removed_tickers:
-                if removed_ticker in df_pre['Ticker']:
+                if removed_ticker in list(df_pre['Ticker'].values()):
                     row_map = ticker_category_info_map[category]['row']
                     if row_map[removed_ticker] in table_selected_rows[category]:
                         table_selected_rows[category].remove(row_map[removed_ticker])
+
+    # df.to_dict() = {
+    #   'Ticker':   {0: 'AAPL', 1: 'AMZN', 2: 'TM'},
+    #   'Name':     {0: 'Apple', 1: 'Amazon', 2: 'Toyota'}
+    # }
+    # df.to_dict('records') = [
+    #   {'Ticker': 'AAPL', 'Name': 'Apple'},
+    #   {'Ticker': 'AMZN', 'Name': 'Amazon'},
+    #   {'Ticker': 'TM', 'Name': 'Toyota'} 
+    # ]
 
     ##### SELECTED TICKERS
     # Set up selected tickers divs
