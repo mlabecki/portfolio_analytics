@@ -38,6 +38,20 @@ ticker_div_title = html.Div(
 )
 
 pre_table_columns = ['No.', 'Ticker', 'Name']
+pre_table_columns_fx = ['No.', 'Ticker', 'Name', 'Currency Name', 'Currency Group']
+# Ticker: 'CAD=X', 'AUD=X', 'KWD=X' ...
+# Name: 'CAD/USD', 'AUD/USD', 'KWD/USD' ...
+# Currency Name: 'Canadian Dollar', 'Australian Dollar', 'Kuwaiti Dinar' ...
+# Currency Group: 'Major', 'Major', 'Other' ...
+
+n_currencies_major = len(currencies_major)
+n_currencies_minor = len(currencies_minor)
+n_currencies_all = len(currencies_all)
+indices_currencies_major = list(range(n_currencies_major))
+indices_currencies_minor = list(range(n_currencies_minor))
+indices_currencies_all = list(range(n_currencies_all))
+
+########################################################################
 
 # @callback(
 # Output('all-tables-container', 'children'),
@@ -52,6 +66,41 @@ all_categories = list(category_titles_ids.keys())
 for category in all_categories:
 
     id_string = category_titles_ids[category]['id_string']
+
+    if category == 'fx':
+        conditional_css = [
+            {'if': {'state': 'active'},
+                'background': 'grey',
+                'border-top': '1px solid rgb(211, 211, 211)',
+                'border-bottom': '1px solid rgb(211, 211, 211)'},
+            {'if': {'column_id': 'No.'}, 'width': 24},
+            {'if': {'column_id': 'Ticker'}, 'width': 45},
+            {'if': {'column_id': 'Currency'}, 'width': 70},
+            {'if': {'column_id': 'Exchange'}, 'width': 72},
+            {'if': {'column_id': 'Data Start'}, 'width': 85},
+            {'if': {'column_id': 'Data End'}, 'width': 85},
+            {'if': {
+                'filter_query': '{Currency Group} = Other',
+                # 'column_id': 'Currency Group'
+                },
+            'background': 'rgb(225, 225, 225)',
+            'border-bottom': '1px solid rgb(185, 185, 185)'},
+            {'if': {'row_index': indices_currencies_major[-1]}, 'border-bottom': '2px solid rgb(55, 55, 55)'}                    
+        ]
+    else:
+        conditional_css = [
+            {'if':
+                { 'state': 'active'},
+                'backgroundColor': 'white',
+                'border-top': '1px solid rgb(211, 211, 211)',
+                'border-bottom': '1px solid rgb(211, 211, 211)'},
+            {'if': {'column_id': 'No.'}, 'width': 24},
+            {'if': {'column_id': 'Ticker'}, 'width': 45},
+            {'if': {'column_id': 'Currency'}, 'width': 70},
+            {'if': {'column_id': 'Exchange'}, 'width': 72},
+            {'if': {'column_id': 'Data Start'}, 'width': 85},
+            {'if': {'column_id': 'Data End'}, 'width': 85}
+        ]
 
     dash_input_table = dash_table.DataTable(
         columns = [],
@@ -77,19 +126,7 @@ for category in all_categories:
         tooltip_duration = None,
         selected_rows = [],
         style_as_list_view = True,
-        style_data_conditional = [
-            {'if': 
-                { 'state': 'active'},
-                'backgroundColor': 'white',
-                'border-top': '1px solid rgb(211, 211, 211)',
-                'border-bottom': '1px solid rgb(211, 211, 211)'},
-            {'if': {'column_id': 'No.'}, 'width': 24},
-            {'if': {'column_id': 'Ticker'}, 'width': 45},
-            {'if': {'column_id': 'Currency'}, 'width': 70},
-            {'if': {'column_id': 'Exchange'}, 'width': 72},
-            {'if': {'column_id': 'Data Start'}, 'width': 85},
-            {'if': {'column_id': 'Data End'}, 'width': 85},
-        ],
+        style_data_conditional = conditional_css,
         id = f'dash-table-{id_string}',
         style_header = input_table_header_css,
         style_data = input_table_data_css,
@@ -364,6 +401,7 @@ layout = html.Div([
     Output('dash-table-cryptos', 'columns'),
     Output('dash-table-crypto-etfs', 'columns'),
     Output('dash-table-futures', 'columns'),
+    Output('dash-table-fx', 'columns'),
     Output('dash-table-precious-metals', 'columns'),
     Output('dash-table-stock-indices', 'columns'),
     Output('dash-table-volatility-indices', 'columns'),
@@ -385,6 +423,7 @@ layout = html.Div([
     Output('dash-table-cryptos', 'data'),
     Output('dash-table-crypto-etfs', 'data'),
     Output('dash-table-futures', 'data'),
+    Output('dash-table-fx', 'data'),
     Output('dash-table-precious-metals', 'data'),
     Output('dash-table-stock-indices', 'data'),
     Output('dash-table-volatility-indices', 'data'),
@@ -406,6 +445,7 @@ layout = html.Div([
     Output('dash-table-cryptos', 'tooltip_data'),
     Output('dash-table-crypto-etfs', 'tooltip_data'),
     Output('dash-table-futures', 'tooltip_data'),
+    Output('dash-table-fx', 'tooltip_data'),
     Output('dash-table-precious-metals', 'tooltip_data'),
     Output('dash-table-stock-indices', 'tooltip_data'),
     Output('dash-table-volatility-indices', 'tooltip_data'),
@@ -427,6 +467,7 @@ layout = html.Div([
     Output('input-table-collapse-div-cryptos', 'hidden'),
     Output('input-table-collapse-div-crypto-etfs', 'hidden'),
     Output('input-table-collapse-div-futures', 'hidden'),
+    Output('input-table-collapse-div-fx', 'hidden'),
     Output('input-table-collapse-div-precious-metals', 'hidden'),
     Output('input-table-collapse-div-stock-indices', 'hidden'),
     Output('input-table-collapse-div-volatility-indices', 'hidden'),
@@ -516,12 +557,20 @@ def read_preselected_tickers(
                         tk_industry = tk_info['industry'] if 'industry' in tk_info.keys() else ''
                         tk_sector = tk_info['sector'] if 'sector' in tk_info.keys() else ''
 
+                        tk_fx_currency_name = ''
+                        tk_fx_currency_group = ''
+
                         if 'longBusinessSummary' in tk_info.keys():
                             tk_summary = tk_info['longBusinessSummary']
                         elif 'description' in tk_info.keys():
                             tk_summary = tk_info['description']
                         elif category in ['stock_indices', 'volatility_indices', 'benchmarks']:
                             tk_summary = indices_custom_info[tk]['description']
+                        elif category == 'fx':
+                            currency = tk.replace('=X', '')
+                            tk_fx_currency_name = currencies_combined[currency]
+                            tk_fx_currency_group = 'Major' if currency in currencies_major.keys() else 'Other'
+                            tk_summary = f'Exchange rate between {tk_fx_currency_name} and the US Dollar'
                         elif len(tk_hist.index) == 0:
                             tk_summary = f'WARNING: No historical data available for {tk}, ticker cannot be added to portfolio'
                         else: 
@@ -532,6 +581,10 @@ def read_preselected_tickers(
                         df_info_tickers.at[tk, 'Data End'] = tk_end
                         df_info_tickers.at[tk, 'Exchange'] = tk_exchange
                         df_info_tickers.at[tk, 'Currency'] = tk_currency
+
+                        if category == 'fx':
+                            df_info_tickers.at[tk, 'Currency Name'] = tk_fx_currency_name
+                            df_info_tickers.at[tk, 'Currency Group'] = tk_fx_currency_group
 
                         if category == 'benchmarks':
                             df_info_tickers.at[tk, 'Type'] = tk_type
@@ -554,7 +607,9 @@ def read_preselected_tickers(
                                 'category': tk_category,
                                 'industry': tk_industry,
                                 'sector': tk_sector,
-                                'summary': tk_summary
+                                'summary': tk_summary,
+                                'fx_currency_name': tk_fx_currency_name,
+                                'fx_currency_group': tk_fx_currency_group
                             }
                         })
 
@@ -575,6 +630,10 @@ def read_preselected_tickers(
                     df_info_tickers.at[tk, 'Data End'] = ticker_info[tk]['end']
                     df_info_tickers.at[tk, 'Exchange'] = ticker_info[tk]['exchange']
                     df_info_tickers.at[tk, 'Currency'] = ticker_info[tk]['currency']
+
+                    if category == 'fx':
+                        df_info_tickers.at[tk, 'Currency Name'] = ticker_info[tk]['fx_currency_name']
+                        df_info_tickers.at[tk, 'Currency Group'] = ticker_info[tk]['fx_currency_group']
 
                     if category == 'benchmarks':
                         df_info_tickers.at[tk, 'Type'] = ticker_info[tk]['type']
@@ -650,6 +709,7 @@ def read_preselected_tickers(
         dash_input_tables['cryptos']['columns'],
         dash_input_tables['crypto_etfs']['columns'],
         dash_input_tables['futures']['columns'],
+        dash_input_tables['fx']['columns'],
         dash_input_tables['precious_metals']['columns'],
         dash_input_tables['stock_indices']['columns'],
         dash_input_tables['volatility_indices']['columns'],
@@ -670,6 +730,7 @@ def read_preselected_tickers(
         dash_input_tables['cryptos']['data'],
         dash_input_tables['crypto_etfs']['data'],
         dash_input_tables['futures']['data'],
+        dash_input_tables['fx']['data'],
         dash_input_tables['precious_metals']['data'],
         dash_input_tables['stock_indices']['data'],
         dash_input_tables['volatility_indices']['data'],
@@ -690,6 +751,7 @@ def read_preselected_tickers(
         dash_input_tables['cryptos']['tooltip_data'],
         dash_input_tables['crypto_etfs']['tooltip_data'],
         dash_input_tables['futures']['tooltip_data'],
+        dash_input_tables['fx']['tooltip_data'],
         dash_input_tables['precious_metals']['tooltip_data'],
         dash_input_tables['stock_indices']['tooltip_data'],
         dash_input_tables['volatility_indices']['tooltip_data'],
@@ -710,6 +772,7 @@ def read_preselected_tickers(
         tk_cat_info_map['cryptos']['hidden'],
         tk_cat_info_map['crypto_etfs']['hidden'],
         tk_cat_info_map['futures']['hidden'],
+        tk_cat_info_map['fx']['hidden'],
         tk_cat_info_map['precious_metals']['hidden'],
         tk_cat_info_map['stock_indices']['hidden'],
         tk_cat_info_map['volatility_indices']['hidden'],
@@ -753,6 +816,7 @@ def read_preselected_tickers(
     Output('menu-cryptos-select-all-button', 'n_clicks'),
     Output('menu-crypto-etfs-select-all-button', 'n_clicks'),
     Output('menu-futures-select-all-button', 'n_clicks'),
+    Output('menu-fx-select-all-button', 'n_clicks'),
     Output('menu-precious-metals-select-all-button', 'n_clicks'),
     Output('menu-stock-indices-select-all-button', 'n_clicks'),
     Output('menu-volatility-indices-select-all-button', 'n_clicks'),
@@ -773,6 +837,7 @@ def read_preselected_tickers(
     Output('menu-cryptos-unselect-all-button', 'n_clicks'),
     Output('menu-crypto-etfs-unselect-all-button', 'n_clicks'),
     Output('menu-futures-unselect-all-button', 'n_clicks'),
+    Output('menu-fx-unselect-all-button', 'n_clicks'),
     Output('menu-precious-metals-unselect-all-button', 'n_clicks'),
     Output('menu-stock-indices-unselect-all-button', 'n_clicks'),
     Output('menu-volatility-indices-unselect-all-button', 'n_clicks'),
@@ -793,6 +858,7 @@ def read_preselected_tickers(
     Output('dash-table-cryptos', 'selected_rows'),
     Output('dash-table-crypto-etfs', 'selected_rows'),
     Output('dash-table-futures', 'selected_rows'),
+    Output('dash-table-fx', 'selected_rows'),
     Output('dash-table-precious-metals', 'selected_rows'),
     Output('dash-table-stock-indices', 'selected_rows'),
     Output('dash-table-volatility-indices', 'selected_rows'),
@@ -813,6 +879,7 @@ def read_preselected_tickers(
     Output('n-selected-cryptos', 'children'),
     Output('n-selected-crypto-etfs', 'children'),
     Output('n-selected-futures', 'children'),
+    Output('n-selected-fx', 'children'),
     Output('n-selected-precious-metals', 'children'),
     Output('n-selected-stock-indices', 'children'),
     Output('n-selected-volatility-indices', 'children'),
@@ -833,6 +900,7 @@ def read_preselected_tickers(
     Output('n-category-tickers-cryptos', 'children'),
     Output('n-category-tickers-crypto-etfs', 'children'),
     Output('n-category-tickers-futures', 'children'),
+    Output('n-category-tickers-fx', 'children'),
     Output('n-category-tickers-precious-metals', 'children'),
     Output('n-category-tickers-stock-indices', 'children'),
     Output('n-category-tickers-volatility-indices', 'children'),
@@ -860,6 +928,7 @@ def read_preselected_tickers(
     Input('menu-cryptos-select-all-button', 'n_clicks'),
     Input('menu-crypto-etfs-select-all-button', 'n_clicks'),
     Input('menu-futures-select-all-button', 'n_clicks'),
+    Input('menu-fx-select-all-button', 'n_clicks'),
     Input('menu-precious-metals-select-all-button', 'n_clicks'),
     Input('menu-stock-indices-select-all-button', 'n_clicks'),
     Input('menu-volatility-indices-select-all-button', 'n_clicks'),
@@ -880,6 +949,7 @@ def read_preselected_tickers(
     Input('menu-cryptos-unselect-all-button', 'n_clicks'),
     Input('menu-crypto-etfs-unselect-all-button', 'n_clicks'),
     Input('menu-futures-unselect-all-button', 'n_clicks'),
+    Input('menu-fx-unselect-all-button', 'n_clicks'),    
     Input('menu-precious-metals-unselect-all-button', 'n_clicks'),
     Input('menu-stock-indices-unselect-all-button', 'n_clicks'),
     Input('menu-volatility-indices-unselect-all-button', 'n_clicks'),
@@ -899,7 +969,8 @@ def read_preselected_tickers(
     Input('dash-table-currency-etfs', 'data'),
     Input('dash-table-cryptos', 'data'),
     Input('dash-table-crypto-etfs', 'data'),    
-    Input('dash-table-futures', 'data'),    
+    Input('dash-table-futures', 'data'),
+    Input('dash-table-fx', 'data'),
     Input('dash-table-precious-metals', 'data'),
     Input('dash-table-stock-indices', 'data'),
     Input('dash-table-volatility-indices', 'data'),
@@ -920,6 +991,7 @@ def read_preselected_tickers(
     Input('dash-table-cryptos', 'selected_rows'),
     Input('dash-table-crypto-etfs', 'selected_rows'),
     Input('dash-table-futures', 'selected_rows'),
+    Input('dash-table-fx', 'selected_rows'),
     Input('dash-table-precious-metals', 'selected_rows'),
     Input('dash-table-stock-indices', 'selected_rows'),
     Input('dash-table-volatility-indices', 'selected_rows'),
@@ -956,6 +1028,7 @@ def output_custom_tickers(
     select_all_cryptos,
     select_all_crypto_etfs,
     select_all_futures,
+    select_all_fx,
     select_all_precious_metals,
     select_all_stock_indices,
     select_all_volatility_indices,
@@ -976,6 +1049,7 @@ def output_custom_tickers(
     unselect_all_cryptos,
     unselect_all_crypto_etfs,
     unselect_all_futures,
+    unselect_all_fx,
     unselect_all_precious_metals,
     unselect_all_stock_indices,
     unselect_all_volatility_indices,
@@ -996,6 +1070,7 @@ def output_custom_tickers(
     table_cryptos_data,
     table_crypto_etfs_data,
     table_futures_data,
+    table_fx_data,
     table_precious_metals_data,
     table_stock_indices_data,
     table_volatility_indices_data,
@@ -1016,6 +1091,7 @@ def output_custom_tickers(
     table_cryptos_selected_rows,
     table_crypto_etfs_selected_rows,
     table_futures_selected_rows,
+    table_fx_selected_rows,
     table_precious_metals_selected_rows,
     table_stock_indices_selected_rows,
     table_volatility_indices_selected_rows,
@@ -1046,6 +1122,7 @@ def output_custom_tickers(
         'cryptos': table_cryptos_selected_rows,
         'crypto_etfs': table_crypto_etfs_selected_rows,
         'futures': table_futures_selected_rows,
+        'fx': table_fx_selected_rows,
         'stock_indices': table_stock_indices_selected_rows,
         'volatility_indices': table_volatility_indices_selected_rows,
         'benchmarks': table_benchmarks_selected_rows
@@ -1067,6 +1144,7 @@ def output_custom_tickers(
         'cryptos': table_cryptos_data,
         'crypto_etfs': table_crypto_etfs_data,
         'futures': table_futures_data,
+        'fx': table_fx_data,
         'stock_indices': table_stock_indices_data,
         'volatility_indices': table_volatility_indices_data,
         'benchmarks': table_benchmarks_data
@@ -1088,6 +1166,7 @@ def output_custom_tickers(
         'cryptos': select_all_cryptos,
         'crypto_etfs': select_all_crypto_etfs,
         'futures': select_all_futures,
+        'fx': select_all_fx,
         'stock_indices': select_all_stock_indices,
         'volatility_indices': select_all_volatility_indices,
         'benchmarks': select_all_benchmarks
@@ -1109,6 +1188,7 @@ def output_custom_tickers(
         'cryptos': unselect_all_cryptos,
         'crypto_etfs': unselect_all_crypto_etfs,
         'futures': unselect_all_futures,
+        'fx': unselect_all_fx,
         'stock_indices': unselect_all_stock_indices,
         'volatility_indices': unselect_all_volatility_indices,
         'benchmarks': unselect_all_benchmarks
@@ -1226,12 +1306,20 @@ def output_custom_tickers(
                 tk_industry = tk_info['industry'] if 'industry' in tk_info.keys() else ''
                 tk_sector = tk_info['sector'] if 'sector' in tk_info.keys() else ''
 
+                tk_fx_currency_name = ''
+                tk_fx_currency_group = ''
+
                 if 'longBusinessSummary' in tk_info.keys():
                     tk_summary = tk_info['longBusinessSummary']
                 elif 'description' in tk_info.keys():
                     tk_summary = tk_info['description']
                 elif category in ['stock_indices', 'volatility_indices']:
-                    tk_summary = indices_custom_info[tk]['description']                    
+                    tk_summary = indices_custom_info[tk]['description']
+                elif category == 'fx':
+                    currency = tk.replace('=X', '')
+                    tk_fx_currency_name = currencies_combined[currency]
+                    tk_fx_currency_group = 'Major' if currency in currencies_major.keys() else 'Other'
+                    tk_summary = f'Exchange rate between {tk_fx_currency_name} and the US Dollar'
                 else: 
                     tk_summary = ''
                 
@@ -1247,7 +1335,9 @@ def output_custom_tickers(
                         'category': tk_category,
                         'industry': tk_industry,
                         'sector': tk_sector,
-                        'summary': tk_summary
+                        'summary': tk_summary,
+                        'fx_currency_name': tk_fx_currency_name,
+                        'fx_currency_group': tk_fx_currency_group
                     }
                 })
 
@@ -1261,6 +1351,9 @@ def output_custom_tickers(
                 tk_category = ticker_info[tk_input]['category']
                 tk_industry = ticker_info[tk_input]['industry']
                 tk_sector = ticker_info[tk_input]['sector']
+                tk_fx_currency_name = ticker_info[tk_input]['fx_currency_name']
+                tk_fx_currency_group = ticker_info[tk_input]['fx_currency_group']
+
             
             hide_custom_ticker_info = False
 
@@ -1313,7 +1406,17 @@ def output_custom_tickers(
                     'Type': tk_type,
                     'Exchange': tk_exchange,
                     'Currency': tk_currency
-                }
+                },
+                'CURRENCY': {
+                    'Ticker': tk_input,
+                    'Name': tk_name,
+                    'Data Start': tk_start,
+                    'Data End': tk_end,
+                    'Type': tk_type,
+                    'Exchange': tk_exchange,
+                    'Currency': tk_currency,
+                    'Currency Name': tk_fx_currency_name
+                }                
             }
 
             table_custom_ticker_info = dash_table.DataTable(
@@ -1443,6 +1546,11 @@ def output_custom_tickers(
             popover_ticker_keys.insert(6, html.B('Category:'))
             popover_ticker_keys.insert(7, html.Br())
             popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['category']}"))
+            popover_ticker_values.insert(7, html.Br())
+        elif tk_type == ['CURRENCY']:
+            popover_ticker_keys.insert(6, html.B('Currency Name:'))
+            popover_ticker_keys.insert(7, html.Br())
+            popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['fx_currency_name']}"))
             popover_ticker_values.insert(7, html.Br())
 
         tk_div = html.Div(
@@ -1610,9 +1718,9 @@ def output_custom_tickers(
         table_selected_rows,
 
         # select_all_button_nclicks
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         # unselect_all_button_nclicks
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 
         table_selected_rows['biggest_companies'],
         table_selected_rows['sp500'],
@@ -1629,6 +1737,7 @@ def output_custom_tickers(
         table_selected_rows['cryptos'],
         table_selected_rows['crypto_etfs'],
         table_selected_rows['futures'],
+        table_selected_rows['fx'],
         table_selected_rows['precious_metals'],
         table_selected_rows['stock_indices'],
         table_selected_rows['volatility_indices'],
@@ -1649,6 +1758,7 @@ def output_custom_tickers(
         n_selected['cryptos'],
         n_selected['crypto_etfs'],
         n_selected['futures'],
+        n_selected['fx'],
         n_selected['precious_metals'],
         n_selected['stock_indices'],
         n_selected['volatility_indices'],
@@ -1669,6 +1779,7 @@ def output_custom_tickers(
         n_category_tickers['cryptos'],
         n_category_tickers['crypto_etfs'],
         n_category_tickers['futures'],
+        n_category_tickers['fx'],
         n_category_tickers['precious_metals'],
         n_category_tickers['stock_indices'],
         n_category_tickers['volatility_indices'],

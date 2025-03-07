@@ -62,7 +62,7 @@ pre_menu_select_all_button_css = {
     'font-family': 'Helvetica',
     'font-size': '14px',
     'font-weight': 'bold',
-    'width': '110px'
+    'width': '115px'
 }
 pre_menu_unselect_all_button_css = {
     'display': 'block',
@@ -79,7 +79,7 @@ pre_menu_unselect_all_button_css = {
     'font-family': 'Helvetica',
     'font-size': '14px',
     'font-weight': 'bold',
-    'width': '110px'
+    'width': '115px'
 }
 pre_menu_item_css = {
     'display': 'inline-block',
@@ -131,7 +131,7 @@ input_table_header_css = {
 input_table_data_css = {
     'font-family': 'Helvetica',
     'font-size' : '14px',
-    'background': 'white',
+    # 'background': 'grey',
     'text-align': 'left',
     'border-top': '1px solid rgb(211, 211, 211)',
     'border-bottom': '1px solid rgb(211, 211, 211)'
