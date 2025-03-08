@@ -583,11 +583,12 @@ def read_preselected_tickers(
                         df_info_tickers.at[tk, 'Data Start'] = tk_start
                         df_info_tickers.at[tk, 'Data End'] = tk_end
                         df_info_tickers.at[tk, 'Exchange'] = tk_exchange
-                        df_info_tickers.at[tk, 'Currency'] = tk_currency
-
+                        
                         if category == 'fx':
                             df_info_tickers.at[tk, 'Currency Name'] = tk_fx_currency_name
                             df_info_tickers.at[tk, 'Currency Group'] = tk_fx_currency_group
+                        else:
+                            df_info_tickers.at[tk, 'Currency'] = tk_currency                            
 
                         if category == 'benchmarks':
                             df_info_tickers.at[tk, 'Type'] = tk_type
@@ -632,11 +633,12 @@ def read_preselected_tickers(
                     df_info_tickers.at[tk, 'Data Start'] = ticker_info[tk]['start']
                     df_info_tickers.at[tk, 'Data End'] = ticker_info[tk]['end']
                     df_info_tickers.at[tk, 'Exchange'] = ticker_info[tk]['exchange']
-                    df_info_tickers.at[tk, 'Currency'] = ticker_info[tk]['currency']
-
+                    
                     if category == 'fx':
                         df_info_tickers.at[tk, 'Currency Name'] = ticker_info[tk]['fx_currency_name']
                         df_info_tickers.at[tk, 'Currency Group'] = ticker_info[tk]['fx_currency_group']
+                    else:
+                        df_info_tickers.at[tk, 'Currency'] = ticker_info[tk]['currency'] 
 
                     if category == 'benchmarks':
                         df_info_tickers.at[tk, 'Type'] = ticker_info[tk]['type']
@@ -1316,9 +1318,9 @@ def output_custom_tickers(
                     tk_summary = tk_info['longBusinessSummary']
                 elif 'description' in tk_info.keys():
                     tk_summary = tk_info['description']
-                elif category in ['stock_indices', 'volatility_indices']:
-                    tk_summary = indices_custom_info[tk]['description']
-                elif category == 'fx':
+                elif tk_input in indices_custom_info.keys():
+                    tk_summary = indices_custom_info[tk_input]['description']
+                elif tk_input.replace('USD=X', '') in currencies_combined.keys():
                     currency = tk_input.replace('USD=X', '')
                     tk_fx_currency_name = currencies_combined[currency]
                     tk_fx_currency_group = 'Major' if currency in currencies_major.keys() else 'Other'
@@ -1367,7 +1369,7 @@ def output_custom_tickers(
                     'Data Start': tk_start,
                     'Data End': tk_end,
                     'Type': tk_type,
-                    'Category': tk_category,
+                    # 'Category': tk_category,
                     'Exchange': tk_exchange,
                     'Currency': tk_currency
                 },
@@ -1526,15 +1528,15 @@ def output_custom_tickers(
             html.B('Data Start:'), html.Br(),
             html.B('Data End:'), html.Br(),
             html.B('Type:'), html.Br(),
-            html.B('Exchange:'), html.Br(),
-            html.B('Currency:')
+            html.B('Exchange:'), html.Br()
+            # html.B('Currency:')
         ]
         popover_ticker_values = [
             html.Span(f"{ticker_info[tk]['start']}"), html.Br(),
             html.Span(f"{ticker_info[tk]['end']}"), html.Br(),
             html.Span(f"{ticker_info[tk]['type']}"), html.Br(),
-            html.Span(f"{ticker_info[tk]['exchange']}"), html.Br(),
-            html.Span(f"{ticker_info[tk]['currency']}")
+            html.Span(f"{ticker_info[tk]['exchange']}"), html.Br()
+            # html.Span(f"{ticker_info[tk]['currency']}")
         ]
         if tk_type == 'EQUITY':
             popover_ticker_keys.insert(6, html.B('Industry:'))
@@ -1545,7 +1547,7 @@ def output_custom_tickers(
             popover_ticker_values.insert(7, html.Br())
             popover_ticker_values.insert(8, html.Span(f"{ticker_info[tk]['sector']}"))
             popover_ticker_values.insert(9, html.Br())
-        elif tk_type in ['ETF', 'INDEX']:
+        elif tk_type == 'ETF':
             popover_ticker_keys.insert(6, html.B('Category:'))
             popover_ticker_keys.insert(7, html.Br())
             popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['category']}"))
@@ -1556,6 +1558,11 @@ def output_custom_tickers(
             popover_ticker_keys.insert(7, html.Br())
             popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['fx_currency_name']}"))
             popover_ticker_values.insert(7, html.Br())
+        if tk_type != 'CURRENCY':
+            popover_ticker_keys.insert(len(popover_ticker_keys), html.B('Currency:'))
+            popover_ticker_keys.insert(len(popover_ticker_keys), html.Br())
+            popover_ticker_values.insert(len(popover_ticker_values), html.Span(f"{ticker_info[tk]['currency']}"))
+            popover_ticker_values.insert(len(popover_ticker_values), html.Br())
 
         tk_div = html.Div(
             id = tk_id,
