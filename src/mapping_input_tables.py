@@ -12,7 +12,7 @@ input_table_columns_futures =    ['No.', 'Ticker', 'Name', 'Data Start', 'Data E
 input_table_columns_equities =   ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Industry', 'Sector', 'Exchange', 'Currency']
 input_table_columns_etfs =       ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Category', 'Exchange', 'Currency']
 input_table_columns_cryptos =    ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Exchange', 'Currency']
-input_table_columns_fx =         ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Exchange', 'Currency', 'Currency Name']
+input_table_columns_fx =         ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Exchange', 'Currency', 'Currency Name', 'Currency Region']
 input_table_columns_benchmarks = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Category', 'Exchange', 'Currency']
 
 custom_ticker_table_columns = {
@@ -21,7 +21,7 @@ custom_ticker_table_columns = {
     'EQUITY':           ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Industry', 'Sector', 'Exchange', 'Currency'],
     'ETF':              ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Category', 'Exchange', 'Currency'],
     'CRYPTOCURRENCY':   ['Ticker', 'Name', 'Data Start', 'Data End', 'Type', 'Exchange', 'Currency'],
-    'CURRENCY':         ['Ticker', 'Name', 'Currency Name', 'Data Start', 'Data End', 'Type', 'Exchange']
+    'CURRENCY':         ['Ticker', 'Name', 'Currency Name', 'Currency Region', 'Data Start', 'Data End', 'Type', 'Exchange']
 }
 
 table_selected_tickers_columns = ['No.', 'Ticker', 'Name', 'Data Start', 'Data End', 'Length*', 'Type', 'Category', 'Industry', 'Sector', 'Exchange', 'Currency']

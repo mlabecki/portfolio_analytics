@@ -38,10 +38,11 @@ ticker_div_title = html.Div(
 )
 
 pre_table_columns = ['No.', 'Ticker', 'Name']
-pre_table_columns_fx = ['No.', 'Ticker', 'Name', 'Currency Name', 'Currency Group']
+pre_table_columns_fx = ['No.', 'Ticker', 'Name', 'Currency Name', 'Currency Region', 'Currency Group']
 # Ticker: 'CADUSD=X', 'AUDUSD=X', 'KWDUSD=X' ...
 # Name: 'CAD/USD', 'AUD/USD', 'KWD/USD' ...
 # Currency Name: 'Canadian Dollar', 'Australian Dollar', 'Kuwaiti Dinar' ...
+# Currency Region: 'North America', 'Oceania', 'Middle East' ...
 # Currency Group: 'Major', 'Major', 'Other' ...
 
 n_currencies_major = len(currencies_major)
@@ -198,7 +199,7 @@ for category in all_categories:
                                                 class_name = 'ma-1',
                                                 color = 'success',
                                                 size = 'sm',
-                                                style = pre_menu_select_all_button_css
+                                                style = input_menu_select_all_button_css
                                             ),
                                         ]
                                     ),
@@ -214,7 +215,7 @@ for category in all_categories:
                                                 class_name = 'ma-1',
                                                 color = 'danger',
                                                 size = 'sm',
-                                                style = pre_menu_select_all_button_css
+                                                style = input_menu_select_all_button_css
                                             )
                                         ]
                                     )
@@ -561,6 +562,7 @@ def read_preselected_tickers(
                         tk_sector = tk_info['sector'] if 'sector' in tk_info.keys() else ''
 
                         tk_fx_currency_name = ''
+                        tk_fx_currency_region = ''
                         tk_fx_currency_group = ''
 
                         if 'longBusinessSummary' in tk_info.keys():
@@ -572,6 +574,7 @@ def read_preselected_tickers(
                         elif category == 'fx':
                             currency = tk.replace('USD=X', '')
                             tk_fx_currency_name = currencies_combined[currency]
+                            tk_fx_currency_region = currencies_combined_regions[currency]
                             tk_fx_currency_group = 'Major' if currency in currencies_major.keys() else 'Other'
                             tk_summary = f'The exchange rate between {tk_fx_currency_name} and the US Dollar, or the price of {currency} in USD.'
                         elif len(tk_hist.index) == 0:
@@ -586,6 +589,7 @@ def read_preselected_tickers(
                         
                         if category == 'fx':
                             df_info_tickers.at[tk, 'Currency Name'] = tk_fx_currency_name
+                            df_info_tickers.at[tk, 'Currency Region'] = tk_fx_currency_region
                             df_info_tickers.at[tk, 'Currency Group'] = tk_fx_currency_group
                         else:
                             df_info_tickers.at[tk, 'Currency'] = tk_currency                            
@@ -613,6 +617,7 @@ def read_preselected_tickers(
                                 'sector': tk_sector,
                                 'summary': tk_summary,
                                 'fx_currency_name': tk_fx_currency_name,
+                                'fx_currency_region': tk_fx_currency_region,
                                 'fx_currency_group': tk_fx_currency_group
                             }
                         })
@@ -636,6 +641,7 @@ def read_preselected_tickers(
                     
                     if category == 'fx':
                         df_info_tickers.at[tk, 'Currency Name'] = ticker_info[tk]['fx_currency_name']
+                        df_info_tickers.at[tk, 'Currency Region'] = ticker_info[tk]['fx_currency_region']
                         df_info_tickers.at[tk, 'Currency Group'] = ticker_info[tk]['fx_currency_group']
                     else:
                         df_info_tickers.at[tk, 'Currency'] = ticker_info[tk]['currency'] 
@@ -1264,179 +1270,211 @@ def output_custom_tickers(
         session = requests_cache.CachedSession('cache/yfinance.cache')
         session.headers['User-agent'] = url_settings['global']['headers']
 
+        print(tk_input)
+
         yf_ticker_input = yf.Ticker(tk_input, session = session)
         # yf_ticker_input.actions
 
+        print(yf_ticker_input)
+
         tk_hist = yf_ticker_input.history(period = 'max')
-        tk_info = yf_ticker_input.info
-        # Unfortunately a failure of yf.Ticker(tk).info query does not add tk to yf.shared._ERRORS
-        # yf.Ticker().history() does, but unlike yf.download keeps adding invalid tickers to _ERRORS.keys()
-        if 'quoteType' not in tk_info.keys():
+        print(tk_hist)
+        print(f'yf.shared._ERRORS after tk_hist: {yf.shared._ERRORS}')
+
+        if tk_input in yf.shared._ERRORS.keys():
+            print(f'ERROR: Invalid ticker {tk_input}')
             # No info, therefore an invalid ticker
             tk_input_message = f'ERROR: Invalid ticker {tk_input}'
             hide_tk_input_message = False
 
-        elif tk_info['quoteType'] not in custom_ticker_table_columns.keys():
-            # Info available but quoteType is unknown
-            # To avoid tickers like 'BOO', which has quoteType MUTUALFUND but only a cryptic name 79110
-            tk_input_message = f'ERROR: Unknown ticker type for {tk_input}'
+        elif len(tk_hist) == 0:
+            # No data available
+            tk_input_message = f'ERROR: No data available for {tk_input}'
             hide_tk_input_message = False
 
         else:
+    
+            # Unfortunately a failure of yf.Ticker(tk).info query does not add tk to yf.shared._ERRORS
+            # yf.Ticker().history() does, but unlike yf.download keeps adding invalid tickers to _ERRORS.keys()
+            tk_info = yf_ticker_input.info
+            print(f'yf.shared._ERRORS after tk_info: {yf.shared._ERRORS}')
+            print(type(tk_info))
+            if tk_info is None:
+                print(f'ERROR: Invalid ticker {tk_input}')
+                # No info, therefore an invalid ticker
+                tk_input_message = f'ERROR: Invalid ticker {tk_input}'
+                hide_tk_input_message = False
 
-            hide_tk_input_message = True
-            tk_input_message = ''
+            elif 'quoteType' not in tk_info.keys():
+                # No info, therefore an invalid ticker
+                tk_input_message = f'ERROR: Invalid ticker {tk_input}'
+                hide_tk_input_message = False
 
-            if tk_input in yf.shared._ERRORS.keys():
-                tk_start, tk_end = 'N/A', 'N/A'
-                tk_length = 0
+            elif tk_info['quoteType'] not in custom_ticker_table_columns.keys():
+                # Info available but quoteType is unknown
+                # To avoid tickers like 'BOO', which has quoteType MUTUALFUND but only a cryptic name 79110
+                tk_input_message = f'ERROR: Unknown ticker type for {tk_input}'
+                hide_tk_input_message = False
+
             else:
-                tk_start, tk_end = str(tk_hist.index[0].date()), str(tk_hist.index[-1].date())
-                updated_tickers.append(tk_input)
-                tk_length = len(tk_hist.index)
 
-            if tk_input not in ticker_info.keys():
-                
-                if 'longName' in tk_info.keys():
-                    tk_name = tk_info['longName']
-                elif 'shortName' in tk_info.keys():
-                    tk_name = tk_info['shortName']
+                hide_tk_input_message = True
+                tk_input_message = ''
+
+                if tk_input in yf.shared._ERRORS.keys():
+                    tk_start, tk_end = 'N/A', 'N/A'
+                    tk_length = 0
                 else:
-                    tk_name = tk_input
+                    tk_start, tk_end = str(tk_hist.index[0].date()), str(tk_hist.index[-1].date())
+                    updated_tickers.append(tk_input)
+                    tk_length = len(tk_hist.index)
 
-                tk_type = tk_info['quoteType'] if 'quoteType' in tk_info.keys() else ''
-                tk_category = tk_info['category'] if 'category' in tk_info.keys() else ''
-                tk_exchange = tk_info['exchange'] if 'exchange' in tk_info.keys() else ''
-                tk_currency = tk_info['currency'] if 'currency' in tk_info.keys() else ''
-                tk_industry = tk_info['industry'] if 'industry' in tk_info.keys() else ''
-                tk_sector = tk_info['sector'] if 'sector' in tk_info.keys() else ''
+                if tk_input not in ticker_info.keys():
 
-                tk_fx_currency_name = ''
-                tk_fx_currency_group = ''
+                    if 'longName' in tk_info.keys():
+                        tk_name = tk_info['longName']
+                    elif 'shortName' in tk_info.keys():
+                        tk_name = tk_info['shortName']
+                    else:
+                        tk_name = tk_input
 
-                if 'longBusinessSummary' in tk_info.keys():
-                    tk_summary = tk_info['longBusinessSummary']
-                elif 'description' in tk_info.keys():
-                    tk_summary = tk_info['description']
-                elif tk_input in indices_custom_info.keys():
-                    tk_summary = indices_custom_info[tk_input]['description']
-                elif tk_input.replace('USD=X', '') in currencies_combined.keys():
-                    currency = tk_input.replace('USD=X', '')
-                    tk_fx_currency_name = currencies_combined[currency]
-                    tk_fx_currency_group = 'Major' if currency in currencies_major.keys() else 'Other'
-                    tk_summary = f'The exchange rate between {tk_fx_currency_name} and the US Dollar, or the price of {currency} in USD.'
-                else: 
-                    tk_summary = ''
-                
-                ticker_info.update({
-                    tk_input: {
-                        'name': tk_name,
-                        'start': tk_start,
-                        'end': tk_end,
-                        'length': tk_length,
-                        'type': tk_type,
-                        'exchange': tk_exchange,
-                        'currency': tk_currency,
-                        'category': tk_category,
-                        'industry': tk_industry,
-                        'sector': tk_sector,
-                        'summary': tk_summary,
-                        'fx_currency_name': tk_fx_currency_name,
-                        'fx_currency_group': tk_fx_currency_group
-                    }
-                })
+                    tk_type = tk_info['quoteType'] if 'quoteType' in tk_info.keys() else ''
+                    tk_category = tk_info['category'] if 'category' in tk_info.keys() else ''
+                    tk_exchange = tk_info['exchange'] if 'exchange' in tk_info.keys() else ''
+                    tk_currency = tk_info['currency'] if 'currency' in tk_info.keys() else ''
+                    tk_industry = tk_info['industry'] if 'industry' in tk_info.keys() else ''
+                    tk_sector = tk_info['sector'] if 'sector' in tk_info.keys() else ''
 
-            else:
-                tk_name = ticker_info[tk_input]['name']
-                tk_start = ticker_info[tk_input]['start']
-                tk_end = ticker_info[tk_input]['end']
-                tk_type = ticker_info[tk_input]['type']
-                tk_exchange = ticker_info[tk_input]['exchange']
-                tk_currency = ticker_info[tk_input]['currency']
-                tk_category = ticker_info[tk_input]['category']
-                tk_industry = ticker_info[tk_input]['industry']
-                tk_sector = ticker_info[tk_input]['sector']
-                tk_fx_currency_name = ticker_info[tk_input]['fx_currency_name']
-                tk_fx_currency_group = ticker_info[tk_input]['fx_currency_group']
+                    tk_fx_currency_name = ''
+                    tk_fx_currency_group = ''
 
-            
-            hide_custom_ticker_info = False
+                    if 'longBusinessSummary' in tk_info.keys():
+                        tk_summary = tk_info['longBusinessSummary']
+                    elif 'description' in tk_info.keys():
+                        tk_summary = tk_info['description']
+                    elif tk_input in indices_custom_info.keys():
+                        tk_summary = indices_custom_info[tk_input]['description']
+                    elif tk_input.replace('USD=X', '') in currencies_combined.keys():
+                        currency = tk_input.replace('USD=X', '')
+                        tk_fx_currency_name = currencies_combined[currency]
+                        tk_fx_currency_region = currencies_combined_regions[currency]
+                        tk_fx_currency_group = 'Major' if currency in currencies_major.keys() else 'Other'
+                        tk_summary = f'The exchange rate between {tk_fx_currency_name} and the US Dollar, or the price of {currency} in USD.'
+                    else: 
+                        tk_summary = ''
 
-            custom_table_data = {
-                'INDEX': {
-                    'Ticker': tk_input,
-                    'Name': tk_name,
-                    'Data Start': tk_start,
-                    'Data End': tk_end,
-                    'Type': tk_type,
-                    # 'Category': tk_category,
-                    'Exchange': tk_exchange,
-                    'Currency': tk_currency
-                },
-                'FUTURE': {
-                    'Ticker': tk_input,
-                    'Name': tk_name,
-                    'Data Start': tk_start,
-                    'Data End': tk_end,
-                    'Type': tk_type,
-                    'Exchange': tk_exchange,
-                    'Currency': tk_currency
-                },
-                'EQUITY': {
-                    'Ticker': tk_input,
-                    'Name': tk_name,
-                    'Data Start': tk_start,
-                    'Data End': tk_end,
-                    'Type': tk_type,
-                    'Industry': tk_industry,
-                    'Sector': tk_sector,
-                    'Exchange': tk_exchange,
-                    'Currency': tk_currency
-                },
-                'ETF': {
-                    'Ticker': tk_input,
-                    'Name': tk_name,
-                    'Data Start': tk_start,
-                    'Data End': tk_end,
-                    'Type': tk_type,
-                    'Category': tk_category,
-                    'Exchange': tk_exchange,
-                    'Currency': tk_currency
-                },
-                'CRYPTOCURRENCY': {
-                    'Ticker': tk_input,
-                    'Name': tk_name,
-                    'Data Start': tk_start,
-                    'Data End': tk_end,
-                    'Type': tk_type,
-                    'Exchange': tk_exchange,
-                    'Currency': tk_currency
-                },
-                'CURRENCY': {
-                    'Ticker': tk_input,
-                    'Name': tk_name,
-                    'Data Start': tk_start,
-                    'Data End': tk_end,
-                    'Type': tk_type,
-                    'Exchange': tk_exchange,
-                    'Currency': tk_currency,
-                    'Currency Name': tk_fx_currency_name
-                }                
-            }
+                    ticker_info.update({
+                        tk_input: {
+                            'name': tk_name,
+                            'start': tk_start,
+                            'end': tk_end,
+                            'length': tk_length,
+                            'type': tk_type,
+                            'exchange': tk_exchange,
+                            'currency': tk_currency,
+                            'category': tk_category,
+                            'industry': tk_industry,
+                            'sector': tk_sector,
+                            'summary': tk_summary,
+                            'fx_currency_name': tk_fx_currency_name,
+                            'fx_currency_region': tk_fx_currency_region,
+                            'fx_currency_group': tk_fx_currency_group
+                        }
+                    })
 
-            table_custom_ticker_info = dash_table.DataTable(
-                columns = [{'name': i, 'id': i} for i in custom_ticker_table_columns[tk_type]],
-                data = [custom_table_data[tk_type]],
-                id = 'table-custom-ticker',
-                css = [
-                    { 
-                    'selector': '.dash-spreadsheet tr:hover td.dash-cell',
-                    'rule': 'background-color: white !important; border-bottom: None !important; border-top: 1px solid rgb(211, 211, 211) !important; color: black !important;'
-                    }
-                ],
-                style_header = table_custom_ticker_header_css,
-                style_data = table_custom_ticker_data_css
-            )
+                else:
+                    tk_name = ticker_info[tk_input]['name']
+                    tk_start = ticker_info[tk_input]['start']
+                    tk_end = ticker_info[tk_input]['end']
+                    tk_type = ticker_info[tk_input]['type']
+                    tk_exchange = ticker_info[tk_input]['exchange']
+                    tk_currency = ticker_info[tk_input]['currency']
+                    tk_category = ticker_info[tk_input]['category']
+                    tk_industry = ticker_info[tk_input]['industry']
+                    tk_sector = ticker_info[tk_input]['sector']
+                    tk_fx_currency_name = ticker_info[tk_input]['fx_currency_name']
+                    tk_fx_currency_region = ticker_info[tk_input]['fx_currency_region']
+                    tk_fx_currency_group = ticker_info[tk_input]['fx_currency_group']
+
+
+                hide_custom_ticker_info = False
+
+                custom_table_data = {
+                    'INDEX': {
+                        'Ticker': tk_input,
+                        'Name': tk_name,
+                        'Data Start': tk_start,
+                        'Data End': tk_end,
+                        'Type': tk_type,
+                        # 'Category': tk_category,
+                        'Exchange': tk_exchange,
+                        'Currency': tk_currency
+                    },
+                    'FUTURE': {
+                        'Ticker': tk_input,
+                        'Name': tk_name,
+                        'Data Start': tk_start,
+                        'Data End': tk_end,
+                        'Type': tk_type,
+                        'Exchange': tk_exchange,
+                        'Currency': tk_currency
+                    },
+                    'EQUITY': {
+                        'Ticker': tk_input,
+                        'Name': tk_name,
+                        'Data Start': tk_start,
+                        'Data End': tk_end,
+                        'Type': tk_type,
+                        'Industry': tk_industry,
+                        'Sector': tk_sector,
+                        'Exchange': tk_exchange,
+                        'Currency': tk_currency
+                    },
+                    'ETF': {
+                        'Ticker': tk_input,
+                        'Name': tk_name,
+                        'Data Start': tk_start,
+                        'Data End': tk_end,
+                        'Type': tk_type,
+                        'Category': tk_category,
+                        'Exchange': tk_exchange,
+                        'Currency': tk_currency
+                    },
+                    'CRYPTOCURRENCY': {
+                        'Ticker': tk_input,
+                        'Name': tk_name,
+                        'Data Start': tk_start,
+                        'Data End': tk_end,
+                        'Type': tk_type,
+                        'Exchange': tk_exchange,
+                        'Currency': tk_currency
+                    },
+                    'CURRENCY': {
+                        'Ticker': tk_input,
+                        'Name': tk_name,
+                        'Data Start': tk_start,
+                        'Data End': tk_end,
+                        'Type': tk_type,
+                        'Exchange': tk_exchange,
+                        'Currency': tk_currency,
+                        'Currency Name': tk_fx_currency_name,
+                        'Currency Region': tk_fx_currency_region
+                    }                
+                }
+
+                table_custom_ticker_info = dash_table.DataTable(
+                    columns = [{'name': i, 'id': i} for i in custom_ticker_table_columns[tk_type]],
+                    data = [custom_table_data[tk_type]],
+                    id = 'table-custom-ticker',
+                    css = [
+                        { 
+                        'selector': '.dash-spreadsheet tr:hover td.dash-cell',
+                        'rule': 'background-color: white !important; border-bottom: None !important; border-top: 1px solid rgb(211, 211, 211) !important; color: black !important;'
+                        }
+                    ],
+                    style_header = table_custom_ticker_header_css,
+                    style_data = table_custom_ticker_data_css
+                )
 
         session.cache.clear()
 
@@ -1539,25 +1577,29 @@ def output_custom_tickers(
             # html.Span(f"{ticker_info[tk]['currency']}")
         ]
         if tk_type == 'EQUITY':
-            popover_ticker_keys.insert(6, html.B('Industry:'))
-            popover_ticker_keys.insert(7, html.Br())
-            popover_ticker_keys.insert(8, html.B('Sector:'))
-            popover_ticker_keys.insert(9, html.Br())
-            popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['industry']}"))
-            popover_ticker_values.insert(7, html.Br())
-            popover_ticker_values.insert(8, html.Span(f"{ticker_info[tk]['sector']}"))
-            popover_ticker_values.insert(9, html.Br())
+            popover_ticker_keys.insert(len(popover_ticker_keys), html.B('Industry:'))
+            popover_ticker_keys.insert(len(popover_ticker_keys), html.Br())
+            popover_ticker_keys.insert(len(popover_ticker_keys), html.B('Sector:'))
+            popover_ticker_keys.insert(len(popover_ticker_keys), html.Br())
+            popover_ticker_values.insert(len(popover_ticker_values), html.Span(f"{ticker_info[tk]['industry']}"))
+            popover_ticker_values.insert(len(popover_ticker_values), html.Br())
+            popover_ticker_values.insert(len(popover_ticker_values), html.Span(f"{ticker_info[tk]['sector']}"))
+            popover_ticker_values.insert(len(popover_ticker_values), html.Br())
         elif tk_type == 'ETF':
-            popover_ticker_keys.insert(6, html.B('Category:'))
-            popover_ticker_keys.insert(7, html.Br())
-            popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['category']}"))
-            popover_ticker_values.insert(7, html.Br())
+            popover_ticker_keys.insert(len(popover_ticker_keys), html.B('Category:'))
+            popover_ticker_keys.insert(len(popover_ticker_keys), html.Br())
+            popover_ticker_values.insert(len(popover_ticker_values), html.Span(f"{ticker_info[tk]['category']}"))
+            popover_ticker_values.insert(len(popover_ticker_values), html.Br())
         elif tk_type == 'CURRENCY':
-            # popover_ticker_keys.remove(html.B('Currency:'))
-            popover_ticker_keys.insert(6, html.B('Name:'))
-            popover_ticker_keys.insert(7, html.Br())
-            popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['fx_currency_name']}"))
-            popover_ticker_values.insert(7, html.Br())
+            popover_ticker_keys.insert(len(popover_ticker_keys), html.B('Name:'))
+            popover_ticker_keys.insert(len(popover_ticker_keys), html.Br())
+            popover_ticker_values.insert(len(popover_ticker_values), html.Span(f"{ticker_info[tk]['fx_currency_name']}"))
+            popover_ticker_values.insert(len(popover_ticker_values), html.Br())
+            popover_ticker_keys.insert(len(popover_ticker_keys), html.B('Region:'))
+            popover_ticker_keys.insert(len(popover_ticker_keys), html.Br())
+            popover_ticker_values.insert(len(popover_ticker_values), html.Span(f"{ticker_info[tk]['fx_currency_region']}"))
+            popover_ticker_values.insert(len(popover_ticker_values), html.Br())
+        # Insert currency at the end if not fx
         if tk_type != 'CURRENCY':
             popover_ticker_keys.insert(len(popover_ticker_keys), html.B('Currency:'))
             popover_ticker_keys.insert(len(popover_ticker_keys), html.Br())

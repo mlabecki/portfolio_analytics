@@ -62,10 +62,11 @@ etf_categories = [
     'crypto_etfs'
 ]
 pre_table_columns = ['No.', 'Ticker', 'Name']
-pre_table_columns_fx = ['No.', 'Ticker', 'Name', 'Currency Name', 'Currency Group']
+pre_table_columns_fx = ['No.', 'Ticker', 'Name', 'Currency Name', 'Currency Region', 'Currency Group']
 # Ticker: 'CAD=X', 'AUD=X', 'KWD=X' ...
 # Name: 'CAD/USD', 'AUD/USD', 'KWD/USD' ...
 # Currency Name: 'Canadian Dollar', 'Australian Dollar', 'Kuwaiti Dinar' ...
+# Currency Region: 'North America', 'Oceania', 'Middle East' ...
 # Currency Group: 'Major', 'Major', 'Other' ...
 
 n_currencies_major = len(currencies_major)
@@ -291,6 +292,7 @@ def generate_preselected_tables(
                 ticker_names.update({tk: tk_name})
                 if category == 'fx':
                     df_pre_tickers.at[tk, 'Currency Name'] = currencies_combined[currency]
+                    df_pre_tickers.at[tk, 'Currency Region'] = currencies_combined_regions[currency]
                     df_pre_tickers.at[tk, 'Currency Group'] = 'Major' if currency in currencies_major.keys() else 'Other'
 
             else:
@@ -381,8 +383,9 @@ def generate_preselected_tables(
                     'border-top': '1px solid rgb(211, 211, 211)',
                     'border-bottom': '1px solid rgb(211, 211, 211)'},
                 {'if': {'column_id': 'No.'}, 'width': 24},
-                {'if': {'column_id': 'Ticker'}, 'width': 120},
-                {'if': {'column_id': 'Name'}, 'width': 115},
+                {'if': {'column_id': 'Ticker'}, 'width': 95},
+                {'if': {'column_id': 'Name'}, 'width': 90},
+                # {'if': {'column_id': 'Currency Region'}, 'width': 95},
                 # {'if': {'row_index': [idx for idx in range(indices_currencies_major[-1] + 1, indices_currencies_all[-1] + 1)]},
                 {'if': {
                     'filter_query': '{Currency Group} = Other',
@@ -399,7 +402,7 @@ def generate_preselected_tables(
                     'border-top': '1px solid rgb(211, 211, 211)',
                     'border-bottom': '1px solid rgb(211, 211, 211)'},
                 {'if': {'column_id': 'No.'}, 'width': 24},
-                {'if': {'column_id': 'Ticker'}, 'width': 100},
+                {'if': {'column_id': 'Ticker'}, 'width': 95},
             ]
     
         pre_selection_table[category] = html.Div([

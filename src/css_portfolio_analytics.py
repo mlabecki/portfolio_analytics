@@ -51,7 +51,7 @@ pre_menu_select_all_button_css = {
     'display': 'block',
     'height': '32px',
     'border-radius': '5px',
-    'margin-top': '5px',
+    'margin-top': '10px',
     'margin-right': '5px',
     'margin-bottom': '5px',
     'margin-left': '0px',
@@ -62,9 +62,9 @@ pre_menu_select_all_button_css = {
     'font-family': 'Helvetica',
     'font-size': '14px',
     'font-weight': 'bold',
-    'width': '115px'
+    'width': '173px'
 }
-pre_menu_unselect_all_button_css = {
+input_menu_select_all_button_css = {
     'display': 'block',
     'height': '32px',
     'border-radius': '5px',
@@ -85,7 +85,7 @@ pre_menu_item_css = {
     'display': 'inline-block',
     'width': '80px',
     'margin-top': '0px',
-    'margin-right': '6px',
+    'margin-right': '8px',
     'margin-bottom': '0px',
     'margin-left': '2px',
     'vertical-align': 'top',
