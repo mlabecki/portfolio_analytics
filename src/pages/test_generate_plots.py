@@ -7713,7 +7713,7 @@ layout = html.Div([
     html.Div(
         id = 'dates-link-container',
         children = [
-            dcc.Link('Home Page', href='/'),
+            dcc.Link('Start Over Category Selection', href='/'),
             html.Br(),
             dcc.Link('Start Over Preliminary Ticker Selection', href='/preliminary_ticker_selection_v3'),
             html.Br(),

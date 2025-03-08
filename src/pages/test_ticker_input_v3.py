@@ -1551,7 +1551,8 @@ def output_custom_tickers(
             popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['category']}"))
             popover_ticker_values.insert(7, html.Br())
         elif tk_type == 'CURRENCY':
-            popover_ticker_keys.insert(6, html.B('Currency Name:'))
+            # popover_ticker_keys.remove(html.B('Currency:'))
+            popover_ticker_keys.insert(6, html.B('Name:'))
             popover_ticker_keys.insert(7, html.Br())
             popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['fx_currency_name']}"))
             popover_ticker_values.insert(7, html.Br())
