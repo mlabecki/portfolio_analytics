@@ -189,6 +189,12 @@ popover_markdown_category = {
 <B>Examples:</B> 5-Year US Treasury, E-Mini S&P 500, US Treasury Bond, Corn, E-Mini Russell 2000, Soybean, Gold, Sugar, Crude Oil, Natural Gas, Live Cattle, Cotton, Copper, RBOB Gasoline ...<BR/>
 <B>Source:</B> <A HREF='https://finance.yahoo.com/commodities/'>Yahoo Finance</A></DIV>""",
 
+    'fx': 
+    """<DIV><H6>CURRENCY EXCHANGE RATES</H6>
+<B>Content:</B> 35 major currencies + 117 other currencies vs. USD<BR/>
+<B>Examples:</B> CAD/USD, AUD/USD, GBP/USD, CHF/USD, EUR/USD, JPY/USD, CNY/USD, INR/USD, TRY/USD ...<BR/>
+<B>Source:</B> <A HREF='https://en.wikipedia.org/wiki/List_of_circulating_currencies'>Wikipedia</A></DIV>""",
+
     'stock_indices': 
     """<DIV><H6>STOCK INDICES</H6>
 <B>Content:</B> 19 indices<BR/>
@@ -614,6 +620,31 @@ layout = html.Div([
 
             html.Div([
                 html.Div(
+                    id = 'checkmark-fx',
+                    children = '✓',
+                    hidden = False,
+                    style = checkmark_css
+                ),
+                html.Div(
+                    'CURRENCY EXCHANGE RATES',
+                    id = 'category-option-fx',
+                    className = 'category-div-class',
+                    style = category_option_css
+                ),
+                dbc.Popover([
+                    dcc.Markdown(popover_markdown_category['fx'], dangerously_allow_html = True)
+                    ], 
+                    id = 'popover-category-option-fx',
+                    target = 'category-option-fx',
+                    body = False,
+                    trigger = 'hover',
+                    hide_arrow = True,
+                    style = popover_info_category_option_css
+                )
+            ]),
+
+            html.Div([
+                html.Div(
                     id = 'checkmark-stock-indices',
                     children = '✓',
                     hidden = False,
@@ -749,6 +780,7 @@ for category in category_titles_ids.keys():
     Input('checkmark-cryptos', 'style'),
     Input('checkmark-crypto-etfs', 'style'),
     Input('checkmark-futures', 'style'),
+    Input('checkmark-fx', 'style'),    
     Input('checkmark-precious-metals', 'style'),
     Input('checkmark-stock-indices', 'style'),
     Input('checkmark-volatility-indices', 'style'),
@@ -772,10 +804,11 @@ def update_selected_categories(
     checkmark_style_cryptos,
     checkmark_style_crypto_etfs,
     checkmark_style_futures,
+    checkmark_style_fx,    
     checkmark_style_precious_metals,
     checkmark_style_stock_indices,
     checkmark_style_volatility_indices,
-    checkmark_style_benchmarks
+    checkmark_style_benchmarks,
 ):
     
     selected_categories = []

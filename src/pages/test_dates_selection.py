@@ -227,9 +227,11 @@ layout = html.Div([
     
     id = 'dates-loading-wrapper',
     custom_spinner = html.Div([
+        html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(),
+        html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(),
         'Loading Selected Tickers',
         html.Br(),
-        html.Br(),
+        html.Br(),      
         dls.Fade(color = 'midnightblue'),
         html.Br(),
         'Please Wait ...'
@@ -247,13 +249,13 @@ layout = html.Div([
     html.Div(
         id = 'dates-link-container',
         children = [
-            dcc.Link('Home Page', href='/'),
+            dcc.Link('Start Over Category Selection', href='/'),
             html.Br(),
             dcc.Link('Start Over Preliminary Ticker Selection', href='/preliminary_ticker_selection_v3'),
             html.Br(),
             dcc.Link('Back To Ticker Info & Portfolio Selection', href='/test_ticker_input_v3'),
             html.Br(),
-            dcc.Link('Go To Template & Plot Selection', href='/test_generate_plots'),
+            dcc.Link('Continue To Template & Plot Selection', href='/test_generate_plots'),
         ],
         style = link_container_css
     )
@@ -449,16 +451,13 @@ def get_table_selected_tickers(
         style = {'display': 'block'}
     )
 
-    final_table_selected_tickers_data = table_selected_tickers_data  # a list of dictionaries
+    final_table_selected_tickers_data = [row for row in table_selected_tickers_data if row['No.'] - 1 in selected_rows] # a list of dictionaries
     final_tooltip_data = tooltip_data.copy()  # a list
     final_selected_tickers_names = {row['Ticker']: row['Name'] for row in final_table_selected_tickers_data if row['No.'] - 1 in selected_rows}
     
-    # aaa = final_selected_tickers_names
-    #
     # NOTE: Cannot call download_yf_data if overlap_start/overlap_end might be N/A.
     #       There is no 'final' version here of the start and end dates or selected tickers because 
     #       the function is under callback.
-    # downloaded_data = hist_data.download_yf_data(overlap_start, overlap_end, final_selected_tickers)
 
     return (
         max_portfolio_date,

@@ -39,7 +39,7 @@ ticker_div_title = html.Div(
 
 pre_table_columns = ['No.', 'Ticker', 'Name']
 pre_table_columns_fx = ['No.', 'Ticker', 'Name', 'Currency Name', 'Currency Group']
-# Ticker: 'CAD=X', 'AUD=X', 'KWD=X' ...
+# Ticker: 'CADUSD=X', 'AUDUSD=X', 'KWDUSD=X' ...
 # Name: 'CAD/USD', 'AUD/USD', 'KWD/USD' ...
 # Currency Name: 'Canadian Dollar', 'Australian Dollar', 'Kuwaiti Dinar' ...
 # Currency Group: 'Major', 'Major', 'Other' ...
@@ -74,8 +74,9 @@ for category in all_categories:
                 'border-top': '1px solid rgb(211, 211, 211)',
                 'border-bottom': '1px solid rgb(211, 211, 211)'},
             {'if': {'column_id': 'No.'}, 'width': 24},
-            {'if': {'column_id': 'Ticker'}, 'width': 45},
-            {'if': {'column_id': 'Currency'}, 'width': 70},
+            {'if': {'column_id': 'Ticker'}, 'width': 100},
+            {'if': {'column_id': 'Name'}, 'width': 95},            
+            {'if': {'column_id': 'Currency'}, 'width': 75},
             {'if': {'column_id': 'Exchange'}, 'width': 72},
             {'if': {'column_id': 'Data Start'}, 'width': 85},
             {'if': {'column_id': 'Data End'}, 'width': 85},
@@ -85,7 +86,7 @@ for category in all_categories:
                 },
             'background': 'rgb(225, 225, 225)',
             'border-bottom': '1px solid rgb(185, 185, 185)'},
-            {'if': {'row_index': indices_currencies_major[-1]}, 'border-bottom': '2px solid rgb(55, 55, 55)'}                    
+            # {'if': {'row_index': indices_currencies_major[-1]}, 'border-bottom': '2px solid rgb(55, 55, 55)'}                    
         ]
     else:
         conditional_css = [
@@ -95,7 +96,7 @@ for category in all_categories:
                 'border-top': '1px solid rgb(211, 211, 211)',
                 'border-bottom': '1px solid rgb(211, 211, 211)'},
             {'if': {'column_id': 'No.'}, 'width': 24},
-            {'if': {'column_id': 'Ticker'}, 'width': 45},
+            {'if': {'column_id': 'Ticker'}, 'width': 70},
             {'if': {'column_id': 'Currency'}, 'width': 70},
             {'if': {'column_id': 'Exchange'}, 'width': 72},
             {'if': {'column_id': 'Data Start'}, 'width': 85},
@@ -349,9 +350,11 @@ layout = html.Div([
     
     id = 'ticker-input-loading-wrapper',
     custom_spinner = html.Div([
+        html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(),
+        html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(),
         'Loading Ticker Info',
         html.Br(),
-        html.Br(),
+        html.Br(),                
         dls.Fade(color = 'midnightblue'),
         html.Br(),
         'Please Wait ...'
@@ -369,7 +372,7 @@ layout = html.Div([
     html.Div(
         id = 'dates-link-container',
         children = [
-            dcc.Link('Home Page', href='/'),
+            dcc.Link('Start Over Category Selection', href='/'),
             html.Br(),
             dcc.Link('Start Over Preliminary Ticker Selection', href='/preliminary_ticker_selection_v3'),
             html.Br(),
@@ -567,10 +570,10 @@ def read_preselected_tickers(
                         elif category in ['stock_indices', 'volatility_indices', 'benchmarks']:
                             tk_summary = indices_custom_info[tk]['description']
                         elif category == 'fx':
-                            currency = tk.replace('=X', '')
+                            currency = tk.replace('USD=X', '')
                             tk_fx_currency_name = currencies_combined[currency]
                             tk_fx_currency_group = 'Major' if currency in currencies_major.keys() else 'Other'
-                            tk_summary = f'Exchange rate between {tk_fx_currency_name} and the US Dollar'
+                            tk_summary = f'The exchange rate between {tk_fx_currency_name} and the US Dollar, or the price of {currency} in USD.'
                         elif len(tk_hist.index) == 0:
                             tk_summary = f'WARNING: No historical data available for {tk}, ticker cannot be added to portfolio'
                         else: 
@@ -1316,10 +1319,10 @@ def output_custom_tickers(
                 elif category in ['stock_indices', 'volatility_indices']:
                     tk_summary = indices_custom_info[tk]['description']
                 elif category == 'fx':
-                    currency = tk.replace('=X', '')
+                    currency = tk_input.replace('USD=X', '')
                     tk_fx_currency_name = currencies_combined[currency]
                     tk_fx_currency_group = 'Major' if currency in currencies_major.keys() else 'Other'
-                    tk_summary = f'Exchange rate between {tk_fx_currency_name} and the US Dollar'
+                    tk_summary = f'The exchange rate between {tk_fx_currency_name} and the US Dollar, or the price of {currency} in USD.'
                 else: 
                     tk_summary = ''
                 
@@ -1547,7 +1550,7 @@ def output_custom_tickers(
             popover_ticker_keys.insert(7, html.Br())
             popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['category']}"))
             popover_ticker_values.insert(7, html.Br())
-        elif tk_type == ['CURRENCY']:
+        elif tk_type == 'CURRENCY':
             popover_ticker_keys.insert(6, html.B('Currency Name:'))
             popover_ticker_keys.insert(7, html.Br())
             popover_ticker_values.insert(6, html.Span(f"{ticker_info[tk]['fx_currency_name']}"))

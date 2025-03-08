@@ -7691,8 +7691,8 @@ layout = html.Div([
 
     id = 'plots-loading-wrapper',
     custom_spinner = html.Div([
-        html.Br(),
-        html.Br(),
+        html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(),
+        html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(),
         'Rendering Plot',
         html.Br(),
         html.Br(),

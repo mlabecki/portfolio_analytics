@@ -159,6 +159,8 @@ layout = html.Div([
     
     id = 'ticker-input-loading-wrapper',
     custom_spinner = html.Div([
+        html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(),
+        html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(),
         'Loading Ticker Categories',
         html.Br(),
         html.Br(),
@@ -179,7 +181,7 @@ layout = html.Div([
     html.Div(
         id = 'dates-link-container',
         children = [
-            dcc.Link('Home Page', href='/'),
+            dcc.Link('Start Over Category Selection', href='/'),
             html.Br(),
             dcc.Link('Continue to Ticker Info & Portfolio Selection', href='/test_ticker_input_v3')
         ],
@@ -238,7 +240,7 @@ def generate_preselected_tables(
         tk_sort_by = tk_cat_info_map[category]['sort_by']
 
         # For fx, the dictionary keys are 3-letter currency ISO codes, not YF tickers
-        fx_suffix_tk = '=X' if category == 'fx' else ''
+        fx_suffix_tk = 'USD=X' if category == 'fx' else ''
         fx_suffix_name = '/USD' if category == 'fx' else ''
         category_tickers = [tk + fx_suffix_tk for tk in dict_info_tickers.keys()]
         
@@ -280,8 +282,11 @@ def generate_preselected_tables(
 
                 df_pre_tickers.at[tk, 'No.'] = i + 1
                 df_pre_tickers.at[tk, 'Ticker'] = tk
-                currency = tk.replace(fx_suffix_tk, '')
-                tk_name = currency + fx_suffix_name
+                if category == 'fx':
+                    currency = tk.replace(fx_suffix_tk, '')
+                    tk_name = currency + fx_suffix_name
+                else:
+                    tk_name = dict_info_tickers[tk]
                 df_pre_tickers.at[tk, 'Name'] = tk_name
                 ticker_names.update({tk: tk_name})
                 if category == 'fx':
@@ -376,7 +381,8 @@ def generate_preselected_tables(
                     'border-top': '1px solid rgb(211, 211, 211)',
                     'border-bottom': '1px solid rgb(211, 211, 211)'},
                 {'if': {'column_id': 'No.'}, 'width': 24},
-                {'if': {'column_id': 'Ticker'}, 'width': 45},
+                {'if': {'column_id': 'Ticker'}, 'width': 120},
+                {'if': {'column_id': 'Name'}, 'width': 115},
                 # {'if': {'row_index': [idx for idx in range(indices_currencies_major[-1] + 1, indices_currencies_all[-1] + 1)]},
                 {'if': {
                     'filter_query': '{Currency Group} = Other',
@@ -393,7 +399,7 @@ def generate_preselected_tables(
                     'border-top': '1px solid rgb(211, 211, 211)',
                     'border-bottom': '1px solid rgb(211, 211, 211)'},
                 {'if': {'column_id': 'No.'}, 'width': 24},
-                {'if': {'column_id': 'Ticker'}, 'width': 45},
+                {'if': {'column_id': 'Ticker'}, 'width': 100},
             ]
     
         pre_selection_table[category] = html.Div([
