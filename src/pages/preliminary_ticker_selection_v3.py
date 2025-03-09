@@ -67,14 +67,24 @@ pre_table_columns_fx = ['No.', 'Ticker', 'Name', 'Currency Name', 'Currency Regi
 # Name: 'CAD/USD', 'AUD/USD', 'KWD/USD' ...
 # Currency Name: 'Canadian Dollar', 'Australian Dollar', 'Kuwaiti Dinar' ...
 # Currency Region: 'North America', 'Oceania', 'Middle East' ...
-# Currency Group: 'Major', 'Major', 'Other' ...
+# Currency Group: 'Major', 'Major', 'Minor' ...
 
 n_currencies_major = len(currencies_major)
 n_currencies_minor = len(currencies_minor)
 n_currencies_all = len(currencies_all)
 indices_currencies_major = list(range(n_currencies_major))
-indices_currencies_minor = list(range(n_currencies_minor))
+indices_currencies_minor = list(range(n_currencies_major, n_currencies_all))
 indices_currencies_all = list(range(n_currencies_all))
+
+indices_currencies_europe = [idx for idx, currency in enumerate(currencies_combined_regions.keys()) if currencies_combined_regions[currency] == 'Europe']
+indices_currencies_africa = [idx for idx, currency in enumerate(currencies_combined_regions.keys()) if currencies_combined_regions[currency] == 'Africa']
+indices_currencies_middle_east= [idx for idx, currency in enumerate(currencies_combined_regions.keys()) if currencies_combined_regions[currency] == 'Middle East']
+indices_currencies_east_asia = [idx for idx, currency in enumerate(currencies_combined_regions.keys()) if currencies_combined_regions[currency] == 'East Asia']
+indices_currencies_central_asia = [idx for idx, currency in enumerate(currencies_combined_regions.keys()) if currencies_combined_regions[currency] == 'Central Asia']
+indices_currencies_south_asia = [idx for idx, currency in enumerate(currencies_combined_regions.keys()) if currencies_combined_regions[currency] == 'South Asia']
+indices_currencies_south_america = [idx for idx, currency in enumerate(currencies_combined_regions.keys()) if currencies_combined_regions[currency] == 'South America']
+indices_currencies_north_america = [idx for idx, currency in enumerate(currencies_combined_regions.keys()) if currencies_combined_regions[currency] == 'North America']
+indices_currencies_oceania = [idx for idx, currency in enumerate(currencies_combined_regions.keys()) if currencies_combined_regions[currency] == 'Oceania']
 
 ###########################################################################################
 ### LAYOUT
@@ -293,7 +303,7 @@ def generate_preselected_tables(
                 if category == 'fx':
                     df_pre_tickers.at[tk, 'Currency Name'] = currencies_combined[currency]
                     df_pre_tickers.at[tk, 'Currency Region'] = currencies_combined_regions[currency]
-                    df_pre_tickers.at[tk, 'Currency Group'] = 'Major' if currency in currencies_major.keys() else 'Other'
+                    df_pre_tickers.at[tk, 'Currency Group'] = 'Major' if currency in currencies_major.keys() else 'Minor'
 
             else:
                 # In case the ticker is in multiple categories
@@ -384,11 +394,11 @@ def generate_preselected_tables(
                     'border-bottom': '1px solid rgb(211, 211, 211)'},
                 {'if': {'column_id': 'No.'}, 'width': 24},
                 {'if': {'column_id': 'Ticker'}, 'width': 95},
-                {'if': {'column_id': 'Name'}, 'width': 90},
+                {'if': {'column_id': 'Name'}, 'width': 85},
                 # {'if': {'column_id': 'Currency Region'}, 'width': 95},
                 # {'if': {'row_index': [idx for idx in range(indices_currencies_major[-1] + 1, indices_currencies_all[-1] + 1)]},
                 {'if': {
-                    'filter_query': '{Currency Group} = Other',
+                    'filter_query': '{Currency Group} = Minor',
                     # 'column_id': 'Currency Group'
                     },
                     'background': 'rgb(225, 225, 225)',
@@ -497,14 +507,136 @@ def generate_preselected_tables(
                                                         class_name = 'ma-1',
                                                         color = 'success',
                                                         size = 'sm',
-                                                        style = pre_menu_select_all_button_css
+                                                        style = pre_menu_select_major_button_css
                                                     )],
                                                     hidden = hidden_major
                                                 ),
+                                                html.Div([
+                                                    dbc.Button(
+                                                        'Select Minor',
+                                                        id = f'pre-menu-{id_string}-select-minor-button',
+                                                        n_clicks = 0,
+                                                        class_name = 'ma-1',
+                                                        color = 'success',
+                                                        size = 'sm',
+                                                        style = pre_menu_select_major_button_css
+                                                    )],
+                                                    hidden = hidden_major
+                                                ),
+                                                html.Div([
+                                                    dbc.Button(
+                                                        'Select Africa',
+                                                        id = f'pre-menu-{id_string}-select-africa-button',
+                                                        n_clicks = 0,
+                                                        class_name = 'ma-1',
+                                                        color = 'success',
+                                                        size = 'sm',
+                                                        style = pre_menu_select_major_button_css
+                                                    )],
+                                                    hidden = hidden_major
+                                                ),
+                                                html.Div([
+                                                    dbc.Button(
+                                                        'Select Central Asia',
+                                                        id = f'pre-menu-{id_string}-select-central-asia-button',
+                                                        n_clicks = 0,
+                                                        class_name = 'ma-1',
+                                                        color = 'success',
+                                                        size = 'sm',
+                                                        style = pre_menu_select_major_button_css
+                                                    )],
+                                                    hidden = hidden_major
+                                                ),                                                
+                                                html.Div([
+                                                    dbc.Button(
+                                                        'Select East Asia',
+                                                        id = f'pre-menu-{id_string}-select-east-asia-button',
+                                                        n_clicks = 0,
+                                                        class_name = 'ma-1',
+                                                        color = 'success',
+                                                        size = 'sm',
+                                                        style = pre_menu_select_major_button_css
+                                                    )],
+                                                    hidden = hidden_major
+                                                ),                                                
+                                                html.Div([
+                                                    dbc.Button(
+                                                        'Select Europe',
+                                                        id = f'pre-menu-{id_string}-select-europe-button',
+                                                        n_clicks = 0,
+                                                        class_name = 'ma-1',
+                                                        color = 'success',
+                                                        size = 'sm',
+                                                        style = pre_menu_select_major_button_css
+                                                    )],
+                                                    hidden = hidden_major
+                                                ),                    
+                                                html.Div([
+                                                    dbc.Button(
+                                                        'Select Middle East',
+                                                        id = f'pre-menu-{id_string}-select-middle-east-button',
+                                                        n_clicks = 0,
+                                                        class_name = 'ma-1',
+                                                        color = 'success',
+                                                        size = 'sm',
+                                                        style = pre_menu_select_major_button_css
+                                                    )],
+                                                    hidden = hidden_major
+                                                ),
+                                                html.Div([
+                                                    dbc.Button(
+                                                        'Select North America',
+                                                        id = f'pre-menu-{id_string}-select-north-america-button',
+                                                        n_clicks = 0,
+                                                        class_name = 'ma-1',
+                                                        color = 'success',
+                                                        size = 'sm',
+                                                        style = pre_menu_select_major_button_css
+                                                    )],
+                                                    hidden = hidden_major
+                                                ),
+                                                html.Div([
+                                                    dbc.Button(
+                                                        'Select Oceania',
+                                                        id = f'pre-menu-{id_string}-select-oceania-button',
+                                                        n_clicks = 0,
+                                                        class_name = 'ma-1',
+                                                        color = 'success',
+                                                        size = 'sm',
+                                                        style = pre_menu_select_major_button_css
+                                                    )],
+                                                    hidden = hidden_major
+                                                ),
+                                                html.Div([
+                                                    dbc.Button(
+                                                        'Select South America',
+                                                        id = f'pre-menu-{id_string}-select-south-america-button',
+                                                        n_clicks = 0,
+                                                        class_name = 'ma-1',
+                                                        color = 'success',
+                                                        size = 'sm',
+                                                        style = pre_menu_select_major_button_css
+                                                    )],
+                                                    hidden = hidden_major
+                                                ),
+                                                html.Div([
+                                                    dbc.Button(
+                                                        'Select South Asia',
+                                                        id = f'pre-menu-{id_string}-select-south-asia-button',
+                                                        n_clicks = 0,
+                                                        class_name = 'ma-1',
+                                                        color = 'success',
+                                                        size = 'sm',
+                                                        style = pre_menu_select_major_button_css
+                                                    )],
+                                                    hidden = hidden_major
+                                                ),
+
                                                 html.Div(
                                                     id = 'pre-menu-{id_string}-select-first-last-tickers-container',
+                                                    hidden = not hidden_major,
                                                     children = [
-                                                        html.Div('Select Ticker Range', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                                        html.Div('Select Ticker Range', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '5px', 'margin-left': '2px'}),
                                                         html.Div([
                                                             html.Div(
                                                                 'First No.',
@@ -557,7 +689,7 @@ def generate_preselected_tables(
                                         ### Unselect buttons
                                         html.Div(
                                             id = f'pre-menu-{id_string}-unselect-buttons-container',
-                                            style = {'margin-bottom': '10px', 'margin-left': '10px'},
+                                            style = {'margin': '10px 0px 10px 10px'},
                                             children = [
                                                 dbc.Button(
                                                     'Unselect All',
@@ -576,14 +708,136 @@ def generate_preselected_tables(
                                                         class_name = 'ma-1',
                                                         color = 'danger',
                                                         size = 'sm',
-                                                        style = pre_menu_select_all_button_css
+                                                        style = pre_menu_select_major_button_css
                                                     )],
                                                     hidden = hidden_major
                                                 ),
+                                                html.Div([
+                                                    dbc.Button(
+                                                        'Unselect Minor',
+                                                        id = f'pre-menu-{id_string}-unselect-minor-button',
+                                                        n_clicks = 0,
+                                                        class_name = 'ma-1',
+                                                        color = 'danger',
+                                                        size = 'sm',
+                                                        style = pre_menu_select_major_button_css
+                                                    )],
+                                                    hidden = hidden_major
+                                                ),
+                                                html.Div([
+                                                    dbc.Button(
+                                                        'Unselect Africa',
+                                                        id = f'pre-menu-{id_string}-unselect-africa-button',
+                                                        n_clicks = 0,
+                                                        class_name = 'ma-1',
+                                                        color = 'danger',
+                                                        size = 'sm',
+                                                        style = pre_menu_select_major_button_css
+                                                    )],
+                                                    hidden = hidden_major
+                                                ),
+                                                html.Div([
+                                                    dbc.Button(
+                                                        'Unselect Central Asia',
+                                                        id = f'pre-menu-{id_string}-unselect-central-asia-button',
+                                                        n_clicks = 0,
+                                                        class_name = 'ma-1',
+                                                        color = 'danger',
+                                                        size = 'sm',
+                                                        style = pre_menu_select_major_button_css
+                                                    )],
+                                                    hidden = hidden_major
+                                                ),                                                
+                                                html.Div([
+                                                    dbc.Button(
+                                                        'Unselect East Asia',
+                                                        id = f'pre-menu-{id_string}-unselect-east-asia-button',
+                                                        n_clicks = 0,
+                                                        class_name = 'ma-1',
+                                                        color = 'danger',
+                                                        size = 'sm',
+                                                        style = pre_menu_select_major_button_css
+                                                    )],
+                                                    hidden = hidden_major
+                                                ),                                                
+                                                html.Div([
+                                                    dbc.Button(
+                                                        'Unselect Europe',
+                                                        id = f'pre-menu-{id_string}-unselect-europe-button',
+                                                        n_clicks = 0,
+                                                        class_name = 'ma-1',
+                                                        color = 'danger',
+                                                        size = 'sm',
+                                                        style = pre_menu_select_major_button_css
+                                                    )],
+                                                    hidden = hidden_major
+                                                ),                    
+                                                html.Div([
+                                                    dbc.Button(
+                                                        'Unselect Middle East',
+                                                        id = f'pre-menu-{id_string}-unselect-middle-east-button',
+                                                        n_clicks = 0,
+                                                        class_name = 'ma-1',
+                                                        color = 'danger',
+                                                        size = 'sm',
+                                                        style = pre_menu_select_major_button_css
+                                                    )],
+                                                    hidden = hidden_major
+                                                ),
+                                                html.Div([
+                                                    dbc.Button(
+                                                        'Unselect North America',
+                                                        id = f'pre-menu-{id_string}-unselect-north-america-button',
+                                                        n_clicks = 0,
+                                                        class_name = 'ma-1',
+                                                        color = 'danger',
+                                                        size = 'sm',
+                                                        style = pre_menu_select_major_button_css
+                                                    )],
+                                                    hidden = hidden_major
+                                                ),
+                                                html.Div([
+                                                    dbc.Button(
+                                                        'Unselect Oceania',
+                                                        id = f'pre-menu-{id_string}-unselect-oceania-button',
+                                                        n_clicks = 0,
+                                                        class_name = 'ma-1',
+                                                        color = 'danger',
+                                                        size = 'sm',
+                                                        style = pre_menu_select_major_button_css
+                                                    )],
+                                                    hidden = hidden_major
+                                                ),
+                                                html.Div([
+                                                    dbc.Button(
+                                                        'Unselect South America',
+                                                        id = f'pre-menu-{id_string}-unselect-south-america-button',
+                                                        n_clicks = 0,
+                                                        class_name = 'ma-1',
+                                                        color = 'danger',
+                                                        size = 'sm',
+                                                        style = pre_menu_select_major_button_css
+                                                    )],
+                                                    hidden = hidden_major
+                                                ),
+                                                html.Div([
+                                                    dbc.Button(
+                                                        'Unselect South Asia',
+                                                        id = f'pre-menu-{id_string}-unselect-south-asia-button',
+                                                        n_clicks = 0,
+                                                        class_name = 'ma-1',
+                                                        color = 'danger',
+                                                        size = 'sm',
+                                                        style = pre_menu_select_major_button_css
+                                                    )],
+                                                    hidden = hidden_major
+                                                ),
+
                                                 html.Div(
                                                     id = 'pre-menu-{id_string}-unselect-first-last-tickers-container',
+                                                    hidden = not hidden_major,                                                    
                                                     children = [
-                                                        html.Div('Unselect Ticker Range', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-left': '2px'}),
+                                                        html.Div('Unselect Ticker Range', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '5px', 'margin-left': '2px'}),
                                                         html.Div([
                                                             html.Div(
                                                                 'First No.',
@@ -699,6 +953,16 @@ def generate_preselected_tables(
     Output('pre-menu-benchmarks-select-all-button', 'n_clicks'),
 
     Output('pre-menu-fx-select-major-button', 'n_clicks'),
+    Output('pre-menu-fx-select-minor-button', 'n_clicks'),
+    Output('pre-menu-fx-select-africa-button', 'n_clicks'),
+    Output('pre-menu-fx-select-europe-button', 'n_clicks'),
+    Output('pre-menu-fx-select-middle-east-button', 'n_clicks'),
+    Output('pre-menu-fx-select-east-asia-button', 'n_clicks'),
+    Output('pre-menu-fx-select-central-asia-button', 'n_clicks'),
+    Output('pre-menu-fx-select-south-asia-button', 'n_clicks'),
+    Output('pre-menu-fx-select-south-america-button', 'n_clicks'),
+    Output('pre-menu-fx-select-north-america-button', 'n_clicks'),
+    Output('pre-menu-fx-select-oceania-button', 'n_clicks'),
 
     Output('pre-menu-biggest-companies-unselect-all-button', 'n_clicks'),
     Output('pre-menu-sp500-unselect-all-button', 'n_clicks'),
@@ -722,6 +986,16 @@ def generate_preselected_tables(
     Output('pre-menu-benchmarks-unselect-all-button', 'n_clicks'),
 
     Output('pre-menu-fx-unselect-major-button', 'n_clicks'),
+    Output('pre-menu-fx-unselect-minor-button', 'n_clicks'),
+    Output('pre-menu-fx-unselect-africa-button', 'n_clicks'),
+    Output('pre-menu-fx-unselect-europe-button', 'n_clicks'),
+    Output('pre-menu-fx-unselect-middle-east-button', 'n_clicks'),
+    Output('pre-menu-fx-unselect-east-asia-button', 'n_clicks'),
+    Output('pre-menu-fx-unselect-central-asia-button', 'n_clicks'),
+    Output('pre-menu-fx-unselect-south-asia-button', 'n_clicks'),
+    Output('pre-menu-fx-unselect-south-america-button', 'n_clicks'),
+    Output('pre-menu-fx-unselect-north-america-button', 'n_clicks'),
+    Output('pre-menu-fx-unselect-oceania-button', 'n_clicks'),
 
     Output('pre-menu-biggest-companies-select-first-ticker-input', 'value'),
     Output('pre-menu-sp500-select-first-ticker-input', 'value'),
@@ -875,6 +1149,16 @@ def generate_preselected_tables(
     Input('pre-menu-benchmarks-select-all-button', 'n_clicks'),
 
     Input('pre-menu-fx-select-major-button', 'n_clicks'),
+    Input('pre-menu-fx-select-minor-button', 'n_clicks'),
+    Input('pre-menu-fx-select-africa-button', 'n_clicks'),
+    Input('pre-menu-fx-select-europe-button', 'n_clicks'),
+    Input('pre-menu-fx-select-middle-east-button', 'n_clicks'),
+    Input('pre-menu-fx-select-east-asia-button', 'n_clicks'),
+    Input('pre-menu-fx-select-central-asia-button', 'n_clicks'),
+    Input('pre-menu-fx-select-south-asia-button', 'n_clicks'),
+    Input('pre-menu-fx-select-south-america-button', 'n_clicks'),
+    Input('pre-menu-fx-select-north-america-button', 'n_clicks'),
+    Input('pre-menu-fx-select-oceania-button', 'n_clicks'),
 
     Input('pre-menu-biggest-companies-unselect-all-button', 'n_clicks'),
     Input('pre-menu-sp500-unselect-all-button', 'n_clicks'),
@@ -898,6 +1182,16 @@ def generate_preselected_tables(
     Input('pre-menu-benchmarks-unselect-all-button', 'n_clicks'),
 
     Input('pre-menu-fx-unselect-major-button', 'n_clicks'),
+    Input('pre-menu-fx-unselect-minor-button', 'n_clicks'),
+    Input('pre-menu-fx-unselect-africa-button', 'n_clicks'),
+    Input('pre-menu-fx-unselect-europe-button', 'n_clicks'),
+    Input('pre-menu-fx-unselect-middle-east-button', 'n_clicks'),
+    Input('pre-menu-fx-unselect-east-asia-button', 'n_clicks'),
+    Input('pre-menu-fx-unselect-central-asia-button', 'n_clicks'),
+    Input('pre-menu-fx-unselect-south-asia-button', 'n_clicks'),
+    Input('pre-menu-fx-unselect-south-america-button', 'n_clicks'),
+    Input('pre-menu-fx-unselect-north-america-button', 'n_clicks'),
+    Input('pre-menu-fx-unselect-oceania-button', 'n_clicks'),
 
     State('pre-menu-biggest-companies-select-first-ticker-input', 'value'),
     State('pre-menu-sp500-select-first-ticker-input', 'value'),
@@ -1063,6 +1357,16 @@ def output_custom_tickers(
     select_all_benchmarks,
 
     select_major_fx,
+    select_minor_fx,
+    select_africa_fx,
+    select_europe_fx,
+    select_middle_east_fx,
+    select_east_asia_fx,
+    select_central_asia_fx,
+    select_south_asia_fx,
+    select_south_america_fx,
+    select_north_america_fx,
+    select_oceania_fx,
 
     unselect_all_biggest_companies,
     unselect_all_sp500,
@@ -1086,7 +1390,17 @@ def output_custom_tickers(
     unselect_all_benchmarks,
 
     unselect_major_fx,
-    
+    unselect_minor_fx,
+    unselect_africa_fx,
+    unselect_europe_fx,
+    unselect_middle_east_fx,
+    unselect_east_asia_fx,
+    unselect_central_asia_fx,
+    unselect_south_asia_fx,
+    unselect_south_america_fx,
+    unselect_north_america_fx,
+    unselect_oceania_fx,
+
     select_first_ticker_biggest_companies,
     select_first_ticker_sp500,
     select_first_ticker_nasdaq100,
@@ -1422,6 +1736,9 @@ def output_custom_tickers(
         if select_all_button_nclicks[category]:
             table_selected_rows[category] = list(range(n_category_tickers))
 
+            # print(f'category: {category}')
+            # print(f'selected rows: {table_selected_rows[category]}\n')
+
         elif unselect_all_button_nclicks[category]:
             table_selected_rows[category] = []
             select_first_ticker[category] = None
@@ -1456,18 +1773,108 @@ def output_custom_tickers(
         else:
             select_last_ticker[category] = None
             unselect_last_ticker[category] = None
-    
-    ### FX major
-       
+
+    ### FX major, minor and regions
+
     if select_major_fx:
-        table_selected_rows['fx'] = indices_currencies_major
+        for idx in indices_currencies_major:
+            if idx not in table_selected_rows['fx']:
+                table_selected_rows['fx'].append(idx)
     elif unselect_major_fx:
         for idx in indices_currencies_major:
-            table_selected_rows['fx'].remove(idx)
-    else:            
-        select_first_ticker['fx'] = None
-        select_last_ticker['fx'] = None
-    
+            if idx in table_selected_rows['fx']:
+                table_selected_rows['fx'].remove(idx)
+
+    if select_minor_fx:
+        for idx in indices_currencies_minor:
+            if idx not in table_selected_rows['fx']:
+                table_selected_rows['fx'].append(idx)
+    elif unselect_minor_fx:
+        for idx in indices_currencies_minor:
+            if idx in table_selected_rows['fx']:
+                table_selected_rows['fx'].remove(idx)
+
+    if select_europe_fx:
+        for idx in indices_currencies_europe:
+            if idx not in table_selected_rows['fx']:
+                table_selected_rows['fx'].append(idx)
+    elif unselect_europe_fx:
+        for idx in indices_currencies_europe:
+            if idx in table_selected_rows['fx']:
+                table_selected_rows['fx'].remove(idx)
+
+    if select_africa_fx:
+        for idx in indices_currencies_africa:
+            if idx not in table_selected_rows['fx']:
+                table_selected_rows['fx'].append(idx)
+    elif unselect_africa_fx:
+        for idx in indices_currencies_africa:
+            if idx in table_selected_rows['fx']:
+                table_selected_rows['fx'].remove(idx)
+
+    if select_middle_east_fx:
+        for idx in indices_currencies_middle_east:
+            if idx not in table_selected_rows['fx']:
+                table_selected_rows['fx'].append(idx)
+    elif unselect_middle_east_fx:
+        for idx in indices_currencies_middle_east:
+            if idx in table_selected_rows['fx']:
+                table_selected_rows['fx'].remove(idx)
+
+    if select_east_asia_fx:
+        for idx in indices_currencies_east_asia:
+            if idx not in table_selected_rows['fx']:
+                table_selected_rows['fx'].append(idx)
+    elif unselect_east_asia_fx:
+        for idx in indices_currencies_east_asia:
+            if idx in table_selected_rows['fx']:
+                table_selected_rows['fx'].remove(idx)
+
+    if select_central_asia_fx:
+        for idx in indices_currencies_central_asia:
+            if idx not in table_selected_rows['fx']:
+                table_selected_rows['fx'].append(idx)
+    elif unselect_central_asia_fx:
+        for idx in indices_currencies_central_asia:
+            if idx in table_selected_rows['fx']:
+                table_selected_rows['fx'].remove(idx)
+
+    if select_south_asia_fx:
+        for idx in indices_currencies_south_asia:
+            if idx not in table_selected_rows['fx']:
+                table_selected_rows['fx'].append(idx)
+    elif unselect_south_asia_fx:
+        for idx in indices_currencies_south_asia:
+            if idx in table_selected_rows['fx']:
+                table_selected_rows['fx'].remove(idx)
+
+    if select_south_america_fx:
+        for idx in indices_currencies_south_america:
+            if idx not in table_selected_rows['fx']:
+                table_selected_rows['fx'].append(idx)
+    elif unselect_south_america_fx:
+        for idx in indices_currencies_south_america:
+            if idx in table_selected_rows['fx']:
+                table_selected_rows['fx'].remove(idx)
+
+    if select_north_america_fx:
+        for idx in indices_currencies_north_america:
+            if idx not in table_selected_rows['fx']:
+                table_selected_rows['fx'].append(idx)
+    elif unselect_north_america_fx:
+        for idx in indices_currencies_north_america:
+            if idx in table_selected_rows['fx']:
+                table_selected_rows['fx'].remove(idx)
+
+    if select_oceania_fx:
+        for idx in indices_currencies_oceania:
+            if idx not in table_selected_rows['fx']:
+                table_selected_rows['fx'].append(idx)
+    elif unselect_oceania_fx:
+        for idx in indices_currencies_oceania:
+            if idx in table_selected_rows['fx']:
+                table_selected_rows['fx'].remove(idx)
+
     #########
 
     # table_selected_tickers = {}
@@ -1624,12 +2031,12 @@ def output_custom_tickers(
 
         # select_all_button_nclicks
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        # select_major_fx
-        0,
+        # FX select_major, minor and regions
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         # unselect_all_button_nclicks
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        # unselect_major_fx
-        0,
+        # FX unselect_major, minor and regions
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         # select_first_ticker
         None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
         # select_last_ticker
@@ -1821,3 +2228,4 @@ def store_preselected_tickers(
     )
     
 ##########################################################################
+
