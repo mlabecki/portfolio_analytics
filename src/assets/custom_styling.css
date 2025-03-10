@@ -68,6 +68,7 @@ button, input, select, textarea {
     cursor: pointer
 }
 
+#create-pseudoticker-button:hover,
 #add-hist-price-button:hover,
 #add-candlestick-button:hover,
 #add-price-overlays-button:hover,
@@ -126,6 +127,7 @@ button, input, select, textarea {
     background-color: rgb(255, 178, 185) !important;
 }
 
+#create-pseudoticker-button,
 #add-hist-price-button,
 #add-candlestick-button,
 #add-price-overlays-button,

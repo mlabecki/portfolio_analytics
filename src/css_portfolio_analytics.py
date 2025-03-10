@@ -64,6 +64,23 @@ pre_menu_select_all_button_css = {
     'font-weight': 'bold',
     'width': '173px'
 }
+pre_menu_select_major_button_css = {
+    'display': 'block',
+    'height': '32px',
+    'border-radius': '5px',
+    'margin-top': '5px',
+    'margin-right': '5px',
+    'margin-bottom': '0px',
+    'margin-left': '0px',
+    'padding-left': '5px',
+    'padding-right': '5px',
+    'vertical-align': 'top',
+    'text-align': 'center',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+    'font-weight': 'bold',
+    'width': '173px'
+}
 input_menu_select_all_button_css = {
     'display': 'block',
     'height': '32px',
@@ -645,6 +662,15 @@ table_selected_tickers_footnote = {
     'margin-bottom': '5px',
     'margin-left': '10px',
 }
+selected_pseudotickers_table_data_css = {
+    'width': '305px',
+    'font-family': 'Helvetica',
+    'font-size' : '14px',
+    'background': 'white',
+    'text-align': 'left',
+    # 'border-top': '1px solid rgb(211, 211, 211)',
+    'border-bottom': '1px solid rgb(211, 211, 211)'
+}
 
 # Links
 link_container_css = {
@@ -726,4 +752,22 @@ not_added_to_plot_indicator_css = {
     'height': '29px',
     'vertical-align': 'bottom',
     'background-color': 'white'
+}
+
+create_pseudoticker_button_css = {
+    'width': '305px',
+    'display': 'block',
+    'height': '32px',
+    'border-radius': '5px',
+    'margin-top': '5px',
+    'margin-right': '5px',
+    'margin-bottom': '5px',
+    'margin-left': '10px',
+    'padding-left': '5px',
+    'padding-right': '5px',
+    'vertical-align': 'top',
+    'text-align': 'center',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+    'font-weight': 'bold',
 }
