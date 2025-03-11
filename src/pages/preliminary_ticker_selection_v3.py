@@ -359,7 +359,7 @@ def generate_preselected_tables(
         'cryptos': f'{max_tickers["cryptos"]} CRYPTOCURRENCIES by Market Capitalization',
         'crypto_etfs': f'{max_tickers["crypto_etfs"]} CRYPTOCURRENCY ETFs by Total Assets Under Management',
         'futures': f'{max_tickers["futures"]} COMMODITY FUTURES by Open Interest',
-        'fx': f'{n_currencies_major} MAJOR & {n_currencies_minor} OTHER CURRENCY EXCHANGE RATES to USD',
+        'fx': f'{n_currencies_major} MAJOR & {n_currencies_minor} MINOR CURRENCY EXCHANGE RATES to USD',
         'stock_indices': f'{max_tickers["stock_indices"]} STOCK INDICES',
         'volatility_indices': f'{max_tickers["volatility_indices"]} VOLATILITY INDICES',
         'benchmarks': f'{max_tickers["benchmarks"]} BENCHMARKS'
@@ -480,6 +480,21 @@ def generate_preselected_tables(
                         html.Div(
                             id = f'pre-category-{id_string}-container',
                             children = [
+
+                                html.Div(
+                                    children = [
+                                        html.B('NOTE: '),
+                                        html.Span('For any currency exchange rate selected below an inverse exchange rate will be added to your final ticker list for plotting.'),
+                                    ],
+                                    style = {
+                                        'height': '24px',
+                                        'font-family': 'Helvetica',
+                                        'font-size': '14px',
+                                        'margin-top': '10px',
+                                        'margin-left': '18px',
+                                        'vertical-align': 'middle'
+                                    }
+                                ),
 
                                 html.Div(
                                     id = f'pre-menu-{id_string}-container',
