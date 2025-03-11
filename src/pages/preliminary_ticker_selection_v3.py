@@ -378,6 +378,7 @@ def generate_preselected_tables(
         # ??...
 
         id_string = init_ticker_category_info_map[category]['id_string']
+        hidden_fx = False if category == 'fx' else True
 
         if category in selected_categories_stored:
             table_columns = [{'name': i, 'id': i} for i in df_ticker_category_info_map[category].columns]
@@ -386,7 +387,38 @@ def generate_preselected_tables(
             table_columns = []
             table_data = []
 
+        table_tooltip_data = []
+        table_css = []
+
         if category == 'fx':
+            
+            for currency in list(currencies_combined.keys()):
+                tk = currency + 'USD=X'
+                tk_inverse = 'USD' + currency + '=X'
+                tk_fx_currency_name = currencies_combined[currency]
+                tk_summary = f'The exchange rate between {tk_fx_currency_name} and the US Dollar, or the price of {currency} in USD. '
+                tk_summary += f'If {tk} is selected, then the inverse exchange rate between USD and {currency}, {tk_inverse},'
+                tk_summary += ' will also be added to the final list of tickers.'
+                table_tooltip_data.append(
+                    { column: {'value': tk_summary, 'type': 'markdown' }
+                    for column in df_ticker_category_info_map['fx'].columns }
+                )
+
+            table_css = [
+                {
+                'selector': '.dash-tooltip',
+                'rule': 'border: None;'
+                },
+                {
+                'selector': '.dash-table-tooltip',
+                'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(67, 172, 106) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica; background-color: rgb(227, 255, 237);'
+                },
+                {
+                'selector': '.dash-tooltip:before, .dash-tooltip:after',
+                'rule': 'border-top-color: #43ac6a !important; border-bottom-color: #43ac6a !important;'
+                }
+            ]
+
             conditional_css = [
                 {'if': {'state': 'active'},
                     'background': 'grey',
@@ -405,6 +437,52 @@ def generate_preselected_tables(
                     'border-bottom': '1px solid rgb(185, 185, 185)'},
                 {'if': {'row_index': indices_currencies_major[-1]}, 'border-bottom': '2px solid rgb(55, 55, 55)'}                    
             ]
+ 
+        elif category in ['stock_indices', 'volatility_indices', 'benchmarks']:
+            
+            if category == 'stock_indices':
+                index_tickers = list(stock_index_tickers.keys())
+            elif category == 'volatility_indices':
+                index_tickers = list(volatility_tickers.keys())
+            else:
+                index_tickers = list(benchmark_tickers.keys())
+
+            for tk in index_tickers:
+                if tk.startswith('^') & (tk not in ['TNX', 'IRX']):
+                    tk_summary = indices_custom_info[tk]['description']
+                    index_tooltip = {
+                        column: {'value': tk_summary, 'type': 'markdown' }
+                        for column in ['Ticker', 'Name']
+                    }
+                else:
+                    index_tooltip = {}
+                
+                table_tooltip_data.append(index_tooltip)
+
+            table_css = [
+                {
+                'selector': '.dash-tooltip',
+                'rule': 'border: None;'
+                },
+                {
+                'selector': '.dash-table-tooltip',
+                'rule': 'max-width: 500px; width: 500px !important; border: 1px solid rgb(67, 172, 106) !important; border-radius: 5px !important; padding: 10px; padding: 10px 12px 0px 12px; font-size: 12px; font-family: Helvetica; background-color: rgb(227, 255, 237);'
+                },
+                {
+                'selector': '.dash-tooltip:before, .dash-tooltip:after',
+                'rule': 'border-top-color: #43ac6a !important; border-bottom-color: #43ac6a !important;'
+                }
+            ]
+
+            conditional_css = [
+                {'if': {'state': 'active'},
+                    'background-color': 'white',
+                    'border-top': '1px solid rgb(211, 211, 211)',
+                    'border-bottom': '1px solid rgb(211, 211, 211)'},
+                {'if': {'column_id': 'No.'}, 'width': 24},
+                {'if': {'column_id': 'Ticker'}, 'width': 95},
+            ]
+
         else:
             conditional_css = [
                 {'if': {'state': 'active'},
@@ -422,6 +500,10 @@ def generate_preselected_tables(
                 editable = False,
                 row_selectable = 'multi',
                 selected_rows = [],
+                tooltip_data = table_tooltip_data,
+                tooltip_delay = 0,
+                tooltip_duration = None,
+                css = table_css,
                 style_as_list_view = True,
                 id = f'pre-dash-table-{id_string}',
                 style_header = input_table_header_css,
@@ -482,10 +564,12 @@ def generate_preselected_tables(
                             children = [
 
                                 html.Div(
+                                    id = 'fx-inverse-rates-note',
                                     children = [
                                         html.B('NOTE: '),
                                         html.Span('For any currency exchange rate selected below an inverse exchange rate will be added to your final ticker list for plotting.'),
                                     ],
+                                    hidden = hidden_fx,
                                     style = {
                                         'height': '24px',
                                         'font-family': 'Helvetica',

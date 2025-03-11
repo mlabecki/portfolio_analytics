@@ -214,7 +214,8 @@ class AnalyzePrices():
             # If it's the middle or lower deck, just set add_price to False and continue
             add_price = False
 
-        title_cci = f'{tk} Commodity Channel Index {period}'
+        tk_title = tk[:3] + '/' + tk[3:].replace('=X', '') if tk.endswith('=X') else tk
+        title_cci = f'{tk_title} Commodity Channel Index {period}'
         yaxis_title = 'Commodity Channel Index' if plot_height >= 250 else f'CCI'
 
         min_cci = min(cci)
@@ -1371,7 +1372,8 @@ class AnalyzePrices():
         min_stochastic = min(min(k_line), min(d_line))
         max_stochastic = max(max(k_line), max(d_line))
 
-        title_stochastic = f'{tk} {stochastic_type} {stochastic_label} Stochastic Oscillator (%)'
+        tk_title = tk[:3] + '/' + tk[3:].replace('=X', '') if tk.endswith('=X') else tk
+        title_stochastic = f'{tk_title} {stochastic_type} {stochastic_label} Stochastic Oscillator (%)'
         yaxis_title = f'Stochastic (%)'
 
         y_upper_limit = 99.99 if target_deck > 1 else 100
@@ -2260,13 +2262,14 @@ class AnalyzePrices():
 
         if add_title & (target_deck == 1):
 
+            tk_title = tk_macd[:3] + '/' + tk_macd[3:].replace('=X', '') if tk_macd.endswith('=X') else tk_macd
             if impulse_macd:
-                title_macd = f'{tk_macd} Impulse MACD({smma_window})'
+                title_macd = f'{tk_title} Impulse MACD({smma_window})'
             else:
                 if volatility_normalized:
-                    title_macd = f'{tk_macd} Volatility-Normalized MACD(12, 26)'
+                    title_macd = f'{tk_title} Volatility-Normalized MACD(12, 26)'
                 else:
-                    title_macd = f'{tk_macd} MACD(12, 26)'
+                    title_macd = f'{tk_title} MACD(12, 26)'
 
             fig_macd.update_layout(
                 title = dict(
@@ -2925,7 +2928,8 @@ class AnalyzePrices():
         ############################
 
         str_peak_to = 'Recovery' if show_trough_to_recovery else 'Trough'
-        title_drawdowns = f'{tk} {n_top_drawdowns} Top Drawdowns by {title_text} - Peak To {str_peak_to}'
+        tk_title = tk[:3] + '/' + tk[3:].replace('=X', '') if tk.endswith('=X') else tk
+        title_drawdowns = f'{tk_title} {n_top_drawdowns} Top Drawdowns by {title_text} - Peak To {str_peak_to}'
         
         if n_top_drawdowns > 0:
             
@@ -3172,7 +3176,8 @@ class AnalyzePrices():
         min_rsi = min(rsi)
         max_rsi = max(rsi)
 
-        title_rsi = f'{tk} Relative Strength Index {rsi_type} (%)'
+        tk_title = tk[:3] + '/' + tk[3:].replace('=X', '') if tk.endswith('=X') else tk
+        title_rsi = f'{tk_title} Relative Strength Index {rsi_type} (%)'
         yaxis_title = f'RSI (%)'
         price_name_prefix = 'Adjusted ' if adjusted else ''
         price_name = f'{price_name_prefix}{price_type}'
@@ -4731,8 +4736,15 @@ class AnalyzePrices():
         else:
             legend_name = price_type.title()
             yaxis_title = price_type.title()
+
         if add_title & (title is None):
-            title = f'{tk} {legend_name}'
+            if tk.endswith('=X'):
+                tk_title = tk[:3] + '/' + tk[3:].replace('=X', '')
+                legend_name = legend_name.replace('Adjusted ', '')
+                yaxis_title = yaxis_title.replace('Adjusted ', '')
+            else: 
+                tk_title = tk
+            title = f'{tk_title} {legend_name}'
 
         if ('volume' in price_type.lower()) | (price_type.lower() == 'obv'):
             zorder = -1
@@ -5020,7 +5032,8 @@ class AnalyzePrices():
 
         df = df_ohlc.copy()
 
-        title_prefix = 'Adjusted ' if adjusted_prices else ''
+        title_prefix = 'Adjusted ' if adjusted_prices & (not tk.endswith('=X')) else ''
+        # FX rates are not adjusted
 
         # Adjust y range if necessary
         reset_y_limits = False
@@ -5078,7 +5091,8 @@ class AnalyzePrices():
         if candle_type == 'traditional':
 
             if add_title:
-                title = f'{tk} {title_prefix}Prices - Traditional Candles'
+                tk_title = tk[:3] + '/' + tk[3:].replace('=X', '') if tk.endswith('=X') else tk
+                title = f'{tk_title} {title_prefix}Prices - Traditional Candles'
 
             shown_green = False
             shown_red = False
@@ -5133,7 +5147,8 @@ class AnalyzePrices():
         else:  # candle_type == 'hollow'
 
             if add_title:
-                title = f'{tk} {title_prefix}Prices - Hollow Candles'
+                tk_title = tk[:3] + '/' + tk[3:].replace('=X', '') if tk.endswith('=X') else tk
+                title = f'{tk_title} {title_prefix}Prices - Hollow Candles'
 
             df['previousClose'] = df['Close'].shift(1)
 
@@ -5466,7 +5481,8 @@ class AnalyzePrices():
             )
 
         diff = p1 - p2
-        diff_title = f'{tk} {p1_name} - {p2_name} Differential'
+        tk_title = tk[:3] + '/' + tk[3:].replace('=X', '') if tk.endswith('=X') else tk
+        diff_title = f'{tk_title} {p1_name} - {p2_name} Differential'
         diff_positive_name = f'{p1_name} > {p2_name}'
         diff_negative_name = f'{p1_name} < {p2_name}'
 
@@ -5809,12 +5825,14 @@ class AnalyzePrices():
 
         if not reverse_diff:
             diff = p1 - p2
-            diff_title = f'{tk} {p_base_name} {p1_name} - {p2_name} Oscillator'
+            tk_title = tk[:3] + '/' + tk[3:].replace('=X', '') if tk.endswith('=X') else tk
+            diff_title = f'{tk_title} {p_base_name} {p1_name} - {p2_name} Oscillator'
             diff_positive_name = f'{p1_name} > {p2_name}'
             diff_negative_name = f'{p1_name} < {p2_name}'
         else:
             diff = p2 - p1
-            diff_title = f'{tk} {p_base_name} {p2_name} - {p1_name} Oscillator'
+            tk_title = tk[:3] + '/' + tk[3:].replace('=X', '') if tk.endswith('=X') else tk
+            diff_title = f'{tk_title} {p_base_name} {p2_name} - {p1_name} Oscillator'
             diff_positive_name = f'{p2_name} > {p1_name}'
             diff_negative_name = f'{p2_name} < {p1_name}'
 
@@ -6139,18 +6157,20 @@ class AnalyzePrices():
                 font_weight = 'normal'
             )
 
+        tk_title = tk[:3] + '/' + tk[3:].replace('=X', '') if tk.endswith('=X') else tk
+
         if not flip_sign:
             p1_name = '%K'
             p2_name = '%D'
             diff = p1 - p2
-            diff_title = f'{tk} {stochastic_type} {stochastic_label} Stochastic %K-%D Differential'
+            diff_title = f'{tk_title} {stochastic_type} {stochastic_label} Stochastic %K-%D Differential'
             yaxis_title = f'{stochastic_label} %K − %D'
 
         else:
             p1_name = '%D'
             p2_name = '%K'
             diff = p2 - p1
-            diff_title = f'{tk} {stochastic_type} {stochastic_label} Stochastic %D-%K Differential'
+            diff_title = f'{tk_title} {stochastic_type} {stochastic_label} Stochastic %D-%K Differential'
             yaxis_title = f'{stochastic_label} %D − %K'
 
         diff_positive_name = f'{stochastic_label} {p1_name} > {p2_name}'

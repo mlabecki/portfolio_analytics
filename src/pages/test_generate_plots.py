@@ -76,8 +76,7 @@ and the lowest price over the lookback period used in the Average True Rate calc
 @callback(
     Output('final-table-selected-tickers', 'children'),
     Output('dash-table-tickers-to-plot-div', 'children'),
-    # Output('tickers-dropdown', 'options'),
-    # Output('tickers-dropdown', 'value'),
+    Output('final-expanded-selected-tickers', 'data'),
 
     Input('final-table-selected-tickers-data-stored', 'data'),
     Input('final-selected-ticker-summaries-stored', 'data'),
@@ -98,13 +97,64 @@ def display_table_selected_tickers(
     """
     
     # selected_tickers = [row['Ticker'] for row in table_data]
-    selected_tickers = selected_ticker_names.keys()
+    selected_tickers = list(selected_ticker_names.keys())
+    expanded_selected_tickers = []
+    expanded_selected_ticker_names = {}
 
+    for tk in selected_tickers:
+        expanded_selected_tickers.append(tk)
+        expanded_selected_ticker_names.update({tk: selected_ticker_names[tk]})
+        if tk.endswith('USD=X'):
+            currency = tk.replace('USD=X', '')
+            tk_inverse = 'USD' + currency + '=X'
+            tk_inverse_name = 'USD' + currency
+            expanded_selected_tickers.append(tk_inverse)
+            expanded_selected_ticker_names.update({tk_inverse: tk_inverse_name})
+    
+    expanded_data = []
+    expanded_tooltip_data = []
+
+    for idx, row in enumerate(table_data):
+        # Indexing is the same in table_data and table_tooltip_data
+        expanded_data.append(row)
+
+        tk = row['Ticker']
+
+        if tk.endswith('USD=X'):
+        
+            row_inverse = row.copy()
+            currency = tk.replace('USD=X', '')
+            tk_inverse = 'USD' + currency + '=X'
+            tk_inverse_name = 'USD' + currency
+            row_inverse['Ticker'] = tk_inverse
+            row_inverse['Name'] = tk_inverse_name
+            row_inverse['Currency'] = currency
+            expanded_data.append(row_inverse)
+
+            tk_fx_currency_name = currencies_combined[currency]
+            tk_summary = f'The exchange rate between {tk_fx_currency_name} and the US Dollar, or the price of {currency} in USD.'
+            tooltip_row = {
+                column: {'value': tk_summary, 'type': 'markdown' }
+                for column in plots_table_selected_tickers_columns if column != 'No.'
+            }
+            tk_summary_inverse = f'The exchange rate between the US Dollar and {tk_fx_currency_name}, or the price of USD in {currency}.'
+            tooltip_row_inverse = {
+                column: {'value': tk_summary_inverse, 'type': 'markdown' }
+                for column in plots_table_selected_tickers_columns if column != 'No.'
+            }
+            expanded_tooltip_data.append(tooltip_row)
+            expanded_tooltip_data.append(tooltip_row_inverse)
+
+        else:
+            expanded_tooltip_data.append(table_tooltip_data[idx])
+
+    
+    # This table appears above the plot under the Collapse button
     dash_table_selected_tickers = dash_table.DataTable(
         columns = [{'name': i, 'id': i} for i in plots_table_selected_tickers_columns if i != 'No.'],
-        data = table_data,
+        data = expanded_data,
         editable = False,
-        tooltip_data = table_tooltip_data,
+        tooltip_data = expanded_tooltip_data,
         css = [
             {
             'selector': '.dash-tooltip',
@@ -149,38 +199,23 @@ def display_table_selected_tickers(
 
     dash_table_selected_tickers_div = html.Div(
         id = 'final-dash-table-selected-tickers-div',
-        children = [
-            # html.Div(
-            #     'YOUR PORTFOLIO',
-            #     id = f'final-table-selected-tickers-title',
-            #     style = input_table_title_css
-            # ),
-            html.Div(
-                id = 'dates-table-selected-tickers',
-                children = [dash_table_selected_tickers]
-            ),
-            # html.Div(
-            #     '* Length of the range of dates in business days excluding weekends and holidays',
-            #     id = 'dates-table-selected-tickers-footnote',
-            #     style = table_selected_tickers_footnote
-            # )
-        ],
-        # style = {'width': '1300px'}
+        children = [dash_table_selected_tickers],
     )
 
+    # This table appears in TICKERS tab under GENERAL SETTINGS
     dash_table_tickers_to_plot = dash_table.DataTable(
         columns = [{'name': i, 'id': i} for i in ['Ticker', 'Name']],
-        data = [{'Ticker': tk, 'Name': selected_ticker_names[tk]} for tk in selected_tickers],
+        data = [{'Ticker': tk, 'Name': expanded_selected_ticker_names[tk]} for tk in expanded_selected_tickers],
         editable = False,
         row_selectable = 'multi',
         selected_rows = [0],
         # selected_rows = [],
-        tooltip_data = table_tooltip_data,
+        tooltip_data = expanded_tooltip_data,
         css = [
             {
                 # Hide the header
-               'selector': 'tr:first-child',
-               'rule': 'display: none',
+                'selector': 'tr:first-child',
+                'rule': 'display: none',
             },
             {
             'selector': '.dash-tooltip',
@@ -207,7 +242,7 @@ def display_table_selected_tickers(
         ],
         tooltip_delay = 0,
         tooltip_duration = None,
-        style_as_list_view = True,
+        # style_as_list_view = True,
         # style_header_conditional = [
         #     {'if': {'column_id': 'No.'}, 'padding-left': '8px'},
         # ],
@@ -219,7 +254,7 @@ def display_table_selected_tickers(
                 'border-top': '1px solid rgb(211, 211, 211)',
                 'border-bottom': '1px solid rgb(211, 211, 211)'},
             # {'if': {'column_id': 'No.'}, 'width': 24, 'padding-left': '8px'},
-            {'if': {'column_id': 'Ticker'}, 'width': 50},
+            {'if': {'column_id': 'Ticker'}, 'width': 60},
             {'if': {'column_id': 'Name'}, 'width': 200},
         ],
         id = 'dash-table-tickers-to-plot',
@@ -230,7 +265,8 @@ def display_table_selected_tickers(
 
     return (
         dash_table_selected_tickers_div,
-        dash_table_tickers_to_plot
+        dash_table_tickers_to_plot,
+        expanded_selected_ticker_names
         # selected_tickers,
         # first_ticker
     )
@@ -360,6 +396,8 @@ layout = html.Div([
 
     # LOADING WRAPPER
     dcc.Loading([
+
+    dcc.Store(data = {}, id = 'final-expanded-selected-tickers', storage_type = 'session'),
 
     html.Div(id = 'plots-start-date', hidden = True, style = {'font-size' : '14px'}),
     html.Div(id = 'plots-end-date', hidden = True, style = {'font-size' : '14px'}),
@@ -8687,7 +8725,7 @@ def toggle_collapse_cci(n, is_open):
 
     Input('final-start-date-stored', 'data'),
     Input('final-end-date-stored', 'data'),
-    Input('final-selected-tickers-stored', 'data'),
+    Input('final-expanded-selected-tickers', 'data'),
     
     Input({'index': ALL, 'type': 'reset-axes'}, 'n_clicks'),
 
@@ -9057,7 +9095,7 @@ def update_plot(
 
         start_date,
         end_date,
-        selected_tickers_names,
+        expanded_selected_tickers_names,
 
         n_click_reset_axes,
 
@@ -9399,8 +9437,8 @@ def update_plot(
 
     ):
 
-    selected_tickers = list(selected_tickers_names.keys())
-    id_tk_map = {i: tk for i, tk in enumerate(selected_tickers)}
+    expanded_selected_tickers = list(expanded_selected_tickers_names.keys())
+    id_tk_map = {i: tk for i, tk in enumerate(expanded_selected_tickers)}
 
     # NOTE: start_date, end_date, new_start_date and new_end_date are all strings, converted to datetime using strptime()
     min_start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
@@ -9410,7 +9448,7 @@ def update_plot(
     start_date_value = start_date if new_start_date is None else new_start_date
     end_date_value = end_date if new_end_date is None else new_end_date
 
-    downloaded_data = hist_data.download_yf_data(start_date, end_date, selected_tickers)
+    downloaded_data = hist_data.download_yf_data(start_date, end_date, expanded_selected_tickers)
 
     tickers_to_plot = [id_tk_map[i] for i in selected_rows_tickers_to_plot] if selected_rows_tickers_to_plot != [] else [id_tk_map[0]]
 

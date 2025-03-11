@@ -132,7 +132,7 @@ input_menu_container_css = {
     'width': '122px',
     'font-family': 'Helvetica',
     'font-size' : '14px',
-    'margin-top': '5px',
+    # 'margin-top': '5px',
     'margin-left': '5px',
     'vertical-align': 'top',
     'display': 'inline-block'

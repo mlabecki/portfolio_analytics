@@ -16,6 +16,7 @@ selected_ticker_names = {
     'CADUSD=X': 'CADUSD',
     'EURUSD=X': 'EURUSD',
     'JPYUSD=X': 'JPYUSD',
+
     'TSLA':     'Tesla',
     'AMZN':     'Amazon',
     '^N225':    'Nikkei 225',
@@ -78,7 +79,7 @@ def display_table_selected_tickers(
         ],
         tooltip_delay = 0,
         tooltip_duration = None,
-        style_as_list_view = True,
+        # style_as_list_view = True,
 
         style_data_conditional = [
             {'if': 
@@ -138,7 +139,7 @@ def initialize_table_pseudotickers():
         ],
         tooltip_delay = 0,
         tooltip_duration = None,
-        style_as_list_view = True,
+        # style_as_list_view = True,
         style_data_conditional = [
             {'if': 
                 {'state': 'active'},
@@ -202,7 +203,10 @@ app.layout = (
         html.Div(
             id = 'dash-table-tickers-to-plot-div',
             children = [display_table_selected_tickers(selected_ticker_names)],
-            style = {'width': '305px'}
+            style = {
+                'width': '305px',
+                'margin-left': '10px'
+            }
         ),
         ],
         style = {
@@ -285,7 +289,7 @@ app.layout = (
 
     html.Div([
         dbc.Button(
-            'Create A Pseudoticker From This Pair',
+            'Create A Ratio Pseudoticker',
             id = 'create-pseudoticker-button',
             n_clicks = 0,
             class_name = 'ma-1',
@@ -314,15 +318,9 @@ app.layout = (
 @callback(
 
     Output('selected-pseudoticker-info', 'data'),
-    # Output('selected-pseudoticker-info', 'children'),
     Output('dash-table-pseudotickers-to-plot', 'data'),
     Output('dash-table-pseudotickers-to-plot', 'tooltip_data'),
     Output('dash-table-pseudotickers-to-plot', 'selected_rows'),
-    
-    # Output('pseudoticker-numerator-dropdown', 'options'),
-    # Output('pseudoticker-denominator-dropdown', 'options'),
-    # Output('pseudoticker-numerator-dropdown', 'value'),
-    # Output('pseudoticker-denominator-dropdown', 'value'),
 
     State('pseudoticker-numerator-dropdown', 'value'),
     State('pseudoticker-denominator-dropdown', 'value'),
@@ -360,76 +358,73 @@ def display_table_selected_pseudotickers(
     #     'pseudo_tk_name': pseudo_tk_name,
     #     'pseudo_tk_summary': pseudo_tk_summary,
     # }
-    
-    # pseudoticker_tooltip_data = []
 
     ctx = dash.callback_context
 
-    if n_click_pseudo & (tk_num != tk_den):
+    if n_click_pseudo:
         
         if ctx.triggered:
+            
+            if tk_num != tk_den:
 
-            pseudo_tk = tk_num + ' / ' + tk_den
+                pseudo_tk = tk_num + ' / ' + tk_den
 
-            idx = str(len(selected_pseudoticker_info))  # dcc.Store converts int to string in dictionary keys
+                idx = str(len(selected_pseudoticker_info))  # dcc.Store converts int to string in dictionary keys
 
-            # print(f'(START) type(idx) = {type(idx)}')
-            # print(f'(START)\n{selected_pseudoticker_info}')
-
-            if int(idx) > 0:
-                selected_pseudoticker_indices = list(selected_pseudoticker_info.keys())
-                selected_pseudotickers = [selected_pseudoticker_info[i]['pseudo_tk'] for i in selected_pseudoticker_indices]
-                new_pseudo_tk = False if pseudo_tk in selected_pseudotickers else True
-            else:
-                selected_pseudoticker_indices = []
-                selected_pseudotickers = []
-                new_pseudo_tk = True
-
-            if new_pseudo_tk:
-
-                selected_pseudoticker_info[idx] = {}              
-
-                selected_pseudoticker_info[idx]['tk_num'] = tk_num
-                selected_pseudoticker_info[idx]['tk_den'] = tk_den
-                selected_pseudoticker_info[idx]['pseudo_tk'] = pseudo_tk
-
-                selected_pseudoticker_indices.append(idx)
-                selected_pseudotickers.append(pseudo_tk)
-
-                if tk_num.endswith('USD=X'):
-                    cur_num = tk_num.replace('USD=X', '')
-                    if tk_den.endswith('USD=X'):
-                        tk_num_name = tk_num.replace('USD=X', '')
-                        tk_den_name = tk_den.replace('USD=X', '')
-                        pseudo_tk_name = tk_num_name + '/' + tk_den_name
-                        pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The exchange rate between {tk_num_name} and {tk_den_name}, or the price of {tk_num_name} in {tk_den_name}.'
-                    else:
-                        tk_num_name = tk_num.replace('=X', '')
-                        pseudo_tk_name = tk_num_name + '/' + tk_den
-                        pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num_name} (the exchange rate between {cur_num} and USD) to {tk_den} prices or index values.'
+                if int(idx) > 0:
+                    selected_pseudoticker_indices = list(selected_pseudoticker_info.keys())
+                    selected_pseudotickers = [selected_pseudoticker_info[i]['pseudo_tk'] for i in selected_pseudoticker_indices]
+                    new_pseudo_tk = False if pseudo_tk in selected_pseudotickers else True
                 else:
-                    if tk_den.endswith('USD=X'):
-                        cur_den = tk_den.replace('USD=X', '')
-                        tk_den_name = tk_den.replace('=X', '')
-                        pseudo_tk_name = tk_num + '/' + tk_den_name
-                        pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} to {tk_den_name} (the exchange rate between {cur_den} and USD). If the currency of {tk_num} is USD, then this is the price of {tk_num} in {cur_den}.'
+                    selected_pseudoticker_indices = []
+                    selected_pseudotickers = []
+                    new_pseudo_tk = True
+
+                if new_pseudo_tk:
+
+                    selected_pseudoticker_info[idx] = {}              
+
+                    selected_pseudoticker_info[idx]['tk_num'] = tk_num
+                    selected_pseudoticker_info[idx]['tk_den'] = tk_den
+                    selected_pseudoticker_info[idx]['pseudo_tk'] = pseudo_tk
+
+                    selected_pseudoticker_indices.append(idx)
+                    selected_pseudotickers.append(pseudo_tk)
+
+                    if tk_num.endswith('USD=X'):
+                        cur_num = tk_num.replace('USD=X', '')
+                        if tk_den.endswith('USD=X'):
+                            tk_num_name = tk_num.replace('USD=X', '')
+                            tk_den_name = tk_den.replace('USD=X', '')
+                            pseudo_tk_name = tk_num_name + '/' + tk_den_name
+                            pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The exchange rate between {tk_num_name} and {tk_den_name}, or the price of {tk_num_name} in {tk_den_name}.'
+                        else:
+                            tk_num_name = tk_num.replace('=X', '')
+                            pseudo_tk_name = tk_num_name + '/' + tk_den
+                            pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num_name} (the exchange rate between {cur_num} and USD) to {tk_den} prices or index values.'
                     else:
-                        pseudo_tk_name = tk_num + '/' + tk_den
-                        pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} to {tk_den} prices or index values.'
+                        if tk_den.endswith('USD=X'):
+                            cur_den = tk_den.replace('USD=X', '')
+                            tk_den_name = tk_den.replace('=X', '')
+                            pseudo_tk_name = tk_num + '/' + tk_den_name
+                            pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} to {tk_den_name} (the exchange rate between {cur_den} and USD). If the currency of {tk_num} is USD, then this is the price of {tk_num} in {cur_den}.'
+                        else:
+                            pseudo_tk_name = tk_num + '/' + tk_den
+                            pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} to {tk_den} prices or index values.'
 
-                selected_pseudoticker_info[idx]['pseudo_tk_name'] = pseudo_tk_name
-                selected_pseudoticker_info[idx]['pseudo_tk_summary'] = pseudo_tk_summary
+                    selected_pseudoticker_info[idx]['pseudo_tk_name'] = pseudo_tk_name
+                    selected_pseudoticker_info[idx]['pseudo_tk_summary'] = pseudo_tk_summary
 
-                table_pseudoticker_data.append({
-                    'Pseudoticker': pseudo_tk,
-                    'Name': pseudo_tk_name
-                })    
+                    table_pseudoticker_data.append({
+                        'Pseudoticker': pseudo_tk,
+                        'Name': pseudo_tk_name
+                    })    
 
-                table_pseudoticker_selected_rows = [int(idx) for idx in selected_pseudoticker_indices]
-                table_pseudoticker_tooltip_data.append({
-                    column: {'value': pseudo_tk_summary, 'type': 'markdown' }
-                    for column in ['Pseudoticker', 'Name'] }
-                )
+                    table_pseudoticker_selected_rows = [int(idx) for idx in selected_pseudoticker_indices]
+                    table_pseudoticker_tooltip_data.append({
+                        column: {'value': pseudo_tk_summary, 'type': 'markdown' }
+                        for column in ['Pseudoticker', 'Name'] }
+                    )
 
     # print(f'(END)\n{selected_pseudoticker_info}')
 

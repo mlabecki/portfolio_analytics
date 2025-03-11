@@ -43,7 +43,7 @@ pre_table_columns_fx = ['No.', 'Ticker', 'Name', 'Currency Name', 'Currency Regi
 # Name: 'CAD/USD', 'AUD/USD', 'KWD/USD' ...
 # Currency Name: 'Canadian Dollar', 'Australian Dollar', 'Kuwaiti Dinar' ...
 # Currency Region: 'North America', 'Oceania', 'Middle East' ...
-# Currency Group: 'Major', 'Major', 'Other' ...
+# Currency Group: 'Major', 'Major', 'Minor' ...
 
 n_currencies_major = len(currencies_major)
 n_currencies_minor = len(currencies_minor)
@@ -67,6 +67,7 @@ all_categories = list(category_titles_ids.keys())
 for category in all_categories:
 
     id_string = category_titles_ids[category]['id_string']
+    hidden_fx = False if category == 'fx' else True
 
     if category == 'fx':
         conditional_css = [
@@ -82,7 +83,7 @@ for category in all_categories:
             {'if': {'column_id': 'Data Start'}, 'width': 85},
             {'if': {'column_id': 'Data End'}, 'width': 85},
             {'if': {
-                'filter_query': '{Currency Group} = Other',
+                'filter_query': '{Currency Group} = Minor',
                 # 'column_id': 'Currency Group'
                 },
             'background': 'rgb(225, 225, 225)',
@@ -183,7 +184,24 @@ for category in all_categories:
                     html.Div(
                         id = f'category-{id_string}-container',
                         children = [
-                            
+ 
+                            html.Div(
+                                id = 'fx-inverse-rates-note',
+                                children = [
+                                    html.B('NOTE: '),
+                                    html.Span('For any currency exchange rate selected below an inverse exchange rate will be added to your final ticker list for plotting.'),
+                                ],
+                                hidden = hidden_fx,
+                                style = {
+                                    'height': '24px',
+                                    'font-family': 'Helvetica',
+                                    'font-size': '14px',
+                                    'margin-top': '10px',
+                                    'margin-left': '14px',
+                                    'vertical-align': 'middle'
+                                }
+                            ),
+
                             html.Div(
                                 id = f'menu-{id_string}-container',
                                 children = [
@@ -573,10 +591,13 @@ def read_preselected_tickers(
                             tk_summary = indices_custom_info[tk]['description']
                         elif category == 'fx':
                             currency = tk.replace('USD=X', '')
+                            tk_inverse = 'USD' + currency + '=X'                            
                             tk_fx_currency_name = currencies_combined[currency]
                             tk_fx_currency_region = currencies_combined_regions[currency]
-                            tk_fx_currency_group = 'Major' if currency in currencies_major.keys() else 'Other'
-                            tk_summary = f'The exchange rate between {tk_fx_currency_name} and the US Dollar, or the price of {currency} in USD.'
+                            tk_fx_currency_group = 'Major' if currency in currencies_major.keys() else 'Minor'
+                            tk_summary = f'The exchange rate between {tk_fx_currency_name} and the US Dollar, or the price of {currency} in USD. '
+                            tk_summary += f'If {tk} is selected, then the inverse exchange rate between USD and {currency}, {tk_inverse},'
+                            tk_summary += ' will also be added to the final list of tickers.'
                         elif len(tk_hist.index) == 0:
                             tk_summary = f'WARNING: No historical data available for {tk}, ticker cannot be added to portfolio'
                         else: 
@@ -1358,7 +1379,7 @@ def output_custom_tickers(
                         currency = tk_input.replace('USD=X', '')
                         tk_fx_currency_name = currencies_combined[currency]
                         tk_fx_currency_region = currencies_combined_regions[currency]
-                        tk_fx_currency_group = 'Major' if currency in currencies_major.keys() else 'Other'
+                        tk_fx_currency_group = 'Major' if currency in currencies_major.keys() else 'Minor'
                         tk_summary = f'The exchange rate between {tk_fx_currency_name} and the US Dollar, or the price of {currency} in USD.'
                     else: 
                         tk_summary = ''
