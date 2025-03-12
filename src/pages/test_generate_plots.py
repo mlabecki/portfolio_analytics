@@ -72,6 +72,9 @@ and the lowest price over the lookback period used in the Average True Rate calc
 
 }
 
+pseudoticker_text = """You can choose a pair of tickers to create a Ratio Pseudoticker, whose value will be the ratio of the two tickers' prices, FX rates, or indices.
+This can be useful for calculating non-USD currency exchange rates, converting foreign currency asset prices to USD, comparing similar asset types, etc.
+All plot types and features, except for volume, will be available for the Pseudotickers."""
 
 @callback(
     Output('final-table-selected-tickers', 'children'),
