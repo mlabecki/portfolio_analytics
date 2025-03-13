@@ -12,9 +12,9 @@ from utils import *
 
 app = Dash(__name__, external_stylesheets = [dbc.themes.YETI], suppress_callback_exceptions = True)
 
-pseudoticker_text = """You can choose a pair of tickers to create a Ratio Pseudoticker, whose value will be the ratio of the two tickers' prices, FX rates, or indices.
-This can be useful for calculating non-USD currency exchange rates, converting foreign currency asset prices to USD, comparing similar asset types, etc.
-All plot types and features, except for volume, will be available for the Pseudotickers."""
+pseudoticker_text = """You can choose a pair of tickers to create a pseudoticker, whose value will be the ratio of the two tickers' prices, FX rates, or indices.
+This can be useful for calculating non-USD currency exchange rates, converting foreign currency asset prices to USD, or comparing similar asset types.
+All plot types and features, except for volume, will be available for the selected pseudotickers."""
 
 selected_ticker_names = {
     'CADUSD=X': 'CADUSD',
@@ -23,13 +23,26 @@ selected_ticker_names = {
     'USDEUR=X': 'USDEUR',
     'JPYUSD=X': 'JPYUSD',
     'USDJPY=X': 'USDJPY',
-
     'TSLA':     'Tesla',
     'AMZN':     'Amazon',
     '^N225':    'Nikkei 225',
     '^GSPC':    'S&P 500',
     'BMW.DE':   'BMW',
     '7201.T':   'Nissan'
+}
+selected_ticker_currencies = {
+    'CADUSD=X': 'USD',
+    'USDCAD=X': 'CAD',
+    'EURUSD=X': 'USD',
+    'USDEUR=X': 'EUR',
+    'JPYUSD=X': 'USD',
+    'USDJPY=X': 'JPY',
+    'TSLA':     'USD',
+    'AMZN':     'USD',
+    '^N225':    '',
+    '^GSPC':    '',
+    'BMW.DE':   'EUR',
+    '7201.T':   'JPY'
 }
 selected_tickers = list(selected_ticker_names.keys())
 first_tk = selected_tickers[0]
@@ -298,7 +311,7 @@ app.layout = (
 
     html.Div([
         dbc.Button(
-            'Create A Ratio Pseudoticker',
+            'Create Pseudoticker From This Pair',
             id = 'create-pseudoticker-button',
             n_clicks = 0,
             class_name = 'ma-1',
@@ -461,62 +474,140 @@ def display_table_selected_pseudotickers(
                     pseudo_tk_name = ''
                     pseudo_tk_summary = ''
 
+                    ###################
                     if tk_num.endswith('USD=X'):
+                        # The numerator is the price of another currency in USD, e.g. JPYUSD=X
+
                         cur_num = tk_num.replace('USD=X', '')
+
                         if tk_den.endswith('USD=X'):
                             tk_num_name = tk_num.replace('USD=X', '')
                             tk_den_name = tk_den.replace('USD=X', '')
                             pseudo_tk_name = tk_num_name + '/' + tk_den_name
                             pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The exchange rate between {tk_num_name} and {tk_den_name}, or the price of {tk_num_name} in {tk_den_name}.'
+
                         elif tk_den.startswith('USD') & tk_den.endswith('=X'):
                             cur_den = tk_den.replace('USD', '').replace('=X', '')
                             hidden_popover_create_pseudoticker = False
-                            # message_popover_create_pseudoticker = 'You cannot create a pseudoticker in this manner. '
                             message_popover_create_pseudoticker = f"Did you mean {tk_num} and {cur_den + 'USD=X'}? Or {'USD' + cur_num + '=X'} and {tk_den}?"
-                        else:
-                            tk_num_name = tk_num.replace('=X', '')
-                            pseudo_tk_name = tk_num_name + '/' + tk_den
-                            pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num_name} (the exchange rate between {cur_num} and USD) to {tk_den} prices or index values.'
 
+                        else:
+                            # We will only allow a ratio of currency to an index (or a currency-free asset).
+                            cur_den = selected_ticker_currencies[tk_den]
+                            if tk_den.startswith('^') | (cur_den == ''):
+                                # An index, no currency
+                                tk_num_name = tk_num.replace('=X', '')
+                                pseudo_tk_name = tk_num_name + '/' + tk_den
+                                pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num_name} (the exchange rate between {cur_num} and USD) to {tk_den} values.'
+                            else:
+                                hidden_popover_create_pseudoticker = False
+                                if cur_den == 'USD':
+                                    # For example, JPYUSD=X and AMZN
+                                    message_popover_create_pseudoticker = f"The currency of {tk_den} is USD. If you want to convert it to {cur_num}, use {tk_den} as Numerator and {tk_num} as Denominator."
+                                elif cur_den == cur_num:
+                                    # For example, (incorrect) JPYUSD=X and 7201.T (Nissan). The correct fx ticker for converting JPY to USD is USDJPY=X.
+                                    message_popover_create_pseudoticker = f"The currency of {tk_den} is {cur_den}. If you want to convert it to USD, use {tk_den} as Numerator and {'USD' + cur_den + '=X'} as Denominator."
+                                else:
+                                    # For example, JPYUSD=X and BMW.DE (currency: EUR).
+                                    # Should also allow conversion to cur_num by using tk_den (BMW.DE) as Numerator and a pseudoticker f'{cur_num}{cur_den}=X' (JPYEUR) as Denominator.
+                                    message_popover_create_pseudoticker = f"The currency of {tk_den} is {cur_den}. If you want to convert it to USD, use {tk_den} as Numerator and {'USD' + cur_den + '=X'} as Denominator."
+
+                    ###################
                     elif tk_num.startswith('USD') & tk_num.endswith('=X'):
+                        # The numerator is the price of USD in another currency, e.g. USDJPY=X
+
                         # In this case numerator and denominator are effectively swapped
                         cur_num = tk_num.replace('USD', '').replace('=X', '')
+
                         if tk_den.startswith('USD') & tk_den.endswith('=X'):
                             tk_num_name = tk_num.replace('USD', '').replace('=X', '')
                             tk_den_name = tk_den.replace('USD', '').replace('=X', '')
                             pseudo_tk_name = tk_den_name + '/' + tk_num_name
                             pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The exchange rate between {tk_den_name} and {tk_num_name}, or the price of {tk_den_name} in {tk_num_name}.'
+
                         elif tk_den.endswith('USD=X'):
                             cur_den = tk_den.replace('USD=X', '')
                             hidden_popover_create_pseudoticker = False
-                            # message_popover_create_pseudoticker = 'You cannot create a pseudoticker in this manner. '
                             message_popover_create_pseudoticker = f"Did you mean {tk_num} and {'USD' + cur_den + '=X'}? Or {cur_num + 'USD=X'} and {tk_den}?"
-                        else:
-                            tk_num_name = tk_num.replace('=X', '')
-                            pseudo_tk_name = tk_num_name + '/' + tk_den
-                            pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num_name} (the exchange rate between {cur_num} and USD) to {tk_den} prices or index values.'
 
+                        else:
+                            # We will only allow a ratio of currency to an index (or a currency-free asset).
+                            cur_den = selected_ticker_currencies[tk_den]
+                            if tk_den.startswith('^') | (cur_den == ''):
+                                # An index, no currency
+                                tk_num_name = tk_num.replace('=X', '')
+                                pseudo_tk_name = tk_num_name + '/' + tk_den
+                                pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num_name} (the exchange rate between {cur_num} and USD) to {tk_den} values.'
+                            else:
+                                hidden_popover_create_pseudoticker = False
+                                if cur_den == 'USD':
+                                    # For example, (incorrect) USDJPY=X and AMZN. The correct fx ticker for converting USD to JPY is JPYUSD=X.
+                                    message_popover_create_pseudoticker = f"The currency of {tk_den} is USD. If you want to convert it to {cur_num}, use {tk_den} as Numerator and {cur_num + 'USD=X'} as Denominator."
+                                elif cur_den == cur_num:
+                                    # For example, USDJPY=X and 7201.T (Nissan).
+                                    message_popover_create_pseudoticker = f"The currency of {tk_den} is {cur_den}. If you want to convert it to USD, use {tk_den} as Numerator and {tk_num} as Denominator."
+                                else:
+                                    # For example, USDJPY=X and BMW.DE (currency: EUR).
+                                    # Should also allow conversion to cur_num (JPY) by using tk_den (BMW.DE) as Numerator and a pseudoticker f'{cur_num}{cur_den}=X' (JPYEUR) as Denominator.
+                                    message_popover_create_pseudoticker = f"The currency of {tk_den} is {cur_den}. If you want to convert it to USD, use {tk_den} as Numerator and {cur_den + 'USD=X'} as Denominator."
+
+                    ###################
                     else:
+                        # The numerator ticker is NOT a currency FX rate, i.e. it doesn't end with '=X'
+                        cur_num = selected_ticker_currencies[tk_num]
+
                         if tk_den.endswith('USD=X'):
                             cur_den = tk_den.replace('USD=X', '')
                             tk_den_name = tk_den.replace('=X', '')
-                            pseudo_tk_name = tk_num + '/' + tk_den_name
-                            pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} to {tk_den_name} (the exchange rate between {cur_den} and USD). '
-                            pseudo_tk_summary += f'If the currency of {tk_num} is USD, then this is the price of {tk_num} in {cur_den}.'
-                        elif tk_den.startswith('USD') & tk_den.endswith('=X'):                            
+                            if cur_num == 'USD':
+                                # For example, AMZN and JPYUSD=X.
+                                pseudo_tk_name = tk_num + '/' + tk_den_name
+                                pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} price in USD to {tk_den_name} (the exchange rate between {cur_den} and USD). '
+                                pseudo_tk_summary += f'This is the price of {tk_num} in {cur_den}.'
+                            elif cur_num == cur_den:
+                                # For example, 7201.T (Nissan) and (incorrect) JPYUSD=X. The correct fx ticker for conversion from JPY to USD is USDJPY=X.
+                                hidden_popover_create_pseudoticker = False
+                                message_popover_create_pseudoticker = f"The currency of {tk_num} is {cur_den}. If you want to convert it to USD, use {'USD' + cur_den + '=X'}."
+                            elif cur_num != '':
+                                # For example, BMW.DE (currency: EUR) and JPYUSD=X.
+                                # Should also allow conversion to cur_den (JPY) by using a pseudoticker f'{cur_den}{cur_num}=X' (EURJPY) as Denominator.
+                                hidden_popover_create_pseudoticker = False
+                                message_popover_create_pseudoticker = f"The currency of {tk_num} is {cur_num}. If you want to convert it to USD, use {'USD' + cur_num + '=X'}."
+                            else:
+                                # No currency, e.g. an index, and CADUSD=X. Doesn't make much sense but it's not incorrect.
+                                pseudo_tk_name = tk_num + '/' + tk_den_name
+                                pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} to {tk_den_name} (the exchange rate between {cur_den} and USD). '
+
+                        elif tk_den.startswith('USD') & tk_den.endswith('=X'):
                             cur_den = tk_den.replace('USD', '').replace('=X', '')
                             tk_den_name = tk_den.replace('=X', '')
-                            pseudo_tk_name = tk_num + '/' + tk_den_name
-                            pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} to {tk_den_name} (the exchange rate between USD and {cur_den}). '
-                            pseudo_tk_summary += f'If the currency of {tk_num} is {cur_den}, then this is the price of {tk_num} in USD.'
+                            if cur_num == 'USD':
+                                # For example, AMZN and (incorrect) USDJPY=X.
+                                hidden_popover_create_pseudoticker = False
+                                message_popover_create_pseudoticker = f"The currency of {tk_num} is USD. If you want to convert it to {cur_den}, use {cur_den + 'USD=X'}."
+                            elif cur_num == cur_den:
+                                # For example, 7201.T (Nissan) and USDJPY=X.
+                                pseudo_tk_name = tk_num + '/' + tk_den_name
+                                pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} price in {cur_den} to {tk_den_name} (the exchange rate between USD and {cur_den}). '
+                                pseudo_tk_summary += f'This is the price of {tk_num} in USD.'
+                            elif cur_num != '':
+                                # For example, BMW.DE (currency: EUR) and USDJPY=X.
+                                # Should also allow conversion to cur_den (JPY) by using a pseudoticker f'{cur_den}{cur_num}=X' (EURJPY) as Denominator.
+                                hidden_popover_create_pseudoticker = False
+                                message_popover_create_pseudoticker = f"The currency of {tk_num} is {cur_num}. If you want to convert it to USD, use {'USD' + cur_num + '=X'}."
+                            else:
+                                # No currency, e.g. an index, and USDCAD=X. Doesn't make much sense but it's not incorrect.
+                                pseudo_tk_name = tk_num + '/' + tk_den_name
+                                pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} value to {tk_den_name} (the exchange rate between USD and {cur_den}). '
+
                         else:
                             pseudo_tk_name = tk_num + '/' + tk_den
                             if tk_num.startswith('^') & tk_den.startswith('^'):
-                                pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} to {tk_den} index values.'
+                                pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} to {tk_den} values.'
                             elif (not tk_num.startswith('^')) & (not tk_den.startswith('^')):
                                 pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} to {tk_den} prices.'
                             else:
-                                pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} to {tk_den} prices and index values.'
+                                pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} to {tk_den} prices and values.'
 
                     ########################
 

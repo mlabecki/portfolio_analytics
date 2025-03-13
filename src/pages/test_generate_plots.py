@@ -79,7 +79,8 @@ All plot types and features, except for volume, will be available for the Pseudo
 @callback(
     Output('final-table-selected-tickers', 'children'),
     Output('dash-table-tickers-to-plot-div', 'children'),
-    Output('final-expanded-selected-tickers', 'data'),
+    Output('expanded-selected-ticker-names', 'data'),
+    Output('expanded-selected-ticker-currencies', 'data'),
 
     Input('final-table-selected-tickers-data-stored', 'data'),
     Input('final-selected-ticker-summaries-stored', 'data'),
@@ -103,6 +104,7 @@ def display_table_selected_tickers(
     selected_tickers = list(selected_ticker_names.keys())
     expanded_selected_tickers = []
     expanded_selected_ticker_names = {}
+    expanded_selected_ticker_currencies = {}
 
     for tk in selected_tickers:
         expanded_selected_tickers.append(tk)
@@ -123,6 +125,8 @@ def display_table_selected_tickers(
 
         tk = row['Ticker']
 
+        expanded_selected_ticker_currencies.update({tk: row['Currency']})
+
         if tk.endswith('USD=X'):
         
             row_inverse = row.copy()
@@ -133,6 +137,7 @@ def display_table_selected_tickers(
             row_inverse['Name'] = tk_inverse_name
             row_inverse['Currency'] = currency
             expanded_data.append(row_inverse)
+            expanded_selected_ticker_currencies.update({tk_inverse: currency})
 
             tk_fx_currency_name = currencies_combined[currency]
             tk_summary = f'The exchange rate between {tk_fx_currency_name} and the US Dollar, or the price of {currency} in USD.'
@@ -269,7 +274,8 @@ def display_table_selected_tickers(
     return (
         dash_table_selected_tickers_div,
         dash_table_tickers_to_plot,
-        expanded_selected_ticker_names
+        expanded_selected_ticker_names,
+        expanded_selected_ticker_currencies
         # selected_tickers,
         # first_ticker
     )
@@ -400,7 +406,8 @@ layout = html.Div([
     # LOADING WRAPPER
     dcc.Loading([
 
-    dcc.Store(data = {}, id = 'final-expanded-selected-tickers', storage_type = 'session'),
+    dcc.Store(data = {}, id = 'expanded-selected-ticker-names', storage_type = 'session'),
+    dcc.Store(data = {}, id = 'expanded-selected-ticker-currencies', storage_type = 'session'),
 
     html.Div(id = 'plots-start-date', hidden = True, style = {'font-size' : '14px'}),
     html.Div(id = 'plots-end-date', hidden = True, style = {'font-size' : '14px'}),
@@ -8728,7 +8735,7 @@ def toggle_collapse_cci(n, is_open):
 
     Input('final-start-date-stored', 'data'),
     Input('final-end-date-stored', 'data'),
-    Input('final-expanded-selected-tickers', 'data'),
+    Input('expanded-selected-ticker-names', 'data'),
     
     Input({'index': ALL, 'type': 'reset-axes'}, 'n_clicks'),
 
