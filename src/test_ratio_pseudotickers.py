@@ -623,14 +623,137 @@ def display_table_selected_pseudotickers(
                         #       A direct comparison of indices composed of assets in different currencies should be allowed with a note that 
                         #       bringing the indices to a common currency would be more meaningful.
                         #
-                        # Allowed pseudotickers types:
-                        #    First order (both tickers are in the original selected ticker list, including the invertd fx tickers):
-                        #       1. JPYEUR=X:           Two non-USD currencies (shortened from JPYUSD=X/EURUSD=X to the yf format)
-                        #       2. AMZN/JPYUSD=X:      Stock/ETF/Future price in USD converted to a foreign currency
-                        #       3. BMW.DE/USDEUR=X:    Stock/ETF/Future price in foreign currency converted to USD
+                        ############################################################################################################################
                         #
-
-
+                        #    Allowed pseudotickers types:
+                        #
+                        #    First order: Both tickers are in the original selected ticker list (including the inverted fx tickers)
+                        #
+                        #       I.1. Converted Pseudotickers of First Order:
+                        #            NOTE: Only converted pseudotickers (1.1-1.5) can be used to construct second-order pseudotickers.
+                        #
+                        #       1.1.   JPYEUR=X:        Two non-USD currencies (shortened from JPYUSD=X/EURUSD=X to the yf format), currency = EUR
+                        #                               NOTE: The inverse EURJPY=X can be manually created by the user, no need to add it automatically.
+                        #       1.2.   BMW.DE/USDEUR=X: Stock/ETF/future price in foreign currency converted to USD, currency = USD
+                        #       1.3.   AMZN/JPYUSD=X:   Stock/ETF/future price in USD converted to a foreign currency (JPY), currency = JPY
+                        #       1.4.   ^N225/USDJPY=X:  Index in foreign currency adjusted to USD, currency = USD
+                        #       1.5.   ^GSPC/JPYUSD=X:  Index in USD adjusted to a foreign currency (JPY), currency = JPY
+                        #
+                        #       II.1. Comparative Pseudotickers of First Order:
+                        #             NOTE: The currencies of comparative pseudotickers are only set pro-forma.
+                        #
+                        #       1.6a.  AMZN/TSLA:       Two prices in the same currency, USD
+                        #       1.6b.  7201.T/7202.T:   Two prices in the same currency, non-USD (Nissan/Isuzu, JPY)
+                        #       1.7a.  ^GSPC/^DJI:      Two indices in the same currency, USD
+                        #       1.7b.  ^GDAXI/^STOXX:   Two indices in the same currency, non-USD (EUR)
+                        #       1.7c.  ^GSPC/^N225:     Two indices in different currencies, with a warning note about FX effects, currency = USD (Numerator's)
+                        #       1.8.   BMW.DE/^GDAXI:   Stock/ETF/future price over index in the same currency (EUR)
+                        #       1.9.   ^GDAXI/BMW.DE:   Index over stock/ETF/future price in the same currency (EUR)                        
+                        #       1.10a. JPYUSD=X/^GSPC:  A non-USD currency exchange rate to USD over a USD-based index, currency = USD
+                        #       1.10b. USDJPY=X/^GSPC:  USD exchange rate to a non-USD currency over a USD-based index, currency = JPY
+                        #       1.11a. JPYUSD=X/^N225:  A non-USD currency exchange rate to USD over a non-USD-based index in the same currency, currency = USD
+                        #       1.11b. USDJPY=X/^N225:  USD exchange rate to a non-USD currency over a non-USD-based index in the same currency, currency = JPY
+                        #
+                        ##########################################################################################################################
+                        #
+                        #    Second order: A first-order pseudoticker + a ticker from the original list (including the inverted fx tickers)
+                        #       2.1-2.5. Comparison between a converted price or adjusted index pseudoticker and a price/index in the same currency
+                        #       
+                        #       I.2. Converted Pseudotickers of Second Order:
+                        #            NOTE: Only converted pseudotickers as Denominators (2.1D) can be used to construct third-order pseudotickers.
+                        #
+                        #       2.1D. JPYEUR=X as Denominator, currency = EUR
+                        #           2.1D.1. BMW.DE/JPYEUR=X:   Stock/ETF/future in Denominator's currency (EUR) converted to the other currency (JPY), currency = JPY
+                        #           2.1D.2. ^GDAXI/JPYEUR=X:   Index based on Denominator's currency (EUR) converted to the other currency (JPY), currency = JPY
+                        # 
+                        #       II.2. Comparative Pseudotickers of Second Order:
+                        #             NOTE: The currencies of comparative pseudotickers are only set pro-forma.                        
+                        #
+                        #       2.1N. JPYEUR=X as Numerator, currency = EUR
+                        #           2.1N.1a. JPYEUR=X/^GDAX:   A non-USD FX pseudoticker over an index based on the pseudoticker currency (EUR), currency = EUR
+                        #           2.1N.1b. JPYEUR=X/^N225:   A non-USD FX pseudoticker over an index based on the other currency (JPY), currency = EUR
+                        #
+                        #       2.2N. BMW.DE/USDEUR=X: as Numerator, originally a non-USD stock/ETF/future converted to USD, currency = USD
+                        #           NOTE: These are inverses of 2.2D.1 and 2.2D.2.
+                        #           2.2N.1. (BMW.DE/USDEUR=X)/AMZN:  Stock/ETF/future pseudoticker over stock/ETF/future in the same currency (USD)
+                        #           2.2N.2. (BMW.DE/USDEUR=X)/^GSPC: Stock/ETF/future pseudoticker over index in the same currency (USD)
+                        #       2.2D. BMW.DE/USDEUR=X as Denominator, originally a non-USD stock/ETF/future converted to USD, currency = USD
+                        #           NOTE: These are inverses of 2.2N.1 and 2.2N.2.
+                        #           2.2D.1. AMZN/(BMW.DE/USDEUR=X):  Stock/ETF/future over pseudoticker in the same currency (USD)
+                        #           2.2D.2. ^GSPC/(BMW.DE/USDEUR=X): Index over pseudoticker in the same currency (USD)
+                        #
+                        #       2.3N. AMZN/JPYUSD=X as Numerator, originally a USD stock/ETF/future converted to foreign currency (JPY)
+                        #           NOTE: These are inverses of 2.3D.1 and 2.3D.2.                        
+                        #           2.3N.1. (AMZN/JPYUSD=X)/7201.T: Stock/ETF/future pseudoticker over stock/ETF/future in the same currency (JPY)
+                        #           2.3N.2. (AMZN/JPYUSD=X)/^N225:  Stock/ETF/future pseudoticker over index in the same currency (JPY)
+                        #       2.3D. AMZN/JPYUSD=X as Denominator, originally a USD stock/ETF/future converted to foreign currency (JPY)
+                        #           NOTE: These are inverses of 2.3N.1 and 2.3N.2.                        
+                        #           2.3D.1. 7201.T/(AMZN/JPYUSD=X): Stock/ETF/future over stock/ETF/future pseudoticker in the same currency (JPY)
+                        #           2.3D.2. ^N225/(AMZN/JPYUSD=X):  Index over stock/ETF/future pseudoticker in the same currency (JPY)
+                        #
+                        #       2.4N. ^N225/USDJPY=X: as Numerator, originally a non-USD index converted to USD, currency = USD
+                        #           NOTE: These are inverses of 2.4D.1 and 2.4D.2.                        
+                        #           2.4N.1. (^N225/USDJPY=X)/AMZN:  Index pseudoticker over stock/ETF/future in the same currency (USD)
+                        #           2.4N.2. (^N225/USDJPY=X)/^GSPC: Index pseudoticker over index in the same currency (USD)
+                        #       2.4D. ^N225/USDJPY=X as Denominator, originally a non-USD index converted to USD, currency = USD
+                        #           NOTE: These are inverses of 2.4N.1 and 2.4N.2.                        
+                        #           2.4D.1. AMZN/(^N225/USDJPY=X):  Stock/ETF/future over stock/ETF/future pseudoticker in the same currency (USD)
+                        #           2.4D.2. ^GSPC/(^N225/USDJPY=X): Index over stock/ETF/future pseudoticker in the same currency (USD)
+                        #
+                        #       2.5N. ^GSPC/JPYUSD=X as Numerator, originally a USD index converted to foreign currency (JPY)
+                        #           NOTE: These are inverses of 2.5D.1 and 2.5D.2.                        
+                        #           2.5N.1. (^GSPC/JPYUSD=X)/7201.T: Index pseudoticker over stock/ETF/future in the same currency (JPY)
+                        #           2.5N.2. (^GSPC/JPYUSD=X)/^N225:  Index pseudoticker over index in the same currency (JPY)
+                        #       2.5D. ^GSPC/JPYUSD=X as Denominator, originally a USD index converted to foreign currency (JPY)
+                        #           NOTE: These are inverses of 2.5N.1 and 2.5N.2.                        
+                        #           2.5D.1. 7201.T/(^GSPC/JPYUSD=X): Stock/ETF/future over index pseudoticker in the same currency (JPY)
+                        #           2.5D.2. ^N225/(^GSPC/JPYUSD=X):  Index over index pseudoticker in the same currency (JPY)
+                        #                        
+                        ##########################################################################################################################
+                        #
+                        #    Third order: Comparison between two converted price or adjusted index pseudotickers in the same currency
+                        #       NOTE: All third-order pseudotickers are comparative.       
+                        #
+                        #       3.1-3.2. A second-order converted pseudoticker + a ticker from the original list (including the inverted fx tickers)
+                        #
+                        #       3.1N. BMW.DE/JPYEUR=X as Numerator, currency = EUR
+                        #           3.1N.1. (BMW.DE/JPYEUR=X)/7201.T:   Stock/ETF/future pseudoticker over stock/ETF/future in the same currency (JPY)
+                        #                   NOTE: 3.1N.1 is equivalent to 4.1.1, in that both of them express the FX-adjusted ratio of BMW.DE and 7201.T prices 
+                        #           3.1N.2. (BMW.DE/JPYEUR=X)/^N225:    Stock/ETF/future pseudoticker over index in the same currency (JPY)                        
+                        #                   NOTE: 3.1N.2 is equivalent to 4.1.2, in that both of them express the FX-adjusted ratio of BMW.DE price to ^N225
+                        #       3.2N. ^GDAXI/JPYEUR=X as Numerator, currency = EUR
+                        #           3.2N.1. (^GDAXI/JPYEUR=X)/7201.T:   Index pseudoticker over stock/ETF/future in the same currency (JPY)
+                        #                   NOTE: This is an inverse of 3.2D.1.
+                        #           3.2N.2. (^GDAXI/JPYEUR=X)/^N225:    Index pseudoticker over index in the same currency (JPY)
+                        #                   NOTE: This is an inverse of 3.2D.2.
+                        #       
+                        #       3.1D. BMW.DE/JPYEUR=X as Denominator, currency = EUR
+                        #           3.1D.1. 7201.T/(BMW.DE/JPYEUR=X):   Stock/ETF/future over stock/ETF/future pseudoticker in the same currency (JPY)
+                        #                   NOTE: This is an inverse of 3.1N.1.
+                        #           3.1D.2. ^N225/(BMW.DE/JPYEUR=X):    Index over stock/ETF/future pseudoticker in the same currency (JPY)
+                        #                   NOTE: This is an inverse of 3.1N.2.
+                        #       3.2D. ^GDAXI/JPYEUR=X as Denominator, currency = EUR                        
+                        #           3.2D.1. 7201.T/(^GDAXI/JPYEUR=X):   Stock/ETF/future over index pseudoticker in the same currency (JPY)
+                        #                   NOTE: This is an inverse of 3.2N.1.
+                        #           3.2D.2. ^N225/(^GDAXI/JPYEUR=X):    Index over index pseudoticker in the same currency (JPY)
+                        #                   NOTE: This is an inverse of 3.2N.2.
+                        #
+                        #       4.1-4.2. Two first-order pseudotickers
+                        #
+                        #       4.1. BMW.DE/USDEUR=X as Numerator, currency = USD
+                        #           NOTE: The cases of BMW.DE/USDEUR=X as Denominator are omitted below as they are simply inverses of the Numerator cases. 
+                        #           4.1.1. (BMW.DE/USDEUR=X)/(7201.T/USDJPY=X): Two stock/ETF/future pseudotickers in the same currency (USD)
+                        #                   NOTE: 4.1.1 is equivalent to 3.1N.1, in that both of them express the FX-adjusted ratio of BMW.DE and 7201.T prices.
+                        #           4.1.2. (BMW.DE/USDEUR=X)/(^N225/USDJPY=X):  Stock/ETF/future pseudoticker over index pseudoticker in the same currency (USD)
+                        #                   NOTE: 4.1.2 is equivalent to 3.1N.2, in that both of them express the FX-adjusted ratio of BMW.DE price to ^N225.
+                        #       4.2. ^GDAXI/USDEUR=X as Numerator, currency = USD
+                        #           NOTE: The cases of BMW.DE/USDEUR=X as Denominator are omitted below as they are simply inverses of the Numerator cases. 
+                        #           4.2.1. (^GDAXI/USDEUR=X)/(7201.T/USDJPY=X): Index pseudoticker over a stock/ETF/future pseudoticker in the same currency (USD)
+                        #                   NOTE: 4.2.1 is equivalent to 3.2N.1, in that both of them express the FX-adjusted ratio of ^GDAXI to 7201.T prices.
+                        #           4.2.2. (^GDAXI/USDEUR=X)/(^N225/USDJPY=X):  Two index pseudotickers in the same currency (USD)
+                        #                   NOTE: 4.2.2 is equivalent to 3.2N.2, in that both of them express the FX-adjusted ratio of ^GDAXI to ^N225.
+                        #
+                        ########################################################################################################################
 
                         tk_num_1 = tk_num[:3]
                         tk_num_2 = tk_num[3:6]
