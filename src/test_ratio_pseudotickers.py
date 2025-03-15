@@ -12,9 +12,9 @@ from utils import *
 
 app = Dash(__name__, external_stylesheets = [dbc.themes.YETI], suppress_callback_exceptions = True)
 
-pseudoticker_text = """You can choose a pair of tickers to create a pseudoticker, whose value will be the ratio of the two tickers' prices, FX rates, or indices.
-This can be useful for calculating non-USD currency exchange rates, converting foreign currency asset prices to USD, or comparing similar asset types
-after converting them to a common currency. All plot types and features, except for volume, will be available for the selected pseudotickers."""
+pseudoticker_text = """You can select a pair of tickers to construct a pseudoticker, whose value will be the ratio of prices, FX rates, or indices. This can be useful for
+calculating the exchange rate between two non-USD currencies; for converting foreign currency asset prices to USD or vice versa; or for comparing the relative performance
+of similar asset types (making sure they are expressed in a common currency). All plot types and features, except for volume, will be available to the pseudotickers."""
 
 selected_ticker_names = {
     'CADUSD=X': 'CADUSD',
@@ -325,7 +325,7 @@ app.layout = (
     html.Div([
         html.Div(
             dbc.Button(
-                'Create Pseudoticker From This Pair',
+                'Construct Pseudoticker From This Pair',
                 id = 'create-pseudoticker-button',
                 n_clicks = 0,
                 class_name = 'ma-1',
@@ -390,8 +390,6 @@ app.layout = (
     Output('dash-table-pseudotickers-to-plot', 'data'),
     Output('dash-table-pseudotickers-to-plot', 'tooltip_data'),
     Output('dash-table-pseudotickers-to-plot', 'selected_rows'),
-    Output('pseudoticker-numerator-dropdown', 'options'),
-    Output('pseudoticker-denominator-dropdown', 'options'),
 
     State('pseudoticker-numerator-dropdown', 'value'),
     State('pseudoticker-denominator-dropdown', 'value'),
@@ -415,7 +413,6 @@ def display_table_selected_pseudotickers(
     table_pseudoticker_selected_rows,
     message_popover_create_pseudoticker,
     popover_pseudoticker_style
-
 ):
     """
     table_data:
@@ -492,7 +489,12 @@ def display_table_selected_pseudotickers(
                     pseudo_tk_summary = ''
                     pseudo_tk_currency = 'USD'  # This will be adjusted below, if necessary
 
-                    ################### 
+                    ##############################################################################################################################
+                    """
+                    NOTE: If the currency exchange rate needed to convert the asset price to USD is missing from the selected ticker list,
+                    then it must be downloaded without user's intervention, i.e. having to go back and selecting it from the FX category list.
+                    """
+                    ##############################################################################################################################
 
                     if tk_num.endswith('USD=X'):
                         # The numerator is the price of another currency in USD, e.g. JPYUSD=X
@@ -505,9 +507,10 @@ def display_table_selected_pseudotickers(
                             tk_den_name = tk_den.replace('USD=X', '')
                             pseudo_tk_name = tk_num_name + '/' + tk_den_name
                             pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The exchange rate between {tk_num_name} and {tk_den_name}, or the price of {tk_num_name} in {tk_den_name}.'
-                            if pseudo_tk not in selected_tickers:
-                                selected_tickers.append(pseudo_tk)
                             pseudo_tk_currency = tk_den_name
+                            # if pseudo_tk not in selected_tickers:
+                            #     # Adding pseudo_tk to the Numerator and Denominator dropdown lists                                
+                            #     selected_tickers.append(pseudo_tk)
 
                         elif tk_den.startswith('USD') & tk_den.endswith('=X'):
                             # Example [Incorrect]: JPYUSD=X/USDEUR=X (need to invert either Numerator or Denominator)
@@ -561,10 +564,10 @@ def display_table_selected_pseudotickers(
                             tk_den_name = tk_den.replace('USD', '').replace('=X', '')
                             pseudo_tk_name = tk_den_name + '/' + tk_num_name
                             pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The exchange rate between {tk_den_name} and {tk_num_name}, or the price of {tk_den_name} in {tk_num_name}.'
-                            if pseudo_tk not in selected_tickers:
-                                # Adding pseudo_tk to the Numerator and Denominator dropdown lists
-                                selected_tickers.append(pseudo_tk)
                             pseudo_tk_currency = cur_num
+                            # if pseudo_tk not in selected_tickers:
+                            #     # Adding pseudo_tk to the Numerator and Denominator dropdown lists
+                            #     selected_tickers.append(pseudo_tk)
 
                         elif tk_den.endswith('USD=X'):
                             # # Example [Incorrect]: USDJPY=X/EURUSD=X (need to invert either Numerator or Denominator)
@@ -769,8 +772,9 @@ def display_table_selected_pseudotickers(
                             tk_den_name = tk_den.replace('USD=X', '')
                             pseudo_tk_name = tk_num_name + '/' + tk_den_name
                             pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The exchange rate between {tk_num_name} and {tk_den_name}, or the price of {tk_num_name} in {tk_den_name}.'
-                            if pseudo_tk not in selected_tickers:
-                                selected_tickers.append(pseudo_tk)
+                            # if pseudo_tk not in selected_tickers:
+                            #     # Adding pseudo_tk to the Numerator and Denominator dropdown lists
+                            #     selected_tickers.append(pseudo_tk)
 
                         elif tk_den.startswith('USD') & tk_den.endswith('=X'):
                             cur_den = tk_den.replace('USD', '').replace('=X', '')
@@ -957,9 +961,7 @@ def display_table_selected_pseudotickers(
         selected_pseudoticker_info,
         table_pseudoticker_data,
         table_pseudoticker_tooltip_data,
-        table_pseudoticker_selected_rows,
-        selected_tickers,
-        selected_tickers
+        table_pseudoticker_selected_rows
     )
 
 
@@ -973,6 +975,9 @@ if __name__ == '__main__':
 
 
 """
+https://money.stackexchange.com/questions/71752/does-an-index-have-a-currency
+
+
 Q:
 What is the unit of a market exchange index such as S&P 500 or Nikkei 225? Is it the currency, such as USD or JPY, or is it just a number?
 What I need to know is whether we can compare the values of different market indices directly or do we need to bring them to a common currency first?
