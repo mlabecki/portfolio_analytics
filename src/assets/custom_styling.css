@@ -214,6 +214,17 @@ button, input, select, textarea {
     color: black;
 }
 
+#validate-pseudoticker-button
+{
+    border-color: rgb(250, 220, 140) !important;
+    background-color: rgb(255, 240, 190) !important;
+}
+#validate-pseudoticker-button:hover
+{
+    border-color: rgb(250, 220, 140) !important;
+    background-color: rgb(240, 210, 140) !important;
+}
+
 #collapse-button-general-tab:hover,
 #collapse-button-prices-tab:hover,
 #collapse-button-volume-tab:hover,
