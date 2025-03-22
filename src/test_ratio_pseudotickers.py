@@ -2,6 +2,7 @@ import dash
 from dash import Dash, dcc, html, Input, Output, State, ALL, MATCH, callback, dash_table
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
+# import json  # Useful to check if a callback output is serializable - use json.dumps(output)
 
 from mapping_plot_attributes import *
 from mapping_portfolio_downloads import *
@@ -128,7 +129,6 @@ def display_table_selected_tickers(
                 'backgroundColor': 'white',
                 'border-top': '1px solid rgb(211, 211, 211)',
                 'border-bottom': '1px solid rgb(211, 211, 211)'},
-            # {'if': {'column_id': 'No.'}, 'width': 24, 'padding-left': '8px'},
             {'if': {'column_id': 'Ticker'}, 'width': 60},
             {'if': {'column_id': 'Name'}, 'width': 200},
         ],
@@ -149,7 +149,7 @@ def initialize_table_pseudotickers():
         data = [],
         editable = False,
         row_selectable = 'multi',
-        row_deletable = True,
+        row_deletable = False,
         selected_rows = [],
         tooltip_data = [],
         css = [
@@ -180,7 +180,6 @@ def initialize_table_pseudotickers():
         ],
         tooltip_delay = 0,
         tooltip_duration = None,
-        # style_as_list_view = True,
         style_data_conditional = [
             {'if': 
                 {'state': 'active'},
@@ -204,12 +203,6 @@ def initialize_table_pseudotickers():
 app.layout = (
 
     dcc.Store(data = {}, id = 'selected-pseudoticker-info', storage_type = 'memory'),
-
-    # html.Div(
-    #     id = 'selected-pseudoticker-info',
-    #     children = [],
-    #     hidden = True
-    # ),
 
     html.Div([
         html.Div(
@@ -276,25 +269,11 @@ app.layout = (
                     'vertical-align': 'top',
                     'margin-top': '15px',
                     'margin-bottom': '10px',
-                    'line-height': '20px',
+                    'line-height': '18px',
                     'text-align': 'justify',
                     'padding': '2px'
                 }
             ),
-            # dbc.Popover(
-            #     [
-            #     html.Span(
-            #         """Pseudotickers will be plotted just like regular tickers (except for volume), i.e. individually on separate graphs with common plot features as selected.""",
-            #         style = popover_menu_collapse_button_header_css
-            #         )
-            #     ], 
-            #     id = 'popover-select-pseudotickers-to-plot-title',
-            #     target = 'select-pseudotickers-to-plot-title',
-            #     body = False,
-            #     trigger = 'hover',
-            #     hide_arrow = True,
-            #     style = popover_menu_button_css
-            # ),
             html.Div([
                 html.Div('Numerator Ticker', style = {'font-size': '14px', 'font-weight': 'bold', 'vertical-align': 'top', 'margin-top': '0px', 'margin-left': '2px'}),
                 dcc.Dropdown(
@@ -314,7 +293,6 @@ app.layout = (
                     className = 'plots-dropdown-button',
                     options = selected_tickers,
                     value = tk_den_first_legit,
-                    # value = selected_tickers[1] if len(selected_tickers) >= 2 else selected_tickers[0],
                     clearable = False,
                     style = {'width': '150px'}
                 )],
@@ -329,8 +307,25 @@ app.layout = (
 
     html.Div([
         html.Div(
+            children = [
+                'Click the VALIDATE PSEUDOTICKER button to check if the two selected tickers can be used to create a valid pseudoticker.'
+            ],
+            style = {
+                'width': '305px',
+                'display': 'block',
+                'font-family': 'Helvetica',
+                'font-size': '14px',
+                'vertical-align': 'top',
+                'margin-top': '1px',
+                'margin-left': '10px',
+                'margin-bottom': '5px',
+                'line-height': '18px',
+                'text-align': 'justify',
+                'padding': '2px'
+            }
+        ),
+        html.Div(
             dbc.Button(
-                # 'Validate Pseudoticker From This Pair',
                 'VALIDATE PSEUDOTICKER',
                 id = 'validate-pseudoticker-button',
                 n_clicks = 0,
@@ -345,7 +340,7 @@ app.layout = (
             html.Div(
                 id = 'popover-validate-pseudoticker-button-div',
                 children = [],
-                # hidden = True,
+                hidden = True,
                 style = {
                     'width': '300px !important',
                     'padding': '2px 3px 2px 3px',
@@ -361,9 +356,8 @@ app.layout = (
             target = 'validate-pseudoticker-button',
             body = False,
             trigger = 'click',
-            # trigger = 'hover',
             hide_arrow = True,
-            # delay = {'show': 0, 'hide': 10000},
+            is_open = False,
             style = popover_pseudoticker_danger_style
         ),
 
@@ -380,32 +374,6 @@ app.layout = (
                 style = create_pseudoticker_button_css
             )
         ),
-        # dbc.Popover(
-        #     [
-        #     html.Div(
-        #         id = 'popover-create-pseudoticker-button-div',
-        #         children = [],
-        #         # hidden = True,
-        #         style ={
-        #             'width': '300px !important',
-        #             'padding': '2px 3px 2px 3px',
-        #             'vertical-align': 'middle',
-        #             'text-align': 'center',
-        #             'font-family': 'Helvetica',
-        #             'font-size': '13px',
-        #             'color': 'black'
-        #         }
-        #     )
-        #     ], 
-        #     id = 'popover-create-pseudoticker-button',
-        #     target = 'create-pseudoticker-button',
-        #     body = False,
-        #     # trigger = 'click',
-        #     trigger = 'hover',
-        #     hide_arrow = True,
-        #     # delay = {'show': 0, 'hide': 10000},
-        #     style = popover_pseudoticker_danger_style
-        # ),
 
         html.Div(
             id = 'dash-table-pseudotickers-to-plot-div',
@@ -430,16 +398,20 @@ app.layout = (
 
 @callback(
 
-    Output('popover-validate-pseudoticker-button-div', 'children'),  # Popover message goes here
-    Output('popover-validate-pseudoticker-button', 'style'),
-    Output('create-pseudoticker-button', 'disabled'),
     Output('selected-pseudoticker-info', 'data'),
+    Output('popover-validate-pseudoticker-button-div', 'children'),  # Popover message goes here
+    Output('popover-validate-pseudoticker-button-div', 'hidden'),
+    Output('popover-validate-pseudoticker-button', 'style'),
+    Output('popover-validate-pseudoticker-button', 'is_open'),
+    Output('create-pseudoticker-button', 'disabled'),
     Output('dash-table-pseudotickers-to-plot', 'data'),
     Output('dash-table-pseudotickers-to-plot', 'tooltip_data'),
     Output('dash-table-pseudotickers-to-plot', 'selected_rows'),
+    Output('validate-pseudoticker-button', 'n_clicks'),
+    Output('create-pseudoticker-button', 'n_clicks'),
 
-    Input('pseudoticker-numerator-dropdown', 'value'),
-    Input('pseudoticker-denominator-dropdown', 'value'),
+    State('pseudoticker-numerator-dropdown', 'value'),
+    State('pseudoticker-denominator-dropdown', 'value'),
 
     Input('validate-pseudoticker-button', 'n_clicks'),
     Input('create-pseudoticker-button', 'n_clicks'),
@@ -448,8 +420,7 @@ app.layout = (
     Input('dash-table-pseudotickers-to-plot', 'tooltip_data'),
     Input('dash-table-pseudotickers-to-plot', 'selected_rows'),
     Input('popover-validate-pseudoticker-button-div', 'children'),  # Popover message goes here
-    Input('popover-validate-pseudoticker-button', 'style'),
-
+    Input('popover-validate-pseudoticker-button', 'style')    
 )
 def display_table_selected_pseudotickers(
     tk_num,
@@ -471,6 +442,8 @@ def display_table_selected_pseudotickers(
     downloaded_data:
         a dictionary of historical price and volume data with selected tickers as keys
     """
+
+    selected_pseudoticker_info = {} if selected_pseudoticker_info is None else selected_pseudoticker_info
 
     def add_pseudoticker_info(
         tk_num,
@@ -502,88 +475,41 @@ def display_table_selected_pseudotickers(
             downloaded if not selected by the user (i.e., if not in selected_tickers).
         """
 
-        print(f'FUNCTION START\n\tselected_pseudoticker_info = {selected_pseudoticker_info}')
-        if (tk_num, tk_den) not in selected_pseudoticker_info.keys():
-            selected_pseudoticker_info.update({(tk_num, tk_den): {}})
-            print(f'tk_num, tk_den = {tk_num}, {tk_den}')
+        # print(f'FUNCTION START\n\tselected_pseudoticker_info = {selected_pseudoticker_info}')
+        pseudo_tk = tk_num + '_' + tk_den
+        if pseudo_tk not in selected_pseudoticker_info.keys():
             if tk_num != tk_den:
                 # Tickers must be different
                 tk_num_cond = tk_num == tk_den[3:6] + tk_den.replace(tk_den[3:6], '')
                 tk_den_cond = tk_den == tk_num[3:6] + tk_num.replace(tk_num[3:6], '')
                 if not (tk_num.endswith('=X') & tk_den.endswith('=X') & (tk_num_cond | tk_den_cond)):
                     # Tickers must not be mutually inverse fx rates for the same currency
+                    selected_pseudoticker_info[pseudo_tk] = {}  # NOTE: A nested dictionary must be declared
                     idx = len(selected_pseudoticker_info)
-                    selected_pseudoticker_info[(tk_num, tk_den)]['cur_num'] = cur_num
-                    selected_pseudoticker_info[(tk_num, tk_den)]['cur_den'] = cur_den
-                    selected_pseudoticker_info[(tk_num, tk_den)]['name'] = pseudo_tk_name
-                    selected_pseudoticker_info[(tk_num, tk_den)]['summary'] = pseudo_tk_summary
-                    selected_pseudoticker_info[(tk_num, tk_den)]['currency'] = pseudo_tk_currency            
-                    selected_pseudoticker_info[(tk_num, tk_den)]['required_fx_tickers'] = required_fx_tickers
-                    selected_pseudoticker_info[(tk_num, tk_den)]['idx'] = idx - 1
+                    selected_pseudoticker_info[pseudo_tk]['cur_num'] = cur_num
+                    selected_pseudoticker_info[pseudo_tk]['cur_den'] = cur_den
+                    selected_pseudoticker_info[pseudo_tk]['name'] = pseudo_tk_name
+                    selected_pseudoticker_info[pseudo_tk]['summary'] = pseudo_tk_summary
+                    selected_pseudoticker_info[pseudo_tk]['currency'] = pseudo_tk_currency            
+                    selected_pseudoticker_info[pseudo_tk]['required_fx_tickers'] = required_fx_tickers
+                    selected_pseudoticker_info[pseudo_tk]['idx'] = idx - 1
         
                     table_pseudoticker_data.append({'Pseudoticker': pseudo_tk_name})
                     table_pseudoticker_tooltip_data.append({
                         column: {'value': pseudo_tk_summary, 'type': 'markdown' }
                         for column in ['Pseudoticker'] }
                     )
-        print(f'FUNCTION END\n\tselected_pseudoticker_info = {selected_pseudoticker_info}')
-        return (
-            selected_pseudoticker_info,
-            table_pseudoticker_data,
-            table_pseudoticker_tooltip_data
-        )
+        # print(f'FUNCTION END\n\tselected_pseudoticker_info = {selected_pseudoticker_info}')
 
-
-    # selected_tickers = [row['Ticker'] for row in table_data]
-    # selected_pseudoticker_info[idx] = {
-    #     'tk_num': tk_num,
-    #     'tk_den': tk_den,
-    #     'pseudo_tk': pseudo_tk,
-    #     'pseudo_tk_name': pseudo_tk_name,
-    #     'pseudo_tk_summary': pseudo_tk_summary,
-    # }
-
-    # selected_tickers_augmented will contain any pseudotickers created from fx tickers, e.g. JPYEUR
-    # selected_tickers_augmented = selected_tickers.copy()
+    ##############################################################################################################
 
     pseudo_tk_name = ''
     pseudo_tk_summary = ''
-    # create_pseudoticker_disabled = True
-
-    # message_popover_validate_pseudoticker = ''
-    # popover_pseudoticker_style = popover_pseudoticker_danger_style
-
-    # print(f'start\n\tmessage_popover_validate_pseudoticker = {message_popover_validate_pseudoticker}')
+    create_pseudoticker_disabled = False if n_click_create else True
+    popover_hidden = False if n_click_validate else True
+    popover_is_open = True if n_click_validate else False
     
-    ctx = dash.callback_context
-    
-    # MUST MOVE n_click_create AND ctx.triggered CONDITIONS INTO THE SPECIFIC NUMERATOR/DENOMINATOR CASES BELOW
-    # At this point, we will just want to give the user a popover message on hover regarding the result of the click
-    # based on the callback from the tk_num and tk_den dropdowns
-
-    ### if n_click_create and ctx.triggered:
-        
-        # print(f'n_click_create\n\tmessage_popover_validate_pseudoticker = {message_popover_validate_pseudoticker}')
-
-        ### if ctx.triggered:
-
-            # print(f'ctx_triggered\n\tmessage_popover_validate_pseudoticker = {message_popover_validate_pseudoticker}')
-
-                # Prevent adding the same ticker twice
-                # MOVE THIS BLOCK TO EACH INDIVIDUAL PSEUDOTICKER CASE BELOW
-                # if new_pseudo_tk:
-                #     selected_pseudoticker_info[idx] = {}              
-                #     selected_pseudoticker_info[idx]['tk_num'] = tk_num
-                #     selected_pseudoticker_info[idx]['tk_den'] = tk_den
-                #     selected_pseudoticker_info[idx]['pseudo_tk'] = pseudo_tk
-                #     selected_pseudoticker_indices.append(idx)
-                #     selected_pseudotickers.append(pseudo_tk)
-                #     selected_pseudoticker_index_map = dict(zip(selected_pseudotickers, selected_pseudoticker_indices))
-                #     pseudo_tk_name = ''
-                #     pseudo_tk_summary = ''
-                #     pseudo_tk_currency = 'USD'  # This will be adjusted below, if necessary
-
-
+    # ctx = dash.callback_context
 
     ##############################################################################################################################
     """
@@ -600,7 +526,7 @@ def display_table_selected_pseudotickers(
         if tk_den.endswith('USD=X'):
             # Example: JPYUSD=X/EURUSD=X
             cur_den = tk_den.replace('USD=X', '')
-            # popover_pseudoticker_style = popover_pseudoticker_success_style
+            pseudo_tk_name = cur_num + cur_den + '=X'  # Keep the Yahoo Finance FX ticker format
             if n_click_validate:
                 if tk_num == tk_den:
                     popover_pseudoticker_style = popover_pseudoticker_danger_style
@@ -612,12 +538,10 @@ def display_table_selected_pseudotickers(
                     message_popover_validate_pseudoticker += f' You can proceed by clicking the CREATE PSEUDOTICKER button.'
                     create_pseudoticker_disabled = False
             if n_click_create:
-                pseudo_tk_name = cur_num + cur_den + '=X'  # Keep the Yahoo Finance FX ticker format            
                 pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The exchange rate between {cur_num} and {cur_den}, or the price of {cur_num} in {cur_den}.'
                 pseudo_tk_currency = cur_den
                 required_fx_tickers = []
                 add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
-                create_pseudoticker_disabled = True
 
         elif tk_den.startswith('USD') & tk_den.endswith('=X'):
             # Example [Incorrect]: JPYUSD=X/USDEUR=X (need to invert either Numerator or Denominator)
@@ -657,10 +581,11 @@ def display_table_selected_pseudotickers(
         # In this case numerator and denominator are effectively swapped
 
         cur_num = tk_num.replace('USD', '').replace('=X', '')
-    
+
         if tk_den.startswith('USD') & tk_den.endswith('=X'):
             # Example: USDJPY=X/USDEUR=X
             cur_den = tk_den.replace('USD', '').replace('=X', '')
+            pseudo_tk_name = cur_den + cur_num + '=X'  # Keep the Yahoo Finance FX ticker format    
             if n_click_validate:
                 if tk_num == tk_den:
                     popover_pseudoticker_style = popover_pseudoticker_danger_style
@@ -671,13 +596,11 @@ def display_table_selected_pseudotickers(
                     message_popover_validate_pseudoticker = f'This will create pseudoticker {pseudo_tk_name}, which is the exchange rate between {cur_den} and {cur_num}.'
                     message_popover_validate_pseudoticker += f' You can proceed by clicking the CREATE PSEUDOTICKER button.'                    
                     create_pseudoticker_disabled = False
-            if n_click_create:  # and ctx.triggered:
-                pseudo_tk_name = cur_den + cur_num + '=X'  # Keep the Yahoo Finance FX ticker format
+            if n_click_create:
                 pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The exchange rate between {cur_den} and {cur_num}, or the price of {cur_den} in {cur_num}.'
                 pseudo_tk_currency = cur_num
                 required_fx_tickers = []
                 add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
-                create_pseudoticker_disabled = True
 
         elif tk_den.endswith('USD=X'):
             # # Example [Incorrect]: USDJPY=X/EURUSD=X (need to invert either Numerator or Denominator)
@@ -723,6 +646,7 @@ def display_table_selected_pseudotickers(
 
         if tk_den.endswith('USD=X'):
             cur_den = tk_den.replace('USD=X', '')
+            pseudo_tk_name = tk_num + '/' + tk_den            
             if cur_num == 'USD':
                 # For example, AMZN and JPYUSD=X
                 if n_click_validate:
@@ -731,13 +655,11 @@ def display_table_selected_pseudotickers(
                     message_popover_validate_pseudoticker += f' You can proceed by clicking the CREATE PSEUDOTICKER button.'
                     create_pseudoticker_disabled = False
                 if n_click_create:
-                    pseudo_tk_name = tk_num + '/' + tk_den
                     pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} price in USD to {tk_den} (the exchange rate between {cur_den} and USD). '
                     pseudo_tk_summary += f'This is the price of {tk_num} in {cur_den}.'
                     pseudo_tk_currency = cur_den
                     required_fx_tickers = []
                     add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
-                    create_pseudoticker_disabled = True
             elif cur_num == cur_den:
                 if n_click_validate:
                     # For example, 7201.T (Nissan) and (incorrect) JPYUSD=X. The correct fx ticker for conversion from JPY to USD is USDJPY=X.
@@ -753,18 +675,17 @@ def display_table_selected_pseudotickers(
                     message_popover_validate_pseudoticker += f' If you want to convert {tk_num} to USD, use USD{cur_num}=X as Denominator.'
                     create_pseudoticker_disabled = False
                 if n_click_create:
-                    pseudo_tk_name = tk_num + '/' + tk_den
                     pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} price in {cur_num} to {tk_den} (the exchange rate between {cur_den} and USD), '
                     pseudo_tk_summary += f'both converted to a common currency. This is the price of {tk_num} in {cur_den}.'
                     pseudo_tk_currency = cur_den
                     required_fx_tickers = [f'{cur_den}USD=X']
                     add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
-                    create_pseudoticker_disabled = True
 
         ####################
 
         elif tk_den.startswith('USD') & tk_den.endswith('=X'):
             cur_den = tk_den.replace('USD', '').replace('=X', '')
+            pseudo_tk_name = tk_num + '/' + tk_den
             if cur_num == 'USD':
                 # For example, AMZN and (incorrect) USDJPY=X.
                 if n_click_validate:
@@ -778,14 +699,12 @@ def display_table_selected_pseudotickers(
                     message_popover_validate_pseudoticker = f'This will create pseudoticker {pseudo_tk_name}, which is the price of {tk_num} in USD.'
                     message_popover_validate_pseudoticker += f' You can proceed by clicking the CREATE PSEUDOTICKER button.'
                     create_pseudoticker_disabled = False
-                if n_click_create: 
-                    pseudo_tk_name = tk_num + '/' + tk_den
+                if n_click_create:
                     pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} price in {cur_den} to {tk_den} (the exchange rate between USD and {cur_den}).'
                     pseudo_tk_summary += f' This is the price of {tk_num} in USD.'
                     pseudo_tk_currency = 'USD'
                     required_fx_tickers = []
                     add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
-                    create_pseudoticker_disabled = True
             else:
                 # For example, BMW.DE (currency: EUR) and USDJPY=X.
                 if n_click_validate:
@@ -801,6 +720,7 @@ def display_table_selected_pseudotickers(
 
             price_or_value_den = 'value' if tk_den.startswith('^') else 'price'                            
             cur_den = selected_ticker_currencies[tk_den]
+            pseudo_tk_name = tk_num + '/' + tk_den
 
             if tk_num == tk_den:
                 if n_click_validate:
@@ -816,12 +736,10 @@ def display_table_selected_pseudotickers(
                         message_popover_validate_pseudoticker += f' You can proceed by clicking the CREATE PSEUDOTICKER button.'
                         create_pseudoticker_disabled = False
                     if n_click_create:
-                        pseudo_tk_name = tk_num + '/' + tk_den
                         pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} {price_or_value_num}s to {tk_den} {price_or_value_den}s.'
                         pseudo_tk_currency = ''
                         required_fx_tickers = []
                         add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
-                        create_pseudoticker_disabled = True
                 elif cur_num == 'USD':
                     # For example, ^GSPC/BMW.DE or AAPL/^N225
                     if n_click_validate:
@@ -830,12 +748,10 @@ def display_table_selected_pseudotickers(
                         message_popover_validate_pseudoticker += f' You can proceed by clicking the CREATE PSEUDOTICKER button.'
                         create_pseudoticker_disabled = False
                     if n_click_create:
-                        pseudo_tk_name = tk_num + '/' + tk_den                        
                         pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} {price_or_value_num}s to {tk_den} {price_or_value_den}s, converted to a common currency (USD).'
                         pseudo_tk_currency = ''
                         required_fx_tickers = [f'{cur_den}USD=X']
                         add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
-                        create_pseudoticker_disabled = True
                 elif cur_den == 'USD':
                     # For example, BMW.DE/^GSPC or ^N225/AAPL
                     if n_click_validate:
@@ -844,12 +760,10 @@ def display_table_selected_pseudotickers(
                         message_popover_validate_pseudoticker += f' You can proceed by clicking the CREATE PSEUDOTICKER button.'
                         create_pseudoticker_disabled = False
                     if n_click_create:
-                        pseudo_tk_name = tk_num + '/' + tk_den
                         pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} {price_or_value_num}s to {tk_den} {price_or_value_den}s, converted to a common currency (USD).'
                         pseudo_tk_currency = ''
                         required_fx_tickers = [f'{cur_den}USD=X']
                         add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
-                        create_pseudoticker_disabled = True
                 else:
                     # For example, BMW.DE/^N225 or ^GDAXI/7201.T
                     if n_click_validate:
@@ -858,18 +772,17 @@ def display_table_selected_pseudotickers(
                         message_popover_validate_pseudoticker += f' You can proceed by clicking the CREATE PSEUDOTICKER button.'
                         create_pseudoticker_disabled = False
                     if n_click_create:
-                        pseudo_tk_name = tk_num + '/' + tk_den
                         pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} {price_or_value_num}s to {tk_den} {price_or_value_den}s, converted to a common currency.'
                         pseudo_tk_currency = ''
                         required_fx_tickers = [f'{cur_num}USD=X', f'{cur_den}USD=X']
                         add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
-                        create_pseudoticker_disabled = True
 
     ########################
 
-    if pseudo_tk_name != '':
+    # if (pseudo_tk_name != '') & n_click_create:
+    if (pseudo_tk_name != '') & (not create_pseudoticker_disabled):
                     
-        selected_pseudotickers = list(selected_pseudoticker_info.keys())  # NOTE: Each pseudoticker is a tuple (tk_num, tk_den)
+        selected_pseudotickers = list(selected_pseudoticker_info.keys())  # NOTE: Each pseudoticker is a string f'{tk_num}_{tk_den}'
         print(f'selected_pseudotickers = {selected_pseudotickers}')
         selected_pseudoticker_indices = [selected_pseudoticker_info[pseudo_tk]['idx'] for pseudo_tk in selected_pseudotickers]
         table_pseudoticker_selected_rows = [int(idx) for idx in selected_pseudoticker_indices]
@@ -880,17 +793,43 @@ def display_table_selected_pseudotickers(
         print(f'selected_pseudoticker_indices = {selected_pseudoticker_indices}')
         print(f'table_pseudoticker_selected_rows = {table_pseudoticker_selected_rows}')
         print(f'selected_pseudoticker_info = {selected_pseudoticker_info}')
+ 
+
+    # print(f'popover message:\n\t{message_popover_validate_pseudoticker}')
+    # print(f'popover_hidden = {popover_hidden}')
+    # print(f'n_click_create = {n_click_create}')
+    # print(f'n_click_validate = {n_click_validate}')
+
+    if n_click_validate:
+        popover_hidden = False
+        popover_is_open = True
+
+    if n_click_create:
+        n_click_create = 0
+        n_click_validate = 0
+        message_popover_validate_pseudoticker = ''
+        popover_hidden = True
+        popover_is_open = False
+        create_pseudoticker_disabled = True
+
+    # print(f'popover_hidden = {popover_hidden}')
+    # print(f'n_click_create = {n_click_create}')
+    # print(f'n_click_validate = {n_click_validate}')
 
     ########################
 
     return (
+        selected_pseudoticker_info,        
         message_popover_validate_pseudoticker,
+        popover_hidden,
         popover_pseudoticker_style,
+        popover_is_open,
         create_pseudoticker_disabled,
-        selected_pseudoticker_info,
         table_pseudoticker_data,
         table_pseudoticker_tooltip_data,
-        table_pseudoticker_selected_rows
+        table_pseudoticker_selected_rows,
+        n_click_validate,
+        n_click_create
     )
 
 
