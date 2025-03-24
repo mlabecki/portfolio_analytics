@@ -1,3 +1,5 @@
+from mapping_portfolio_downloads import *
+
 ### URL TO YFINANCE TICKER MAP ###
 # Some websites may use tickers that differ from the YF tickers, hence the following map
 # The keys are tickers on the websites, values are YF tickers
@@ -477,7 +479,7 @@ rare_metals_companies = {
     'ARA.TO': 'Aclara Resources Inc.',  #  currency is CAD
     'MKA.V': 'Mkango Resources Ltd.',   #  currency is CAD
     'UCU.V': 'Ucore Rare Metals Inc.',  #  currency is CAD
-    'LICY': 'Li-Cycle Holdings Corp.'
+    'LICYF': 'Li-Cycle Holdings Corp.'
 }
 
 rare_metals_etfs_tickers = {
@@ -947,6 +949,7 @@ tickers_non_url = {
     'commodity_etfs': commodity_etf_tickers,
     'volatility_indices': volatility_tickers,
     'currency_etfs': currency_etf_tickers,
+    'fx': currencies_combined,
     'benchmarks': benchmark_tickers
 }
 
