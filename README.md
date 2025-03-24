@@ -4,7 +4,9 @@
 
 The main purpose of this project has been to create an interactive dashboard offering the user an opportunity to perform technical analysis of a portfolio of custom selected assets. These historical insights would then serve the broader goal of being able to build an optimal portfolio that is expected to perform successfully based on the desired investment objectives. 
 
-The project is ongoing, although a vast amount of functionality has already been developed. The idea has been to be able to perform these four major groups of tasks:
+The five-page technical analysis web app, written in Plotly and Dash, is almost complete - see the screenshots and descriptions in [Examples 20-24 below](#20-technical-analysis-app-page-1). 
+
+In the broader context, most of the analytics functionality has already been developed at the back end. The idea has been to be able to perform these four major groups of tasks:
 
 **a) Download data**
 > - web scrape comprehensive lists of top assets in various categories
@@ -265,3 +267,35 @@ The lower deck plots the difference of standard (14,3) slow stochastic %K and %D
 ### 19. Top Drawdowns With SMA and Bollinger Overlays (Upper), Volume (Middle) and Stochastic K-D Difference With Signal (Lower)
 A preliminary look at the app in Dash. The limited test menu can be collapsed/expanded using the up/down arrow button at upper left. 
 > ![](img/19_DashApp_Screenshot_2024-10-25_TSLA_1800x600x150x150.png)
+
+### 20. Technical Analysis App Page 1
+> On this page, the user can mark categories of interest, for which lists of tickers and the corresponding names will be downloaded. Stock lists will be sorted by Market Capitalization, ETF lists by Assets Under Management, and Futures lists by Open Interest.
+
+> ![](img/Page1-Categories_2025-03-24-180258.png)
+
+### 21. Technical Analysis App Page 2
+> On this page, the user can choose tickers for which more detailed info will be downloaded, including the range of dates when the historical data is available.
+
+> ![](img/Page2-PreselectedTickerInCategories_2025-03-24-112221.png)
+
+### 22. Technical Analysis App Page 3
+> On this page, the user can refine the selection if tickers, taking into account the start and end dates of available historical data for each of them. Portfolio summary with on-hover popover info for each added ticker appears at the top of the page. There is also an input box for any Yahoo Finance valid ticker that the user may wish to add without referring to any particular category. 
+
+> ![](img/Page3-SelectedTickers_2025-03-24-112642.png)
+
+### 23. Technical Analysis App Page 4
+> On this page, the user can select the common range of dates for the selected portfolio. If the selected range turns out to be wider than the span of available data for any of the tickers, the range will be automatically adjusted. The user can also remove from the portfolio a ticker which lacks sufficiently long period of historical data.
+
+> ![](img/Page4-DateRangeSelection_2025-03-24-112811.png)
+
+### 24. Technical Analysis App Page 5
+> On this page, the user can specify the graph template, select tickers to be plotted individually on each of them, and select from multiple plot types grouped into several categories:
+> - Price Plots
+> - Volume Plots
+> - Trend Indicator Plots
+> - Volatility Indicator Plots
+> - Momentum Indicator Plots
+> - Differential Plots
+
+> ![](img/Page5-PlotDrawdownsBollingerMACDVolume_2025-03-24-113617.png)
+> ![](img/Page5-PlotMenuExpanded_2025-03-24-113841.png)
