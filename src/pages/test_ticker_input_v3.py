@@ -1367,6 +1367,7 @@ def output_custom_tickers(
                     tk_sector = tk_info['sector'] if 'sector' in tk_info.keys() else ''
 
                     tk_fx_currency_name = ''
+                    tk_fx_currency_region = ''
                     tk_fx_currency_group = ''
 
                     if 'longBusinessSummary' in tk_info.keys():

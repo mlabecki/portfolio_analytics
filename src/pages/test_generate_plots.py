@@ -7965,6 +7965,8 @@ def target_deck_options(
     # Number of deck-dropdown inputs
     n = target_deck_options.__code__.co_argcount - 2
 
+    print(f'n = {n}')
+
     deck_changed = False if deck_changed is None else deck_changed
 
     if deck_type == 'Single':
@@ -8025,30 +8027,30 @@ def target_deck_options(
 
     else:
 
-        hist_price_deck_value =         ['Middle'] if hist_price_deck == 'Lower' & deck_changed else [hist_price_deck]
-        candlestick_deck_value =        ['Middle'] if candlestick_deck == 'Lower' & deck_changed else [candlestick_deck]
-        drawdowns_deck_value =          ['Middle'] if drawdowns_deck == 'Lower' & deck_changed else [drawdowns_deck]
-        volume_deck_value =             ['Middle'] if volume_deck == 'Lower' & deck_changed else [volume_deck]
-        dollar_volume_deck_value =      ['Middle'] if dollar_volume_deck == 'Lower' & deck_changed else [dollar_volume_deck]
-        obv_deck_value =                ['Middle'] if obv_deck == 'Lower' & deck_changed else [obv_deck]
-        bollinger_deck_value =          ['Middle'] if bollinger_deck == 'Lower' & deck_changed else [bollinger_deck]
-        boll_width_deck_value =         ['Middle'] if boll_width_deck == 'Lower' else [boll_width_deck]
-        ma_env_deck_value =             ['Middle'] if ma_env_deck == 'Lower' & deck_changed else [ma_env_deck]
-        ma_ribbon_deck_value =          ['Middle'] if ma_ribbon_deck == 'Lower' & deck_changed else [ma_ribbon_deck]
-        price_overlays_deck_value =     ['Middle'] if price_overlays_deck == 'Lower' & deck_changed else [price_overlays_deck]
-        macd_deck_value =               ['Middle'] if macd_deck == 'Lower' & deck_changed else [macd_deck]
-        impulse_macd_deck_value =       ['Middle'] if impulse_macd_deck == 'Lower' & deck_changed else [impulse_macd_deck]
-        supertrend_deck_value =         ['Middle'] if supertrend_deck == 'Lower' & deck_changed else [supertrend_deck]
-        atr_deck_value =                ['Middle'] if atr_deck == 'Lower' & deck_changed else [atr_deck]
-        mvol_deck_value =               ['Middle'] if mvol_deck == 'Lower' & deck_changed else [mvol_deck]
-        ulcer_deck_value =              ['Middle'] if ulcer_deck == 'Lower' & deck_changed else [ulcer_deck]        
-        rsi_deck_value =                ['Middle'] if rsi_deck == 'Lower' & deck_changed else [rsi_deck]
-        stochastic_deck_value =         ['Middle'] if stochastic_deck == 'Lower' & deck_changed else [stochastic_deck]
-        cci_deck_value =                ['Middle'] if cci_deck == 'Lower' & deck_changed else [cci_deck]        
-        diff_1_deck_value =             ['Middle'] if diff_1_deck == 'Lower' & deck_changed else [diff_1_deck]
-        diff_2_deck_value =             ['Middle'] if diff_2_deck == 'Lower' & deck_changed else [diff_2_deck]
-        diff_3_deck_value =             ['Middle'] if diff_3_deck == 'Lower' & deck_changed else [diff_3_deck]
-        diff_stochastic_deck_value =    ['Middle'] if diff_stochastic_deck == 'Lower' & deck_changed else [diff_stochastic_deck]
+        hist_price_deck_value =         ['Middle'] if (hist_price_deck == 'Lower') & deck_changed else [hist_price_deck]
+        candlestick_deck_value =        ['Middle'] if (candlestick_deck == 'Lower') & deck_changed else [candlestick_deck]
+        drawdowns_deck_value =          ['Middle'] if (drawdowns_deck == 'Lower') & deck_changed else [drawdowns_deck]
+        volume_deck_value =             ['Middle'] if (volume_deck == 'Lower') & deck_changed else [volume_deck]
+        dollar_volume_deck_value =      ['Middle'] if (dollar_volume_deck == 'Lower') & deck_changed else [dollar_volume_deck]
+        obv_deck_value =                ['Middle'] if (obv_deck == 'Lower') & deck_changed else [obv_deck]
+        bollinger_deck_value =          ['Middle'] if (bollinger_deck == 'Lower') & deck_changed else [bollinger_deck]
+        boll_width_deck_value =         ['Middle'] if (boll_width_deck == 'Lower') else [boll_width_deck]
+        ma_env_deck_value =             ['Middle'] if (ma_env_deck == 'Lower') & deck_changed else [ma_env_deck]
+        ma_ribbon_deck_value =          ['Middle'] if (ma_ribbon_deck == 'Lower') & deck_changed else [ma_ribbon_deck]
+        price_overlays_deck_value =     ['Middle'] if (price_overlays_deck == 'Lower') & deck_changed else [price_overlays_deck]
+        macd_deck_value =               ['Middle'] if (macd_deck == 'Lower') & deck_changed else [macd_deck]
+        impulse_macd_deck_value =       ['Middle'] if (impulse_macd_deck == 'Lower') & deck_changed else [impulse_macd_deck]
+        supertrend_deck_value =         ['Middle'] if (supertrend_deck == 'Lower') & deck_changed else [supertrend_deck]
+        atr_deck_value =                ['Middle'] if (atr_deck == 'Lower') & deck_changed else [atr_deck]
+        mvol_deck_value =               ['Middle'] if (mvol_deck == 'Lower') & deck_changed else [mvol_deck]
+        ulcer_deck_value =              ['Middle'] if (ulcer_deck == 'Lower') & deck_changed else [ulcer_deck]        
+        rsi_deck_value =                ['Middle'] if (rsi_deck == 'Lower') & deck_changed else [rsi_deck]
+        stochastic_deck_value =         ['Middle'] if (stochastic_deck == 'Lower') & deck_changed else [stochastic_deck]
+        cci_deck_value =                ['Middle'] if (cci_deck == 'Lower') & deck_changed else [cci_deck]        
+        diff_1_deck_value =             ['Middle'] if (diff_1_deck == 'Lower') & deck_changed else [diff_1_deck]
+        diff_2_deck_value =             ['Middle'] if (diff_2_deck == 'Lower') & deck_changed else [diff_2_deck]
+        diff_3_deck_value =             ['Middle'] if (diff_3_deck == 'Lower') & deck_changed else [diff_3_deck]
+        diff_stochastic_deck_value =    ['Middle'] if (diff_stochastic_deck == 'Lower') & deck_changed else [diff_stochastic_deck]
         all_deck_values = \
             hist_price_deck_value + \
             candlestick_deck_value + \

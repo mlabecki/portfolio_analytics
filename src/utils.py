@@ -34,7 +34,7 @@ def set_axis_limits(
     """
 
     if x_min == x_max:
-        return x_min, x_max
+        return x_min, x_max, 0
     
     else:
         # units = np.array([0.05, 0.1, 0.2, 0.25, 0.5])

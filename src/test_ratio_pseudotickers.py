@@ -641,6 +641,7 @@ def display_table_selected_pseudotickers(
         cur_num = selected_ticker_currencies[tk_num]
         # Use 'price' (stock/ETF/future) or 'value' () when referring to tk_num in pseudo_tk_summary and popover message
         price_or_value_num = 'value' if tk_num.startswith('^') else 'price'
+        converted_to_in = 'converted to' if tk_num.startswith('^') else 'in'
 
         ####################
 
@@ -651,12 +652,12 @@ def display_table_selected_pseudotickers(
                 # For example, AMZN and JPYUSD=X
                 if n_click_validate:
                     popover_pseudoticker_style = popover_pseudoticker_success_style                    
-                    message_popover_validate_pseudoticker = f'This will create pseudoticker {pseudo_tk_name}, which is the {price_or_value_num} of {tk_num} converted to {cur_den}.'
+                    message_popover_validate_pseudoticker = f'This will create pseudoticker {pseudo_tk_name}, which is the {price_or_value_num} of {tk_num} {converted_to_in} {cur_den}.'
                     message_popover_validate_pseudoticker += f' You can proceed by clicking the CREATE PSEUDOTICKER button.'
                     create_pseudoticker_disabled = False
                 if n_click_create:
                     pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} price in USD to {tk_den} (the exchange rate between {cur_den} and USD). '
-                    pseudo_tk_summary += f'This is the {price_or_value_num} of {tk_num} converted to {cur_den}.'
+                    pseudo_tk_summary += f'This is the {price_or_value_num} of {tk_num} {converted_to_in} {cur_den}.'
                     pseudo_tk_currency = cur_den
                     required_fx_tickers = []
                     add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
@@ -670,13 +671,13 @@ def display_table_selected_pseudotickers(
                 # For example, BMW.DE (currency: EUR) and JPYUSD=X. Similarly to the suggestions above, this will be the price of BMW.DE in JPY.
                 if n_click_validate:
                     popover_pseudoticker_style = popover_pseudoticker_success_style                   
-                    message_popover_validate_pseudoticker = f'This will create pseudoticker {pseudo_tk_name}, which is the {price_or_value_num} of {tk_num} converted to {cur_den}. '
+                    message_popover_validate_pseudoticker = f'This will create pseudoticker {pseudo_tk_name}, which is the {price_or_value_num} of {tk_num} {converted_to_in} {cur_den}. '
                     message_popover_validate_pseudoticker += f' You can proceed by clicking the CREATE PSEUDOTICKER button.'
                     message_popover_validate_pseudoticker += f' If you want to convert {tk_num} to USD, use USD{cur_num}=X as Denominator.'
                     create_pseudoticker_disabled = False
                 if n_click_create:
                     pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} price in {cur_num} to {tk_den} (the exchange rate between {cur_den} and USD), '
-                    pseudo_tk_summary += f'both converted to a common currency. This is the {price_or_value_num} of {tk_num} converted to {cur_den}.'
+                    pseudo_tk_summary += f'both converted to a common currency. This is the {price_or_value_num} of {tk_num} {converted_to_in} {cur_den}.'
                     pseudo_tk_currency = cur_den
                     required_fx_tickers = [f'{cur_den}USD=X']
                     add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
@@ -696,12 +697,12 @@ def display_table_selected_pseudotickers(
                 # For example, 7201.T (Nissan) and USDJPY=X.
                 if n_click_validate:
                     popover_pseudoticker_style = popover_pseudoticker_success_style
-                    message_popover_validate_pseudoticker = f'This will create pseudoticker {pseudo_tk_name}, which is the {price_or_value_num} of {tk_num} converted to USD.'
+                    message_popover_validate_pseudoticker = f'This will create pseudoticker {pseudo_tk_name}, which is the {price_or_value_num} of {tk_num} {converted_to_in} USD.'
                     message_popover_validate_pseudoticker += f' You can proceed by clicking the CREATE PSEUDOTICKER button.'
                     create_pseudoticker_disabled = False
                 if n_click_create:
                     pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} price in {cur_den} to {tk_den} (the exchange rate between USD and {cur_den}).'
-                    pseudo_tk_summary += f' This is the {price_or_value_num} of {tk_num} converted to USD.'
+                    pseudo_tk_summary += f' This is the {price_or_value_num} of {tk_num} {converted_to_in} USD.'
                     pseudo_tk_currency = 'USD'
                     required_fx_tickers = []
                     add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
@@ -718,7 +719,7 @@ def display_table_selected_pseudotickers(
         else:
             # Two stock/ETF/future prices or two indices or one stock/ETF/future price and one index
 
-            price_or_value_den = 'value' if tk_den.startswith('^') else 'price'                            
+            price_or_value_den = 'value' if tk_den.startswith('^') else 'price'
             cur_den = selected_ticker_currencies[tk_den]
             pseudo_tk_name = tk_num + '/' + tk_den
 
@@ -803,6 +804,7 @@ def display_table_selected_pseudotickers(
     if n_click_validate:
         popover_hidden = False
         popover_is_open = True
+        # popover_is_open = False if n_click_create else True
 
     if n_click_create:
         n_click_create = 0
