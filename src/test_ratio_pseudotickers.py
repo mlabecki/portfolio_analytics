@@ -13,9 +13,11 @@ from utils import *
 
 app = Dash(__name__, external_stylesheets = [dbc.themes.YETI], suppress_callback_exceptions = True)
 
-pseudoticker_text = """You can select a pair of tickers to construct a pseudoticker, whose value will be the ratio of prices, FX rates, or indices. This can be useful for
-calculating the exchange rate between two non-USD currencies; for converting foreign currency asset prices to USD or vice versa; or for comparing the relative performance
-of similar asset types (making sure they are expressed in a common currency). All plot types and features, except for volume, will be available to the pseudotickers."""
+pseudoticker_text_1 = """<DIV>You can select a pair of tickers to construct a pseudoticker, whose value will be the ratio of prices, FX rates, or indices. 
+This can be useful, for example:</DIV>"""
+pseudoticker_text_2 = """<DIV>After selecting Numerator Ticker and Denominator Ticker, click the <B>VALIDATE PSEUDOTICKER</B> button to check if their ratio is a valid pseudoticker.
+If it is, the <B>CREATE PSEUDOTICKER</B> button will become active and, upon clicking it, the pseudoticker will be added to a list below.
+All plot types and features, except for volume, will be available to the selected pseudotickers.</DIV>"""
 
 selected_ticker_names = {
     'CADUSD=X': 'CADUSD',
@@ -260,7 +262,47 @@ app.layout = (
             html.Div(
                 id = 'select-pseudotickers-to-plot-title',
                 hidden = hidden_pseudo,
-                children= [pseudoticker_text],
+                # children= [pseudoticker_text],
+                children = [
+                    dbc.Button(
+                        id = 'collapse-button-what-are-pseudotickers',
+                        # class_name = 'ma-1',
+                        # color = 'primary',
+                        # size = 'sm',
+                        n_clicks = 0,
+                        # style = collapse_button_what_are_pseudotickers_css
+                        style = what_are_pseudotickers_css
+                    ),
+                    dbc.Collapse(
+                        html.Div([
+                            dcc.Markdown(pseudoticker_text_1, dangerously_allow_html = True),
+                            html.Ul(
+                                id = 'pseudoticker-text-unordered-list',
+                                children = [
+                                    html.Li('to calculate the exchange rate between two non-USD currencies;'),
+                                    html.Li('to convert foreign currency asset prices to USD or vice versa; or'),
+                                    html.Li('to compare the relative performance of similar asset types (making sure they are expressed in a common currency).')
+                                ],
+                                style = {
+                                    'list-style-type': 'disc',
+                                    'padding-right': '25px',
+                                    'text-align': 'left'
+                                }
+                            ),
+                            dcc.Markdown(pseudoticker_text_2, dangerously_allow_html = True)
+                        ]),
+                        id = 'what-are-pseudotickers',
+                        is_open = False,
+                        style = {
+                            'width': '295px',
+                            'margin-left': '5px',
+                            'margin-right': '5px',
+                            'padding': '5px 5px 5px 5px',
+                            'border': 'solid 1px rgb(0, 50, 150)',
+                            'border-radius': '5px'
+                        }
+                    )     
+                ],
                 style = {
                     'width': '305px',
                     'display': 'block',
@@ -270,7 +312,8 @@ app.layout = (
                     'margin-top': '15px',
                     'margin-bottom': '10px',
                     'line-height': '18px',
-                    'text-align': 'justify',
+                    # 'text-align': 'justify',
+                    'text-align': 'left',
                     'padding': '2px'
                 }
             ),
@@ -306,24 +349,24 @@ app.layout = (
     ),
 
     html.Div([
-        html.Div(
-            children = [
-                'Click the VALIDATE PSEUDOTICKER button to check if the two selected tickers can be used to create a valid pseudoticker.'
-            ],
-            style = {
-                'width': '305px',
-                'display': 'block',
-                'font-family': 'Helvetica',
-                'font-size': '14px',
-                'vertical-align': 'top',
-                'margin-top': '1px',
-                'margin-left': '10px',
-                'margin-bottom': '5px',
-                'line-height': '18px',
-                'text-align': 'justify',
-                'padding': '2px'
-            }
-        ),
+        # html.Div(
+        #     children = [
+        #         'Click the VALIDATE PSEUDOTICKER button to check if the two selected tickers can be used to create a valid pseudoticker.'
+        #     ],
+        #     style = {
+        #         'width': '305px',
+        #         'display': 'block',
+        #         'font-family': 'Helvetica',
+        #         'font-size': '14px',
+        #         'vertical-align': 'top',
+        #         'margin-top': '1px',
+        #         'margin-left': '10px',
+        #         'margin-bottom': '5px',
+        #         'line-height': '18px',
+        #         'text-align': 'justify',
+        #         'padding': '2px'
+        #     }
+        # ),
         html.Div(
             dbc.Button(
                 'VALIDATE PSEUDOTICKER',
@@ -395,6 +438,21 @@ app.layout = (
 
 
 ########################################################################
+
+@callback(
+    Output('collapse-button-what-are-pseudotickers', 'children'),
+    Output('what-are-pseudotickers', 'is_open'),
+    Input('collapse-button-what-are-pseudotickers', 'n_clicks'),
+    State('what-are-pseudotickers', 'is_open')
+)
+def toggle_collapse_what_are_pseudotickers(n, is_open):
+    title = ' WHAT ARE PSEUDOTICKERS?'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
 
 @callback(
 

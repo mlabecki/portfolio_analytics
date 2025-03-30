@@ -300,6 +300,17 @@ collapse_button_menu_css = {
     'width': '31px'
     # 'width': '60px'
 }
+collapse_button_what_are_pseudotickers_css = {
+    'display': 'inline-block',
+    'text-align': 'left',
+    'font-family': 'Helvetica',
+    'font-weight': 'bold',
+    'width': '295px',
+    'margin-right': '5px',
+    'margin-left': '5px',
+    'border-radius': '5px',
+    # 'color': 'blue'
+}
 
 # Selected tickers elements
 # K / N (pre-)selected string
@@ -767,6 +778,24 @@ create_pseudoticker_button_css = {
     'padding-right': '5px',
     'vertical-align': 'top',
     'text-align': 'center',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+    'font-weight': 'bold',
+}
+what_are_pseudotickers_css = {
+    'width': '295px',
+    'display': 'block',
+    'height': '32px',
+    'border-radius': '5px',
+    'margin-left': '5px',
+    'margin-right': '5px',
+    'padding': '5px 5px 5px 5px',
+    # 'border': 'solid 1px rgb(50, 50, 200)',
+    # 'background-color': 'rgb(50, 50, 200)',
+    'border-radius': '5px',
+    'vertical-align': 'top',
+    'text-align': 'center',
+    'color': 'white',
     'font-family': 'Helvetica',
     'font-size': '14px',
     'font-weight': 'bold',

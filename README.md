@@ -269,7 +269,7 @@ A preliminary look at the app in Dash. The limited test menu can be collapsed/ex
 > ![](img/19_DashApp_Screenshot_2024-10-25_TSLA_1800x600x150x150.png)
 
 ### 20. Technical Analysis App Page 1
-> On this page, the user can mark categories of interest, for which lists of tickers and the corresponding names will be downloaded. Stock lists will be sorted by Market Capitalization, ETF lists by Assets Under Management, and Futures lists by Open Interest.
+> On this page, the user can mark categories of interest, for which lists of tickers and the corresponding names will be downloaded. Stock lists will be sorted by Market Capitalization, ETF lists by Assets Under Management, and Futures lists by Open Interest. On-hover popovers display category info such as the number of tickers, examples by name and the source of the list.
 
 > ![](img/Page1-Categories_2025-03-24-180258.png)
 
@@ -279,7 +279,7 @@ A preliminary look at the app in Dash. The limited test menu can be collapsed/ex
 > ![](img/Page2-PreselectedTickerInCategories_2025-03-24-112221.png)
 
 ### 22. Technical Analysis App Page 3
-> On this page, the user can refine the selection if tickers, taking into account the start and end dates of available historical data for each of them. Portfolio summary with on-hover popover info for each added ticker appears at the top of the page. There is also an input box for any Yahoo Finance valid ticker that the user may wish to add without referring to any particular category. 
+> On this page, the user can refine the selection if tickers, taking into account the start and end dates of available historical data for each of them. Portfolio summary with on-hover popover info for each added ticker appears at the top of the page. There is also an input box for any Yahoo Finance valid ticker that the user may wish to add without referring to any particular category. The selected tickers are displayed in the YOUR PORTFOLIO box, with all ticker details from the selection tables below being displayed on mouse hover. 
 
 > ![](img/Page3-SelectedTickers_2025-03-24-112642.png)
 
@@ -289,7 +289,7 @@ A preliminary look at the app in Dash. The limited test menu can be collapsed/ex
 > ![](img/Page4-DateRangeSelection_2025-03-24-112811.png)
 
 ### 24. Technical Analysis App Page 5
-> On this page, the user can specify the graph template, select tickers to be plotted individually on each of them, and select from multiple plot types grouped into several categories:
+> On this page, the user can specify the graph template, choose tickers to be plotted individually on each of them, and select from multiple plot types grouped into several categories:
 > - Price Plots
 > - Volume Plots
 > - Trend Indicator Plots
