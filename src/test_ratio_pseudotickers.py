@@ -298,7 +298,7 @@ app.layout = (
                             'margin-left': '5px',
                             'margin-right': '5px',
                             'padding': '5px 5px 5px 5px',
-                            'border': 'solid 1px rgb(0, 50, 150)',
+                            'border': 'solid 1px rgb(0, 80, 180)',
                             'border-radius': '5px'
                         }
                     )     
