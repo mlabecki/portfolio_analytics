@@ -16,11 +16,12 @@ app = Dash(__name__, external_stylesheets = [dbc.themes.YETI], suppress_callback
 pseudoticker_text_1 = """<DIV>A pseudoticker is a construct that can be thought of as a quotient of two tickers, its
 value being the ratio of two prices, FX rates, or indices. Here are some examples where this could be useful:</DIV>"""
 pseudoticker_text_2 = """<DIV>After selecting Numerator Ticker and Denominator Ticker below, click the yellow <B>VALIDATE PSEUDOTICKER</B> button.
-A popover message will inform you that your choice of a pseudoticker is either valid (green) or invalid (red) 
-(if the message disappears instantly, click the button again). If it is valid, then the green <B>CREATE PSEUDOTICKER</B> button underneath 
+A popover message will inform you that your choice of pseudoticker is either valid (green) or invalid (red) 
+(click the button again if the message disappears). If it is valid, the green <B>CREATE PSEUDOTICKER</B> button
 will become active and you will be able to add the pseudoticker to your portfolio.
-The selected pseudotickers will enjoy access to all plot types and features, except for volume.</DIV>"""
+The selected pseudotickers will enjoy access to all plot types and features, except volume.</DIV>"""
 
+# In test_generate_plots.py: expanded_selected_tickers_names (id 'expanded-selected-ticker-names') 
 selected_ticker_names = {
     'CADUSD=X': 'CADUSD',
     'USDCAD=X': 'USDCAD',
@@ -272,7 +273,8 @@ app.layout = (
                         n_clicks = 0,
                         style = collapse_button_what_are_pseudotickers_css
                     ),
-                    dbc.Collapse([
+                    dbc.Collapse(
+                        [
                             html.Div([
                                 dcc.Markdown(pseudoticker_text_1, dangerously_allow_html = True),
                                 html.Ul(
@@ -303,7 +305,8 @@ app.layout = (
                         n_clicks = 0,
                         style = collapse_button_what_are_pseudotickers_css
                     ),
-                    dbc.Collapse([
+                    dbc.Collapse(
+                        [
                             html.Div([
                                 dcc.Markdown(pseudoticker_text_2, dangerously_allow_html = True)
                             ],
@@ -559,6 +562,8 @@ def display_table_selected_pseudotickers(
             and tk_den to a common currency (USD). The historical data for these FX tickers will have to be 
             downloaded if not selected by the user (i.e., if not in selected_tickers).
         """
+
+        # must somehow add id_tk_map for pseudotickers to translate selected rows to pseudoticker names
 
         # print(f'FUNCTION START\n\tselected_pseudoticker_info = {selected_pseudoticker_info}')
         pseudo_tk = tk_num + '_' + tk_den
