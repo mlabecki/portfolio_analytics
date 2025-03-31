@@ -224,15 +224,17 @@ button, input, select, textarea {
     border-color: rgb(250, 220, 140) !important;
     background-color: rgb(240, 210, 140) !important;
 }
-#collapse-button-what-are-pseudotickers
+#collapse-button-what-are-pseudotickers,
+#collapse-button-how-to-create-pseudotickers
 {
-    border-color:       rgb(0, 80, 180) !important;
-    background-color:   rgb(0, 80, 180) !important;
+    border-color:       rgb(0, 100, 200) !important;
+    background-color:   rgb(0, 100, 200) !important;
 }
-#collapse-button-what-are-pseudotickers:hover
+#collapse-button-what-are-pseudotickers:hover,
+#collapse-button-how-to-create-pseudotickers:hover
 {
-    border-color:       rgb(0, 40, 130) !important;
-    background-color:   rgb(0, 40, 130) !important;
+    border-color:       rgb(0, 50, 140) !important;
+    background-color:   rgb(0, 50, 140) !important;
 }
 
 #collapse-button-general-tab:hover,

@@ -13,11 +13,13 @@ from utils import *
 
 app = Dash(__name__, external_stylesheets = [dbc.themes.YETI], suppress_callback_exceptions = True)
 
-pseudoticker_text_1 = """<DIV>You can select a pair of tickers to construct a pseudoticker, whose value will be the ratio of prices, FX rates, or indices. 
-This can be useful, for example:</DIV>"""
-pseudoticker_text_2 = """<DIV>After selecting Numerator Ticker and Denominator Ticker, click the <B>VALIDATE PSEUDOTICKER</B> button to check if their ratio is a valid pseudoticker.
-If it is, the <B>CREATE PSEUDOTICKER</B> button will become active and, upon clicking it, the pseudoticker will be added to a list below.
-All plot types and features, except for volume, will be available to the selected pseudotickers.</DIV>"""
+pseudoticker_text_1 = """<DIV>A pseudoticker is a construct that can be thought of as a quotient of two tickers, its
+value being the ratio of two prices, FX rates, or indices. Here are some examples where this could be useful:</DIV>"""
+pseudoticker_text_2 = """<DIV>After selecting Numerator Ticker and Denominator Ticker below, click the yellow <B>VALIDATE PSEUDOTICKER</B> button.
+A popover message will inform you that your choice of a pseudoticker is either valid (green) or invalid (red) 
+(if the message disappears instantly, click the button again). If it is valid, then the green <B>CREATE PSEUDOTICKER</B> button underneath 
+will become active and you will be able to add the pseudoticker to your portfolio.
+The selected pseudotickers will enjoy access to all plot types and features, except for volume.</DIV>"""
 
 selected_ticker_names = {
     'CADUSD=X': 'CADUSD',
@@ -264,44 +266,54 @@ app.layout = (
                 hidden = hidden_pseudo,
                 # children= [pseudoticker_text],
                 children = [
+
                     dbc.Button(
                         id = 'collapse-button-what-are-pseudotickers',
-                        # class_name = 'ma-1',
-                        # color = 'primary',
-                        # size = 'sm',
                         n_clicks = 0,
-                        # style = collapse_button_what_are_pseudotickers_css
-                        style = what_are_pseudotickers_css
+                        style = collapse_button_what_are_pseudotickers_css
                     ),
-                    dbc.Collapse(
-                        html.Div([
-                            dcc.Markdown(pseudoticker_text_1, dangerously_allow_html = True),
-                            html.Ul(
-                                id = 'pseudoticker-text-unordered-list',
-                                children = [
-                                    html.Li('to calculate the exchange rate between two non-USD currencies;'),
-                                    html.Li('to convert foreign currency asset prices to USD or vice versa; or'),
-                                    html.Li('to compare the relative performance of similar asset types (making sure they are expressed in a common currency).')
-                                ],
-                                style = {
-                                    'list-style-type': 'disc',
-                                    'padding-right': '25px',
-                                    'text-align': 'left'
-                                }
+                    dbc.Collapse([
+                            html.Div([
+                                dcc.Markdown(pseudoticker_text_1, dangerously_allow_html = True),
+                                html.Ul(
+                                    id = 'pseudoticker-text-unordered-list',
+                                    children = [
+                                        html.Li('to calculate the exchange rate between two non-USD currencies;'),
+                                        html.Li('to convert foreign currency asset prices to USD or vice versa;'),
+                                        html.Li('to compare the relative performance of similar asset types (making sure they are expressed in a common currency).')
+                                    ],
+                                    style = {
+                                        'list-style-type': 'disc',
+                                        'margin-top': '5px',
+                                        'margin-bottom': '3px',
+                                        'padding-right': '25px',
+                                        'text-align': 'left'
+                                    }
+                                ),
+                            ],
+                            style = what_are_pseudotickers_css
                             ),
-                            dcc.Markdown(pseudoticker_text_2, dangerously_allow_html = True)
-                        ]),
+                        ],
                         id = 'what-are-pseudotickers',
                         is_open = False,
-                        style = {
-                            'width': '295px',
-                            'margin-left': '5px',
-                            'margin-right': '5px',
-                            'padding': '5px 5px 5px 5px',
-                            'border': 'solid 1px rgb(0, 80, 180)',
-                            'border-radius': '5px'
-                        }
+                    ),
+
+                    dbc.Button(
+                        id = 'collapse-button-how-to-create-pseudotickers',
+                        n_clicks = 0,
+                        style = collapse_button_what_are_pseudotickers_css
+                    ),
+                    dbc.Collapse([
+                            html.Div([
+                                dcc.Markdown(pseudoticker_text_2, dangerously_allow_html = True)
+                            ],
+                            style = what_are_pseudotickers_css                        
+                            )
+                        ],
+                        id = 'how-to-create-pseudotickers',
+                        is_open = False,
                     )     
+
                 ],
                 style = {
                     'width': '305px',
@@ -447,6 +459,21 @@ app.layout = (
 )
 def toggle_collapse_what_are_pseudotickers(n, is_open):
     title = ' WHAT ARE PSEUDOTICKERS?'
+    label = f'► {title}' if is_open else f'▼ {title}'
+    if n:
+        return label, not is_open
+    else:
+        return f'► {title}', is_open
+
+
+@callback(
+    Output('collapse-button-how-to-create-pseudotickers', 'children'),
+    Output('how-to-create-pseudotickers', 'is_open'),
+    Input('collapse-button-how-to-create-pseudotickers', 'n_clicks'),
+    State('how-to-create-pseudotickers', 'is_open')
+)
+def toggle_collapse_how_to_create_pseudotickers(n, is_open):
+    title = ' HOW TO CREATE PSEUDOTICKERS?'
     label = f'► {title}' if is_open else f'▼ {title}'
     if n:
         return label, not is_open
