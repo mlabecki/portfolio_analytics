@@ -58,22 +58,6 @@ tk_den_first_legit = [tk for tk in selected_tickers[1:] if tk != (first_tk[3:6] 
 
 hidden_pseudo = False if len(selected_tickers) >=2 else True
 
-popover_pseudoticker_danger_style = {
-    'border-radius': '5px',
-    'border-color': 'rgb(255, 178, 185)',
-    'background-color': 'rgb(255, 222, 220)'
-}
-popover_pseudoticker_warning_style = {
-    'border-radius': '5px',
-    'border-color': 'rgb(255, 208, 185)',
-    'background-color': 'rgb(255, 245, 220)'    
-}
-popover_pseudoticker_success_style = {
-    'border-radius': '5px',
-    'border-color': 'rgb(152, 245, 178)',
-    'background-color': 'rgb(212, 250, 220)'    
-}
-
 def display_table_selected_tickers(
     selected_ticker_names
 ):
@@ -264,7 +248,7 @@ app.layout = (
         children = [
             html.Div(
                 id = 'select-pseudotickers-to-plot-title',
-                hidden = hidden_pseudo,
+                # hidden = hidden_pseudo,
                 # children= [pseudoticker_text],
                 children = [
 

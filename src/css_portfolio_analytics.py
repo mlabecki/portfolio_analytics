@@ -773,7 +773,7 @@ create_pseudoticker_button_css = {
     'margin-top': '5px',
     'margin-right': '5px',
     'margin-bottom': '5px',
-    'margin-left': '10px',
+    'margin-left': '0px',
     'padding-left': '5px',
     'padding-right': '5px',
     'vertical-align': 'top',
@@ -783,7 +783,7 @@ create_pseudoticker_button_css = {
     'font-weight': 'bold',
 }
 collapse_button_what_are_pseudotickers_css = {
-    'width': '295px',
+    'width': '292px',
     'display': 'block',
     'height': '32px',
     'border-radius': '5px',
@@ -793,18 +793,65 @@ collapse_button_what_are_pseudotickers_css = {
     'padding': '5px 5px 5px 10px',
     'border-radius': '5px',
     'vertical-align': 'top',
-    # 'text-align': 'center',
     'text-align': 'left',
-    'color': 'white',
+    'color': 'black',
     'font-family': 'Helvetica',
     'font-size': '14px',
     'font-weight': 'bold',
 }
 what_are_pseudotickers_css = {
-    'width': '295px',
+    'width': '292px',
     'margin-left': '5px',
     'margin-right': '5px',
     'padding': '5px 5px 5px 5px',
-    'border': 'solid 1px rgb(0, 100, 200)',
+    'border': 'solid 1px rgb(150, 200, 240)',
+    'border-top': '0px',
     'border-radius': '5px'
+}
+popover_pseudoticker_danger_style = {
+    'border-radius': '5px',
+    'border-color': 'rgb(255, 178, 185)',
+    'background-color': 'rgb(255, 222, 220)'
+}
+popover_pseudoticker_warning_style = {
+    'border-radius': '5px',
+    'border-color': 'rgb(255, 208, 185)',
+    'background-color': 'rgb(255, 245, 220)'    
+}
+popover_pseudoticker_success_style = {
+    'border-radius': '5px',
+    'border-color': 'rgb(152, 245, 178)',
+    'background-color': 'rgb(212, 250, 220)'    
+}
+select_ticker_left_css = {
+    'background-color': 'rgba(0, 126, 255, .08)',
+    'border-top-left-radius': '2px',
+    'border-bottom-left-radius': '2px',
+    'border': '1px solid rgba(0, 126, 255, .24)',
+    'border-right': '0px',
+    'color': '#007eff',
+    'display': 'inline-block',
+    'cursor': 'pointer',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+    'line-height': '1.5',
+    'padding-left': '5px',
+    'padding-right': '5px',
+    'margin-top': '5px',
+    'vertical-align': 'center'
+}
+select_ticker_right_css = {
+    'background-color': 'rgba(0, 126, 255, .08)',
+    'border-top-right-radius': '2px',
+    'border-bottom-right-radius': '2px',
+    'border': '1px solid rgba(0, 126, 255, .24)',
+    'color': '#007eff',
+    'display': 'inline-block',
+    'font-family': 'Helvetica',
+    'font-size': '14px',
+    'line-height': '1.5',
+    'padding-left': '5px',
+    'padding-right': '5px',
+    'margin-top': '5px',
+    'vertical-align': 'center'
 }
