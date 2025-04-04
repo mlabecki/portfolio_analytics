@@ -753,7 +753,7 @@ def display_table_selected_pseudotickers(
                     pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} price in {cur_num} to {tk_den} (the exchange rate between {cur_den} and USD), '
                     pseudo_tk_summary += f'both converted to a common currency. This is the {price_or_value_num} of {tk_num} {converted_to_in} {cur_den}.'
                     pseudo_tk_currency = cur_den
-                    required_fx_tickers = [f'{cur_den}USD=X']
+                    required_fx_tickers = [f'USD{cur_num}=X']  # BMW.DE / USDEUR=X will be the price of BMW.DE in USD
                     add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
 
         ####################
@@ -837,7 +837,7 @@ def display_table_selected_pseudotickers(
                     if n_click_create:
                         pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} {price_or_value_num}s to {tk_den} {price_or_value_den}s, converted to a common currency (USD).'
                         pseudo_tk_currency = ''
-                        required_fx_tickers = [f'{cur_den}USD=X']
+                        required_fx_tickers = [f'{cur_num}USD=X']
                         add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
                 else:
                     # For example, BMW.DE/^N225 or ^GDAXI/7201.T

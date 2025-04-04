@@ -438,7 +438,8 @@ def display_table_selected_pseudotickers(
             downloaded if not selected by the user (i.e., if not in selected_tickers).
         """
 
-        # must somehow add id_tk_map for pseudotickers to translate selected rows to pseudoticker names
+        tk_num = '' if tk_num is None else tk_num
+        tk_den = '' if tk_den is None else tk_den
 
         # print(f'FUNCTION START\n\tselected_pseudoticker_info = {selected_pseudoticker_info}')
         pseudo_tk = tk_num + '_' + tk_den
@@ -451,6 +452,8 @@ def display_table_selected_pseudotickers(
                     # Tickers must not be mutually inverse fx rates for the same currency
                     selected_pseudoticker_info[pseudo_tk] = {}  # NOTE: A nested dictionary must be declared
                     idx = len(selected_pseudoticker_info)
+                    selected_pseudoticker_info[pseudo_tk]['tk_num'] = tk_num
+                    selected_pseudoticker_info[pseudo_tk]['tk_den'] = tk_den
                     selected_pseudoticker_info[pseudo_tk]['cur_num'] = cur_num
                     selected_pseudoticker_info[pseudo_tk]['cur_den'] = cur_den
                     selected_pseudoticker_info[pseudo_tk]['name'] = pseudo_tk_name
@@ -483,9 +486,6 @@ def display_table_selected_pseudotickers(
     """
     ##############################################################################################################################
                 
-    tk_num = '' if tk_num is None else tk_num
-    tk_den = '' if tk_den is None else tk_den
-
     if tk_num.endswith('USD=X'):
         # The numerator is the price of another currency in USD, e.g. JPYUSD=X
 
@@ -647,7 +647,7 @@ def display_table_selected_pseudotickers(
                     pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} price in {cur_num} to {tk_den} (the exchange rate between {cur_den} and USD), '
                     pseudo_tk_summary += f'both converted to a common currency. This is the {price_or_value_num} of {tk_num} {converted_to_in} {cur_den}.'
                     pseudo_tk_currency = cur_den
-                    required_fx_tickers = [f'{cur_den}USD=X']
+                    required_fx_tickers = [f'USD{cur_num}=X']  # BMW.DE / USDEUR=X will be the price of BMW.DE in USD
                     add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
 
         ####################
@@ -731,7 +731,7 @@ def display_table_selected_pseudotickers(
                     if n_click_create:
                         pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} {price_or_value_num}s to {tk_den} {price_or_value_den}s, converted to a common currency (USD).'
                         pseudo_tk_currency = ''
-                        required_fx_tickers = [f'{cur_den}USD=X']
+                        required_fx_tickers = [f'{cur_num}USD=X']
                         add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
                 else:
                     # For example, BMW.DE/^N225 or ^GDAXI/7201.T
