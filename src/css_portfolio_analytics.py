@@ -675,6 +675,7 @@ table_selected_tickers_footnote = {
 }
 selected_pseudotickers_table_data_css = {
     'width': '305px',
+    'margin-bottom': '5px',
     'font-family': 'Helvetica',
     'font-size' : '14px',
     'background': 'white',
@@ -765,6 +766,23 @@ not_added_to_plot_indicator_css = {
     'background-color': 'white'
 }
 
+# validate_pseudoticker_button_css = {
+#     'width': '305px',
+#     'display': 'block',
+#     'height': '32px',
+#     'border-radius': '5px',
+#     'margin-top': '5px',
+#     'margin-right': '5px',
+#     'margin-bottom': '0px',
+#     'margin-left': '0px',
+#     'padding-left': '5px',
+#     'padding-right': '5px',
+#     'vertical-align': 'top',
+#     'text-align': 'center',
+#     'font-family': 'Helvetica',
+#     'font-size': '14px',
+#     'font-weight': 'bold',
+# }
 create_pseudoticker_button_css = {
     'width': '305px',
     'display': 'block',
@@ -772,7 +790,7 @@ create_pseudoticker_button_css = {
     'border-radius': '5px',
     'margin-top': '5px',
     'margin-right': '5px',
-    'margin-bottom': '5px',
+    'margin-bottom': '0px',
     'margin-left': '0px',
     'padding-left': '5px',
     'padding-right': '5px',
@@ -804,7 +822,7 @@ what_are_pseudotickers_css = {
     'margin-left': '5px',
     'margin-right': '5px',
     'padding': '5px 5px 5px 5px',
-    'border': 'solid 1px rgb(150, 200, 240)',
+    'border': 'solid 1px rgb(140, 200, 240)',
     'border-top': '0px',
     'border-radius': '5px'
 }

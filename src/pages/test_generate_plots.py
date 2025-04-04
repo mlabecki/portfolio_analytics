@@ -72,13 +72,13 @@ and the lowest price over the lookback period used in the Average True Rate calc
 
 }
 
-pseudoticker_text_1 = """<DIV>A pseudoticker is a construct that can be thought of as a quotient of two tickers, its
-value being the ratio of two prices, FX rates, or indices. Here are some examples where this could be useful:</DIV>"""
+pseudoticker_text_1 = """<DIV>A pseudoticker is a construct that can be thought of as a ratio of two tickers, its
+value being the quotient of two prices, FX rates, or indices. Here are some examples where this could be useful:</DIV>"""
 
-pseudoticker_text_2 = """<DIV>After selecting Numerator Ticker and Denominator Ticker below, click the yellow <B>VALIDATE PSEUDOTICKER</B> button.
-A popover message will inform you that your pseudoticker is either valid (green) or invalid (red) 
-(click the button again if the message disappears). If it is valid, you will be able to click the green <B>CREATE PSEUDOTICKER</B> button
-and your pseudoticker will be added to a selectable list below.
+pseudoticker_text_2 = """<DIV>Select Numerator Ticker and Denominator Ticker below, then click the yellow <B>VALIDATE PSEUDOTICKER</B> button. 
+A green popover message means that your pseudoticker is valid and a red one means it is not
+(click the button again if the message disappears). If it is valid, you can now click the green <B>CREATE PSEUDOTICKER</B> button
+and your pseudoticker will be added to a selectable list below (you can always unselect it if you do not wish it plotted).
 The selected pseudotickers will enjoy access to all plot types and features, except volume.</DIV>"""
 
 # selected_tickers = list(selected_ticker_names.keys())
@@ -1105,9 +1105,9 @@ layout = html.Div([
                                                         html.Ul(
                                                             id = 'pseudoticker-text-unordered-list',
                                                             children = [
-                                                                html.Li('to calculate the exchange rate between two non-USD currencies;'),
-                                                                html.Li('to convert foreign currency asset prices to USD or vice versa;'),
-                                                                html.Li('to compare the relative performance of similar asset types (making sure they are expressed in a common currency).')
+                                                                html.Li('calculate the exchange rate between two non-USD currencies;'),
+                                                                html.Li('convert foreign currency asset prices to USD or vice versa;'),
+                                                                html.Li('compare the relative performance of similar asset types (making sure they are expressed in a common currency).')
                                                             ],
                                                             style = {
                                                                 'list-style-type': 'disc',
@@ -1238,41 +1238,13 @@ layout = html.Div([
                                             style = create_pseudoticker_button_css
                                         )
                                     ),
-                                    # PSEUDOTICKERS TABLE
-                                    # html.Div(
-                                    #     id = 'select-pseudotickers-to-plot-title',
-                                    #     children= ['Select Pseudotickers To Plot'],
-                                    #     style = {
-                                    #         'display': 'block',
-                                    #         'font-size': '14px',
-                                    #         'font-weight': 'bold',
-                                    #         'vertical-align': 'top',
-                                    #         'height': '20px',
-                                    #         'margin-top': '5px',
-                                    #         'margin-bottom': '5px',
-                                    #         'margin-left': '2px'
-                                    #     }
-                                    # ),
-                                    # dbc.Popover(
-                                    #     [
-                                    #     html.Span(
-                                    #         """Pseudotickers will be plotted individually on separate graphs just like regular tickers.""",
-                                    #         style = popover_menu_collapse_button_header_css
-                                    #         )
-                                    #     ], 
-                                    #     id = 'popover-select-pseudotickers-to-plot-title',
-                                    #     target = 'select-pseudotickers-to-plot-title',
-                                    #     body = False,
-                                    #     trigger = 'hover',
-                                    #     hide_arrow = True,
-                                    #     style = popover_menu_button_css
-                                    # ),
                                     html.Div(
                                         id = 'dash-table-pseudotickers-to-plot-div',
                                         children = [initialize_table_pseudotickers()],
                                         style = {
                                             'width': '305px',
-                                            'margin-bottom': '5px'
+                                            'margin-top': '5px'
+                                            # 'margin-bottom': '0px'
                                         }
                                     ),
                                     
@@ -8694,7 +8666,7 @@ def target_deck_options(
     # Number of deck-dropdown inputs
     n = target_deck_options.__code__.co_argcount - 2
 
-    print(f'n = {n}')
+    # print(f'n = {n}')
 
     deck_changed = False if deck_changed is None else deck_changed
 
@@ -9328,6 +9300,7 @@ def toggle_collapse_cci(n, is_open):
 
     # Pseudotickers
     Output('pseudoticker-controls', 'hidden'),
+    Output('dash-table-pseudotickers-to-plot-div', 'style'),
     Output('pseudoticker-numerator-dropdown', 'options'),
     Output('pseudoticker-denominator-dropdown', 'options'),    
     Output('pseudoticker-numerator-dropdown', 'value'),
@@ -9510,6 +9483,13 @@ def toggle_collapse_cci(n, is_open):
     # Tickers inputs
     ### Input('tickers-dropdown', 'value'),
     Input('dash-table-tickers-to-plot', 'selected_rows'),
+    # Input('dash-table-pseudotickers-to-plot', 'data'),
+    # Input('dash-table-pseudotickers-to-plot', 'tooltip_data'),
+    Input('dash-table-pseudotickers-to-plot', 'selected_rows'),
+
+    Input('selected-pseudoticker-info', 'data'),
+    State('pseudoticker-numerator-dropdown', 'value'),
+    State('pseudoticker-denominator-dropdown', 'value'),
 
     Input('plots-start-date-input-dmc', 'value'),
     Input('plots-end-date-input-dmc', 'value'),
@@ -9877,9 +9857,12 @@ def update_plot(
 
         n_click_reset_axes,
 
-        # tickers
-        # must add selected_rows_pseudotickers_to_plot
+        # tickers & pseudotickers
         selected_rows_tickers_to_plot,
+        selected_rows_pseudotickers_to_plot,
+        selected_pseudoticker_info,
+        tk_num,
+        tk_den,
 
         # dates
         new_start_date,
@@ -10219,9 +10202,28 @@ def update_plot(
     expanded_selected_tickers = list(expanded_selected_tickers_names.keys())
     id_tk_map = {i: tk for i, tk in enumerate(expanded_selected_tickers)}
 
+    # NOTE: selected_pseudoticker_info includes all pseudotickers created, even if not selected for plotting
+    if len(selected_pseudoticker_info) > 0:
+        idx_pseudotk_map = {selected_pseudoticker_info[pseudotk]['idx']: pseudotk for pseudotk in selected_pseudoticker_info.keys()}
+        idx_pseudotk_name_map = {selected_pseudoticker_info[pseudotk]['idx']: selected_pseudoticker_info[pseudotk]['name'] for pseudotk in selected_pseudoticker_info.keys()}
+        pseudotk_table_div_style = {
+            'width': '305px',
+            'margin-top': '5px',
+            'margin-bottom': '5px'
+        }
+    else:
+        pseudotk_table_div_style = {
+            'width': '305px',
+            'margin-top': '5px',
+            'margin-bottom': '0px'
+        }
+
     hidden_pseudo = False if len(expanded_selected_tickers) >=2 else True
-    pseudotk_num_value = expanded_selected_tickers[0]
-    pseudotk_den_value = [tk for tk in expanded_selected_tickers[1:] if tk != (pseudotk_num_value[3:6] + pseudotk_num_value.replace(pseudotk_num_value[3:6], ''))][0] if len(expanded_selected_tickers) > 1 else pseudotk_num_value
+    
+    tk_num = expanded_selected_tickers[0] if tk_num is None else tk_num
+    tk_num_cur2 = tk_num[3:6]
+    if tk_den is None:
+        tk_den = [tk for tk in expanded_selected_tickers[1:] if tk != (tk_num_cur2 + tk_num.replace(tk_num_cur2, ''))][0] if len(expanded_selected_tickers) > 1 else tk_num
 
 
     # NOTE: start_date, end_date, new_start_date and new_end_date are all strings, converted to datetime using strptime()
@@ -10235,8 +10237,22 @@ def update_plot(
     downloaded_data = hist_data.download_yf_data(start_date, end_date, expanded_selected_tickers)
 
     # must add pseudotickers_to_plot based on selected_rows_pseudotickers_to_plot
-    tickers_to_plot = [id_tk_map[i] for i in selected_rows_tickers_to_plot] if selected_rows_tickers_to_plot != [] else [id_tk_map[0]]
+    if len(selected_rows_tickers_to_plot) > 0:
+        tickers_to_plot = [id_tk_map[i] for i in selected_rows_tickers_to_plot]
+    elif len(selected_rows_pseudotickers_to_plot) > 0:
+        # The use may want to plot pseudotickers only
+        tickers_to_plot = []
+    else:
+        tickers_to_plot = [id_tk_map[0]]
 
+    if len(selected_rows_pseudotickers_to_plot) > 0:
+        pseudotickers_to_plot = [idx_pseudotk_map[i] for i in selected_rows_pseudotickers_to_plot]
+        print('PSEUDOTICKERS TO PLOT')
+    else:
+        pseudotickers_to_plot = []
+    
+    print(pseudotickers_to_plot)
+    
     # tk = tickers_to_plot[0]
     # date_index = downloaded_data[tk_0]['ohlc'][min_start_date: max_end_date].index
 
@@ -11505,10 +11521,11 @@ def update_plot(
         fig_divs,
         
         hidden_pseudo,
+        pseudotk_table_div_style,
         expanded_selected_tickers,
         expanded_selected_tickers,
-        pseudotk_num_value,
-        pseudotk_den_value,
+        tk_num,
+        tk_den,
 
         add_hist_price,  # update
         add_candlestick,
