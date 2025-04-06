@@ -416,7 +416,8 @@ def display_table_selected_pseudotickers(
         pseudo_tk_name,
         pseudo_tk_summary,
         pseudo_tk_currency,
-        required_fx_tickers
+        required_fx_tk_num,
+        required_fx_tk_den
     ):
         """
         cur_num:
@@ -440,9 +441,11 @@ def display_table_selected_pseudotickers(
 
         tk_num = '' if tk_num is None else tk_num
         tk_den = '' if tk_den is None else tk_den
+        required_fx_tk_num = '' if required_fx_tk_num is None else required_fx_tk_num
+        required_fx_tk_den = '' if required_fx_tk_den is None else required_fx_tk_den
 
         # print(f'FUNCTION START\n\tselected_pseudoticker_info = {selected_pseudoticker_info}')
-        pseudo_tk = tk_num + '_' + tk_den
+        pseudo_tk = 'ptk_' + tk_num + '_' + tk_den  # The prefix will help distinguish pseudotickers from regular tickers later
         if pseudo_tk not in selected_pseudoticker_info.keys():
             if tk_num != tk_den:
                 # Tickers must be different
@@ -459,7 +462,8 @@ def display_table_selected_pseudotickers(
                     selected_pseudoticker_info[pseudo_tk]['name'] = pseudo_tk_name
                     selected_pseudoticker_info[pseudo_tk]['summary'] = pseudo_tk_summary
                     selected_pseudoticker_info[pseudo_tk]['currency'] = pseudo_tk_currency            
-                    selected_pseudoticker_info[pseudo_tk]['required_fx_tickers'] = required_fx_tickers
+                    selected_pseudoticker_info[pseudo_tk]['required_fx_tk_num'] = required_fx_tk_num
+                    selected_pseudoticker_info[pseudo_tk]['required_fx_tk_den'] = required_fx_tk_den
                     selected_pseudoticker_info[pseudo_tk]['idx'] = idx - 1
         
                     table_pseudoticker_data.append({'Pseudoticker': pseudo_tk_name})
@@ -473,6 +477,10 @@ def display_table_selected_pseudotickers(
 
     pseudo_tk_name = ''
     pseudo_tk_summary = ''
+    tk_num = '' if tk_num is None else tk_num
+    tk_den = '' if tk_den is None else tk_den
+    required_fx_tk_num = ''
+    required_fx_tk_den = ''    
     create_pseudoticker_disabled = False if n_click_create else True
     popover_hidden = False if n_click_validate else True
     popover_is_open = True if n_click_validate else False
@@ -508,8 +516,7 @@ def display_table_selected_pseudotickers(
             if n_click_create:
                 pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The exchange rate between {cur_num} and {cur_den}, or the price of {cur_num} in {cur_den}.'
                 pseudo_tk_currency = cur_den
-                required_fx_tickers = []
-                add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
+                add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tk_num, required_fx_tk_den)
 
         elif tk_den.startswith('USD') & tk_den.endswith('=X'):
             # Example [Incorrect]: JPYUSD=X/USDEUR=X (need to invert either Numerator or Denominator)
@@ -567,8 +574,7 @@ def display_table_selected_pseudotickers(
             if n_click_create:
                 pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The exchange rate between {cur_den} and {cur_num}, or the price of {cur_den} in {cur_num}.'
                 pseudo_tk_currency = cur_num
-                required_fx_tickers = []
-                add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
+                add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tk_num, required_fx_tk_den)
 
         elif tk_den.endswith('USD=X'):
             # # Example [Incorrect]: USDJPY=X/EURUSD=X (need to invert either Numerator or Denominator)
@@ -624,11 +630,10 @@ def display_table_selected_pseudotickers(
                     message_popover_validate_pseudoticker += f' You can proceed by clicking the CREATE PSEUDOTICKER button.'
                     create_pseudoticker_disabled = False
                 if n_click_create:
-                    pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} price in USD to {tk_den} (the exchange rate between {cur_den} and USD). '
+                    pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} {price_or_value_num} in USD to {tk_den} (the exchange rate between {cur_den} and USD). '
                     pseudo_tk_summary += f'This is the {price_or_value_num} of {tk_num} {converted_to_in} {cur_den}.'
                     pseudo_tk_currency = cur_den
-                    required_fx_tickers = []
-                    add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
+                    add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tk_num, required_fx_tk_den)
             elif cur_num == cur_den:
                 if n_click_validate:
                     # For example, 7201.T (Nissan) and (incorrect) JPYUSD=X. The correct fx ticker for conversion from JPY to USD is USDJPY=X.
@@ -644,11 +649,11 @@ def display_table_selected_pseudotickers(
                     message_popover_validate_pseudoticker += f' If you want to convert {tk_num} to USD, use USD{cur_num}=X as Denominator.'
                     create_pseudoticker_disabled = False
                 if n_click_create:
-                    pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} price in {cur_num} to {tk_den} (the exchange rate between {cur_den} and USD), '
+                    pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} {price_or_value_num} in {cur_num} to {tk_den} (the exchange rate between {cur_den} and USD), '
                     pseudo_tk_summary += f'both converted to a common currency. This is the {price_or_value_num} of {tk_num} {converted_to_in} {cur_den}.'
                     pseudo_tk_currency = cur_den
-                    required_fx_tickers = [f'USD{cur_num}=X']  # BMW.DE / USDEUR=X will be the price of BMW.DE in USD
-                    add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
+                    required_fx_tk_num = f'{cur_num}USD=X'  # BMW.DE * EURUSD=X will be the price of BMW.DE in USD
+                    add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tk_num, required_fx_tk_den)
 
         ####################
 
@@ -669,11 +674,10 @@ def display_table_selected_pseudotickers(
                     message_popover_validate_pseudoticker += f' You can proceed by clicking the CREATE PSEUDOTICKER button.'
                     create_pseudoticker_disabled = False
                 if n_click_create:
-                    pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} price in {cur_den} to {tk_den} (the exchange rate between USD and {cur_den}).'
+                    pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} {price_or_value_num} in {cur_den} to {tk_den} (the exchange rate between USD and {cur_den}).'
                     pseudo_tk_summary += f' This is the {price_or_value_num} of {tk_num} {converted_to_in} USD.'
                     pseudo_tk_currency = 'USD'
-                    required_fx_tickers = []
-                    add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
+                    add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tk_num, required_fx_tk_den)
             else:
                 # For example, BMW.DE (currency: EUR) and USDJPY=X.
                 if n_click_validate:
@@ -707,10 +711,9 @@ def display_table_selected_pseudotickers(
                     if n_click_create:
                         pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} {price_or_value_num}s to {tk_den} {price_or_value_den}s.'
                         pseudo_tk_currency = ''
-                        required_fx_tickers = []
-                        add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
+                        add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency,required_fx_tk_num, required_fx_tk_den)
                 elif cur_num == 'USD':
-                    # For example, ^GSPC/BMW.DE or AAPL/^N225
+                    # For example, ^GSPC/BMW.DE or AMZN/^N225
                     if n_click_validate:
                         popover_pseudoticker_style = popover_pseudoticker_success_style
                         message_popover_validate_pseudoticker = f'This will create pseudoticker {pseudo_tk_name}. {tk_den} will first be converted from {cur_den} to USD in order to match the currency of {tk_num}.'
@@ -719,10 +722,10 @@ def display_table_selected_pseudotickers(
                     if n_click_create:
                         pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} {price_or_value_num}s to {tk_den} {price_or_value_den}s, converted to a common currency (USD).'
                         pseudo_tk_currency = ''
-                        required_fx_tickers = [f'{cur_den}USD=X']
-                        add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
+                        required_fx_tk_den = f'{cur_den}USD=X'  # ^N225 * JPYUSD=X will be the value of ^N225 converted to USD
+                        add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tk_num, required_fx_tk_den)
                 elif cur_den == 'USD':
-                    # For example, BMW.DE/^GSPC or ^N225/AAPL
+                    # For example, BMW.DE/^GSPC or ^N225/AMZN
                     if n_click_validate:
                         popover_pseudoticker_style = popover_pseudoticker_success_style
                         message_popover_validate_pseudoticker = f'This will create pseudoticker {pseudo_tk_name}. {tk_num} will first be converted from {cur_num} to USD in order to match the currency of {tk_den}.'
@@ -731,8 +734,8 @@ def display_table_selected_pseudotickers(
                     if n_click_create:
                         pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} {price_or_value_num}s to {tk_den} {price_or_value_den}s, converted to a common currency (USD).'
                         pseudo_tk_currency = ''
-                        required_fx_tickers = [f'{cur_num}USD=X']
-                        add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
+                        required_fx_tk_num = f'{cur_num}USD=X'  # BMW.DE * EURUSD=X will be the price of BMW.DE in USD
+                        add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tk_num, required_fx_tk_den)
                 else:
                     # For example, BMW.DE/^N225 or ^GDAXI/7201.T
                     if n_click_validate:
@@ -743,8 +746,9 @@ def display_table_selected_pseudotickers(
                     if n_click_create:
                         pseudo_tk_summary = f'Pseudoticker {pseudo_tk_name}: The ratio of {tk_num} {price_or_value_num}s to {tk_den} {price_or_value_den}s, converted to a common currency.'
                         pseudo_tk_currency = ''
-                        required_fx_tickers = [f'{cur_num}USD=X', f'{cur_den}USD=X']
-                        add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tickers)
+                        required_fx_tk_num = f'{cur_num}USD=X'  # BMW.DE * EURUSD=X will be the price of BMW.DE in USD
+                        required_fx_tk_den = f'{cur_den}USD=X'  # ^N225 * JPYUSD=X will be the value of ^N225 converted to USD
+                        add_pseudoticker_info(tk_num, tk_den, cur_num, cur_den, pseudo_tk_name, pseudo_tk_summary, pseudo_tk_currency, required_fx_tk_num, required_fx_tk_den)
 
     ########################
 
@@ -1240,11 +1244,12 @@ layout = html.Div([
                                     ),
                                     html.Div(
                                         id = 'dash-table-pseudotickers-to-plot-div',
+                                        hidden = True,
                                         children = [initialize_table_pseudotickers()],
                                         style = {
                                             'width': '305px',
-                                            'margin-top': '5px'
-                                            # 'margin-bottom': '0px'
+                                            # 'margin-top': '5px'
+                                            'margin-bottom': '5px'
                                         }
                                     ),
                                     
@@ -9300,7 +9305,7 @@ def toggle_collapse_cci(n, is_open):
 
     # Pseudotickers
     Output('pseudoticker-controls', 'hidden'),
-    Output('dash-table-pseudotickers-to-plot-div', 'style'),
+    Output('dash-table-pseudotickers-to-plot-div', 'hidden'),
     Output('pseudoticker-numerator-dropdown', 'options'),
     Output('pseudoticker-denominator-dropdown', 'options'),    
     Output('pseudoticker-numerator-dropdown', 'value'),
@@ -10206,17 +10211,9 @@ def update_plot(
     if len(selected_pseudoticker_info) > 0:
         idx_pseudotk_map = {selected_pseudoticker_info[pseudotk]['idx']: pseudotk for pseudotk in selected_pseudoticker_info.keys()}
         idx_pseudotk_name_map = {selected_pseudoticker_info[pseudotk]['idx']: selected_pseudoticker_info[pseudotk]['name'] for pseudotk in selected_pseudoticker_info.keys()}
-        pseudotk_table_div_style = {
-            'width': '305px',
-            'margin-top': '5px',
-            'margin-bottom': '5px'
-        }
+        pseudotk_table_div_hidden = False
     else:
-        pseudotk_table_div_style = {
-            'width': '305px',
-            'margin-top': '5px',
-            'margin-bottom': '0px'
-        }
+        pseudotk_table_div_hidden = True
 
     hidden_pseudo = False if len(expanded_selected_tickers) >=2 else True
     
@@ -10234,8 +10231,6 @@ def update_plot(
     start_date_value = start_date if new_start_date is None else new_start_date
     end_date_value = end_date if new_end_date is None else new_end_date
 
-    downloaded_data = hist_data.download_yf_data(start_date, end_date, expanded_selected_tickers)
-
     # must add pseudotickers_to_plot based on selected_rows_pseudotickers_to_plot
     if len(selected_rows_tickers_to_plot) > 0:
         tickers_to_plot = [id_tk_map[i] for i in selected_rows_tickers_to_plot]
@@ -10252,7 +10247,34 @@ def update_plot(
         pseudotickers_to_plot = []
     
     print(pseudotickers_to_plot)
-    
+
+    # Download historical data for regular tickers (pseudoticker numerator and denominator tickers among them)
+    downloaded_data = hist_data.download_yf_data(start_date, end_date, expanded_selected_tickers)
+    print('DOWNLOADED DATA without pseudoticker fx')
+    print(downloaded_data.keys())
+
+    # Download required fx conversion data for pseudotickers
+    for pseudo_tk in selected_pseudoticker_info.keys():
+        required_fx_tk_num = selected_pseudoticker_info[pseudo_tk]['required_fx_tk_num']
+        required_fx_tk_den = selected_pseudoticker_info[pseudo_tk]['required_fx_tk_den']
+        # Does the numerator ticker need to be converted?
+        if required_fx_tk_num != '':
+            # Is the numerator fx conversion ticker already downloaded?
+            if required_fx_tk_num not in expanded_selected_tickers:
+                # Append required_fx_tk_num to downloaded data, so all tickers are in the same dataframe
+                downloaded_data.update(hist_data.download_yf_data(start_date, end_date, [required_fx_tk_num]))
+        # Does the denominator ticker need to be converted?
+        if required_fx_tk_den != '':
+            # Is the denominator fx conversion ticker already downloaded?
+            if required_fx_tk_den not in expanded_selected_tickers:
+                # Append required_fx_tk_den to downloaded data, so all tickers are in the same dataframe
+                downloaded_data.update(hist_data.download_yf_data(start_date, end_date, [required_fx_tk_den]))
+
+    ##### MUST REPEAT TESTS FOR COMMON DATES - INDEX MAY DIFFER FOR TICKERS FROM DIFFERENT COUNTRIES
+
+    print('DOWNLOADED DATA with pseudoticker fx added')
+    print(downloaded_data.keys())
+
     # tk = tickers_to_plot[0]
     # date_index = downloaded_data[tk_0]['ohlc'][min_start_date: max_end_date].index
 
@@ -10422,22 +10444,30 @@ def update_plot(
 
     top_drawdowns = {}
 
-    for tk in tickers_to_plot:
+    # for tk in tickers_to_plot:
+    for tk in tickers_to_plot + pseudotickers_to_plot:        
 
-        # date_index = downloaded_data[tk]['ohlc'].index
-        # new_start_date = '2024-06-01'
-        # new_end_date = '2024-12-31'
-        # min_date = datetime.strptime(new_start_date, '%Y-%m-%d').date()
-        # max_date = datetime.strptime(new_end_date, '%Y-%m-%d').date()
+        # Pseudotickers have the 'ptk_' prefix
 
-        ## if (new_start_date is None) | (new_end_date is None):
-        ##     min_date = min_start_date
-        ##     max_date = max_end_date
-        ## else:
         min_date = datetime.strptime(new_start_date, '%Y-%m-%d').date() if new_start_date is not None else datetime.strptime(start_date, '%Y-%m-%d').date()
         max_date = datetime.strptime(new_end_date, '%Y-%m-%d').date() if new_end_date is not None else datetime.strptime(end_date, '%Y-%m-%d').date()
 
-        date_index = downloaded_data[tk]['ohlc'][min_date: max_date].index
+        if tk.startswith('ptk_'):
+            ticker = selected_pseudoticker_info[tk]['tk_num']
+        else: 
+            ticker = tk
+        date_index = downloaded_data[ticker]['ohlc'][min_date: max_date].index
+
+        ### Something like this is probably needed for all tickers, not just pseudotickers,
+        ### to make sure that every common date is populated on each ticker/pseudoticker plot:
+        ###     sorted(set(bmw.index) & set(nis.index))
+        ### The above converts an intersection of two index sets to a sorted list.
+        ###
+        ### On the other hand, pseudotickers (except for non-USD exchange rate tickers like CADEUR=X)
+        ### cannot be traded, so they shouldn't be a portfolio component. They just serve some
+        ### purpose in the technical analysis.
+        ### But then it is the same with indices.
+
         fig_data = analyze_prices.create_template(
             date_index,
             deck_type = deck_type,
@@ -10468,14 +10498,43 @@ def update_plot(
         if add_hist_price:
             
             hist_price_color_theme = hist_price_color_theme.lower() if hist_price_color_theme is not None else 'base'
-            df_hist_price = downloaded_data[tk]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[tk]['ohlc']
-            hist_price = df_hist_price[hist_price_type]
             price_type = 'Adjusted ' + hist_price_type if boolean(hist_price_adjusted) else hist_price_type
+
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                tk_num = selected_pseudoticker_info[tk]['tk_num']
+                tk_den = selected_pseudoticker_info[tk]['tk_den']
+                required_fx_tk_num = selected_pseudoticker_info[tk]['required_fx_tk_num']
+                required_fx_tk_den = selected_pseudoticker_info[tk]['required_fx_tk_den']
+                df_hist_price_tk_num = downloaded_data[tk_num]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[tk_num]['ohlc']
+                df_hist_price_tk_den = downloaded_data[tk_den]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[tk_den]['ohlc']
+                hist_price_tk_num = df_hist_price_tk_num[hist_price_type]
+                hist_price_tk_den = df_hist_price_tk_den[hist_price_type]
+                # Does the numerator ticker need to be converted?
+                if required_fx_tk_num != '':
+                    df_hist_price_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']
+                    # Extract a single price type data column as a pd.Series
+                    hist_price_required_fx_tk_num = df_hist_price_required_fx_tk_num[hist_price_type]
+                    hist_price_tk_num *= hist_price_required_fx_tk_num
+                # Does the denominator ticker need to be converted?
+                if required_fx_tk_den != '':
+                    df_hist_price_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']                        
+                    # Extract a single price type data column as a pd.Series
+                    hist_price_required_fx_tk_den = df_hist_price_required_fx_tk_den[hist_price_type]
+                    hist_price_tk_den *= hist_price_required_fx_tk_den
+
+                hist_price = hist_price_tk_num / hist_price_tk_den
+                ticker = selected_pseudoticker_info[tk]['name']
+            # A regular ticker
+            else:
+                df_hist_price = downloaded_data[tk]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[tk]['ohlc']
+                hist_price = df_hist_price[hist_price_type]
+                ticker = tk
 
             fig_data = analyze_prices.add_hist_price(
                 fig_data,
                 hist_price[min_date: max_date],
-                tk,
+                ticker,
                 target_deck = deck_number(deck_type, hist_price_deck_name),
                 secondary_y = boolean(hist_price_secondary_y),
                 plot_type = 'bar' if hist_price_plot_type == 'Histogram' else 'scatter',
@@ -11521,7 +11580,7 @@ def update_plot(
         fig_divs,
         
         hidden_pseudo,
-        pseudotk_table_div_style,
+        pseudotk_table_div_hidden,
         expanded_selected_tickers,
         expanded_selected_tickers,
         tk_num,
