@@ -79,7 +79,7 @@ pseudoticker_text_2 = """<DIV>Select Numerator Ticker and Denominator Ticker bel
 A green popover message means that your pseudoticker is valid and a red one means it is not
 (click the button again if the message disappears). If it is valid, you can now click the green <B>CREATE PSEUDOTICKER</B> button
 and your pseudoticker will be added to a selectable list below (you can always unselect it if you do not wish it plotted).
-The selected pseudotickers will enjoy access to all plot types and features, except volume.</DIV>"""
+The pseudotickers you have created will enjoy access to the same plot types and features as do the regular tickers in your portfolio.</DIV>"""
 
 # selected_tickers = list(selected_ticker_names.keys())
 # first_tk = selected_tickers[0]
@@ -444,7 +444,6 @@ def display_table_selected_pseudotickers(
         required_fx_tk_num = '' if required_fx_tk_num is None else required_fx_tk_num
         required_fx_tk_den = '' if required_fx_tk_den is None else required_fx_tk_den
 
-        # print(f'FUNCTION START\n\tselected_pseudoticker_info = {selected_pseudoticker_info}')
         pseudo_tk = 'ptk_' + tk_num + '_' + tk_den  # The prefix will help distinguish pseudotickers from regular tickers later
         if pseudo_tk not in selected_pseudoticker_info.keys():
             if tk_num != tk_den:
@@ -484,8 +483,6 @@ def display_table_selected_pseudotickers(
     create_pseudoticker_disabled = False if n_click_create else True
     popover_hidden = False if n_click_validate else True
     popover_is_open = True if n_click_validate else False
-    
-    # ctx = dash.callback_context
 
     ##############################################################################################################################
     """
@@ -544,7 +541,6 @@ def display_table_selected_pseudotickers(
                     message_popover_validate_pseudoticker = f'This is invalid. If you want to convert {tk_den} from {cur_den} to USD, use {tk_den} as Numerator and USD{cur_den}=X as Denominator.'
             else:
                 # Example: JPYUSD=X/BMW.DE or JPYUSD=X/^GDAXI (currency: EUR)
-                # [NEW] Suggest using BMW.DE/EURUSD=X for conversion to USD, or BMW.DE/JPYUSD=X for conversion to JPY (BMW.DE is first converted to USD, then to JPY).
                 if n_click_validate:
                     message_popover_validate_pseudoticker = f'This is invalid. If you want to convert {tk_den} from {cur_den} to USD, use {tk_den} as Numerator and USD{cur_den} as Denominator.'
                     message_popover_validate_pseudoticker += f' If you want to convert {tk_den} from {cur_den} to {cur_num}, use {tk_den} as Numerator and {cur_num}USD=X as Denominator.'
@@ -602,7 +598,6 @@ def display_table_selected_pseudotickers(
                     message_popover_validate_pseudoticker = f'This is invalid. If you want to convert {tk_den} from {cur_den} to USD, use {tk_den} as Numerator and {tk_num} as Denominator.'
             else:
                 # Example: USDJPY=X/BMW.DE or USDJPU=X/^GDAXI (currency: EUR)
-                # [NEW] Suggest using BMW.DE/EURUSD=X for conversion to USD, or BMW.DE/JPYUSD=X for conversion to JPY (BMW.DE is first converted to USD, then to JPY).
                 if n_click_validate:
                     message_popover_validate_pseudoticker = f'This is invalid. The currency of {tk_den} is {cur_den}. If you want to convert {tk_den} from {cur_den} to USD, use {tk_den} as Numerator and USD{cur_den}=X as Denominator.'
                     message_popover_validate_pseudoticker += f' If you want to convert {tk_den} from {cur_den} to {cur_num}, use {tk_den} as Numerator and {cur_num}USD=X as Denominator.'
@@ -755,7 +750,7 @@ def display_table_selected_pseudotickers(
     # if (pseudo_tk_name != '') & n_click_create:
     if (pseudo_tk_name != '') & (not create_pseudoticker_disabled):
                     
-        selected_pseudotickers = list(selected_pseudoticker_info.keys())  # NOTE: Each pseudoticker is a string f'{tk_num}_{tk_den}'
+        selected_pseudotickers = list(selected_pseudoticker_info.keys())  # NOTE: Each pseudoticker is a string f'ptk_{tk_num}_{tk_den}'
         print(f'selected_pseudotickers = {selected_pseudotickers}')
         selected_pseudoticker_indices = [selected_pseudoticker_info[pseudo_tk]['idx'] for pseudo_tk in selected_pseudotickers]
         table_pseudoticker_selected_rows = [int(idx) for idx in selected_pseudoticker_indices]
@@ -767,16 +762,9 @@ def display_table_selected_pseudotickers(
         print(f'table_pseudoticker_selected_rows = {table_pseudoticker_selected_rows}')
         print(f'selected_pseudoticker_info = {selected_pseudoticker_info}')
  
-
-    # print(f'popover message:\n\t{message_popover_validate_pseudoticker}')
-    # print(f'popover_hidden = {popover_hidden}')
-    # print(f'n_click_create = {n_click_create}')
-    # print(f'n_click_validate = {n_click_validate}')
-
     if n_click_validate:
         popover_hidden = False
         popover_is_open = True
-        # popover_is_open = False if n_click_create else True
 
     if n_click_create:
         n_click_create = 0
@@ -785,10 +773,6 @@ def display_table_selected_pseudotickers(
         popover_hidden = True
         popover_is_open = False
         create_pseudoticker_disabled = True
-
-    # print(f'popover_hidden = {popover_hidden}')
-    # print(f'n_click_create = {n_click_create}')
-    # print(f'n_click_validate = {n_click_validate}')
 
     ########################
 
@@ -1188,7 +1172,8 @@ layout = html.Div([
                                         ],
                                         style = {
                                             'width': '305px',
-                                            'margin-left': '0px'
+                                            'margin-left': '0px',
+                                            'margin-top': '2px'
                                         }
                                     ),
                                     # VALIDATE PSEUDOTICKER
@@ -9308,8 +9293,8 @@ def toggle_collapse_cci(n, is_open):
     Output('dash-table-pseudotickers-to-plot-div', 'hidden'),
     Output('pseudoticker-numerator-dropdown', 'options'),
     Output('pseudoticker-denominator-dropdown', 'options'),    
-    Output('pseudoticker-numerator-dropdown', 'value'),
-    Output('pseudoticker-denominator-dropdown', 'value'),
+    # Output('pseudoticker-numerator-dropdown', 'value'),
+    # Output('pseudoticker-denominator-dropdown', 'value'),
 
     # Add To Plot buttons
     Output('add-hist-price-button', 'n_clicks'),
@@ -9485,16 +9470,10 @@ def toggle_collapse_cci(n, is_open):
     
     Input({'index': ALL, 'type': 'reset-axes'}, 'n_clicks'),
 
-    # Tickers inputs
-    ### Input('tickers-dropdown', 'value'),
+    # Tickers & Pseudotickers inputs
     Input('dash-table-tickers-to-plot', 'selected_rows'),
-    # Input('dash-table-pseudotickers-to-plot', 'data'),
-    # Input('dash-table-pseudotickers-to-plot', 'tooltip_data'),
     Input('dash-table-pseudotickers-to-plot', 'selected_rows'),
-
     Input('selected-pseudoticker-info', 'data'),
-    State('pseudoticker-numerator-dropdown', 'value'),
-    State('pseudoticker-denominator-dropdown', 'value'),
 
     Input('plots-start-date-input-dmc', 'value'),
     Input('plots-end-date-input-dmc', 'value'),
@@ -9866,8 +9845,6 @@ def update_plot(
         selected_rows_tickers_to_plot,
         selected_rows_pseudotickers_to_plot,
         selected_pseudoticker_info,
-        tk_num,
-        tk_den,
 
         # dates
         new_start_date,
@@ -10212,16 +10189,26 @@ def update_plot(
         idx_pseudotk_map = {selected_pseudoticker_info[pseudotk]['idx']: pseudotk for pseudotk in selected_pseudoticker_info.keys()}
         idx_pseudotk_name_map = {selected_pseudoticker_info[pseudotk]['idx']: selected_pseudoticker_info[pseudotk]['name'] for pseudotk in selected_pseudoticker_info.keys()}
         pseudotk_table_div_hidden = False
+        print(f'idx_pseudotk_map:\n{idx_pseudotk_map}')
+        print(f'selected_rows_pseudotickers_to_plot:\n{selected_rows_pseudotickers_to_plot}')
     else:
         pseudotk_table_div_hidden = True
 
     hidden_pseudo = False if len(expanded_selected_tickers) >=2 else True
     
-    tk_num = expanded_selected_tickers[0] if tk_num is None else tk_num
-    tk_num_cur2 = tk_num[3:6]
-    if tk_den is None:
-        tk_den = [tk for tk in expanded_selected_tickers[1:] if tk != (tk_num_cur2 + tk_num.replace(tk_num_cur2, ''))][0] if len(expanded_selected_tickers) > 1 else tk_num
-
+    # if tk_num is None:
+    #     tk_num = expanded_selected_tickers[0]
+    #     tk_num_cur2 = tk_num[3:6]
+    # if tk_den is None:
+    #     tk_den = [tk for tk in expanded_selected_tickers[1:] if tk != (tk_num_cur2 + tk_num.replace(tk_num_cur2, ''))][0] if len(expanded_selected_tickers) > 1 else tk_num
+    # print('UPDATE PLOT')
+    # print(f'tk_num: {tk_num}')
+    # print(f'tk_den: {tk_den}')
+    
+    # tk_num = expanded_selected_tickers[0] if tk_num is None else tk_num
+    # tk_num_cur2 = tk_num[3:6]
+    # if tk_den is None:
+    #     tk_den = [tk for tk in expanded_selected_tickers[1:] if tk != (tk_num_cur2 + tk_num.replace(tk_num_cur2, ''))][0] if len(expanded_selected_tickers) > 1 else tk_num
 
     # NOTE: start_date, end_date, new_start_date and new_end_date are all strings, converted to datetime using strptime()
     min_start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
@@ -10230,6 +10217,10 @@ def update_plot(
     max_end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
     start_date_value = start_date if new_start_date is None else new_start_date
     end_date_value = end_date if new_end_date is None else new_end_date
+
+    min_date = datetime.strptime(new_start_date, '%Y-%m-%d').date() if new_start_date is not None else datetime.strptime(start_date, '%Y-%m-%d').date()
+    max_date = datetime.strptime(new_end_date, '%Y-%m-%d').date() if new_end_date is not None else datetime.strptime(end_date, '%Y-%m-%d').date()
+
 
     # must add pseudotickers_to_plot based on selected_rows_pseudotickers_to_plot
     if len(selected_rows_tickers_to_plot) > 0:
@@ -10242,41 +10233,80 @@ def update_plot(
 
     if len(selected_rows_pseudotickers_to_plot) > 0:
         pseudotickers_to_plot = [idx_pseudotk_map[i] for i in selected_rows_pseudotickers_to_plot]
-        print('PSEUDOTICKERS TO PLOT')
+        # print('PSEUDOTICKERS TO PLOT')
     else:
         pseudotickers_to_plot = []
     
     print(pseudotickers_to_plot)
 
+    # A dictionary holding date indices for all tickers
+    tk_date_index = {}
+
     # Download historical data for regular tickers (pseudoticker numerator and denominator tickers among them)
     downloaded_data = hist_data.download_yf_data(start_date, end_date, expanded_selected_tickers)
-    print('DOWNLOADED DATA without pseudoticker fx')
-    print(downloaded_data.keys())
+    # print('DOWNLOADED DATA without pseudoticker fx')
+    # print(downloaded_data.keys())
+
+    for tk in expanded_selected_tickers:
+        tk_date_index.update({tk: downloaded_data[tk]['ohlc'][min_date: max_date].index})
 
     # Download required fx conversion data for pseudotickers
     for pseudo_tk in selected_pseudoticker_info.keys():
+
+        tk_num = selected_pseudoticker_info[pseudo_tk]['tk_num']
+        tk_den = selected_pseudoticker_info[pseudo_tk]['tk_den']
         required_fx_tk_num = selected_pseudoticker_info[pseudo_tk]['required_fx_tk_num']
         required_fx_tk_den = selected_pseudoticker_info[pseudo_tk]['required_fx_tk_den']
+        tk_num_index = downloaded_data[tk_num]['ohlc'][min_date: max_date].index
+        tk_den_index = downloaded_data[tk_den]['ohlc'][min_date: max_date].index
+
         # Does the numerator ticker need to be converted?
         if required_fx_tk_num != '':
             # Is the numerator fx conversion ticker already downloaded?
             if required_fx_tk_num not in expanded_selected_tickers:
                 # Append required_fx_tk_num to downloaded data, so all tickers are in the same dataframe
                 downloaded_data.update(hist_data.download_yf_data(start_date, end_date, [required_fx_tk_num]))
+            required_fx_tk_num_index = downloaded_data[required_fx_tk_num]['ohlc'][min_date: max_date].index
+            # Sorted intersection of two index sets, i.e. the common dates for tk_num and its fx converter
+            tk_num_date_index = sorted(set(tk_num_index) & set(required_fx_tk_num_index))
+        else:
+            tk_num_date_index = tk_num_index
+
         # Does the denominator ticker need to be converted?
         if required_fx_tk_den != '':
             # Is the denominator fx conversion ticker already downloaded?
             if required_fx_tk_den not in expanded_selected_tickers:
                 # Append required_fx_tk_den to downloaded data, so all tickers are in the same dataframe
                 downloaded_data.update(hist_data.download_yf_data(start_date, end_date, [required_fx_tk_den]))
+            required_fx_tk_den_index = downloaded_data[required_fx_tk_den]['ohlc'][min_date: max_date].index
+            # Sorted intersection of two index sets, i.e. the common dates for tk_den and its fx converter
+            tk_den_date_index = sorted(set(tk_den_index) & set(required_fx_tk_den_index))
+        else:
+            tk_den_date_index = tk_den_index
 
-    ##### MUST REPEAT TESTS FOR COMMON DATES - INDEX MAY DIFFER FOR TICKERS FROM DIFFERENT COUNTRIES
+        # Sorted intersection of two index sets, i.e. the common dates for converted tk_num and converted tk_den
+        pseudo_tk_date_index = sorted(set(tk_num_date_index) & set(tk_den_date_index))
+        tk_date_index.update({pseudo_tk: pseudo_tk_date_index})
 
-    print('DOWNLOADED DATA with pseudoticker fx added')
-    print(downloaded_data.keys())
+    ### Something like this is probably needed for all tickers, not just pseudotickers,
+    ### to make sure that every common date is populated on each ticker/pseudoticker plot:
+    ###     sorted(set(bmw.index) & set(nis.index))
+    ### The above converts an intersection of two index sets to a sorted list.
+    ###
+    ### On the other hand, pseudotickers (except for non-USD exchange rate tickers like CADEUR=X)
+    ### cannot be traded, so they shouldn't be a portfolio component. They just serve some
+    ### purpose in the technical analysis.
+    ### But then it is the same with indices.
+
+    # print('DOWNLOADED DATA with pseudoticker fx added')
+    # print(downloaded_data.keys())
 
     # tk = tickers_to_plot[0]
     # date_index = downloaded_data[tk_0]['ohlc'][min_start_date: max_end_date].index
+    
+    # date_index = downloaded_data[ticker]['ohlc'][min_date: max_date].index
+
+    #####
 
     theme = theme.lower()
     secondary_y = boolean(sec_y)
@@ -10449,24 +10479,14 @@ def update_plot(
 
         # Pseudotickers have the 'ptk_' prefix
 
-        min_date = datetime.strptime(new_start_date, '%Y-%m-%d').date() if new_start_date is not None else datetime.strptime(start_date, '%Y-%m-%d').date()
-        max_date = datetime.strptime(new_end_date, '%Y-%m-%d').date() if new_end_date is not None else datetime.strptime(end_date, '%Y-%m-%d').date()
-
         if tk.startswith('ptk_'):
-            ticker = selected_pseudoticker_info[tk]['tk_num']
-        else: 
-            ticker = tk
-        date_index = downloaded_data[ticker]['ohlc'][min_date: max_date].index
-
-        ### Something like this is probably needed for all tickers, not just pseudotickers,
-        ### to make sure that every common date is populated on each ticker/pseudoticker plot:
-        ###     sorted(set(bmw.index) & set(nis.index))
-        ### The above converts an intersection of two index sets to a sorted list.
-        ###
-        ### On the other hand, pseudotickers (except for non-USD exchange rate tickers like CADEUR=X)
-        ### cannot be traded, so they shouldn't be a portfolio component. They just serve some
-        ### purpose in the technical analysis.
-        ### But then it is the same with indices.
+            tk_num = selected_pseudoticker_info[tk]['tk_num']
+            tk_den = selected_pseudoticker_info[tk]['tk_den']
+            required_fx_tk_num = selected_pseudoticker_info[tk]['required_fx_tk_num']
+            required_fx_tk_den = selected_pseudoticker_info[tk]['required_fx_tk_den']
+  
+        # Retrieve the date index for each ticker and pseudoticker. Note that they may differ for different currencies/countries.
+        date_index = tk_date_index[tk]
 
         fig_data = analyze_prices.create_template(
             date_index,
@@ -10479,8 +10499,9 @@ def update_plot(
             theme = theme
         )
 
-        ################## PRICES TAB
+        ################################ PRICES TAB ################################
         
+        ########################
         ### Add historical price
 
         # add_hist_price = 0 if remove_hist_price else add_hist_price
@@ -10502,10 +10523,6 @@ def update_plot(
 
             # Is it a pseudoticker?
             if tk.startswith('ptk_'):
-                tk_num = selected_pseudoticker_info[tk]['tk_num']
-                tk_den = selected_pseudoticker_info[tk]['tk_den']
-                required_fx_tk_num = selected_pseudoticker_info[tk]['required_fx_tk_num']
-                required_fx_tk_den = selected_pseudoticker_info[tk]['required_fx_tk_den']
                 df_hist_price_tk_num = downloaded_data[tk_num]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[tk_num]['ohlc']
                 df_hist_price_tk_den = downloaded_data[tk_den]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[tk_den]['ohlc']
                 hist_price_tk_num = df_hist_price_tk_num[hist_price_type]
@@ -10522,15 +10539,15 @@ def update_plot(
                     # Extract a single price type data column as a pd.Series
                     hist_price_required_fx_tk_den = df_hist_price_required_fx_tk_den[hist_price_type]
                     hist_price_tk_den *= hist_price_required_fx_tk_den
-
                 hist_price = hist_price_tk_num / hist_price_tk_den
+                hist_price = hist_price.dropna()
                 ticker = selected_pseudoticker_info[tk]['name']
             # A regular ticker
             else:
                 df_hist_price = downloaded_data[tk]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[tk]['ohlc']
                 hist_price = df_hist_price[hist_price_type]
                 ticker = tk
-
+            ########
             fig_data = analyze_prices.add_hist_price(
                 fig_data,
                 hist_price[min_date: max_date],
@@ -10552,7 +10569,9 @@ def update_plot(
         #     trace_uid_to_delete = tr['uid']
         #     print(f"tr['uid']\n {tr['uid']}")
 
+        ###################
         ### Add candlestick
+
         if remove_candlestick & (fig_data is not None):
             add_candlestick = 0
             for i, tr in enumerate(fig_data['fig']['data']):
@@ -10562,12 +10581,32 @@ def update_plot(
 
         if add_candlestick:
             
-            df_ohlc = downloaded_data[tk]['ohlc_adj'] if boolean(candlestick_adjusted) else downloaded_data[tk]['ohlc']
-
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                df_ohlc_tk_num = downloaded_data[tk_num]['ohlc_adj'] if boolean(candlestick_adjusted) else downloaded_data[tk_num]['ohlc']
+                df_ohlc_tk_den = downloaded_data[tk_den]['ohlc_adj'] if boolean(candlestick_adjusted) else downloaded_data[tk_den]['ohlc']
+                # Does the numerator ticker need to be converted?
+                if required_fx_tk_num != '':
+                    df_ohlc_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj'] if boolean(candlestick_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']
+                    # Extract a single price type data column as a pd.Series
+                    df_ohlc_tk_num *= df_ohlc_required_fx_tk_num
+                # Does the denominator ticker need to be converted?
+                if required_fx_tk_den != '':
+                    df_ohlc_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj'] if boolean(candlestick_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']                        
+                    # Extract a single price type data column as a pd.Series
+                    df_ohlc_tk_den *= df_ohlc_required_fx_tk_den
+                df_ohlc = df_ohlc_tk_num / df_ohlc_tk_den
+                df_ohlc = df_ohlc.dropna()
+                ticker = selected_pseudoticker_info[tk]['name']
+            # A regular ticker
+            else:
+                df_ohlc = downloaded_data[tk]['ohlc_adj'] if boolean(candlestick_adjusted) else downloaded_data[tk]['ohlc']
+                ticker = tk
+            ########
             fig_data = analyze_prices.add_candlestick(
                 fig_data,
                 df_ohlc[min_date: max_date],
-                tk,
+                ticker,
                 candle_type = candlestick_type.lower(),
                 target_deck = deck_number(deck_type, candlestick_deck_name),
                 add_title = boolean(candlestick_add_title),
@@ -10580,7 +10619,9 @@ def update_plot(
             added_to_plot_indicator_candlestick_style = added_to_plot_indicator_css
             added_to_plot_indicator_prices_tab_style = added_to_plot_indicator_css
 
+        ######################
         ### Add price overlays
+
         if remove_price_overlays & (fig_data is not None):
             add_price_overlays = 0
             for i, tr in enumerate(fig_data['fig']['data']):
@@ -10590,20 +10631,57 @@ def update_plot(
 
         if add_price_overlays:
             price_list = []
+            ######## ohlc_adj
             for name in ['Adjusted Close', 'Adjusted Open', 'Adjusted High', 'Adjusted Low']:
                 if name in price_overlay_adj_price_list:
+                    # Is it a pseudoticker?
+                    if tk.startswith('ptk_'):
+                        hist_price_tk_num = downloaded_data[tk_num]['ohlc_adj'][name.replace('Adjusted ', '')][min_date: max_date]
+                        hist_price_tk_den = downloaded_data[tk_den]['ohlc_adj'][name.replace('Adjusted ', '')][min_date: max_date]
+                        # Does the numerator ticker need to be converted?
+                        if required_fx_tk_num != '':
+                            hist_price_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj'][name.replace('Adjusted ', '')][min_date: max_date]
+                            hist_price_tk_num *= hist_price_required_fx_tk_num
+                        # Does the denominator ticker need to be converted?
+                        if required_fx_tk_den != '':
+                            hist_price_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj'][name.replace('Adjusted ', '')][min_date: max_date]
+                            hist_price_tk_den *= hist_price_required_fx_tk_den
+                        hist_price = hist_price_tk_num / hist_price_tk_den
+                        hist_price = hist_price.dropna()
+                    # A regular ticker
+                    else:
+                        hist_price = downloaded_data[tk]['ohlc_adj'][name.replace('Adjusted ', '')][min_date: max_date]
                     price_list.append({
                         'name': name,
-                        'data': downloaded_data[tk]['ohlc_adj'][name.replace('Adjusted ', '')][min_date: max_date],
+                        'data': hist_price,
                         'show': True
                     })
+            ######## ohlc
             for name in ['Close', 'Open', 'High', 'Low']:
                 if name in price_overlay_price_list:
+                    # Is it a pseudoticker?
+                    if tk.startswith('ptk_'):
+                        hist_price_tk_num = downloaded_data[tk_num]['ohlc'][name][min_date: max_date]
+                        hist_price_tk_den = downloaded_data[tk_den]['ohlc'][name][min_date: max_date]
+                        # Does the numerator ticker need to be converted?
+                        if required_fx_tk_num != '':
+                            hist_price_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc'][name][min_date: max_date]
+                            hist_price_tk_num *= hist_price_required_fx_tk_num
+                        # Does the denominator ticker need to be converted?
+                        if required_fx_tk_den != '':
+                            hist_price_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc'][name][min_date: max_date]
+                            hist_price_tk_den *= hist_price_required_fx_tk_den
+                        hist_price = hist_price_tk_num / hist_price_tk_den
+                        hist_price = hist_price.dropna()
+                    # A regular ticker
+                    else:
+                        hist_price = downloaded_data[tk]['ohlc'][name][min_date: max_date]
                     price_list.append({
                         'name': name,
-                        'data': downloaded_data[tk]['ohlc'][name][min_date: max_date],
+                        'data': hist_price,
                         'show': True
                     })
+            ########
             if len(price_list) > 0:
                 fig_data = analyze_prices.add_price_overlays(
                     fig_data,
@@ -10617,7 +10695,9 @@ def update_plot(
             added_to_plot_indicator_price_overlays_style = added_to_plot_indicator_css
             added_to_plot_indicator_prices_tab_style = added_to_plot_indicator_css
 
+        #################
         ### Add drawdowns
+
         if remove_drawdowns & (fig_data is not None):
             add_drawdowns = 0
             for i, tr in enumerate(fig_data['fig']['data']):
@@ -10630,8 +10710,33 @@ def update_plot(
             dd_add_title = boolean(drawdowns_add_title)
             drawdowns_color = drawdowns_color.lower() if drawdowns_color is not None else 'red'
             drawdowns_price_color_theme = drawdowns_price_color_theme.lower() if drawdowns_price_color_theme is not None else 'base'
-            df_drawdowns_price = downloaded_data[tk]['ohlc_adj'] if boolean(drawdowns_adjusted) else downloaded_data[tk]['ohlc']
-            drawdowns_price = df_drawdowns_price[drawdowns_price_type][min_date: max_date]
+
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                df_drawdowns_price_tk_num = downloaded_data[tk_num]['ohlc_adj'] if boolean(drawdowns_adjusted) else downloaded_data[tk_num]['ohlc']
+                df_drawdowns_price_tk_den = downloaded_data[tk_den]['ohlc_adj'] if boolean(drawdowns_adjusted) else downloaded_data[tk_den]['ohlc']
+                drawdowns_price_tk_num = df_drawdowns_price_tk_num[drawdowns_price_type]
+                drawdowns_price_tk_den = df_drawdowns_price_tk_den[drawdowns_price_type]
+                # Does the numerator ticker need to be converted?
+                if required_fx_tk_num != '':
+                    df_drawdowns_price_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj'] if boolean(drawdowns_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']
+                    # Extract a single price type data column as a pd.Series
+                    drawdowns_price_required_fx_tk_num = df_drawdowns_price_required_fx_tk_num[drawdowns_price_type]
+                    drawdowns_price_tk_num *= drawdowns_price_required_fx_tk_num
+                # Does the denominator ticker need to be converted?
+                if required_fx_tk_den != '':
+                    df_drawdowns_price_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj'] if boolean(drawdowns_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']                        
+                    # Extract a single price type data column as a pd.Series
+                    drawdowns_price_required_fx_tk_den = df_drawdowns_price_required_fx_tk_den[drawdowns_price_type]
+                    drawdowns_price_tk_den *= drawdowns_price_required_fx_tk_den
+                drawdowns_price = drawdowns_price_tk_num / drawdowns_price_tk_den
+                drawdowns_price = drawdowns_price.dropna()
+                ticker = selected_pseudoticker_info[tk]['name']
+            # A regular ticker
+            else:
+                df_drawdowns_price = downloaded_data[tk]['ohlc_adj'] if boolean(drawdowns_adjusted) else downloaded_data[tk]['ohlc']
+                drawdowns_price = df_drawdowns_price[drawdowns_price_type][min_date: max_date]
+                ticker = tk
 
             drawdowns_data_tk = analyze_prices.summarize_tk_drawdowns(drawdowns_price, drawdowns_top_by)
             n_drawdowns = drawdowns_data_tk['Total Drawdowns']
@@ -10655,7 +10760,7 @@ def update_plot(
             fig_data = analyze_prices.add_drawdowns(
                 fig_data,
                 drawdowns_price,
-                tk,
+                ticker,
                 selected_drawdowns_data,
                 n_top_drawdowns = n_top,
                 target_deck = deck_number(deck_type, drawdowns_deck),
@@ -10673,7 +10778,7 @@ def update_plot(
             added_to_plot_indicator_prices_tab_style = added_to_plot_indicator_css
 
 
-        ################## VOLUME TAB
+        ################################ VOLUME TAB ################################
 
         ### Add Volume
         if remove_volume & (fig_data is not None):
@@ -10685,13 +10790,23 @@ def update_plot(
 
         if add_volume:
 
-            volume_color_theme = volume_color_theme.lower() if volume_color_theme is not None else 'sapphire'
-            df_volume = downloaded_data[tk]['volume']
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_') & ~tk_num.endswith('=X') & ~tk_den.endswith('=X'):
+                volume_tk_num = downloaded_data[tk_num]['volume']
+                volume_tk_den = downloaded_data[tk_den]['volume']
+                volume = volume_tk_num / volume_tk_den
+                volume = volume.dropna()
+                ticker = selected_pseudoticker_info[tk]['name']
+            # A regular ticker
+            else:
+                volume_color_theme = volume_color_theme.lower() if volume_color_theme is not None else 'sapphire'
+                volume = downloaded_data[tk]['volume']
+                ticker = tk
 
             fig_data = analyze_prices.add_hist_price(
                 fig_data,
-                df_volume[min_date: max_date],
-                tk,
+                volume[min_date: max_date],
+                ticker,
                 target_deck = deck_number(deck_type, volume_deck_name),
                 secondary_y = boolean(volume_secondary_y),
                 plot_type = 'bar' if volume_plot_type == 'Histogram' else 'scatter',
@@ -10701,7 +10816,6 @@ def update_plot(
                 color_theme = volume_color_theme,
                 fill_below = boolean(volume_fill_below)
             )
-
             added_to_plot_indicator_volume_style = added_to_plot_indicator_css
             added_to_plot_indicator_volume_tab_style = added_to_plot_indicator_css
 
@@ -10715,25 +10829,27 @@ def update_plot(
 
         if add_dollar_volume:
 
-            dollar_volume_color_theme = dollar_volume_color_theme.lower() if dollar_volume_color_theme is not None else 'sapphire'
-            df_dollar_volume = downloaded_data[tk]['dollar_volume_adj'] if boolean(dollar_volume_adjusted) else downloaded_data[tk]['dollar_volume']
+            if not tk.startswith('ptk_'):
 
-            fig_data = analyze_prices.add_hist_price(
-                fig_data,
-                df_dollar_volume[min_date: max_date],
-                tk,
-                target_deck = deck_number(deck_type, dollar_volume_deck_name),
-                secondary_y = boolean(dollar_volume_secondary_y),
-                plot_type = 'bar' if dollar_volume_plot_type == 'Histogram' else 'scatter',
-                price_type = 'dollar volume',
-                add_title = boolean(dollar_volume_add_title),
-                theme = theme,
-                color_theme = dollar_volume_color_theme,
-                fill_below = boolean(dollar_volume_fill_below)
-            )
+                dollar_volume_color_theme = dollar_volume_color_theme.lower() if dollar_volume_color_theme is not None else 'sapphire'
+                df_dollar_volume = downloaded_data[tk]['dollar_volume_adj'] if boolean(dollar_volume_adjusted) else downloaded_data[tk]['dollar_volume']
 
-            added_to_plot_indicator_dollar_volume_style = added_to_plot_indicator_css
-            added_to_plot_indicator_volume_tab_style = added_to_plot_indicator_css
+                fig_data = analyze_prices.add_hist_price(
+                    fig_data,
+                    df_dollar_volume[min_date: max_date],
+                    tk,
+                    target_deck = deck_number(deck_type, dollar_volume_deck_name),
+                    secondary_y = boolean(dollar_volume_secondary_y),
+                    plot_type = 'bar' if dollar_volume_plot_type == 'Histogram' else 'scatter',
+                    price_type = 'dollar volume',
+                    add_title = boolean(dollar_volume_add_title),
+                    theme = theme,
+                    color_theme = dollar_volume_color_theme,
+                    fill_below = boolean(dollar_volume_fill_below)
+                )
+
+                added_to_plot_indicator_dollar_volume_style = added_to_plot_indicator_css
+                added_to_plot_indicator_volume_tab_style = added_to_plot_indicator_css
 
         ### Add On-Balance Volume
         if remove_obv & (fig_data is not None):
@@ -10745,31 +10861,33 @@ def update_plot(
 
         if add_obv:
 
-            obv_color_theme = obv_color_theme.lower() if obv_color_theme is not None else 'sapphire'
-            close_tk = downloaded_data[tk]['ohlc_adj']['Close'] if boolean(obv_adjusted) else downloaded_data[tk]['ohlc']['Close']
-            volume_tk = downloaded_data[tk]['volume']
+            if not tk.startswith('ptk_'):
 
-            obv_tk = analyze_prices.on_balance_volume(close_tk, volume_tk)
+                obv_color_theme = obv_color_theme.lower() if obv_color_theme is not None else 'sapphire'
+                close_tk = downloaded_data[tk]['ohlc_adj']['Close'] if boolean(obv_adjusted) else downloaded_data[tk]['ohlc']['Close']
+                volume_tk = downloaded_data[tk]['volume']
 
-            fig_data = analyze_prices.add_hist_price(
-                fig_data,
-                obv_tk[min_date: max_date],
-                tk,
-                target_deck = deck_number(deck_type, obv_deck_name),
-                secondary_y = boolean(obv_secondary_y),
-                plot_type = 'bar' if obv_plot_type == 'Histogram' else 'scatter',
-                price_type = 'obv',
-                add_title = boolean(obv_add_title),
-                theme = theme,
-                color_theme = obv_color_theme,
-                fill_below = boolean(obv_fill_below)
-            )
+                obv_tk = analyze_prices.on_balance_volume(close_tk, volume_tk)
 
-            added_to_plot_indicator_obv_style = added_to_plot_indicator_css
-            added_to_plot_indicator_volume_tab_style = added_to_plot_indicator_css
+                fig_data = analyze_prices.add_hist_price(
+                    fig_data,
+                    obv_tk[min_date: max_date],
+                    tk,
+                    target_deck = deck_number(deck_type, obv_deck_name),
+                    secondary_y = boolean(obv_secondary_y),
+                    plot_type = 'bar' if obv_plot_type == 'Histogram' else 'scatter',
+                    price_type = 'obv',
+                    add_title = boolean(obv_add_title),
+                    theme = theme,
+                    color_theme = obv_color_theme,
+                    fill_below = boolean(obv_fill_below)
+                )
+
+                added_to_plot_indicator_obv_style = added_to_plot_indicator_css
+                added_to_plot_indicator_volume_tab_style = added_to_plot_indicator_css
 
 
-        ############ TREND INDICATORS TAB
+        ################################ TREND INDICATORS TAB ################################
 
         ### Add moving average envelopes
         if remove_ma_env & (fig_data is not None):
@@ -10956,7 +11074,7 @@ def update_plot(
             added_to_plot_indicator_trend_tab_style = added_to_plot_indicator_css
 
 
-        ############# DIIFERENTIAL PLOTS TAB
+        ################################ DIIFERENTIAL PLOTS TAB ################################
 
         ### Add Differential 1
         if remove_diff_1 & (fig_data is not None):
@@ -11185,7 +11303,7 @@ def update_plot(
             added_to_plot_indicator_differential_tab_style = added_to_plot_indicator_css
 
 
-        ########## VOLATILITY INDICATORS TAB
+        ################################ VOLATILITY INDICATORS TAB ################################
 
         ### Add Bollinger bands
         if remove_bollinger & (fig_data is not None):
@@ -11338,7 +11456,7 @@ def update_plot(
             added_to_plot_indicator_volatility_tab_style = added_to_plot_indicator_css
 
 
-        ############# MOMENTUM INDICATORS TAB
+        ################################ MOMENTUM INDICATORS TAB ################################
 
         ### Add RSI
         if remove_rsi & (fig_data is not None):
@@ -11583,8 +11701,6 @@ def update_plot(
         pseudotk_table_div_hidden,
         expanded_selected_tickers,
         expanded_selected_tickers,
-        tk_num,
-        tk_den,
 
         add_hist_price,  # update
         add_candlestick,

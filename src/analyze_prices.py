@@ -4719,7 +4719,7 @@ class AnalyzePrices():
             'scatter' or 'bar'
         price_type:
             one of 'close', 'open', 'high', 'low', 'volume', 'dollar volume', 'obv' (On-Balance-Volume)
-
+        NOTE: The term 'dollar volume' is also used with assets trading in non-USD currencies.
         """
 
         if isinstance(df_price, pd.Series):
