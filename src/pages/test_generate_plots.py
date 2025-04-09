@@ -9467,7 +9467,8 @@ def toggle_collapse_cci(n, is_open):
     Input('final-start-date-stored', 'data'),
     Input('final-end-date-stored', 'data'),
     Input('expanded-selected-ticker-names', 'data'),
-    
+    Input('expanded-selected-ticker-currencies', 'data'),
+
     Input({'index': ALL, 'type': 'reset-axes'}, 'n_clicks'),
 
     # Tickers & Pseudotickers inputs
@@ -9838,6 +9839,7 @@ def update_plot(
         start_date,
         end_date,
         expanded_selected_tickers_names,
+        expanded_selected_tickers_currencies,
 
         n_click_reset_axes,
 
@@ -10244,6 +10246,13 @@ def update_plot(
 
     # Download historical data for regular tickers (pseudoticker numerator and denominator tickers among them)
     downloaded_data = hist_data.download_yf_data(start_date, end_date, expanded_selected_tickers)
+    # Also download fx rates for non-USD currencies
+    non_usd_currencies = set([cur for cur in expanded_selected_tickers_currencies.values() if cur != 'USD'])
+    for cur in non_usd_currencies:
+        cur_fx_tk = f'{cur}USD=X'
+        if cur_fx_tk not in expanded_selected_tickers:
+            downloaded_data.update(hist_data.download_yf_data(start_date, end_date, [cur_fx_tk]))
+
     # print('DOWNLOADED DATA without pseudoticker fx')
     # print(downloaded_data.keys())
 
@@ -10262,10 +10271,6 @@ def update_plot(
 
         # Does the numerator ticker need to be converted?
         if required_fx_tk_num != '':
-            # Is the numerator fx conversion ticker already downloaded?
-            if required_fx_tk_num not in expanded_selected_tickers:
-                # Append required_fx_tk_num to downloaded data, so all tickers are in the same dataframe
-                downloaded_data.update(hist_data.download_yf_data(start_date, end_date, [required_fx_tk_num]))
             required_fx_tk_num_index = downloaded_data[required_fx_tk_num]['ohlc'][min_date: max_date].index
             # Sorted intersection of two index sets, i.e. the common dates for tk_num and its fx converter
             tk_num_date_index = sorted(set(tk_num_index) & set(required_fx_tk_num_index))
@@ -10274,10 +10279,6 @@ def update_plot(
 
         # Does the denominator ticker need to be converted?
         if required_fx_tk_den != '':
-            # Is the denominator fx conversion ticker already downloaded?
-            if required_fx_tk_den not in expanded_selected_tickers:
-                # Append required_fx_tk_den to downloaded data, so all tickers are in the same dataframe
-                downloaded_data.update(hist_data.download_yf_data(start_date, end_date, [required_fx_tk_den]))
             required_fx_tk_den_index = downloaded_data[required_fx_tk_den]['ohlc'][min_date: max_date].index
             # Sorted intersection of two index sets, i.e. the common dates for tk_den and its fx converter
             tk_den_date_index = sorted(set(tk_den_index) & set(required_fx_tk_den_index))
@@ -10288,15 +10289,14 @@ def update_plot(
         pseudo_tk_date_index = sorted(set(tk_num_date_index) & set(tk_den_date_index))
         tk_date_index.update({pseudo_tk: pseudo_tk_date_index})
 
-    ### Something like this is probably needed for all tickers, not just pseudotickers,
-    ### to make sure that every common date is populated on each ticker/pseudoticker plot:
-    ###     sorted(set(bmw.index) & set(nis.index))
-    ### The above converts an intersection of two index sets to a sorted list.
+    ### This converts an intersection of two index sets to a sorted list:
+    ### sorted(set(bmw.index) & set(nis.index))
     ###
     ### On the other hand, pseudotickers (except for non-USD exchange rate tickers like CADEUR=X)
     ### cannot be traded, so they shouldn't be a portfolio component. They just serve some
     ### purpose in the technical analysis.
-    ### But then it is the same with indices.
+    ### But then it is the same with indices. There are ETFs investing in indices, so there could be
+    ### likewise ETFs investing in pseudotickers.
 
     # print('DOWNLOADED DATA with pseudoticker fx added')
     # print(downloaded_data.keys())
@@ -10791,10 +10791,17 @@ def update_plot(
         if add_volume:
 
             # Is it a pseudoticker?
-            if tk.startswith('ptk_') & ~tk_num.endswith('=X') & ~tk_den.endswith('=X'):
-                volume_tk_num = downloaded_data[tk_num]['volume']
+            # if tk.startswith('ptk_') & (not tk_num.endswith('=X')) & (not tk_den.endswith('=X')):
+            if tk.startswith('ptk_'):
                 volume_tk_den = downloaded_data[tk_den]['volume']
-                volume = volume_tk_num / volume_tk_den
+                # Is volume data available for the denominator ticker?
+                if volume_tk_den.max() > 0:
+                    volume_tk_num = downloaded_data[tk_num]['volume']
+                    volume = volume_tk_num / volume_tk_den
+                    volume = volume.loc[volume != np.inf]
+                else:
+                    # An fx or some other ticker with 0 volume data
+                    volume = volume_tk_den * 0  # To preserve index
                 volume = volume.dropna()
                 ticker = selected_pseudoticker_info[tk]['name']
             # A regular ticker
@@ -10829,28 +10836,64 @@ def update_plot(
 
         if add_dollar_volume:
 
-            if not tk.startswith('ptk_'):
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                volume_tk_den = downloaded_data[tk_den]['volume']
+                # Is volume data available for the denominator ticker?
+                if volume_tk_den.max() > 0:
+                    volume_tk_num = downloaded_data[tk_num]['volume']
+                    volume = volume_tk_num / volume_tk_den
+                    volume = volume.loc[volume != np.inf]
+                    volume = volume.dropna()
+                    df_hist_price_tk_num = downloaded_data[tk_num]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[tk_num]['ohlc']
+                    df_hist_price_tk_den = downloaded_data[tk_den]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[tk_den]['ohlc']
+                    hist_price_tk_num = df_hist_price_tk_num['Close']
+                    hist_price_tk_den = df_hist_price_tk_den['Close']
+                    # Does the numerator ticker need to be converted?
+                    if required_fx_tk_num != '':
+                        df_hist_price_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']
+                        # Extract a single price type data column as a pd.Series
+                        hist_price_required_fx_tk_num = df_hist_price_required_fx_tk_num['Close']
+                        hist_price_tk_num *= hist_price_required_fx_tk_num
+                    # Does the denominator ticker need to be converted?
+                    if required_fx_tk_den != '':
+                        df_hist_price_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']                        
+                        # Extract a single price type data column as a pd.Series
+                        hist_price_required_fx_tk_den = df_hist_price_required_fx_tk_den['Close']
+                        hist_price_tk_den *= hist_price_required_fx_tk_den
+                    hist_price = hist_price_tk_num / hist_price_tk_den
+                    hist_price = hist_price.dropna()
+                    dollar_volume = hist_price * volume
+                else:
+                    # An fx or some other ticker with 0 volume data
+                    dollar_volume = volume_tk_den * 0
+                dollar_volume = dollar_volume.dropna()
+                ticker = selected_pseudoticker_info[tk]['name']
+            # A regular ticker
+            else:
+                dollar_volume = downloaded_data[tk]['dollar_volume_adj'] if boolean(dollar_volume_adjusted) else downloaded_data[tk]['dollar_volume']
+                ticker = tk
 
-                dollar_volume_color_theme = dollar_volume_color_theme.lower() if dollar_volume_color_theme is not None else 'sapphire'
-                df_dollar_volume = downloaded_data[tk]['dollar_volume_adj'] if boolean(dollar_volume_adjusted) else downloaded_data[tk]['dollar_volume']
+            dollar_volume_color_theme = dollar_volume_color_theme.lower() if dollar_volume_color_theme is not None else 'sapphire'
+            
+            fig_data = analyze_prices.add_hist_price(
+                fig_data,
+                dollar_volume[min_date: max_date],
+                ticker,
+                target_deck = deck_number(deck_type, dollar_volume_deck_name),
+                secondary_y = boolean(dollar_volume_secondary_y),
+                plot_type = 'bar' if dollar_volume_plot_type == 'Histogram' else 'scatter',
+                price_type = 'dollar volume',
+                add_title = boolean(dollar_volume_add_title),
+                theme = theme,
+                color_theme = dollar_volume_color_theme,
+                fill_below = boolean(dollar_volume_fill_below)
+            )
 
-                fig_data = analyze_prices.add_hist_price(
-                    fig_data,
-                    df_dollar_volume[min_date: max_date],
-                    tk,
-                    target_deck = deck_number(deck_type, dollar_volume_deck_name),
-                    secondary_y = boolean(dollar_volume_secondary_y),
-                    plot_type = 'bar' if dollar_volume_plot_type == 'Histogram' else 'scatter',
-                    price_type = 'dollar volume',
-                    add_title = boolean(dollar_volume_add_title),
-                    theme = theme,
-                    color_theme = dollar_volume_color_theme,
-                    fill_below = boolean(dollar_volume_fill_below)
-                )
+            added_to_plot_indicator_dollar_volume_style = added_to_plot_indicator_css
+            added_to_plot_indicator_volume_tab_style = added_to_plot_indicator_css
 
-                added_to_plot_indicator_dollar_volume_style = added_to_plot_indicator_css
-                added_to_plot_indicator_volume_tab_style = added_to_plot_indicator_css
-
+        #########################
         ### Add On-Balance Volume
         if remove_obv & (fig_data is not None):
             add_obv = 0
@@ -10861,30 +10904,63 @@ def update_plot(
 
         if add_obv:
 
-            if not tk.startswith('ptk_'):
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                volume_tk_den = downloaded_data[tk_den]['volume']
+                # Is volume data available for the denominator ticker?
+                if volume_tk_den.max() > 0:
+                    volume_tk_num = downloaded_data[tk_num]['volume']
+                    volume = volume_tk_num / volume_tk_den
+                    volume = volume.loc[volume != np.inf]  # There could be some 0 volume days
+                    df_hist_price_tk_num = downloaded_data[tk_num]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[tk_num]['ohlc']
+                    df_hist_price_tk_den = downloaded_data[tk_den]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[tk_den]['ohlc']
+                    hist_price_tk_num = df_hist_price_tk_num['Close']
+                    hist_price_tk_den = df_hist_price_tk_den['Close']
+                    # Does the numerator ticker need to be converted?
+                    if required_fx_tk_num != '':
+                        df_hist_price_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']
+                        # Extract a single price type data column as a pd.Series
+                        hist_price_required_fx_tk_num = df_hist_price_required_fx_tk_num['Close']
+                        hist_price_tk_num *= hist_price_required_fx_tk_num
+                    # Does the denominator ticker need to be converted?
+                    if required_fx_tk_den != '':
+                        df_hist_price_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']                        
+                        # Extract a single price type data column as a pd.Series
+                        hist_price_required_fx_tk_den = df_hist_price_required_fx_tk_den['Close']
+                        hist_price_tk_den *= hist_price_required_fx_tk_den
+                    close = hist_price_tk_num / hist_price_tk_den
+                    close = close.dropna()
+                else:
+                    # An fx or some other ticker with 0 volume data
+                    volume = volume_tk_den * 0
+                volume = volume.dropna()
+                ticker = selected_pseudoticker_info[tk]['name']
+            # A regular ticker
+            else:
+                close = downloaded_data[tk]['ohlc_adj']['Close'] if boolean(obv_adjusted) else downloaded_data[tk]['ohlc']['Close']
+                volume = downloaded_data[tk]['volume']
+                ticker = tk
 
-                obv_color_theme = obv_color_theme.lower() if obv_color_theme is not None else 'sapphire'
-                close_tk = downloaded_data[tk]['ohlc_adj']['Close'] if boolean(obv_adjusted) else downloaded_data[tk]['ohlc']['Close']
-                volume_tk = downloaded_data[tk]['volume']
+            obv_tk = analyze_prices.on_balance_volume(close, volume)
 
-                obv_tk = analyze_prices.on_balance_volume(close_tk, volume_tk)
+            obv_color_theme = obv_color_theme.lower() if obv_color_theme is not None else 'sapphire'
 
-                fig_data = analyze_prices.add_hist_price(
-                    fig_data,
-                    obv_tk[min_date: max_date],
-                    tk,
-                    target_deck = deck_number(deck_type, obv_deck_name),
-                    secondary_y = boolean(obv_secondary_y),
-                    plot_type = 'bar' if obv_plot_type == 'Histogram' else 'scatter',
-                    price_type = 'obv',
-                    add_title = boolean(obv_add_title),
-                    theme = theme,
-                    color_theme = obv_color_theme,
-                    fill_below = boolean(obv_fill_below)
-                )
+            fig_data = analyze_prices.add_hist_price(
+                fig_data,
+                obv_tk[min_date: max_date],
+                ticker,
+                target_deck = deck_number(deck_type, obv_deck_name),
+                secondary_y = boolean(obv_secondary_y),
+                plot_type = 'bar' if obv_plot_type == 'Histogram' else 'scatter',
+                price_type = 'obv',
+                add_title = boolean(obv_add_title),
+                theme = theme,
+                color_theme = obv_color_theme,
+                fill_below = boolean(obv_fill_below)
+            )
 
-                added_to_plot_indicator_obv_style = added_to_plot_indicator_css
-                added_to_plot_indicator_volume_tab_style = added_to_plot_indicator_css
+            added_to_plot_indicator_obv_style = added_to_plot_indicator_css
+            added_to_plot_indicator_volume_tab_style = added_to_plot_indicator_css
 
 
         ################################ TREND INDICATORS TAB ################################
