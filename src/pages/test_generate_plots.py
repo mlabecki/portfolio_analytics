@@ -10252,6 +10252,7 @@ def update_plot(
         cur_fx_tk = f'{cur}USD=X'
         if cur_fx_tk not in expanded_selected_tickers:
             downloaded_data.update(hist_data.download_yf_data(start_date, end_date, [cur_fx_tk]))
+            print(f'cur_fx_tk {cur_fx_tk}\n{downloaded_data[cur_fx_tk]}')
 
     # print('DOWNLOADED DATA without pseudoticker fx')
     # print(downloaded_data.keys())
@@ -10532,14 +10533,21 @@ def update_plot(
                     df_hist_price_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']
                     # Extract a single price type data column as a pd.Series
                     hist_price_required_fx_tk_num = df_hist_price_required_fx_tk_num[hist_price_type]
+                    print(f'{tk_num} hist_price_tk_num NOT CONVERTED\n{hist_price_tk_num[-3:]}')
+                    print(f'{tk_num} {required_fx_tk_num}\n{hist_price_required_fx_tk_num[-3:]}')
                     hist_price_tk_num *= hist_price_required_fx_tk_num
+                    print(f'{tk_num} hist_price_tk_num CONVERTED\n{hist_price_tk_num[-3:]}')
                 # Does the denominator ticker need to be converted?
                 if required_fx_tk_den != '':
                     df_hist_price_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']                        
                     # Extract a single price type data column as a pd.Series
                     hist_price_required_fx_tk_den = df_hist_price_required_fx_tk_den[hist_price_type]
+                    print(f'{tk_den} hist_price_tk_den NOT CONVERTED\n{hist_price_tk_den[-3:]}')
+                    print(f'{tk_den} {required_fx_tk_den}\n{hist_price_required_fx_tk_den[-3:]}')
                     hist_price_tk_den *= hist_price_required_fx_tk_den
+                    print(f'{tk_den} hist_price_tk_den CONVERTED\n{hist_price_tk_den[-3:]}')
                 hist_price = hist_price_tk_num / hist_price_tk_den
+                print(f'hist_price_tk_num / hist_price_tk_den\n{hist_price[-3:]}')
                 hist_price = hist_price.dropna()
                 ticker = selected_pseudoticker_info[tk]['name']
             # A regular ticker
@@ -10588,12 +10596,10 @@ def update_plot(
                 # Does the numerator ticker need to be converted?
                 if required_fx_tk_num != '':
                     df_ohlc_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj'] if boolean(candlestick_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']
-                    # Extract a single price type data column as a pd.Series
                     df_ohlc_tk_num *= df_ohlc_required_fx_tk_num
                 # Does the denominator ticker need to be converted?
                 if required_fx_tk_den != '':
                     df_ohlc_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj'] if boolean(candlestick_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']                        
-                    # Extract a single price type data column as a pd.Series
                     df_ohlc_tk_den *= df_ohlc_required_fx_tk_den
                 df_ohlc = df_ohlc_tk_num / df_ohlc_tk_den
                 df_ohlc = df_ohlc.dropna()
@@ -10965,6 +10971,7 @@ def update_plot(
 
         ################################ TREND INDICATORS TAB ################################
 
+        ################################
         ### Add moving average envelopes
         if remove_ma_env & (fig_data is not None):
             add_ma_env = 0
@@ -10974,10 +10981,34 @@ def update_plot(
                         fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
         if add_ma_env:
-            df_ma_env_price = downloaded_data[tk]['ohlc_adj'] if boolean(ma_env_adjusted) else downloaded_data[tk]['ohlc']
-            ma_env_price = df_ma_env_price[ma_env_price_type]
+
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                df_hist_price_tk_num = downloaded_data[tk_num]['ohlc_adj'] if boolean(ma_env_adjusted) else downloaded_data[tk_num]['ohlc']
+                df_hist_price_tk_den = downloaded_data[tk_den]['ohlc_adj'] if boolean(ma_env_adjusted) else downloaded_data[tk_den]['ohlc']
+                hist_price_tk_num = df_hist_price_tk_num[ma_env_price_type]
+                hist_price_tk_den = df_hist_price_tk_den[ma_env_price_type]
+                # Does the numerator ticker need to be converted?
+                if required_fx_tk_num != '':
+                    df_hist_price_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj'] if boolean(ma_env_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']
+                    # Extract a single price type data column as a pd.Series
+                    hist_price_required_fx_tk_num = df_hist_price_required_fx_tk_num[ma_env_price_type]
+                    hist_price_tk_num *= hist_price_required_fx_tk_num
+                # Does the denominator ticker need to be converted?
+                if required_fx_tk_den != '':
+                    df_hist_price_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj'] if boolean(ma_env_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']                        
+                    # Extract a single price type data column as a pd.Series
+                    hist_price_required_fx_tk_den = df_hist_price_required_fx_tk_den[ma_env_price_type]
+                    hist_price_tk_den *= hist_price_required_fx_tk_den
+                hist_price = hist_price_tk_num / hist_price_tk_den
+                hist_price = hist_price.dropna()
+            # A regular ticker
+            else:
+                df_hist_price = downloaded_data[tk]['ohlc_adj'] if boolean(ma_env_adjusted) else downloaded_data[tk]['ohlc']
+                hist_price = df_hist_price[ma_env_price_type]
+    
             ma_env_list = analyze_prices.ma_envelopes(
-                ma_env_price[min_date: max_date],
+                hist_price[min_date: max_date],
                 ma_type_map[ma_env_ma_type],
                 ma_env_window,
                 ma_env_offset,
@@ -10993,6 +11024,7 @@ def update_plot(
             added_to_plot_indicator_ma_env_style = added_to_plot_indicator_css
             added_to_plot_indicator_trend_tab_style = added_to_plot_indicator_css
 
+        #############################
         ### Add moving average ribbon
         if remove_ma_ribbon & (fig_data is not None):
             add_ma_ribbon = 0
@@ -11002,8 +11034,32 @@ def update_plot(
                         fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
         if add_ma_ribbon:
-            df_ma_ribbon_price = downloaded_data[tk]['ohlc_adj'] if boolean(ma_ribbon_adjusted) else downloaded_data[tk]['ohlc']
-            ma_ribbon_price = df_ma_ribbon_price[ma_ribbon_price_type]
+            
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                df_hist_price_tk_num = downloaded_data[tk_num]['ohlc_adj'] if boolean(ma_ribbon_adjusted) else downloaded_data[tk_num]['ohlc']
+                df_hist_price_tk_den = downloaded_data[tk_den]['ohlc_adj'] if boolean(ma_ribbon_adjusted) else downloaded_data[tk_den]['ohlc']
+                hist_price_tk_num = df_hist_price_tk_num[ma_ribbon_price_type]
+                hist_price_tk_den = df_hist_price_tk_den[ma_ribbon_price_type]
+                # Does the numerator ticker need to be converted?
+                if required_fx_tk_num != '':
+                    df_hist_price_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj'] if boolean(ma_ribbon_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']
+                    # Extract a single price type data column as a pd.Series
+                    hist_price_required_fx_tk_num = df_hist_price_required_fx_tk_num[ma_ribbon_price_type]
+                    hist_price_tk_num *= hist_price_required_fx_tk_num
+                # Does the denominator ticker need to be converted?
+                if required_fx_tk_den != '':
+                    df_hist_price_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj'] if boolean(ma_ribbon_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']                        
+                    # Extract a single price type data column as a pd.Series
+                    hist_price_required_fx_tk_den = df_hist_price_required_fx_tk_den[ma_ribbon_price_type]
+                    hist_price_tk_den *= hist_price_required_fx_tk_den
+                hist_price = hist_price_tk_num / hist_price_tk_den
+                hist_price = hist_price.dropna()
+            # A regular ticker
+            else:
+                df_hist_price = downloaded_data[tk]['ohlc_adj'] if boolean(ma_ribbon_adjusted) else downloaded_data[tk]['ohlc']
+                hist_price = df_hist_price[ma_ribbon_price_type]
+
             ma_ribbon_list = analyze_prices.get_ma_ribbon(
                 ma_type_map[ma_ribbon_ma_type],
                 ma_ribbon_window,
@@ -11011,7 +11067,7 @@ def update_plot(
             )
             fig_data = analyze_prices.add_ma_ribbon(
                 fig_data,
-                ma_ribbon_price[min_date: max_date],
+                hist_price[min_date: max_date],
                 ma_ribbon_list,
                 target_deck = deck_number(deck_type, ma_ribbon_deck_name),
                 add_yaxis_title = boolean(ma_ribbon_add_yaxis_title),
@@ -11022,6 +11078,7 @@ def update_plot(
             added_to_plot_indicator_ma_ribbon_style = added_to_plot_indicator_css
             added_to_plot_indicator_trend_tab_style = added_to_plot_indicator_css
 
+        #####################
         ### Add MACD / MACD-V
         if remove_macd & (fig_data is not None):
             add_macd = 0
@@ -11031,30 +11088,79 @@ def update_plot(
             #             fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
         if add_macd:
-            df_macd_prices = downloaded_data[tk]['ohlc_adj'] if boolean(macd_adjusted) else downloaded_data[tk]['ohlc']
-            close_tk = df_macd_prices['Close'][min_date: max_date]
+            
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                close_tk_num = downloaded_data[tk_num]['ohlc_adj']['Close'] if boolean(macd_adjusted) else downloaded_data[tk_num]['ohlc']['Close']
+                close_tk_den = downloaded_data[tk_den]['ohlc_adj']['Close'] if boolean(macd_adjusted) else downloaded_data[tk_den]['ohlc']['Close']
+                # Does the numerator ticker need to be converted?
+                if required_fx_tk_num != '':
+                    close_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['Close'] if boolean(macd_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['Close']
+                    close_tk_num *= close_required_fx_tk_num
+                # Does the denominator ticker need to be converted?
+                if required_fx_tk_den != '':
+                    close_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['Close'] if boolean(macd_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['Close']                        
+                    close_tk_den *= close_required_fx_tk_den
+                close = close_tk_num / close_tk_den
+                close = close.dropna()
+                close = close[min_date: max_date]
+            # A regular ticker
+            else:
+                close = downloaded_data[tk]['ohlc_adj']['Close'] if boolean(macd_adjusted) else downloaded_data[tk]['ohlc']['Close']
+                close = close[min_date: max_date]
             #
             # MACD-V
             if boolean(macd_vol_normalized):
-                high_tk = df_macd_prices['High'][min_date: max_date]
-                low_tk = df_macd_prices['Low'][min_date: max_date]
+
+                # Is it a pseudoticker?
+                if tk.startswith('ptk_'):
+                    high_tk_num = downloaded_data[tk_num]['ohlc_adj']['High'] if boolean(macd_adjusted) else downloaded_data[tk_num]['ohlc']['High']
+                    high_tk_den = downloaded_data[tk_den]['ohlc_adj']['High'] if boolean(macd_adjusted) else downloaded_data[tk_den]['ohlc']['High']
+                    low_tk_num = downloaded_data[tk_num]['ohlc_adj']['Low'] if boolean(macd_adjusted) else downloaded_data[tk_num]['ohlc']['Low']
+                    low_tk_den = downloaded_data[tk_den]['ohlc_adj']['Low'] if boolean(macd_adjusted) else downloaded_data[tk_den]['ohlc']['Low']
+                    # Does the numerator ticker need to be converted?
+                    if required_fx_tk_num != '':
+                        high_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['High'] if boolean(macd_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['High']
+                        high_tk_num *= high_required_fx_tk_num
+                        low_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['Low'] if boolean(macd_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['Low']
+                        low_tk_num *= low_required_fx_tk_num
+                    # Does the denominator ticker need to be converted?
+                    if required_fx_tk_den != '':
+                        high_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['High'] if boolean(macd_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['High']                        
+                        high_tk_den *= high_required_fx_tk_den
+                        low_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['Low'] if boolean(macd_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['Low']                        
+                        low_tk_den *= low_required_fx_tk_den
+                    high = high_tk_num / high_tk_den
+                    high = high.dropna()
+                    high = high[min_date: max_date]
+                    low = low_tk_num / low_tk_den
+                    low = low.dropna()
+                    low = low[min_date: max_date]
+                # A regular ticker
+                else:
+                    high = downloaded_data[tk]['ohlc_adj']['High'] if boolean(macd_adjusted) else downloaded_data[tk]['ohlc']['High']
+                    high = close[min_date: max_date]
+                    low = downloaded_data[tk]['ohlc_adj']['Low'] if boolean(macd_adjusted) else downloaded_data[tk]['ohlc']['Low']
+                    low = close[min_date: max_date]
+
                 macd_data = analyze_prices.get_macd_v(
-                    close_tk,
-                    high_tk,
-                    low_tk,
+                    close,
+                    high,
+                    low,
                     boolean(macd_adjusted),
                     signal_window = macd_signal_window
                 )
             # MACD
             else:
                 macd_data = analyze_prices.get_macd(
-                    close_tk,
+                    close,
                     signal_window = macd_signal_window
                 )
             #
+            ticker = selected_pseudoticker_info[tk]['name'] if tk.startswith('ptk_') else tk
             fig_data = analyze_prices.add_macd(
                 fig_data,
-                tk,
+                ticker,
                 macd_data,
                 add_price = boolean(macd_add_price),
                 volatility_normalized = boolean(macd_vol_normalized),
@@ -11072,6 +11178,7 @@ def update_plot(
             added_to_plot_indicator_macd_style = added_to_plot_indicator_css
             added_to_plot_indicator_trend_tab_style = added_to_plot_indicator_css
 
+        ####################
         ### Add Impulse MACD
         if remove_impulse_macd & (fig_data is not None):
             add_impulse_macd = 0
@@ -11081,21 +11188,61 @@ def update_plot(
                         fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
         if add_impulse_macd:
-            df_macd_prices = downloaded_data[tk]['ohlc_adj'] if boolean(impulse_macd_adjusted) else downloaded_data[tk]['ohlc']
-            close_tk = df_macd_prices['Close'][min_date: max_date]
-            high_tk = df_macd_prices['High'][min_date: max_date]
-            low_tk = df_macd_prices['Low'][min_date: max_date]
+            
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                close_tk_num = downloaded_data[tk_num]['ohlc_adj']['Close'] if boolean(impulse_macd_adjusted) else downloaded_data[tk_num]['ohlc']['Close']
+                close_tk_den = downloaded_data[tk_den]['ohlc_adj']['Close'] if boolean(impulse_macd_adjusted) else downloaded_data[tk_den]['ohlc']['Close']
+                high_tk_num = downloaded_data[tk_num]['ohlc_adj']['High'] if boolean(impulse_macd_adjusted) else downloaded_data[tk_num]['ohlc']['High']
+                high_tk_den = downloaded_data[tk_den]['ohlc_adj']['High'] if boolean(impulse_macd_adjusted) else downloaded_data[tk_den]['ohlc']['High']
+                low_tk_num = downloaded_data[tk_num]['ohlc_adj']['Low'] if boolean(impulse_macd_adjusted) else downloaded_data[tk_num]['ohlc']['Low']
+                low_tk_den = downloaded_data[tk_den]['ohlc_adj']['Low'] if boolean(impulse_macd_adjusted) else downloaded_data[tk_den]['ohlc']['Low']
+                # Does the numerator ticker need to be converted?
+                if required_fx_tk_num != '':
+                    close_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['Close'] if boolean(impulse_macd_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['Close']
+                    close_tk_num *= close_required_fx_tk_num
+                    high_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['High'] if boolean(impulse_macd_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['High']
+                    high_tk_num *= high_required_fx_tk_num
+                    low_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['Low'] if boolean(impulse_macd_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['Low']
+                    low_tk_num *= low_required_fx_tk_num
+                # Does the denominator ticker need to be converted?
+                if required_fx_tk_den != '':
+                    close_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['Close'] if boolean(impulse_macd_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['Close']                        
+                    close_tk_den *= close_required_fx_tk_den
+                    high_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['High'] if boolean(impulse_macd_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['High']                        
+                    high_tk_den *= high_required_fx_tk_den
+                    low_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['Low'] if boolean(impulse_macd_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['Low']                        
+                    low_tk_den *= low_required_fx_tk_den
+                close = close_tk_num / close_tk_den
+                close = close.dropna()
+                close = close[min_date: max_date]
+                high = high_tk_num / high_tk_den
+                high = high.dropna()
+                high = high[min_date: max_date]
+                low = low_tk_num / low_tk_den
+                low = low.dropna()
+                low = low[min_date: max_date]
+            # A regular ticker
+            else:
+                close = downloaded_data[tk]['ohlc_adj']['Close'] if boolean(impulse_macd_adjusted) else downloaded_data[tk]['ohlc']['Close']
+                close = close[min_date: max_date]
+                high = downloaded_data[tk]['ohlc_adj']['High'] if boolean(impulse_macd_adjusted) else downloaded_data[tk]['ohlc']['High']
+                high = close[min_date: max_date]
+                low = downloaded_data[tk]['ohlc_adj']['Low'] if boolean(impulse_macd_adjusted) else downloaded_data[tk]['ohlc']['Low']
+                low = close[min_date: max_date]
+
             impulse_macd_data = analyze_prices.get_impulse_macd(
-                close_tk,
-                high_tk,
-                low_tk,
+                close,
+                high,
+                low,
                 smma_length = impulse_macd_smma_window,
                 signal_length = impulse_macd_signal_window
             )
             #
+            ticker = selected_pseudoticker_info[tk]['name'] if tk.startswith('ptk_') else tk
             fig_data = analyze_prices.add_macd(
                 fig_data,
-                tk,
+                ticker,
                 impulse_macd_data,
                 add_price = boolean(impulse_macd_add_price),
                 volatility_normalized = False,
@@ -11114,6 +11261,7 @@ def update_plot(
             added_to_plot_indicator_impulse_macd_style = added_to_plot_indicator_css
             added_to_plot_indicator_trend_tab_style = added_to_plot_indicator_css
 
+        ########################
         ### Add Supertrend bands
         if remove_supertrend & (fig_data is not None):
             add_supertrend = 0
@@ -11123,15 +11271,53 @@ def update_plot(
                         fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
         if add_supertrend:
-            supertrend_prices = downloaded_data[tk]['ohlc_adj'] if boolean(supertrend_adjusted) else downloaded_data[tk]['ohlc']
-            close_tk = supertrend_prices['Close'][min_date: max_date]
-            high_tk = supertrend_prices['High'][min_date: max_date]
-            low_tk = supertrend_prices['Low'][min_date: max_date]
+
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                close_tk_num = downloaded_data[tk_num]['ohlc_adj']['Close'] if boolean(supertrend_adjusted) else downloaded_data[tk_num]['ohlc']['Close']
+                close_tk_den = downloaded_data[tk_den]['ohlc_adj']['Close'] if boolean(supertrend_adjusted) else downloaded_data[tk_den]['ohlc']['Close']
+                high_tk_num = downloaded_data[tk_num]['ohlc_adj']['High'] if boolean(supertrend_adjusted) else downloaded_data[tk_num]['ohlc']['High']
+                high_tk_den = downloaded_data[tk_den]['ohlc_adj']['High'] if boolean(supertrend_adjusted) else downloaded_data[tk_den]['ohlc']['High']
+                low_tk_num = downloaded_data[tk_num]['ohlc_adj']['Low'] if boolean(supertrend_adjusted) else downloaded_data[tk_num]['ohlc']['Low']
+                low_tk_den = downloaded_data[tk_den]['ohlc_adj']['Low'] if boolean(supertrend_adjusted) else downloaded_data[tk_den]['ohlc']['Low']
+                # Does the numerator ticker need to be converted?
+                if required_fx_tk_num != '':
+                    close_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['Close'] if boolean(supertrend_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['Close']
+                    close_tk_num *= close_required_fx_tk_num
+                    high_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['High'] if boolean(supertrend_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['High']
+                    high_tk_num *= high_required_fx_tk_num
+                    low_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['Low'] if boolean(supertrend_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['Low']
+                    low_tk_num *= low_required_fx_tk_num
+                # Does the denominator ticker need to be converted?
+                if required_fx_tk_den != '':
+                    close_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['Close'] if boolean(supertrend_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['Close']                        
+                    close_tk_den *= close_required_fx_tk_den
+                    high_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['High'] if boolean(supertrend_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['High']                        
+                    high_tk_den *= high_required_fx_tk_den
+                    low_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['Low'] if boolean(supertrend_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['Low']                        
+                    low_tk_den *= low_required_fx_tk_den
+                close = close_tk_num / close_tk_den
+                close = close.dropna()
+                close = close[min_date: max_date]
+                high = high_tk_num / high_tk_den
+                high = high.dropna()
+                high = high[min_date: max_date]
+                low = low_tk_num / low_tk_den
+                low = low.dropna()
+                low = low[min_date: max_date]
+            # A regular ticker
+            else:
+                close = downloaded_data[tk]['ohlc_adj']['Close'] if boolean(supertrend_adjusted) else downloaded_data[tk]['ohlc']['Close']
+                close = close[min_date: max_date]
+                high = downloaded_data[tk]['ohlc_adj']['High'] if boolean(supertrend_adjusted) else downloaded_data[tk]['ohlc']['High']
+                high = close[min_date: max_date]
+                low = downloaded_data[tk]['ohlc_adj']['Low'] if boolean(supertrend_adjusted) else downloaded_data[tk]['ohlc']['Low']
+                low = close[min_date: max_date]
 
             supertrend_data = analyze_prices.get_supertrend(
-                close_tk,
-                high_tk,
-                low_tk,
+                close,
+                high,
+                low,
                 adjusted = boolean(supertrend_adjusted),
                 n = supertrend_periods,
                 multiplier = supertrend_multiplier,
@@ -11152,6 +11338,7 @@ def update_plot(
 
         ################################ DIIFERENTIAL PLOTS TAB ################################
 
+        ######################
         ### Add Differential 1
         if remove_diff_1 & (fig_data is not None):
             add_diff_1 = 0
@@ -11161,16 +11348,42 @@ def update_plot(
                         fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
         if add_diff_1:
-            
-            adj_prices = downloaded_data[tk]['ohlc_adj'][min_date: max_date]
-            prices = downloaded_data[tk]['ohlc'][min_date: max_date]
-            
+
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                df_ohlc_tk_num_adj = downloaded_data[tk_num]['ohlc_adj'][min_date: max_date]
+                df_ohlc_tk_den_adj = downloaded_data[tk_den]['ohlc_adj'][min_date: max_date]
+                df_ohlc_tk_num = downloaded_data[tk_num]['ohlc'][min_date: max_date]
+                df_ohlc_tk_den = downloaded_data[tk_den]['ohlc'][min_date: max_date]
+                # Does the numerator ticker need to be converted?
+                if required_fx_tk_num != '':
+                    df_ohlc_required_fx_tk_num_adj = downloaded_data[required_fx_tk_num]['ohlc_adj'][min_date: max_date]
+                    df_ohlc_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc'][min_date: max_date]
+                    df_ohlc_tk_num_adj *= df_ohlc_required_fx_tk_num_adj
+                    df_ohlc_tk_num *= df_ohlc_required_fx_tk_num
+                # Does the denominator ticker need to be converted?
+                if required_fx_tk_den != '':
+                    df_ohlc_required_fx_tk_den_adj = downloaded_data[required_fx_tk_den]['ohlc_adj']
+                    df_ohlc_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc']
+                    df_ohlc_tk_den_adj *= df_ohlc_required_fx_tk_den_adj
+                    df_ohlc_tk_den *= df_ohlc_required_fx_tk_den
+                adj_prices = df_ohlc_tk_num_adj / df_ohlc_tk_den_adj
+                adj_prices = adj_prices.dropna()
+                prices = df_ohlc_tk_num / df_ohlc_tk_den
+                prices = prices.dropna()
+                ticker = selected_pseudoticker_info[tk]['name']
+            # A regular ticker
+            else:
+                adj_prices = downloaded_data[tk]['ohlc_adj'][min_date: max_date]
+                prices = downloaded_data[tk]['ohlc'][min_date: max_date]
+                ticker = tk
+           
+            p1 = adj_prices[diff_1_line_1_price_type] if boolean(diff_1_line_1_adjusted) else prices[diff_1_line_1_price_type]
+            p2 = adj_prices[diff_1_line_2_price_type] if boolean(diff_1_line_2_adjusted) else prices[diff_1_line_2_price_type]
+
             line_1_ma_type = ma_type_map[diff_1_line_1_ma_type]
             line_2_ma_type = ma_type_map[diff_1_line_2_ma_type]
 
-            p1 = adj_prices[diff_1_line_1_price_type] if boolean(diff_1_line_1_adjusted) else prices[diff_1_line_1_price_type]
-            p2 = adj_prices[diff_1_line_2_price_type] if boolean(diff_1_line_2_adjusted) else prices[diff_1_line_2_price_type]
-                
             if diff_1_line_1_line_type == 'Moving Average':
                 p1 = analyze_prices.moving_average(p1, line_1_ma_type, diff_1_line_1_window)
                 p1_name = f'{line_1_ma_type.upper()} {diff_1_line_1_window}'
@@ -11190,7 +11403,7 @@ def update_plot(
             if not p1.equals(p2):
                 fig_data = analyze_prices.add_diff(
                     fig_data,
-                    tk,
+                    ticker,
                     p1,
                     p2,
                     p1_name,
@@ -11212,6 +11425,7 @@ def update_plot(
             added_to_plot_indicator_diff_1_style = added_to_plot_indicator_css
             added_to_plot_indicator_differential_tab_style = added_to_plot_indicator_css
 
+        ######################
         ### Add Differential 2
         if remove_diff_2 & (fig_data is not None):
             add_diff_2 = 0
@@ -11222,14 +11436,40 @@ def update_plot(
 
         if add_diff_2:
             
-            adj_prices = downloaded_data[tk]['ohlc_adj'][min_date: max_date]
-            prices = downloaded_data[tk]['ohlc'][min_date: max_date]
-            
-            line_1_ma_type = ma_type_map[diff_2_line_1_ma_type]
-            line_2_ma_type = ma_type_map[diff_2_line_2_ma_type]
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                df_ohlc_tk_num_adj = downloaded_data[tk_num]['ohlc_adj'][min_date: max_date]
+                df_ohlc_tk_den_adj = downloaded_data[tk_den]['ohlc_adj'][min_date: max_date]
+                df_ohlc_tk_num = downloaded_data[tk_num]['ohlc'][min_date: max_date]
+                df_ohlc_tk_den = downloaded_data[tk_den]['ohlc'][min_date: max_date]
+                # Does the numerator ticker need to be converted?
+                if required_fx_tk_num != '':
+                    df_ohlc_required_fx_tk_num_adj = downloaded_data[required_fx_tk_num]['ohlc_adj'][min_date: max_date]
+                    df_ohlc_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc'][min_date: max_date]
+                    df_ohlc_tk_num_adj *= df_ohlc_required_fx_tk_num_adj
+                    df_ohlc_tk_num *= df_ohlc_required_fx_tk_num
+                # Does the denominator ticker need to be converted?
+                if required_fx_tk_den != '':
+                    df_ohlc_required_fx_tk_den_adj = downloaded_data[required_fx_tk_den]['ohlc_adj']
+                    df_ohlc_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc']
+                    df_ohlc_tk_den_adj *= df_ohlc_required_fx_tk_den_adj
+                    df_ohlc_tk_den *= df_ohlc_required_fx_tk_den
+                adj_prices = df_ohlc_tk_num_adj / df_ohlc_tk_den_adj
+                adj_prices = adj_prices.dropna()
+                prices = df_ohlc_tk_num / df_ohlc_tk_den
+                prices = prices.dropna()
+                ticker = selected_pseudoticker_info[tk]['name']
+            # A regular ticker
+            else:
+                adj_prices = downloaded_data[tk]['ohlc_adj'][min_date: max_date]
+                prices = downloaded_data[tk]['ohlc'][min_date: max_date]
+                ticker = tk
 
             p1 = adj_prices[diff_2_line_1_price_type] if boolean(diff_2_line_1_adjusted) else prices[diff_2_line_1_price_type]
             p2 = adj_prices[diff_2_line_2_price_type] if boolean(diff_2_line_2_adjusted) else prices[diff_2_line_2_price_type]
+
+            line_1_ma_type = ma_type_map[diff_2_line_1_ma_type]
+            line_2_ma_type = ma_type_map[diff_2_line_2_ma_type]
                 
             if diff_2_line_1_line_type == 'Moving Average':
                 p1 = analyze_prices.moving_average(p1, line_1_ma_type, diff_2_line_1_window)
@@ -11250,7 +11490,7 @@ def update_plot(
             if not p1.equals(p2):
                 fig_data = analyze_prices.add_diff(
                     fig_data,
-                    tk,
+                    ticker,
                     p1,
                     p2,
                     p1_name,
@@ -11272,6 +11512,7 @@ def update_plot(
             added_to_plot_indicator_diff_2_style = added_to_plot_indicator_css
             added_to_plot_indicator_differential_tab_style = added_to_plot_indicator_css
 
+        ######################
         ### Add Differential 3
         if remove_diff_3 & (fig_data is not None):
             add_diff_3 = 0
@@ -11281,15 +11522,41 @@ def update_plot(
                         fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
         if add_diff_3:
-            
-            adj_prices = downloaded_data[tk]['ohlc_adj'][min_date: max_date]
-            prices = downloaded_data[tk]['ohlc'][min_date: max_date]
-            
-            line_1_ma_type = ma_type_map[diff_3_line_1_ma_type]
-            line_2_ma_type = ma_type_map[diff_3_line_2_ma_type]
+
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                df_ohlc_tk_num_adj = downloaded_data[tk_num]['ohlc_adj'][min_date: max_date]
+                df_ohlc_tk_den_adj = downloaded_data[tk_den]['ohlc_adj'][min_date: max_date]
+                df_ohlc_tk_num = downloaded_data[tk_num]['ohlc'][min_date: max_date]
+                df_ohlc_tk_den = downloaded_data[tk_den]['ohlc'][min_date: max_date]
+                # Does the numerator ticker need to be converted?
+                if required_fx_tk_num != '':
+                    df_ohlc_required_fx_tk_num_adj = downloaded_data[required_fx_tk_num]['ohlc_adj'][min_date: max_date]
+                    df_ohlc_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc'][min_date: max_date]
+                    df_ohlc_tk_num_adj *= df_ohlc_required_fx_tk_num_adj
+                    df_ohlc_tk_num *= df_ohlc_required_fx_tk_num
+                # Does the denominator ticker need to be converted?
+                if required_fx_tk_den != '':
+                    df_ohlc_required_fx_tk_den_adj = downloaded_data[required_fx_tk_den]['ohlc_adj']
+                    df_ohlc_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc']
+                    df_ohlc_tk_den_adj *= df_ohlc_required_fx_tk_den_adj
+                    df_ohlc_tk_den *= df_ohlc_required_fx_tk_den
+                adj_prices = df_ohlc_tk_num_adj / df_ohlc_tk_den_adj
+                adj_prices = adj_prices.dropna()
+                prices = df_ohlc_tk_num / df_ohlc_tk_den
+                prices = prices.dropna()
+                ticker = selected_pseudoticker_info[tk]['name']
+            # A regular ticker
+            else:
+                adj_prices = downloaded_data[tk]['ohlc_adj'][min_date: max_date]
+                prices = downloaded_data[tk]['ohlc'][min_date: max_date]
+                ticker = tk
 
             p1 = adj_prices[diff_3_line_1_price_type] if boolean(diff_3_line_1_adjusted) else prices[diff_2_line_1_price_type]
             p2 = adj_prices[diff_3_line_2_price_type] if boolean(diff_3_line_2_adjusted) else prices[diff_2_line_2_price_type]
+
+            line_1_ma_type = ma_type_map[diff_3_line_1_ma_type]
+            line_2_ma_type = ma_type_map[diff_3_line_2_ma_type]
                 
             if diff_3_line_1_line_type == 'Moving Average':
                 p1 = analyze_prices.moving_average(p1, line_1_ma_type, diff_3_line_1_window)
@@ -11310,7 +11577,7 @@ def update_plot(
             if not p1.equals(p2):
                 fig_data = analyze_prices.add_diff(
                     fig_data,
-                    tk,
+                    ticker,
                     p1,
                     p2,
                     p1_name,
@@ -11332,6 +11599,7 @@ def update_plot(
             added_to_plot_indicator_diff_3_style = added_to_plot_indicator_css
             added_to_plot_indicator_differential_tab_style = added_to_plot_indicator_css
 
+        #######################
         ### Add Diff Stochastic
         if remove_diff_stochastic & (fig_data is not None):
             add_diff_stochastic = 0
@@ -11341,26 +11609,65 @@ def update_plot(
                         fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
         if add_diff_stochastic:
-            stochastic_prices = downloaded_data[tk]['ohlc_adj'] if boolean(stochastic_adjusted) else downloaded_data[tk]['ohlc']
-            stochastic_close_tk = stochastic_prices['Close'][min_date: max_date]
-            stochastic_high_tk = stochastic_prices['High'][min_date: max_date]
-            stochastic_low_tk = stochastic_prices['Low'][min_date: max_date]
+            
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                close_tk_num = downloaded_data[tk_num]['ohlc_adj']['Close'] if boolean(diff_stochastic_adjusted) else downloaded_data[tk_num]['ohlc']['Close']
+                close_tk_den = downloaded_data[tk_den]['ohlc_adj']['Close'] if boolean(diff_stochastic_adjusted) else downloaded_data[tk_den]['ohlc']['Close']
+                high_tk_num = downloaded_data[tk_num]['ohlc_adj']['High'] if boolean(diff_stochastic_adjusted) else downloaded_data[tk_num]['ohlc']['High']
+                high_tk_den = downloaded_data[tk_den]['ohlc_adj']['High'] if boolean(diff_stochastic_adjusted) else downloaded_data[tk_den]['ohlc']['High']
+                low_tk_num = downloaded_data[tk_num]['ohlc_adj']['Low'] if boolean(diff_stochastic_adjusted) else downloaded_data[tk_num]['ohlc']['Low']
+                low_tk_den = downloaded_data[tk_den]['ohlc_adj']['Low'] if boolean(diff_stochastic_adjusted) else downloaded_data[tk_den]['ohlc']['Low']
+                # Does the numerator ticker need to be converted?
+                if required_fx_tk_num != '':
+                    close_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['Close'] if boolean(diff_stochastic_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['Close']
+                    close_tk_num *= close_required_fx_tk_num
+                    high_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['High'] if boolean(diff_stochastic_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['High']
+                    high_tk_num *= high_required_fx_tk_num
+                    low_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['Low'] if boolean(diff_stochastic_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['Low']
+                    low_tk_num *= low_required_fx_tk_num
+                # Does the denominator ticker need to be converted?
+                if required_fx_tk_den != '':
+                    close_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['Close'] if boolean(diff_stochastic_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['Close']                        
+                    close_tk_den *= close_required_fx_tk_den
+                    high_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['High'] if boolean(diff_stochastic_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['High']                        
+                    high_tk_den *= high_required_fx_tk_den
+                    low_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['Low'] if boolean(diff_stochastic_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['Low']                        
+                    low_tk_den *= low_required_fx_tk_den
+                close = close_tk_num / close_tk_den
+                close = close.dropna()
+                close = close[min_date: max_date]
+                high = high_tk_num / high_tk_den
+                high = high.dropna()
+                high = high[min_date: max_date]
+                low = low_tk_num / low_tk_den
+                low = low.dropna()
+                low = low[min_date: max_date]
+            # A regular ticker
+            else:
+                close = downloaded_data[tk]['ohlc_adj']['Close'] if boolean(diff_stochastic_adjusted) else downloaded_data[tk]['ohlc']['Close']
+                close = close[min_date: max_date]
+                high = downloaded_data[tk]['ohlc_adj']['High'] if boolean(diff_stochastic_adjusted) else downloaded_data[tk]['ohlc']['High']
+                high = close[min_date: max_date]
+                low = downloaded_data[tk]['ohlc_adj']['Low'] if boolean(diff_stochastic_adjusted) else downloaded_data[tk]['ohlc']['Low']
+                low = close[min_date: max_date]
             #
             stochastic_data = analyze_prices.stochastic_oscillator(
-                stochastic_close_tk,
-                stochastic_high_tk,
-                stochastic_low_tk,
+                close,
+                high,
+                low,
                 fast_k_period = diff_stochastic_fast_k_period,
                 smoothing_period = diff_stochastic_k_smoothing_period,
                 sma_d_period = diff_stochastic_d_period,
                 stochastic_type = diff_stochastic_type
             )
             #
+            ticker = selected_pseudoticker_info[tk]['name'] if tk.startswith('ptk_') else tk
             fig_data = analyze_prices.add_diff_stochastic(
                 fig_data,
                 stochastic_data,
                 diff_stochastic_adjusted,
-                tk,
+                ticker,
                 target_deck = deck_number(deck_type, diff_stochastic_deck),
                 flip_sign = True if diff_stochastic_sign.startswith('%D') else False,
                 plot_type = diff_stochastic_plot_type,
@@ -11390,10 +11697,34 @@ def update_plot(
                         fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
         if add_bollinger:
-            df_bollinger_price = downloaded_data[tk]['ohlc_adj'] if boolean(bollinger_adjusted) else downloaded_data[tk]['ohlc']
-            bollinger_price = df_bollinger_price[bollinger_price_type]
+            
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                df_hist_price_tk_num = downloaded_data[tk_num]['ohlc_adj'] if boolean(bollinger_adjusted) else downloaded_data[tk_num]['ohlc']
+                df_hist_price_tk_den = downloaded_data[tk_den]['ohlc_adj'] if boolean(bollinger_adjusted) else downloaded_data[tk_den]['ohlc']
+                hist_price_tk_num = df_hist_price_tk_num[bollinger_price_type]
+                hist_price_tk_den = df_hist_price_tk_den[bollinger_price_type]
+                # Does the numerator ticker need to be converted?
+                if required_fx_tk_num != '':
+                    df_hist_price_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj'] if boolean(bollinger_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']
+                    # Extract a single price type data column as a pd.Series
+                    hist_price_required_fx_tk_num = df_hist_price_required_fx_tk_num[bollinger_price_type]
+                    hist_price_tk_num *= hist_price_required_fx_tk_num
+                # Does the denominator ticker need to be converted?
+                if required_fx_tk_den != '':
+                    df_hist_price_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj'] if boolean(bollinger_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']                        
+                    # Extract a single price type data column as a pd.Series
+                    hist_price_required_fx_tk_den = df_hist_price_required_fx_tk_den[bollinger_price_type]
+                    hist_price_tk_den *= hist_price_required_fx_tk_den
+                hist_price = hist_price_tk_num / hist_price_tk_den
+                hist_price = hist_price.dropna()
+            # A regular ticker
+            else:
+                df_hist_price = downloaded_data[tk]['ohlc_adj'] if boolean(bollinger_adjusted) else downloaded_data[tk]['ohlc']
+                hist_price = df_hist_price[bollinger_price_type]
+
             bollinger_data = analyze_prices.bollinger_bands(
-                bollinger_price[min_date: max_date],
+                hist_price[min_date: max_date],
                 ma_type_map[bollinger_ma_type],
                 bollinger_window,
                 bollinger_nstd,
@@ -11419,10 +11750,34 @@ def update_plot(
                         fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
         if add_boll_width:
-            df_boll_width_price = downloaded_data[tk]['ohlc_adj'] if boolean(boll_width_adjusted) else downloaded_data[tk]['ohlc']
-            boll_width_price = df_boll_width_price[boll_width_price_type]
+            
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                df_hist_price_tk_num = downloaded_data[tk_num]['ohlc_adj'] if boolean(boll_width_adjusted) else downloaded_data[tk_num]['ohlc']
+                df_hist_price_tk_den = downloaded_data[tk_den]['ohlc_adj'] if boolean(boll_width_adjusted) else downloaded_data[tk_den]['ohlc']
+                hist_price_tk_num = df_hist_price_tk_num[boll_width_price_type]
+                hist_price_tk_den = df_hist_price_tk_den[boll_width_price_type]
+                # Does the numerator ticker need to be converted?
+                if required_fx_tk_num != '':
+                    df_hist_price_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj'] if boolean(boll_width_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']
+                    # Extract a single price type data column as a pd.Series
+                    hist_price_required_fx_tk_num = df_hist_price_required_fx_tk_num[boll_width_price_type]
+                    hist_price_tk_num *= hist_price_required_fx_tk_num
+                # Does the denominator ticker need to be converted?
+                if required_fx_tk_den != '':
+                    df_hist_price_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj'] if boolean(boll_width_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']                        
+                    # Extract a single price type data column as a pd.Series
+                    hist_price_required_fx_tk_den = df_hist_price_required_fx_tk_den[boll_width_price_type]
+                    hist_price_tk_den *= hist_price_required_fx_tk_den
+                hist_price = hist_price_tk_num / hist_price_tk_den
+                hist_price = hist_price.dropna()
+            # A regular ticker
+            else:
+                df_hist_price = downloaded_data[tk]['ohlc_adj'] if boolean(boll_width_adjusted) else downloaded_data[tk]['ohlc']
+                hist_price = df_hist_price[boll_width_price_type]
+
             bollinger_data = analyze_prices.bollinger_bands(
-                boll_width_price[min_date: max_date],
+                hist_price[min_date: max_date],
                 ma_type_map[boll_width_ma_type],
                 boll_width_window,
                 boll_width_nstd
@@ -11440,6 +11795,7 @@ def update_plot(
             added_to_plot_indicator_boll_width_style = added_to_plot_indicator_css
             added_to_plot_indicator_volatility_tab_style = added_to_plot_indicator_css
 
+        ################
         # Add ATR / ATRP
         if remove_atr & (fig_data is not None):
             add_atr = 0
@@ -11449,18 +11805,58 @@ def update_plot(
                         fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
         if add_atr:
-            atr_color_theme = atr_color_theme.lower() if atr_color_theme is not None else 'gold'
-            df_atr = downloaded_data[tk]['ohlc_adj'] if boolean(atr_adjusted) else downloaded_data[tk]['ohlc']
-            atr_close_tk = df_atr['Close'][min_date: max_date]
-            atr_high_tk = df_atr['High'][min_date: max_date]
-            atr_low_tk = df_atr['Low'][min_date: max_date]
+
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                close_tk_num = downloaded_data[tk_num]['ohlc_adj']['Close'] if boolean(atr_adjusted) else downloaded_data[tk_num]['ohlc']['Close']
+                close_tk_den = downloaded_data[tk_den]['ohlc_adj']['Close'] if boolean(atr_adjusted) else downloaded_data[tk_den]['ohlc']['Close']
+                high_tk_num = downloaded_data[tk_num]['ohlc_adj']['High'] if boolean(atr_adjusted) else downloaded_data[tk_num]['ohlc']['High']
+                high_tk_den = downloaded_data[tk_den]['ohlc_adj']['High'] if boolean(atr_adjusted) else downloaded_data[tk_den]['ohlc']['High']
+                low_tk_num = downloaded_data[tk_num]['ohlc_adj']['Low'] if boolean(atr_adjusted) else downloaded_data[tk_num]['ohlc']['Low']
+                low_tk_den = downloaded_data[tk_den]['ohlc_adj']['Low'] if boolean(atr_adjusted) else downloaded_data[tk_den]['ohlc']['Low']
+                # Does the numerator ticker need to be converted?
+                if required_fx_tk_num != '':
+                    close_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['Close'] if boolean(atr_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['Close']
+                    close_tk_num *= close_required_fx_tk_num
+                    high_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['High'] if boolean(atr_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['High']
+                    high_tk_num *= high_required_fx_tk_num
+                    low_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['Low'] if boolean(atr_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['Low']
+                    low_tk_num *= low_required_fx_tk_num
+                # Does the denominator ticker need to be converted?
+                if required_fx_tk_den != '':
+                    close_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['Close'] if boolean(atr_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['Close']                        
+                    close_tk_den *= close_required_fx_tk_den
+                    high_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['High'] if boolean(atr_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['High']                        
+                    high_tk_den *= high_required_fx_tk_den
+                    low_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['Low'] if boolean(atr_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['Low']                        
+                    low_tk_den *= low_required_fx_tk_den
+                close = close_tk_num / close_tk_den
+                close = close.dropna()
+                close = close[min_date: max_date]
+                high = high_tk_num / high_tk_den
+                high = high.dropna()
+                high = high[min_date: max_date]
+                low = low_tk_num / low_tk_den
+                low = low.dropna()
+                low = low[min_date: max_date]
+            # A regular ticker
+            else:
+                close = downloaded_data[tk]['ohlc_adj']['Close'] if boolean(atr_adjusted) else downloaded_data[tk]['ohlc']['Close']
+                close = close[min_date: max_date]
+                high = downloaded_data[tk]['ohlc_adj']['High'] if boolean(atr_adjusted) else downloaded_data[tk]['ohlc']['High']
+                high = close[min_date: max_date]
+                low = downloaded_data[tk]['ohlc_adj']['Low'] if boolean(atr_adjusted) else downloaded_data[tk]['ohlc']['Low']
+                low = close[min_date: max_date]
+
             atr_data = analyze_prices.average_true_rate(
-                atr_close_tk,
-                atr_high_tk,
-                atr_low_tk,
+                close,
+                high,
+                low,
                 boolean(atr_adjusted),
                 atr_periods
             )
+
+            atr_color_theme = atr_color_theme.lower() if atr_color_theme is not None else 'gold'
             fig_data = analyze_prices.add_atr(
                 fig_data,
                 atr_data,
@@ -11474,6 +11870,7 @@ def update_plot(
             added_to_plot_indicator_atr_style = added_to_plot_indicator_css
             added_to_plot_indicator_volatility_tab_style = added_to_plot_indicator_css
 
+        ###################
         ### Add MVol / MStD
         if remove_mvol & (fig_data is not None):
             add_mvol = 0
@@ -11483,10 +11880,34 @@ def update_plot(
                         fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
         if add_mvol:
-            df_mvol_price = downloaded_data[tk]['ohlc_adj'] if boolean(mvol_adjusted) else downloaded_data[tk]['ohlc']
-            mvol_price = df_mvol_price[mvol_price_type]
+            
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                df_hist_price_tk_num = downloaded_data[tk_num]['ohlc_adj'] if boolean(mvol_adjusted) else downloaded_data[tk_num]['ohlc']
+                df_hist_price_tk_den = downloaded_data[tk_den]['ohlc_adj'] if boolean(mvol_adjusted) else downloaded_data[tk_den]['ohlc']
+                hist_price_tk_num = df_hist_price_tk_num[mvol_price_type]
+                hist_price_tk_den = df_hist_price_tk_den[mvol_price_type]
+                # Does the numerator ticker need to be converted?
+                if required_fx_tk_num != '':
+                    df_hist_price_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj'] if boolean(mvol_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']
+                    # Extract a single price type data column as a pd.Series
+                    hist_price_required_fx_tk_num = df_hist_price_required_fx_tk_num[mvol_price_type]
+                    hist_price_tk_num *= hist_price_required_fx_tk_num
+                # Does the denominator ticker need to be converted?
+                if required_fx_tk_den != '':
+                    df_hist_price_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj'] if boolean(mvol_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']                        
+                    # Extract a single price type data column as a pd.Series
+                    hist_price_required_fx_tk_den = df_hist_price_required_fx_tk_den[mvol_price_type]
+                    hist_price_tk_den *= hist_price_required_fx_tk_den
+                hist_price = hist_price_tk_num / hist_price_tk_den
+                hist_price = hist_price.dropna()
+            # A regular ticker
+            else:
+                df_hist_price = downloaded_data[tk]['ohlc_adj'] if boolean(mvol_adjusted) else downloaded_data[tk]['ohlc']
+                hist_price = df_hist_price[mvol_price_type]
+
             mvol_data = analyze_prices.moving_volatility_stdev(
-                mvol_price[min_date: max_date],
+                hist_price[min_date: max_date],
                 ma_type = ma_type_map[mvol_ma_type],
                 ma_window = mvol_window
             )
@@ -11503,6 +11924,7 @@ def update_plot(
             added_to_plot_indicator_mvol_style = added_to_plot_indicator_css
             added_to_plot_indicator_volatility_tab_style = added_to_plot_indicator_css
 
+        ###################
         ### Add Ulcer Index
         if remove_ulcer & (fig_data is not None):
             add_ulcer = 0
@@ -11512,10 +11934,34 @@ def update_plot(
                         fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
         if add_ulcer:
-            df_ulcer_price = downloaded_data[tk]['ohlc_adj'] if boolean(ulcer_adjusted) else downloaded_data[tk]['ohlc']
-            ulcer_price = df_ulcer_price[ulcer_price_type]
+            
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                df_hist_price_tk_num = downloaded_data[tk_num]['ohlc_adj'] if boolean(ulcer_adjusted) else downloaded_data[tk_num]['ohlc']
+                df_hist_price_tk_den = downloaded_data[tk_den]['ohlc_adj'] if boolean(ulcer_adjusted) else downloaded_data[tk_den]['ohlc']
+                hist_price_tk_num = df_hist_price_tk_num[ulcer_price_type]
+                hist_price_tk_den = df_hist_price_tk_den[ulcer_price_type]
+                # Does the numerator ticker need to be converted?
+                if required_fx_tk_num != '':
+                    df_hist_price_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj'] if boolean(ulcer_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']
+                    # Extract a single price type data column as a pd.Series
+                    hist_price_required_fx_tk_num = df_hist_price_required_fx_tk_num[ulcer_price_type]
+                    hist_price_tk_num *= hist_price_required_fx_tk_num
+                # Does the denominator ticker need to be converted?
+                if required_fx_tk_den != '':
+                    df_hist_price_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj'] if boolean(ulcer_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']                        
+                    # Extract a single price type data column as a pd.Series
+                    hist_price_required_fx_tk_den = df_hist_price_required_fx_tk_den[ulcer_price_type]
+                    hist_price_tk_den *= hist_price_required_fx_tk_den
+                hist_price = hist_price_tk_num / hist_price_tk_den
+                hist_price = hist_price.dropna()
+            # A regular ticker
+            else:
+                df_hist_price = downloaded_data[tk]['ohlc_adj'] if boolean(ulcer_adjusted) else downloaded_data[tk]['ohlc']
+                hist_price = df_hist_price[ulcer_price_type]
+
             ulcer_data = analyze_prices.get_ulcer_index(
-                ulcer_price[min_date: max_date],
+                hist_price[min_date: max_date],
                 window = ulcer_window
             )
             fig_data = analyze_prices.add_ulcer_index(
@@ -11543,19 +11989,42 @@ def update_plot(
                         fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
         if add_rsi:
-            df_rsi = downloaded_data[tk]['ohlc_adj'] if boolean(rsi_adjusted) else downloaded_data[tk]['ohlc']
-            rsi_price = df_rsi[rsi_price_type]
-            rsi_price = rsi_price[min_date: max_date]
+            
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                df_hist_price_tk_num = downloaded_data[tk_num]['ohlc_adj'] if boolean(rsi_adjusted) else downloaded_data[tk_num]['ohlc']
+                df_hist_price_tk_den = downloaded_data[tk_den]['ohlc_adj'] if boolean(rsi_adjusted) else downloaded_data[tk_den]['ohlc']
+                hist_price_tk_num = df_hist_price_tk_num[rsi_price_type]
+                hist_price_tk_den = df_hist_price_tk_den[rsi_price_type]
+                # Does the numerator ticker need to be converted?
+                if required_fx_tk_num != '':
+                    df_hist_price_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj'] if boolean(rsi_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']
+                    # Extract a single price type data column as a pd.Series
+                    hist_price_required_fx_tk_num = df_hist_price_required_fx_tk_num[rsi_price_type]
+                    hist_price_tk_num *= hist_price_required_fx_tk_num
+                # Does the denominator ticker need to be converted?
+                if required_fx_tk_den != '':
+                    df_hist_price_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj'] if boolean(rsi_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']                        
+                    # Extract a single price type data column as a pd.Series
+                    hist_price_required_fx_tk_den = df_hist_price_required_fx_tk_den[rsi_price_type]
+                    hist_price_tk_den *= hist_price_required_fx_tk_den
+                hist_price = hist_price_tk_num / hist_price_tk_den
+                hist_price = hist_price.dropna()
+            # A regular ticker
+            else:
+                df_hist_price = downloaded_data[tk]['ohlc_adj'] if boolean(rsi_adjusted) else downloaded_data[tk]['ohlc']
+                hist_price = df_hist_price[rsi_price_type]
             #
             rsi_data = analyze_prices.relative_strength(
-                rsi_price,
+                hist_price[min_date: max_date],
                 period = rsi_periods
             )
             #
+            ticker = selected_pseudoticker_info[tk]['name'] if tk.startswith('ptk_') else tk
             fig_data = analyze_prices.add_rsi(
                 fig_data,
                 rsi_data,
-                tk,
+                ticker,
                 price_type = rsi_price_type,
                 adjusted = boolean(rsi_adjusted),
                 add_price = boolean(rsi_add_price),
@@ -11580,26 +12049,65 @@ def update_plot(
                         fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
         if add_stochastic:
-            stochastic_prices = downloaded_data[tk]['ohlc_adj'] if boolean(stochastic_adjusted) else downloaded_data[tk]['ohlc']
-            stochastic_close_tk = stochastic_prices['Close'][min_date: max_date]
-            stochastic_high_tk = stochastic_prices['High'][min_date: max_date]
-            stochastic_low_tk = stochastic_prices['Low'][min_date: max_date]
+            
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                close_tk_num = downloaded_data[tk_num]['ohlc_adj']['Close'] if boolean(stochastic_adjusted) else downloaded_data[tk_num]['ohlc']['Close']
+                close_tk_den = downloaded_data[tk_den]['ohlc_adj']['Close'] if boolean(stochastic_adjusted) else downloaded_data[tk_den]['ohlc']['Close']
+                high_tk_num = downloaded_data[tk_num]['ohlc_adj']['High'] if boolean(stochastic_adjusted) else downloaded_data[tk_num]['ohlc']['High']
+                high_tk_den = downloaded_data[tk_den]['ohlc_adj']['High'] if boolean(stochastic_adjusted) else downloaded_data[tk_den]['ohlc']['High']
+                low_tk_num = downloaded_data[tk_num]['ohlc_adj']['Low'] if boolean(stochastic_adjusted) else downloaded_data[tk_num]['ohlc']['Low']
+                low_tk_den = downloaded_data[tk_den]['ohlc_adj']['Low'] if boolean(stochastic_adjusted) else downloaded_data[tk_den]['ohlc']['Low']
+                # Does the numerator ticker need to be converted?
+                if required_fx_tk_num != '':
+                    close_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['Close'] if boolean(stochastic_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['Close']
+                    close_tk_num *= close_required_fx_tk_num
+                    high_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['High'] if boolean(stochastic_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['High']
+                    high_tk_num *= high_required_fx_tk_num
+                    low_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['Low'] if boolean(stochastic_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['Low']
+                    low_tk_num *= low_required_fx_tk_num
+                # Does the denominator ticker need to be converted?
+                if required_fx_tk_den != '':
+                    close_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['Close'] if boolean(stochastic_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['Close']                        
+                    close_tk_den *= close_required_fx_tk_den
+                    high_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['High'] if boolean(stochastic_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['High']                        
+                    high_tk_den *= high_required_fx_tk_den
+                    low_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['Low'] if boolean(stochastic_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['Low']                        
+                    low_tk_den *= low_required_fx_tk_den
+                close = close_tk_num / close_tk_den
+                close = close.dropna()
+                close = close[min_date: max_date]
+                high = high_tk_num / high_tk_den
+                high = high.dropna()
+                high = high[min_date: max_date]
+                low = low_tk_num / low_tk_den
+                low = low.dropna()
+                low = low[min_date: max_date]
+            # A regular ticker
+            else:
+                close = downloaded_data[tk]['ohlc_adj']['Close'] if boolean(stochastic_adjusted) else downloaded_data[tk]['ohlc']['Close']
+                close = close[min_date: max_date]
+                high = downloaded_data[tk]['ohlc_adj']['High'] if boolean(stochastic_adjusted) else downloaded_data[tk]['ohlc']['High']
+                high = close[min_date: max_date]
+                low = downloaded_data[tk]['ohlc_adj']['Low'] if boolean(stochastic_adjusted) else downloaded_data[tk]['ohlc']['Low']
+                low = close[min_date: max_date]
             #
             stochastic_data = analyze_prices.stochastic_oscillator(
-                stochastic_close_tk,
-                stochastic_high_tk,
-                stochastic_low_tk,
+                close,
+                high,
+                low,
                 fast_k_period = stochastic_fast_k_period,
                 smoothing_period = stochastic_k_smoothing_period,
                 sma_d_period = stochastic_d_period,
                 stochastic_type = stochastic_type
             )
             #
+            ticker = selected_pseudoticker_info[tk]['name'] if tk.startswith('ptk_') else tk
             fig_data = analyze_prices.add_stochastic(
                 fig_data,
                 stochastic_data,
                 stochastic_adjusted,
-                tk,
+                ticker,
                 add_price = boolean(stochastic_add_price),
                 target_deck = deck_number(deck_type, stochastic_deck),
                 oversold_threshold = stochastic_oversold_level,
@@ -11623,24 +12131,63 @@ def update_plot(
                         fig_data['fig']['data'] = fig_data['fig']['data'].remove(fig_data['fig']['data'][i])
 
         if add_cci:
-            df_cci = downloaded_data[tk]['ohlc_adj'] if boolean(cci_adjusted) else downloaded_data[tk]['ohlc']
-            cci_close_tk = df_cci['Close'][min_date: max_date]
-            cci_high_tk = df_cci['High'][min_date: max_date]
-            cci_low_tk = df_cci['Low'][min_date: max_date]
+            
+            # Is it a pseudoticker?
+            if tk.startswith('ptk_'):
+                close_tk_num = downloaded_data[tk_num]['ohlc_adj']['Close'] if boolean(cci_adjusted) else downloaded_data[tk_num]['ohlc']['Close']
+                close_tk_den = downloaded_data[tk_den]['ohlc_adj']['Close'] if boolean(cci_adjusted) else downloaded_data[tk_den]['ohlc']['Close']
+                high_tk_num = downloaded_data[tk_num]['ohlc_adj']['High'] if boolean(cci_adjusted) else downloaded_data[tk_num]['ohlc']['High']
+                high_tk_den = downloaded_data[tk_den]['ohlc_adj']['High'] if boolean(cci_adjusted) else downloaded_data[tk_den]['ohlc']['High']
+                low_tk_num = downloaded_data[tk_num]['ohlc_adj']['Low'] if boolean(cci_adjusted) else downloaded_data[tk_num]['ohlc']['Low']
+                low_tk_den = downloaded_data[tk_den]['ohlc_adj']['Low'] if boolean(cci_adjusted) else downloaded_data[tk_den]['ohlc']['Low']
+                # Does the numerator ticker need to be converted?
+                if required_fx_tk_num != '':
+                    close_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['Close'] if boolean(cci_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['Close']
+                    close_tk_num *= close_required_fx_tk_num
+                    high_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['High'] if boolean(cci_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['High']
+                    high_tk_num *= high_required_fx_tk_num
+                    low_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj']['Low'] if boolean(cci_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']['Low']
+                    low_tk_num *= low_required_fx_tk_num
+                # Does the denominator ticker need to be converted?
+                if required_fx_tk_den != '':
+                    close_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['Close'] if boolean(cci_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['Close']                        
+                    close_tk_den *= close_required_fx_tk_den
+                    high_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['High'] if boolean(cci_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['High']                        
+                    high_tk_den *= high_required_fx_tk_den
+                    low_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj']['Low'] if boolean(cci_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']['Low']                        
+                    low_tk_den *= low_required_fx_tk_den
+                close = close_tk_num / close_tk_den
+                close = close.dropna()
+                close = close[min_date: max_date]
+                high = high_tk_num / high_tk_den
+                high = high.dropna()
+                high = high[min_date: max_date]
+                low = low_tk_num / low_tk_den
+                low = low.dropna()
+                low = low[min_date: max_date]
+            # A regular ticker
+            else:
+                close = downloaded_data[tk]['ohlc_adj']['Close'] if boolean(cci_adjusted) else downloaded_data[tk]['ohlc']['Close']
+                close = close[min_date: max_date]
+                high = downloaded_data[tk]['ohlc_adj']['High'] if boolean(cci_adjusted) else downloaded_data[tk]['ohlc']['High']
+                high = close[min_date: max_date]
+                low = downloaded_data[tk]['ohlc_adj']['Low'] if boolean(cci_adjusted) else downloaded_data[tk]['ohlc']['Low']
+                low = close[min_date: max_date]
             #
             cci_data = analyze_prices.commodity_channel_index(
-                cci_close_tk,
-                cci_high_tk,
-                cci_low_tk,
+                close,
+                high,
+                low,
                 boolean(cci_adjusted),
                 period = cci_period,
                 constant = cci_constant
             )
             #
+            ticker = selected_pseudoticker_info[tk]['name'] if tk.startswith('ptk_') else tk
             fig_data = analyze_prices.add_cci(
                 fig_data,
                 cci_data,
-                tk,
+                ticker,
                 add_price = boolean(cci_add_price),
                 target_deck = deck_number(deck_type, cci_deck),
                 oversold_threshold = cci_oversold_level,
@@ -11894,3 +12441,80 @@ def update_plot(
 
 # Remove restriction on drawdowns to be plotted only on the upper deck.
 # 
+
+"""
+1) pd.Series to json object:
+    dd['TSLA']['volume'][-5:]
+    Out:
+    2025-03-31    134008900
+    2025-04-01    146486900
+    2025-04-02    212787800
+    2025-04-03    136174300
+    2025-04-04    180324400
+    Name: Volume, dtype: int64
+
+    for idx in dd['TSLA']['volume'][-5:].index:
+        print(idx, type(idx))
+    Out:
+    2025-03-31 <class 'datetime.date'>
+    2025-04-01 <class 'datetime.date'>
+    2025-04-02 <class 'datetime.date'>
+    2025-04-03 <class 'datetime.date'>
+    2025-04-04 <class 'datetime.date'>
+
+    jov = json.loads(dd['TSLA']['volume'].to_json())[-5:]
+    {'1743379200000': 134008900,
+     '1743465600000': 146486900,
+     '1743552000000': 212787800,
+     '1743638400000': 136174300,
+     '1743724800000': 180324400}
+
+2) json object back to pd.Series:
+    a) Create a pandas series
+    jovs = pd.Series(data = jov)
+    jovs
+    Out:
+    (...)
+    1743379200000    134008900
+    1743465600000    146486900
+    1743552000000    212787800
+    1743638400000    136174300
+    1743724800000    180324400
+    Length: 106, dtype: int64
+
+    b) Convert index to timestamp
+    tmp_index = pd.to_datetime(jovs.index.astype('Int64')/1000, unit = 's')
+    for idx in tmp.index[-5:]:
+        print(idx, type(idx))
+    Out:
+    2025-03-31 00:00:00 <class 'pandas._libs.tslibs.timestamps.Timestamp'>
+    2025-04-01 00:00:00 <class 'pandas._libs.tslibs.timestamps.Timestamp'>
+    2025-04-02 00:00:00 <class 'pandas._libs.tslibs.timestamps.Timestamp'>
+    2025-04-03 00:00:00 <class 'pandas._libs.tslibs.timestamps.Timestamp'>
+    2025-04-04 00:00:00 <class 'pandas._libs.tslibs.timestamps.Timestamp'>
+  
+    c) Convert timestamp index to datetime
+    new_index = [idx.date() for idx in tmp_index]        
+    jovs.index = new_index
+    jovs
+    Out:
+    (...)
+    2025-03-31    134008900
+    2025-04-01    146486900
+    2025-04-02    212787800
+    2025-04-03    136174300
+    2025-04-04    180324400
+    Length: 106, dtype: int64
+
+    for idx in new_index[-5:]:
+        print(idx, type(idx))
+    Out:
+    2025-03-31 <class 'datetime.date'>
+    2025-04-01 <class 'datetime.date'>
+    2025-04-02 <class 'datetime.date'>
+    2025-04-03 <class 'datetime.date'>
+    2025-04-04 <class 'datetime.date'>
+    
+    ##### NOTE: Do not use datetime.fromtimestamp() - it skips leap seconds, which in this case
+    ##### results in ONE DAY DIFFERENCE (index is from 2024-10-30 to 2025-04-03)
+"""
