@@ -93,17 +93,22 @@ hidden_pseudo = False
 @callback(
     Output('final-table-selected-tickers', 'children'),
     Output('dash-table-tickers-to-plot-div', 'children'),
-    Output('expanded-selected-ticker-names', 'data'),
-    Output('expanded-selected-ticker-currencies', 'data'),
+    # Output('expanded-selected-ticker-names', 'data'),  # To be removed
+    # Output('expanded-selected-ticker-currencies', 'data'),  # To be removed
 
-    Input('final-table-selected-tickers-data-stored', 'data'),
-    Input('final-selected-ticker-summaries-stored', 'data'),
-    Input('final-selected-tickers-stored', 'data')
+    # Input('final-table-selected-tickers-data-stored', 'data'),  # Replace by expanded-data-stored
+    # Input('final-selected-ticker-summaries-stored', 'data'),  # Replace by expanded-tooltip-data-stored
+    # Input('final-selected-ticker-names-stored', 'data')  # Replace by expanded-selected-ticker-names-stored
+
+    Input('expanded-data-stored', 'data'),
+    Input('expanded-tooltip-data-stored', 'data'),
+    Input('expanded-selected-ticker-names-stored', 'data')
+
 )
 def display_table_selected_tickers(
-    table_data,
-    table_tooltip_data,
-    selected_ticker_names
+    expanded_data,
+    expanded_tooltip_data,
+    expanded_selected_ticker_names
 ):
     """
     table_data:
@@ -114,6 +119,9 @@ def display_table_selected_tickers(
         a dictionary of historical price and volume data with selected tickers as keys
     """
     
+    expanded_selected_tickers = list(expanded_selected_ticker_names.keys())
+    """
+    ############### BEGIN TRANSFERRED TO PREVIOUS PAGE ###############
     # selected_tickers = [row['Ticker'] for row in table_data]
     selected_tickers = list(selected_ticker_names.keys())
     expanded_selected_tickers = []
@@ -170,7 +178,9 @@ def display_table_selected_tickers(
         else:
             expanded_tooltip_data.append(table_tooltip_data[idx])
 
-    
+    ############### END TRANSFERRED TO PREVIOUS PAGE ###############
+    """
+
     # This table appears above the plot under the Collapse button
     dash_table_selected_tickers = dash_table.DataTable(
         columns = [{'name': i, 'id': i} for i in plots_table_selected_tickers_columns if i != 'No.'],
@@ -287,9 +297,9 @@ def display_table_selected_tickers(
 
     return (
         dash_table_selected_tickers_div,
-        dash_table_tickers_to_plot,
-        expanded_selected_ticker_names,
-        expanded_selected_ticker_currencies
+        dash_table_tickers_to_plot
+        # expanded_selected_ticker_names,  # To be removed
+        # expanded_selected_ticker_currencies  # To be removed
         # selected_tickers,
         # first_ticker
     )
@@ -873,8 +883,8 @@ layout = html.Div([
     # LOADING WRAPPER
     dcc.Loading([
 
-    dcc.Store(data = {}, id = 'expanded-selected-ticker-names', storage_type = 'session'),
-    dcc.Store(data = {}, id = 'expanded-selected-ticker-currencies', storage_type = 'session'),
+    dcc.Store(data = {}, id = 'expanded-selected-ticker-names', storage_type = 'session'),  # To be removed
+    dcc.Store(data = {}, id = 'expanded-selected-ticker-currencies', storage_type = 'session'),  # To be removed
     dcc.Store(data = {}, id = 'selected-pseudoticker-info', storage_type = 'memory'),  # 'session' may not work
 
     html.Div(id = 'plots-start-date', hidden = True, style = {'font-size' : '14px'}),
@@ -9466,8 +9476,10 @@ def toggle_collapse_cci(n, is_open):
 
     Input('final-start-date-stored', 'data'),
     Input('final-end-date-stored', 'data'),
-    Input('expanded-selected-ticker-names', 'data'),
-    Input('expanded-selected-ticker-currencies', 'data'),
+    Input('expanded-selected-ticker-names-stored', 'data'),
+    Input('expanded-selected-ticker-currencies-stored', 'data'),
+    # Input('expanded-selected-ticker-names', 'data'),
+    # Input('expanded-selected-ticker-currencies', 'data'),
 
     Input({'index': ALL, 'type': 'reset-axes'}, 'n_clicks'),
 
@@ -10252,7 +10264,6 @@ def update_plot(
         cur_fx_tk = f'{cur}USD=X'
         if cur_fx_tk not in expanded_selected_tickers:
             downloaded_data.update(hist_data.download_yf_data(start_date, end_date, [cur_fx_tk]))
-            print(f'cur_fx_tk {cur_fx_tk}\n{downloaded_data[cur_fx_tk]}')
 
     # print('DOWNLOADED DATA without pseudoticker fx')
     # print(downloaded_data.keys())
@@ -12469,6 +12480,15 @@ def update_plot(
      '1743638400000': 136174300,
      '1743724800000': 180324400}
 
+    If dd is downloaded_data output, then the code below will create its serializable version:
+    headers = ['ohlc', 'ohlc_adj', 'volume', 'dollar_volume', 'dollar_volume_adj']
+    dd_json = {}
+    for tk in dd.keys():
+        dd_tk_json = {}
+        for h in headers:
+            dd_tk_json.update({h: json.loads(dd[tk][h].to_json())})
+        dd_json.update({tk: dd_tk_json})
+     
 2) json object back to pd.Series:
     a) Create a pandas series
     jovs = pd.Series(data = jov)
@@ -12483,7 +12503,7 @@ def update_plot(
     Length: 106, dtype: int64
 
     b) Convert index to timestamp
-    tmp_index = pd.to_datetime(jovs.index.astype('Int64')/1000, unit = 's')
+    tmp_index = pd.to_datetime(jovs.index.astype('Int64')/1e3, unit = 's')
     for idx in tmp.index[-5:]:
         print(idx, type(idx))
     Out:
@@ -12493,6 +12513,12 @@ def update_plot(
     2025-04-03 00:00:00 <class 'pandas._libs.tslibs.timestamps.Timestamp'>
     2025-04-04 00:00:00 <class 'pandas._libs.tslibs.timestamps.Timestamp'>
   
+    tmp_index
+    Out:
+    DatetimeIndex(['2025-03-31', '2025-04-01', '2025-04-02', '2025-04-03',
+               '2025-04-04'],
+              dtype='datetime64[ns]', freq=None)
+
     c) Convert timestamp index to datetime
     new_index = [idx.date() for idx in tmp_index]        
     jovs.index = new_index

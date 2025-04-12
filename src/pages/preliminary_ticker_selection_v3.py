@@ -271,18 +271,22 @@ def generate_preselected_tables(
             dict_tickers_values = {}
             dict_currency_fx_rates = {}
             for tk in category_tickers:
-                tk_info = yf.Ticker(tk).info
-                currency = tk_info['currency']
-                if currency != 'USD':
-                    if currency in dict_currency_fx_rates.keys():
-                        dict_tickers_values.update({currency: dict_currency_fx_rates[currency]})
+                try:
+                    tk_info = yf.Ticker(tk).info
+                    currency = tk_info['currency']
+                    if currency != 'USD':
+                        if currency in dict_currency_fx_rates.keys():
+                            dict_tickers_values.update({currency: dict_currency_fx_rates[currency]})
+                        else:
+                            fx_rate = hist_info.get_usd_fx_rate(currency)
+                            fx_rate = 1 if fx_rate == 0 else fx_rate
+                            dict_tickers_values.update({tk: tk_info[tk_sort_by] / fx_rate})
+                            dict_currency_fx_rates.update({tk: fx_rate})
                     else:
-                        fx_rate = hist_info.get_usd_fx_rate(currency)
-                        fx_rate = 1 if fx_rate == 0 else fx_rate
-                        dict_tickers_values.update({tk: tk_info[tk_sort_by] / fx_rate})
-                        dict_currency_fx_rates.update({tk: fx_rate})
-                else:
-                    dict_tickers_values.update({tk: tk_info[tk_sort_by]})
+                        dict_tickers_values.update({tk: tk_info[tk_sort_by]})
+                except:
+                    print(f'Skipping unknown ticker {tk}')
+                    continue
 
             category_tickers_sorted = [i[0] for i in sorted(dict_tickers_values.items(), key=itemgetter(1), reverse=True)]
             df_pre_tickers.index = category_tickers_sorted  

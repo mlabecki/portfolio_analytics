@@ -42,20 +42,30 @@ app.layout = dmc.MantineProvider(
     # dcc.Store(data = {}, id = 'n-preselected-stored', storage_type = 'session'),
     # dcc.Store(data = {}, id = 'preselected-ticker-tables-stored', storage_type = 'session'),
 
+    # Outputs of page1.py
     dcc.Store(data = [], id = 'selected-categories-stored', storage_type = 'memory'),
 
+    # Outputs of preliminary_ticker_selection_v3.py
     dcc.Store(data = {}, id = 'n-preselected-stored', storage_type = 'memory'),
     dcc.Store(data = {}, id = 'preselected-ticker-tables-stored', storage_type = 'memory'),
 
+    # Outputs of test_ticker_input_v3.py
     dcc.Store(data = [], id = 'table-selected-tickers-data-stored', storage_type = 'session'),
     dcc.Store(data = {}, id = 'selected-ticker-summaries-stored', storage_type = 'session'),
-    dcc.Store(data = {}, id = 'selected-tickers-downloaded-data-stored', storage_type = 'session'),
-
+    
+    # Outputs of test_dates_selection.py
     dcc.Store(data = [], id = 'final-table-selected-tickers-data-stored', storage_type = 'session'),
     dcc.Store(data = {}, id = 'final-selected-ticker-summaries-stored', storage_type = 'session'),
     dcc.Store(data = [], id = 'final-start-date-stored', storage_type = 'session'),
     dcc.Store(data = [], id = 'final-end-date-stored', storage_type = 'session'),
-    dcc.Store(data = {}, id = 'final-selected-tickers-stored', storage_type = 'session'),
+    dcc.Store(data = {}, id = 'final-selected-ticker-names-stored', storage_type = 'session'),
+
+    # Outputs of test_dates_selection.py, moved from test_generate_plots.py
+    dcc.Store(data = {}, id = 'expanded-selected-ticker-names-stored', storage_type = 'session'),
+    dcc.Store(data = {}, id = 'expanded-selected-ticker-currencies-stored', storage_type = 'session'),
+    dcc.Store(data = {}, id = 'expanded-data-stored', storage_type = 'session'),
+    dcc.Store(data = {}, id = 'expanded-tooltip-data-stored', storage_type = 'session'),
+    dcc.Store(data = {}, id = 'selected-tickers-downloaded-data-stored', storage_type = 'session')
 
 ])
 

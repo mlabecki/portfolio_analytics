@@ -276,12 +276,18 @@ layout = html.Div([
     Output('dash-table-selected-tickers', 'data'),
     Output('dash-table-selected-tickers', 'selected_rows'),
     Output('dash-table-selected-tickers', 'tooltip_data'),
+
+    # Shared through main app page
     Output('final-table-selected-tickers-data-stored', 'data'),
     Output('final-selected-ticker-summaries-stored', 'data'),
     Output('final-start-date-stored', 'data'),
     Output('final-end-date-stored', 'data'),
+    Output('final-selected-ticker-names-stored', 'data'),
+    Output('expanded-selected-ticker-names-stored', 'data'),
+    Output('expanded-selected-ticker-currencies-stored', 'data'),
+    Output('expanded-data-stored', 'data'),
+    Output('expanded-tooltip-data-stored', 'data'),
     # Output('selected-tickers-downloaded-data-stored', 'data'),
-    Output('final-selected-tickers-stored', 'data'),
 
     Input('table-selected-tickers-data-stored', 'data'),
     Input('selected-ticker-summaries-stored', 'data'),
@@ -290,7 +296,7 @@ layout = html.Div([
     Input('start-date-input-dmc', 'value'),
 )
 def get_table_selected_tickers(
-    table_selected_tickers_data,
+    table_selected_ticker_data,
     selected_ticker_summaries,
     selected_rows,
     end_date,
@@ -300,15 +306,15 @@ def get_table_selected_tickers(
     tooltip_data = [
         { column: {'value': selected_ticker_summaries[row['Ticker']], 'type': 'markdown' }
         for column in row.keys() }
-        for row in table_selected_tickers_data  # e.g. {'No.': 1, 'Ticker': 'AAPL', ...} etc.
+        for row in table_selected_ticker_data  # e.g. {'No.': 1, 'Ticker': 'AAPL', ...} etc.
     ]
 
-    selected_rows = [k for k in range(len(table_selected_tickers_data))] if selected_rows == [] else selected_rows
+    selected_rows = [k for k in range(len(table_selected_ticker_data))] if selected_rows == [] else selected_rows
     n_tickers = len(selected_rows)
     
-    selected_tickers = [row['Ticker'] for row in table_selected_tickers_data if row['No.'] - 1 in selected_rows]
-    selected_start_dates = [row['Data Start'] for row in table_selected_tickers_data if row['No.'] - 1 in selected_rows]
-    selected_end_dates = [row['Data End'] for row in table_selected_tickers_data if row['No.'] - 1 in selected_rows]
+    selected_tickers = [row['Ticker'] for row in table_selected_ticker_data if row['No.'] - 1 in selected_rows]
+    selected_start_dates = [row['Data Start'] for row in table_selected_ticker_data if row['No.'] - 1 in selected_rows]
+    selected_end_dates = [row['Data End'] for row in table_selected_ticker_data if row['No.'] - 1 in selected_rows]
 
     portfolio_start = f'{min(selected_start_dates)}'
     portfolio_end = f'{max(selected_end_dates)}'
@@ -338,8 +344,8 @@ def get_table_selected_tickers(
     full_overlap_end_dl = (datetime.strptime(min(selected_end_dates), '%Y-%m-%d') + timedelta(1)).date()
     # For correct download range we must add 1 day to the end_date
     full_overlap_length = len(yf.download(selected_tickers, start = full_overlap_start, end = full_overlap_end_dl, progress = False))
-    # tk_overlap_start = [row['Ticker'] for row in table_selected_tickers_data if row['Data Start'] == overlap_start][0]
-    # tk_overlap_end = [row['Ticker'] for row in table_selected_tickers_data if row['Data End'] == overlap_end][0]
+    # tk_overlap_start = [row['Ticker'] for row in table_selected_ticker_data if row['Data Start'] == overlap_start][0]
+    # tk_overlap_end = [row['Ticker'] for row in table_selected_ticker_data if row['Data End'] == overlap_end][0]
 
     # Use all 4 parameters above to download data just for these two tickers and two dates.
     # Then, after dropna(), count the length of the range of overlapping portfolio dates.
@@ -451,10 +457,69 @@ def get_table_selected_tickers(
         style = {'display': 'block'}
     )
 
-    final_table_selected_tickers_data = [row for row in table_selected_tickers_data if row['No.'] - 1 in selected_rows] # a list of dictionaries
+    final_table_selected_ticker_data = [row for row in table_selected_ticker_data if row['No.'] - 1 in selected_rows] # a list of dictionaries
     final_tooltip_data = tooltip_data.copy()  # a list
-    final_selected_tickers_names = {row['Ticker']: row['Name'] for row in final_table_selected_tickers_data if row['No.'] - 1 in selected_rows}
+    final_selected_ticker_names = {row['Ticker']: row['Name'] for row in final_table_selected_ticker_data if row['No.'] - 1 in selected_rows}
+
+    ################### BEGIN TRANSFERRED FROM PLOTTING PAGE ######################
+
+    final_selected_tickers = list(final_selected_ticker_names.keys())
+    expanded_selected_tickers = []
+    expanded_selected_ticker_names = {}
+    expanded_selected_ticker_currencies = {}
+
+    for tk in selected_tickers:
+        expanded_selected_tickers.append(tk)
+        expanded_selected_ticker_names.update({tk: final_selected_ticker_names[tk]})
+        if tk.endswith('USD=X'):
+            currency = tk.replace('USD=X', '')
+            tk_inverse = 'USD' + currency + '=X'
+            tk_inverse_name = 'USD' + currency
+            expanded_selected_tickers.append(tk_inverse)
+            expanded_selected_ticker_names.update({tk_inverse: tk_inverse_name})
     
+    expanded_data = []
+    expanded_tooltip_data = []
+
+    for idx, row in enumerate(final_table_selected_ticker_data):
+        # Indexing is the same in table_data and table_tooltip_data
+        expanded_data.append(row)
+
+        tk = row['Ticker']
+
+        expanded_selected_ticker_currencies.update({tk: row['Currency']})
+
+        if tk.endswith('USD=X'):
+        
+            row_inverse = row.copy()
+            currency = tk.replace('USD=X', '')
+            tk_inverse = 'USD' + currency + '=X'
+            tk_inverse_name = 'USD' + currency
+            row_inverse['Ticker'] = tk_inverse
+            row_inverse['Name'] = tk_inverse_name
+            row_inverse['Currency'] = currency
+            expanded_data.append(row_inverse)
+            expanded_selected_ticker_currencies.update({tk_inverse: currency})
+
+            tk_fx_currency_name = currencies_combined[currency]
+            tk_summary = f'The exchange rate between {tk_fx_currency_name} and the US Dollar, or the price of {currency} in USD.'
+            tooltip_row = {
+                column: {'value': tk_summary, 'type': 'markdown' }
+                for column in plots_table_selected_tickers_columns if column != 'No.'
+            }
+            tk_summary_inverse = f'The exchange rate between the US Dollar and {tk_fx_currency_name}, or the price of USD in {currency}.'
+            tooltip_row_inverse = {
+                column: {'value': tk_summary_inverse, 'type': 'markdown' }
+                for column in plots_table_selected_tickers_columns if column != 'No.'
+            }
+            expanded_tooltip_data.append(tooltip_row)
+            expanded_tooltip_data.append(tooltip_row_inverse)
+
+        else:
+            expanded_tooltip_data.append(final_tooltip_data[idx])
+
+    ################### END TRANSFERRED FROM PLOTTING PAGE ######################
+
     # NOTE: Cannot call download_yf_data if overlap_start/overlap_end might be N/A.
     #       There is no 'final' version here of the start and end dates or selected tickers because 
     #       the function is under callback.
@@ -467,16 +532,21 @@ def get_table_selected_tickers(
         dates_portfolio_summary,
         hide_portfolio_summary_message,
         portfolio_summary_message,
-        table_selected_tickers_data,
+        table_selected_ticker_data,
         selected_rows,
         tooltip_data,
 
-        final_table_selected_tickers_data,
+        final_table_selected_ticker_data,
         final_tooltip_data,
         overlap_start,
         overlap_end,
-        # downloaded_data,
-        final_selected_tickers_names
+        final_selected_ticker_names,
+
+        expanded_selected_ticker_names,
+        expanded_selected_ticker_currencies,
+        expanded_data,
+        expanded_tooltip_data,
+        # downloaded_data        
     )
 
 
