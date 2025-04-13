@@ -4,6 +4,7 @@ from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import dash_loading_spinners as dls
+import json
 
 from dash import register_page
 
@@ -287,7 +288,7 @@ layout = html.Div([
     Output('expanded-selected-ticker-currencies-stored', 'data'),
     Output('expanded-data-stored', 'data'),
     Output('expanded-tooltip-data-stored', 'data'),
-    # Output('selected-tickers-downloaded-data-stored', 'data'),
+    Output('selected-tickers-downloaded-data-json-stored', 'data'),
 
     Input('table-selected-tickers-data-stored', 'data'),
     Input('selected-ticker-summaries-stored', 'data'),
@@ -519,6 +520,29 @@ def get_table_selected_tickers(
             expanded_tooltip_data.append(final_tooltip_data[idx])
 
     ################### END TRANSFERRED FROM PLOTTING PAGE ######################
+
+    # Download historical data for regular tickers (pseudoticker numerator and denominator tickers among them)
+    downloaded_data = hist_data.download_yf_data(start_date, end_date, expanded_selected_tickers)
+    # Also download fx rates for non-USD currencies
+    non_usd_currencies = set([cur for cur in expanded_selected_ticker_currencies.values() if cur != 'USD'])
+    for cur in non_usd_currencies:
+        cur_fx_tk = f'{cur}USD=X'
+        if cur_fx_tk not in expanded_selected_tickers:
+            downloaded_data.update(hist_data.download_yf_data(start_date, end_date, [cur_fx_tk]))
+
+    dd = downloaded_data.copy()
+
+    # If dd is downloaded_data output, then the code below will create its serializable version:
+    headers = ['ohlc', 'ohlc_adj', 'volume', 'dollar_volume', 'dollar_volume_adj']
+    dd_json = {}
+    for tk in dd.keys():
+        dd_tk_json = {}
+        for h in headers:
+            dd_tk_json.update({h: json.loads(dd[tk][h].to_json())})
+        dd_json.update({tk: dd_tk_json})
+
+
+    ###############################################################################
 
     # NOTE: Cannot call download_yf_data if overlap_start/overlap_end might be N/A.
     #       There is no 'final' version here of the start and end dates or selected tickers because 

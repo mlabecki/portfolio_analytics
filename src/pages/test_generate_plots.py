@@ -9478,6 +9478,7 @@ def toggle_collapse_cci(n, is_open):
     Input('final-end-date-stored', 'data'),
     Input('expanded-selected-ticker-names-stored', 'data'),
     Input('expanded-selected-ticker-currencies-stored', 'data'),
+    Input('selected-tickers-downloaded-data-json-stored', 'data'),    
     # Input('expanded-selected-ticker-names', 'data'),
     # Input('expanded-selected-ticker-currencies', 'data'),
 
@@ -9852,6 +9853,7 @@ def update_plot(
         end_date,
         expanded_selected_tickers_names,
         expanded_selected_tickers_currencies,
+        downloaded_data_json,
 
         n_click_reset_axes,
 
@@ -10256,17 +10258,29 @@ def update_plot(
     # A dictionary holding date indices for all tickers
     tk_date_index = {}
 
-    # Download historical data for regular tickers (pseudoticker numerator and denominator tickers among them)
-    downloaded_data = hist_data.download_yf_data(start_date, end_date, expanded_selected_tickers)
-    # Also download fx rates for non-USD currencies
-    non_usd_currencies = set([cur for cur in expanded_selected_tickers_currencies.values() if cur != 'USD'])
-    for cur in non_usd_currencies:
-        cur_fx_tk = f'{cur}USD=X'
-        if cur_fx_tk not in expanded_selected_tickers:
-            downloaded_data.update(hist_data.download_yf_data(start_date, end_date, [cur_fx_tk]))
+    ### # Download historical data for regular tickers (pseudoticker numerator and denominator tickers among them)
+    ### downloaded_data = hist_data.download_yf_data(start_date, end_date, expanded_selected_tickers)
+    ### # Also download fx rates for non-USD currencies
+    ### non_usd_currencies = set([cur for cur in expanded_selected_tickers_currencies.values() if cur != 'USD'])
+    ### for cur in non_usd_currencies:
+    ###     cur_fx_tk = f'{cur}USD=X'
+    ###     if cur_fx_tk not in expanded_selected_tickers:
+    ###         downloaded_data.update(hist_data.download_yf_data(start_date, end_date, [cur_fx_tk]))
 
     # print('DOWNLOADED DATA without pseudoticker fx')
     # print(downloaded_data.keys())
+
+    # At this point we need to have downloaded_data converted back from json to the original format
+
+    for tk in expanded_selected_tickers:
+        tk_ohlc = pd.DataFrame(data = downloaded_data_json[tk]['ohlc'])
+        tk_ohlc_adj = pd.DataFrame(data = downloaded_data_json[tk]['ohlc_adj'])
+        tk_volume = pd.Series(data = downloaded_data_json[tk]['volume'])
+        tk_dollar_volume = pd.Series(data = downloaded_data_json[tk]['dollar_volume'])
+        tk_dollar_volume_adj = pd.Series(data = downloaded_data_json[tk]['dollar_volume_adj'])
+
+    downloaded_data = {}
+    # Now populate downloaded_data from the above json extracts
 
     for tk in expanded_selected_tickers:
         tk_date_index.update({tk: downloaded_data[tk]['ohlc'][min_date: max_date].index})
@@ -10544,21 +10558,14 @@ def update_plot(
                     df_hist_price_required_fx_tk_num = downloaded_data[required_fx_tk_num]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[required_fx_tk_num]['ohlc']
                     # Extract a single price type data column as a pd.Series
                     hist_price_required_fx_tk_num = df_hist_price_required_fx_tk_num[hist_price_type]
-                    print(f'{tk_num} hist_price_tk_num NOT CONVERTED\n{hist_price_tk_num[-3:]}')
-                    print(f'{tk_num} {required_fx_tk_num}\n{hist_price_required_fx_tk_num[-3:]}')
                     hist_price_tk_num *= hist_price_required_fx_tk_num
-                    print(f'{tk_num} hist_price_tk_num CONVERTED\n{hist_price_tk_num[-3:]}')
                 # Does the denominator ticker need to be converted?
                 if required_fx_tk_den != '':
                     df_hist_price_required_fx_tk_den = downloaded_data[required_fx_tk_den]['ohlc_adj'] if boolean(hist_price_adjusted) else downloaded_data[required_fx_tk_den]['ohlc']                        
                     # Extract a single price type data column as a pd.Series
                     hist_price_required_fx_tk_den = df_hist_price_required_fx_tk_den[hist_price_type]
-                    print(f'{tk_den} hist_price_tk_den NOT CONVERTED\n{hist_price_tk_den[-3:]}')
-                    print(f'{tk_den} {required_fx_tk_den}\n{hist_price_required_fx_tk_den[-3:]}')
                     hist_price_tk_den *= hist_price_required_fx_tk_den
-                    print(f'{tk_den} hist_price_tk_den CONVERTED\n{hist_price_tk_den[-3:]}')
                 hist_price = hist_price_tk_num / hist_price_tk_den
-                print(f'hist_price_tk_num / hist_price_tk_den\n{hist_price[-3:]}')
                 hist_price = hist_price.dropna()
                 ticker = selected_pseudoticker_info[tk]['name']
             # A regular ticker
@@ -10583,10 +10590,6 @@ def update_plot(
 
             added_to_plot_indicator_hist_price_style = added_to_plot_indicator_css
             added_to_plot_indicator_prices_tab_style = added_to_plot_indicator_css
-
-        # for i, tr in enumerate(fig_data['fig']['data']):
-        #     trace_uid_to_delete = tr['uid']
-        #     print(f"tr['uid']\n {tr['uid']}")
 
         ###################
         ### Add candlestick
